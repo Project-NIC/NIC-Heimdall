@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="NIC-Proteus.svg" width="200"/>
+</p>
+
 ★ N.I.C. ★
 
 # Proteus — центральный блок, часы, Bifrost и Hermes на одной небольшой печатной плате

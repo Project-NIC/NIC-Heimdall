@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="NIC-Hermes.svg" width="200"/>
+</p>
+
 ★ N.I.C. ★
 
 # Hermes — преобразователь BMS/MPPT

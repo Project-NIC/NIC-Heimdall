@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="NIC-Polaris.svg" width="200"/>
+</p>
+
 ★ N.I.C. ★
 
 # Polaris — Kronos's GNSS front, bought

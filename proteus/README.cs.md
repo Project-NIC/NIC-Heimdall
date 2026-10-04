@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="NIC-Proteus.svg" width="200"/>
+</p>
+
 ★ N.I.C. ★
 
 # Proteus — centrála, hodiny, Bifrost a Hermes na jedné malé DPS

@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="NIC-Handset.svg" width="200"/>
+</p>
+
 ★ N.I.C. ★
 
 # Handset — the station's bring-up and service companion (BLE)

@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="NIC-Marconi.svg" width="200"/>
+</p>
+
 ★ N.I.C. ★
 
 # Marconi — the HF ionosphere monitor, 0,5 to 16 MHz

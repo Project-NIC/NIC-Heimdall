@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="NIC-Marconi.svg" width="200"/>
+</p>
+
 ★ N.I.C. ★
 
 # Marconi — monitor ionosféry v pásmu KV, 0,5 až 16 MHz

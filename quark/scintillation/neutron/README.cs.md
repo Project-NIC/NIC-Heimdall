@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="NIC-Neutron.svg" width="200"/>
+</p>
+
 ★ N.I.C. ★
 
 # Neutron — fotonásobičový neutronový kanál

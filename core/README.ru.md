@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="NIC-Core.svg" width="200"/>
+</p>
+
 ★ N.I.C. ★
 
 # NIC Core — универсальная платформа

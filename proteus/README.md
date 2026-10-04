@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="NIC-Proteus.svg" width="200"/>
+</p>
+
 ★ N.I.C. ★
 
 # Proteus — the head, the clock, a Bifrost and Hermes on one small PCB

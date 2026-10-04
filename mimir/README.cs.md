@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="NIC-Mimir.svg" width="200"/>
+</p>
+
 ★ N.I.C. ★
 
 # Mimir (mini-Heimdall) — centrála, hodiny, dvě karty a Palatine na jedné desce

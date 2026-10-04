@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="NIC-Positron.svg" width="200"/>
+</p>
+
 ★ N.I.C. ★
 
 # Positron — beta jednotka

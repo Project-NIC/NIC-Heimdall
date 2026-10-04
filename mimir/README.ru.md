@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="NIC-Mimir.svg" width="200"/>
+</p>
+
 ★ N.I.C. ★
 
 # Mimir (mini-Heimdall) — центральный блок, часы, две карты и Palatine на одной плате

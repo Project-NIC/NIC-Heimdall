@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="NIC-Steinmetz.svg" width="200"/>
+</p>
+
 ★ N.I.C. ★
 
 # Steinmetz — line faults on power lines, from a vehicle or a site

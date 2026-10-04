@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="NIC-Marconi.svg" width="200"/>
+</p>
+
 ★ N.I.C. ★
 
 # Marconi — монитор ионосферы в КВ-диапазоне, от 0,5 до 16 MHz

@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="NIC-Steinmetz.svg" width="200"/>
+</p>
+
 ★ N.I.C. ★
 
 # Steinmetz — poruchy na elektrických vedeních, z vozidla nebo z lokality
