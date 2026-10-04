@@ -6,6 +6,8 @@
 
 # Galvani — the transport boards
 
+**English** · [Čeština](README.cs.md) · [Русский](README.ru.md)
+
 > **Design-stage concept — nothing drawn, nothing built.** This file is the doctrine and the
 > function of every board; the parts, values and calculations are [`HARDWARE.md`](HARDWARE.md),
 > the bill of materials [`BOM.md`](BOM.md), the rejected alternatives [`WHY.md`](WHY.md). **It is a
@@ -123,8 +125,8 @@ for another board: a card's port is two ribbons and nothing else, a source power
 
 **Every 12 V input is a `5.0SMDJ14A` across the terminals behind that fuse.** It stands off 14 V and
 starts to conduct at 15,6–17,2 V, above the pack's charge stop and below the 18 V absolute maximum
-of the lowest-rated part on a 12 V node, the `TPS629206`. **The fuse is what the transil protects
-against**: a pack connected the wrong way round drives the transil forward and the fuse clears; an
+of the lowest-rated part on a 12 V node, the `TPS629206`. **The fuse is what protects the
+transil**: a pack connected the wrong way round drives the transil forward and the fuse clears; an
 overvoltage the transil clamps for longer than a surge heats it until the fuse clears. Either way
 the fuse is lost and the board is not. The fuse is fast-acting and **sized by the construction, not
 by the board**: per install, on the branch's input power, the pack's fault current and the thinnest

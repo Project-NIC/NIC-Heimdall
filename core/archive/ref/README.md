@@ -2,6 +2,8 @@
 
 # The archive's reference code — Python
 
+**English** · [Čeština](README.cs.md) · [Русский](README.ru.md)
+
 The Python half of the reference library `HMC.md` names: HCC as `HCC.md` fixes it, written so
 that the C writes the same bytes, and the measurement that settles its ratios against Steim-2 on
 recorded series. Nothing here runs on the head.

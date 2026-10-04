@@ -2,6 +2,8 @@
 
 # Hermes — the BMS/MPPT converter
 
+**English** · [Čeština](README.cs.md) · [Русский](README.ru.md)
+
 > **Design-stage concept — nothing built.** The figures are verified against the parts' sheets
 > and the parts before a board is made.
 

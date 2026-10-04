@@ -6,6 +6,8 @@
 
 # Gadolin — the Gd neutron head
 
+**English** · [Čeština](README.cs.md) · [Русский](README.ru.md)
+
 > **Design-stage concept — nothing built.** Shared neutron physics → [`../../NEUTRONS.md`](../../NEUTRONS.md); detector build →
 > [`CONSTRUCTION.md`](CONSTRUCTION.md); readout electronics → [`HARDWARE.md`](HARDWARE.md); the
 > graveyard → [`WHY.md`](WHY.md).

@@ -2,6 +2,8 @@
 
 # Marconi — the HF ionosphere monitor, 0,5 to 16 MHz
 
+**English** · [Čeština](README.cs.md) · [Русский](README.ru.md)
+
 > **Design-stage concept — nothing built.** The figures are verified against the parts' sheets
 > and the parts before a board is made.
 

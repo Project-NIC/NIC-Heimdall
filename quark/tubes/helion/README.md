@@ -6,6 +6,8 @@
 
 # Helion — the He³ / BF₃ neutron head
 
+**English** · [Čeština](README.cs.md) · [Русский](README.ru.md)
+
 > **Design-stage concept — nothing built.** The head and its kV source → [`HARDWARE.md`](HARDWARE.md); the
 > graveyard → [`WHY.md`](WHY.md).
 

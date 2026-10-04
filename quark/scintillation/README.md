@@ -6,6 +6,8 @@
 
 # Quark-Scintillation — the low-voltage radiation units
 
+**English** · [Čeština](README.cs.md) · [Русский](README.ru.md)
+
 > **Design-stage concept — nothing built.** **The low-voltage build of Quark**, the
 > radiation part ([`../README.md`](../README.md)); the high-voltage build is
 > [`Quark-Tubes`](../tubes/). This file is the group's map: what stands in it and where each

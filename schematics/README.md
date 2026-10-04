@@ -2,6 +2,8 @@
 
 # Schematics — waiting for the first builder
 
+**English** · [Čeština](README.cs.md) · [Русский](README.ru.md)
+
 **This folder is empty on purpose.** NIC-Heimdall is a concept, and a concept this size is designed
 in its documents: every board's `HARDWARE.md` carries the parts, the values, the pins and the
 arithmetic behind them. That is a schematic in words, and it is complete enough to draw from.

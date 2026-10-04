@@ -2,6 +2,8 @@
 
 # Polaris — Kronos's GNSS front, bought
 
+**English** · [Čeština](README.cs.md) · [Русский](README.ru.md)
+
 > **Design-stage concept — nothing built.** The figures are verified against the parts' sheets
 > and the parts before a carrier is made.
 

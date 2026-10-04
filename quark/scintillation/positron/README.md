@@ -2,6 +2,8 @@
 
 # Positron — the beta unit
 
+**English** · [Čeština](README.cs.md) · [Русский](README.ru.md)
+
 > **Design-stage concept — nothing built.** The physics, the entrance window, the tile
 > and the whole front end live in [`../photon/SCINTILLATION.md`](../photon/SCINTILLATION.md); the
 > record in [`../photon/BUS.md`](../photon/BUS.md). This file is the unit's identity.

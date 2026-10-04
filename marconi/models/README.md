@@ -2,6 +2,8 @@
 
 # marconi/models — the loop's orientation
 
+**English** · [Čeština](README.cs.md) · [Русский](README.ru.md)
+
 The arithmetic behind *One loop, standing, and its two nulls are a siting condition* in
 [`../CONSTRUCTION.md`](../CONSTRUCTION.md): the great-circle bearing from the station to every
 monitored transmitter, and the plane of the ring turned to the angle that maximises the worst

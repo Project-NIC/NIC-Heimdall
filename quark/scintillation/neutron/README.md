@@ -2,6 +2,8 @@
 
 # Neutron — the photomultiplier neutron channel
 
+**English** · [Čeština](README.cs.md) · [Русский](README.ru.md)
+
 > **Design-stage concept — nothing built.** The head, the screens and the readout →
 > [`HARDWARE.md`](HARDWARE.md); the board it lands on → [`../positron/HARDWARE.md`](../positron/HARDWARE.md); the
 > graveyard → [`WHY.md`](WHY.md).

@@ -32,7 +32,9 @@ truer, or taking it one step towards hardware.
   target values; an equivalent part that meets them is as good.
 - **Bought sensors are specified by what they must meet**, never by type: a named part is the one
   a builder in another country cannot get.
-- **English is the master text.** Czech and Russian follow once the design settles.
+- **English is the master text.** Every README has its Czech and Russian translation beside it
+  (`README.cs.md`, `README.ru.md`); a change to a README is carried into both. The other documents
+  follow once the design settles.
 
 ## Issues and pull requests
 

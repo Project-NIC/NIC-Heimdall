@@ -2,6 +2,8 @@
 
 # gauss/models — the shallow-water siting model
 
+**English** · [Čeština](README.cs.md) · [Русский](README.ru.md)
+
 The computation behind the **depth siting rule** in [`../ARRAY.md`](../ARRAY.md)
 (*Where along the slope*): a linear 2-D shallow-water sweep past a
 circular island (shelf → slope → deep plain, plane tsunami incoming), tracking

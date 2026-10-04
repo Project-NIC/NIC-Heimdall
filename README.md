@@ -6,6 +6,8 @@
 
 # NIC-Heimdall
 
+**English** · [Čeština](README.cs.md) · [Русский](README.ru.md)
+
 **The hardware side of NIC: one self-contained, multi-phenomenon measuring station — the sensing
 fronts that watch the solid Earth, the atmosphere and the ionosphere, and the head, clock, cards,
 power and cabling that carry them. Commodity parts, light enough to process on a home machine.**

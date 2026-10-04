@@ -2,6 +2,8 @@
 
 # Steinmetz — line faults on power lines, from a vehicle or a site
 
+**English** · [Čeština](README.cs.md) · [Русский](README.ru.md)
+
 > **Design-stage concept — nothing built.** The figures are verified against the parts' sheets
 > and the parts before a board is made.
 
@@ -13,7 +15,7 @@ removed between the two.
 
 - **The board is Tesla's, identical to the last part** — the three rods, the chain, the
   converter, the rails, both data bodies. The three bands stay; **the front is 20 dB down** on Tesla's own attenuation terminals, so
-  the line overhead sits inside the range and the lightning horizon falls to 500–1000 km
+  the line overhead sits inside the range and the lightning horizon falls to 350–700 km
   (`HARDWARE.md`); the image is sized for the line, not for the storm beyond the horizon
   (`FIRMWARE.md`).
 - **It hangs on a station like any unit**, the unit end of a run: a communication board for its

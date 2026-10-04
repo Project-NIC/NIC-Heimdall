@@ -2,6 +2,8 @@
 
 # Handset — the station's bring-up and service companion (BLE)
 
+**English** · [Čeština](README.cs.md) · [Русский](README.ru.md)
+
 The laptop-free bring-up companion for the **Mayak**, the station's head (`../FIRMWARE.md` §10,
 the service window). You assemble a station, press the Mayak's commissioning
 button, open this app, and it shows **who registered** and **which sensor is
