@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>NIC · GAIA — where the network goes</title>
+<link rel="stylesheet" href="vendor/leaflet.css"/>
+<style>
+  html,body{margin:0;height:100%;font-family:system-ui,sans-serif}
+  #map{position:absolute;inset:0}
+  .legend{background:rgba(255,255,255,.92);padding:8px 10px;border-radius:6px;
+          font-size:12px;line-height:1.5;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+  .legend b{display:block;margin-bottom:4px}
+  .sw{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+  .leaflet-popup-content{font-size:13px;line-height:1.4}
+  .leaflet-popup-content b{color:#111}
+</style>
+</head>
+<body>
+<div id="map"></div>
+<script src="vendor/leaflet.js"></script>
+<script>
+const map = L.map('map', {worldCopyJump:true}).setView([15, 20], 2);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  attribution:'&copy; OpenStreetMap &copy; CARTO', subdomains:'abcd', maxZoom:10
+}).addTo(map);
+
+// vector coastline — a faint outline, so the map still reads if tiles don't load
+fetch('vendor/land-110m.geojson').then(r=>r.json()).then(gj=>{
+  L.geoJSON(gj, {interactive:false,
+    style:{color:'#9aa5b1', weight:0.6, fill:true, fillColor:'#e9edf1', fillOpacity:0.35}
+  }).addTo(map).bringToBack();
+}).catch(e=>console.error('coastline', e));
+
+// each layer: file, label, default-on
+const LAYERS = [
+  ['proposed-network.geojson',  'NIC proposed stations',       true ],
+  ['existing-systems.geojson',  'Existing systems (reference)',false],
+  ['priority-tsunami.geojson',  'Priority zone · Tsunami',     false],
+  ['priority-earthquake.geojson','Priority zone · Earthquake', false],
+  ['priority-tec.geojson',      'Priority zone · Ionosphere / TEC', false],
+  ['priority-radiation.geojson','Priority zone · Radiation',   false],
+  ['longwave-transmitters.geojson','Longwave time transmitters', false],
+];
+
+function styleLine(f){
+  const p=f.properties||{};
+  return {color:p.stroke||'#555', weight:p['stroke-width']||3, opacity:p['stroke-opacity']||0.9};
+}
+function pointToLayer(f, latlng){
+  const p=f.properties||{};
+  const small = !!p.class;               // proposed-network stations = many small dots
+  return L.circleMarker(latlng, {
+    radius: small?3:6, color:'#fff', weight: small?0.6:1.2,
+    fillColor:p['marker-color']||'#555', fillOpacity: small?0.9:0.95
+  });
+}
+function popup(f, layer){
+  const p=f.properties||{};
+  const title=p.name||p.class||'';
+  const sub=p.why||p.measures||p.network||(p.name?'':'') || '';
+  const load=p.loadout?`<br><i>carries:</i> ${p.loadout}`:'';
+  layer.bindPopup(`<b>${title}</b>${sub?'<br>'+sub:''}${load}`);
+  if(title) layer.bindTooltip(title,{direction:'top',opacity:0.9});
+}
+
+const overlays={};
+let pending=LAYERS.length;
+LAYERS.forEach(([file,label,on])=>{
+  fetch(file).then(r=>r.json()).then(gj=>{
+    const grp=L.geoJSON(gj,{style:styleLine, pointToLayer, onEachFeature:popup});
+    overlays[label]=grp;
+    if(on) grp.addTo(map);
+  }).catch(e=>console.error(file,e)).finally(()=>{
+    if(--pending===0) L.control.layers(null, overlays, {collapsed:false}).addTo(map);
+  });
+});
+
+const legend=L.control({position:'bottomright'});
+legend.onAdd=function(){
+  const d=L.DomUtil.create('div','legend');
+  d.innerHTML=`<b>NIC · GAIA — proposed network</b>
+    <span class="sw" style="background:#dd6b20"></span>Seismic — a real town near an active belt<br>
+    <span class="sw" style="background:#c53030"></span>Coastal / tsunami array — 4–5-sonde fan facing the source<br>
+    <span class="sw" style="background:#718096"></span>Backbone — biggest town in an empty cell<br>
+    <small>2,448 sites · ~3,200 units, computed: towns × hazard, no lattice.<br>
+    Countries with dense existing nets get only major hubs.<br>
+    Click a marker — a named real place, its loadout, its node count.</small>`;
+  return d;
+};
+legend.addTo(map);
+</script>
+</body>
+</html>

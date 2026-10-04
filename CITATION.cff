@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use NIC-Heimdall in your work, please cite it as below."
+type: software
+title: "NIC-Heimdall: an open multi-phenomenon geophysical station (concept)"
+version: "0.2"
+date-released: 2026-10-04
+authors:
+  - name: "NIC — Native Intellect Community"
+repository-code: "https://github.com/Project-NIC/NIC-Heimdall"
+license:
+  - CERN-OHL-S-2.0
+  - MIT
+abstract: >-
+  A design-stage open concept for a self-contained measuring station that records
+  seismic motion, the geomagnetic field, lightning and sferics, the ionosphere
+  (GNSS TEC, HF and longwave), ionising radiation, sea-floor pressure and the
+  weather on one clocked bus, with a self-describing archive (HMC) and its
+  lossless codec (HCC), and exporters to the formats of the world's networks
+  (miniSEED, IAGA-2002, RINEX, BUFR). Nothing has been built yet; the documents
+  are the design.
+keywords:
+  - citizen science
+  - open hardware
+  - geophysics
+  - seismology
+  - geomagnetism
+  - lightning detection
+  - ionosphere
+  - space weather
+  - radiation monitoring
+  - meteorology
+  - sensor network
+  - data logger

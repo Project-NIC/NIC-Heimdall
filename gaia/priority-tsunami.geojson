@@ -1,0 +1,832 @@
+{
+ "type": "FeatureCollection",
+ "properties": {
+  "title": "NIC priority — tsunami (subduction zones + island array sites)",
+  "note": "Red lines = major subduction trenches (tsunami sources). Red stars = recommended island-arc array sites: the magnetometer sits at the toe of the island slope (deep water within ~km), the borehole seismo drops in a pipe, the radar watches the surface — short cables, no 50 km haul to the trench. Representative, not exhaustive.",
+  "sources": "USGS/Global CMT · NOAA NCEI · gauss/README.md (The array) · daedalus/README.md (offshore node)"
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      162,
+      56
+     ],
+     [
+      160,
+      54
+     ],
+     [
+      157,
+      51
+     ],
+     [
+      154,
+      48
+     ],
+     [
+      151,
+      46
+     ],
+     [
+      148,
+      44
+     ],
+     [
+      145,
+      41
+     ],
+     [
+      143,
+      39
+     ],
+     [
+      142,
+      37
+     ],
+     [
+      141,
+      35
+     ],
+     [
+      141,
+      33
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Japan–Kuril–Kamchatka Trench",
+    "why": "M9-class megathrust (Tohoku 2011); dense island arc alongside",
+    "stroke": "#c53030",
+    "stroke-width": 3,
+    "stroke-opacity": 0.9
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      141,
+      33
+     ],
+     [
+      138,
+      33
+     ],
+     [
+      136,
+      33
+     ],
+     [
+      134,
+      32
+     ],
+     [
+      132,
+      31
+     ],
+     [
+      130,
+      29
+     ],
+     [
+      128,
+      27
+     ],
+     [
+      126,
+      25
+     ],
+     [
+      124,
+      23
+     ],
+     [
+      122,
+      22
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Nankai–Ryukyu Trench",
+    "why": "Anticipated Nankai megathrust; Ryukyu island chain as ready aperture",
+    "stroke": "#c53030",
+    "stroke-width": 3,
+    "stroke-opacity": 0.9
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -146,
+      58
+     ],
+     [
+      -150,
+      57.5
+     ],
+     [
+      -155,
+      56
+     ],
+     [
+      -160,
+      55
+     ],
+     [
+      -165,
+      54.5
+     ],
+     [
+      -170,
+      53.5
+     ],
+     [
+      -175,
+      52.5
+     ],
+     [
+      -179,
+      52
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Aleutian Trench",
+    "why": "1946/1957/1964 tsunamigenic; the Aleutians ARE the array",
+    "stroke": "#c53030",
+    "stroke-width": 3,
+    "stroke-opacity": 0.9
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -128,
+      50.5
+     ],
+     [
+      -127.5,
+      48.5
+     ],
+     [
+      -126.5,
+      46.5
+     ],
+     [
+      -125.5,
+      44
+     ],
+     [
+      -125,
+      42
+     ],
+     [
+      -124.5,
+      40.5
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Cascadia Subduction Zone",
+    "why": "M9 overdue (1700); Vancouver Is. + offshore islets",
+    "stroke": "#c53030",
+    "stroke-width": 3,
+    "stroke-opacity": 0.9
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -105,
+      20
+     ],
+     [
+      -103,
+      18
+     ],
+     [
+      -100,
+      17
+     ],
+     [
+      -96,
+      16
+     ],
+     [
+      -93,
+      14
+     ],
+     [
+      -90,
+      13
+     ],
+     [
+      -88,
+      12
+     ],
+     [
+      -86,
+      11
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Middle America Trench",
+    "why": "Frequent tsunamigenic thrust off Mexico/Central America",
+    "stroke": "#c53030",
+    "stroke-width": 3,
+    "stroke-opacity": 0.9
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -77,
+      -5
+     ],
+     [
+      -78,
+      -9
+     ],
+     [
+      -77,
+      -13
+     ],
+     [
+      -75,
+      -17
+     ],
+     [
+      -73,
+      -21
+     ],
+     [
+      -72,
+      -25
+     ],
+     [
+      -71,
+      -29
+     ],
+     [
+      -72,
+      -33
+     ],
+     [
+      -73,
+      -37
+     ],
+     [
+      -74,
+      -41
+     ],
+     [
+      -75,
+      -44
+     ],
+     [
+      -76,
+      -47
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Peru–Chile Trench",
+    "why": "Largest quakes on Earth (1960 M9.5); long straight coast",
+    "stroke": "#c53030",
+    "stroke-width": 3,
+    "stroke-opacity": 0.9
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      92,
+      8
+     ],
+     [
+      93,
+      5
+     ],
+     [
+      95,
+      2
+     ],
+     [
+      97,
+      -1
+     ],
+     [
+      100,
+      -4
+     ],
+     [
+      103,
+      -6
+     ],
+     [
+      106,
+      -8
+     ],
+     [
+      110,
+      -9
+     ],
+     [
+      113,
+      -10
+     ],
+     [
+      116,
+      -10.5
+     ],
+     [
+      119,
+      -11
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Sunda Trench (Sumatra–Java)",
+    "why": "2004 M9.1 Indian Ocean tsunami; Mentawai/Nias arc",
+    "stroke": "#c53030",
+    "stroke-width": 3,
+    "stroke-opacity": 0.9
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      120,
+      19
+     ],
+     [
+      120,
+      16
+     ],
+     [
+      121,
+      14
+     ],
+     [
+      123,
+      12
+     ],
+     [
+      125,
+      10
+     ],
+     [
+      126,
+      8
+     ],
+     [
+      127,
+      6
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Philippine / Manila Trench",
+    "why": "Dense archipelago over an active thrust",
+    "stroke": "#c53030",
+    "stroke-width": 3,
+    "stroke-opacity": 0.9
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      187,
+      -15
+     ],
+     [
+      186,
+      -18
+     ],
+     [
+      185,
+      -21
+     ],
+     [
+      184,
+      -24
+     ],
+     [
+      183,
+      -27
+     ],
+     [
+      182,
+      -29
+     ],
+     [
+      180,
+      -31
+     ],
+     [
+      179,
+      -33
+     ],
+     [
+      178,
+      -35
+     ],
+     [
+      177,
+      -37
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Tonga–Kermadec Trench",
+    "why": "Fastest convergence on Earth; Tonga/Kermadec islets",
+    "stroke": "#c53030",
+    "stroke-width": 3,
+    "stroke-opacity": 0.9
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      166,
+      -12
+     ],
+     [
+      167,
+      -14
+     ],
+     [
+      168,
+      -16
+     ],
+     [
+      169,
+      -18
+     ],
+     [
+      170,
+      -20
+     ],
+     [
+      171,
+      -22
+     ],
+     [
+      172,
+      -23
+     ]
+    ]
+   },
+   "properties": {
+    "name": "New Hebrides Trench (Vanuatu)",
+    "why": "Very high seismicity; island chain aperture",
+    "stroke": "#c53030",
+    "stroke-width": 3,
+    "stroke-opacity": 0.9
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -59,
+      10
+     ],
+     [
+      -59,
+      12
+     ],
+     [
+      -59,
+      14
+     ],
+     [
+      -60,
+      16
+     ],
+     [
+      -61,
+      17
+     ],
+     [
+      -61,
+      18
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Lesser Antilles Trench",
+    "why": "Caribbean thrust; string of small islands",
+    "stroke": "#c53030",
+    "stroke-width": 3,
+    "stroke-opacity": 0.9
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      179,
+      -37
+     ],
+     [
+      178.5,
+      -39
+     ],
+     [
+      178,
+      -40
+     ],
+     [
+      177,
+      -41.5
+     ],
+     [
+      176,
+      -42.5
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Hikurangi Trench (New Zealand)",
+    "why": "Slow-slip + megathrust; North Island coast",
+    "stroke": "#c53030",
+    "stroke-width": 3,
+    "stroke-opacity": 0.9
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -176.6,
+     51.9
+    ]
+   },
+   "properties": {
+    "name": "Aleutian Islands (Adak-class)",
+    "why": "Slope toe within ~km; the arc itself is the aperture",
+    "marker-color": "#c53030",
+    "marker-symbol": "star",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     151,
+     46
+    ]
+   },
+   "properties": {
+    "name": "Kuril Islands",
+    "why": "Steep deep flanks close in — short cable to full-transport water",
+    "marker-color": "#c53030",
+    "marker-symbol": "star",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     141.5,
+     38
+    ]
+   },
+   "properties": {
+    "name": "Japan Pacific islet",
+    "why": "Co-sited with the DART/GSN backbone; magnetometer + borehole seismo",
+    "marker-color": "#c53030",
+    "marker-symbol": "star",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     128,
+     26
+    ]
+   },
+   "properties": {
+    "name": "Ryukyu (Okinawa arc)",
+    "why": "Nankai/Ryukyu front; island chain spans the strike",
+    "marker-color": "#c53030",
+    "marker-symbol": "star",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     125,
+     14
+    ]
+   },
+   "properties": {
+    "name": "Luzon east coast",
+    "why": "Manila Trench; deep water near shore",
+    "marker-color": "#c53030",
+    "marker-symbol": "star",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     98,
+     -1
+    ]
+   },
+   "properties": {
+    "name": "Mentawai / Nias (Sumatra)",
+    "why": "2004 source region; outer-arc islands over the toe",
+    "marker-color": "#c53030",
+    "marker-symbol": "star",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     110,
+     -8
+    ]
+   },
+   "properties": {
+    "name": "Java south coast islet",
+    "why": "Sunda Trench; steep shelf drop",
+    "marker-color": "#c53030",
+    "marker-symbol": "star",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     168,
+     -17
+    ]
+   },
+   "properties": {
+    "name": "Vanuatu",
+    "why": "New Hebrides arc; dense small islands, deep between them",
+    "marker-color": "#c53030",
+    "marker-symbol": "star",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     185,
+     -21
+    ]
+   },
+   "properties": {
+    "name": "Tonga",
+    "why": "Kermadec convergence; atoll line resolves speed",
+    "marker-color": "#c53030",
+    "marker-symbol": "star",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     178,
+     -38.5
+    ]
+   },
+   "properties": {
+    "name": "Gisborne / Hikurangi (NZ)",
+    "why": "Slow-slip laboratory; land + shelf sondes",
+    "marker-color": "#c53030",
+    "marker-symbol": "star",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.5,
+     -37
+    ]
+   },
+   "properties": {
+    "name": "South-central Chile islet",
+    "why": "1960 rupture zone; long straight trench parallel",
+    "marker-color": "#c53030",
+    "marker-symbol": "star",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -88,
+     12.5
+    ]
+   },
+   "properties": {
+    "name": "Central America Pacific",
+    "why": "Middle America Trench; short deep cable",
+    "marker-color": "#c53030",
+    "marker-symbol": "star",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -126,
+     49
+    ]
+   },
+   "properties": {
+    "name": "Vancouver Island",
+    "why": "Cascadia; islets over the slope toe",
+    "marker-color": "#c53030",
+    "marker-symbol": "star",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -61,
+     14.7
+    ]
+   },
+   "properties": {
+    "name": "Martinique (Lesser Antilles)",
+    "why": "Caribbean arc; island-network aperture",
+    "marker-color": "#c53030",
+    "marker-symbol": "star",
+    "marker-size": "small"
+   }
+  }
+ ]
+}

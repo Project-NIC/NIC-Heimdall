@@ -1,0 +1,550 @@
+{
+ "type": "FeatureCollection",
+ "properties": {
+  "title": "NIC priority — ionosphere / TEC (Sputnik GNSS)",
+  "note": "Purple bands = where GNSS-TEC (NIC-Sputnik) earns most: the two Equatorial Ionization Anomaly crests (~±10–15° of the magnetic dip equator — strongest TEC, scintillation, plasma bubbles) and the auroral ovals (~67° magnetic — substorm currents, geomagnetically-induced currents, dB/dt). Bands are approximate; the dip equator and ovals move with activity.",
+  "sources": "IGS · Sputnik/README.md · space-weather literature (EIA, auroral electrojet)"
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -180,
+      12.0
+     ],
+     [
+      -160,
+      12.0
+     ],
+     [
+      -140,
+      12.0
+     ],
+     [
+      -120,
+      12.0
+     ],
+     [
+      -100,
+      12.0
+     ],
+     [
+      -80,
+      12.0
+     ],
+     [
+      -60,
+      12.0
+     ],
+     [
+      -40,
+      12.0
+     ],
+     [
+      -20,
+      12.0
+     ],
+     [
+      0,
+      12.0
+     ],
+     [
+      20,
+      12.0
+     ],
+     [
+      40,
+      12.0
+     ],
+     [
+      60,
+      12.0
+     ],
+     [
+      80,
+      12.0
+     ],
+     [
+      100,
+      12.0
+     ],
+     [
+      120,
+      12.0
+     ],
+     [
+      140,
+      12.0
+     ],
+     [
+      160,
+      12.0
+     ],
+     [
+      180,
+      12.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Equatorial Ionization Anomaly — north crest",
+    "why": "EIA crest: strongest TEC + scintillation; GNSS-TEC science hotspot",
+    "stroke": "#805ad5",
+    "stroke-width": 6,
+    "stroke-opacity": 0.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -180,
+      -12.0
+     ],
+     [
+      -160,
+      -12.0
+     ],
+     [
+      -140,
+      -12.0
+     ],
+     [
+      -120,
+      -12.0
+     ],
+     [
+      -100,
+      -12.0
+     ],
+     [
+      -80,
+      -12.0
+     ],
+     [
+      -60,
+      -12.0
+     ],
+     [
+      -40,
+      -12.0
+     ],
+     [
+      -20,
+      -12.0
+     ],
+     [
+      0,
+      -12.0
+     ],
+     [
+      20,
+      -12.0
+     ],
+     [
+      40,
+      -12.0
+     ],
+     [
+      60,
+      -12.0
+     ],
+     [
+      80,
+      -12.0
+     ],
+     [
+      100,
+      -12.0
+     ],
+     [
+      120,
+      -12.0
+     ],
+     [
+      140,
+      -12.0
+     ],
+     [
+      160,
+      -12.0
+     ],
+     [
+      180,
+      -12.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Equatorial Ionization Anomaly — south crest",
+    "why": "EIA crest: strongest TEC + scintillation; GNSS-TEC science hotspot",
+    "stroke": "#805ad5",
+    "stroke-width": 6,
+    "stroke-opacity": 0.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -180,
+      0.0
+     ],
+     [
+      -160,
+      0.0
+     ],
+     [
+      -140,
+      0.0
+     ],
+     [
+      -120,
+      0.0
+     ],
+     [
+      -100,
+      0.0
+     ],
+     [
+      -80,
+      0.0
+     ],
+     [
+      -60,
+      0.0
+     ],
+     [
+      -40,
+      0.0
+     ],
+     [
+      -20,
+      0.0
+     ],
+     [
+      0,
+      0.0
+     ],
+     [
+      20,
+      0.0
+     ],
+     [
+      40,
+      0.0
+     ],
+     [
+      60,
+      0.0
+     ],
+     [
+      80,
+      0.0
+     ],
+     [
+      100,
+      0.0
+     ],
+     [
+      120,
+      0.0
+     ],
+     [
+      140,
+      0.0
+     ],
+     [
+      160,
+      0.0
+     ],
+     [
+      180,
+      0.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Magnetic dip equator (approx)",
+    "why": "Equatorial electrojet / plasma bubbles seed here",
+    "stroke": "#805ad5",
+    "stroke-width": 6,
+    "stroke-opacity": 0.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -180,
+      67.0
+     ],
+     [
+      -160,
+      67.0
+     ],
+     [
+      -140,
+      67.0
+     ],
+     [
+      -120,
+      67.0
+     ],
+     [
+      -100,
+      67.0
+     ],
+     [
+      -80,
+      67.0
+     ],
+     [
+      -60,
+      67.0
+     ],
+     [
+      -40,
+      67.0
+     ],
+     [
+      -20,
+      67.0
+     ],
+     [
+      0,
+      67.0
+     ],
+     [
+      20,
+      67.0
+     ],
+     [
+      40,
+      67.0
+     ],
+     [
+      60,
+      67.0
+     ],
+     [
+      80,
+      67.0
+     ],
+     [
+      100,
+      67.0
+     ],
+     [
+      120,
+      67.0
+     ],
+     [
+      140,
+      67.0
+     ],
+     [
+      160,
+      67.0
+     ],
+     [
+      180,
+      67.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Auroral oval — north (approx)",
+    "why": "Substorm currents, GIC driver; dB/dt + TEC together",
+    "stroke": "#805ad5",
+    "stroke-width": 6,
+    "stroke-opacity": 0.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -180,
+      -67.0
+     ],
+     [
+      -160,
+      -67.0
+     ],
+     [
+      -140,
+      -67.0
+     ],
+     [
+      -120,
+      -67.0
+     ],
+     [
+      -100,
+      -67.0
+     ],
+     [
+      -80,
+      -67.0
+     ],
+     [
+      -60,
+      -67.0
+     ],
+     [
+      -40,
+      -67.0
+     ],
+     [
+      -20,
+      -67.0
+     ],
+     [
+      0,
+      -67.0
+     ],
+     [
+      20,
+      -67.0
+     ],
+     [
+      40,
+      -67.0
+     ],
+     [
+      60,
+      -67.0
+     ],
+     [
+      80,
+      -67.0
+     ],
+     [
+      100,
+      -67.0
+     ],
+     [
+      120,
+      -67.0
+     ],
+     [
+      140,
+      -67.0
+     ],
+     [
+      160,
+      -67.0
+     ],
+     [
+      180,
+      -67.0
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Auroral oval — south (approx)",
+    "why": "Southern auroral zone counterpart",
+    "stroke": "#805ad5",
+    "stroke-width": 6,
+    "stroke-opacity": 0.5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -60,
+     -15
+    ]
+   },
+   "properties": {
+    "name": "South America (Andes–Amazon)",
+    "why": "EIA crest + the magnetic anomaly; premier scintillation zone",
+    "marker-color": "#805ad5",
+    "marker-symbol": "circle",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     105,
+     10
+    ]
+   },
+   "properties": {
+    "name": "SE Asia",
+    "why": "EIA crest, dense population, few open TEC nodes",
+    "marker-color": "#805ad5",
+    "marker-symbol": "circle",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     20,
+     5
+    ]
+   },
+   "properties": {
+    "name": "West/Central Africa",
+    "why": "EIA crest, almost no coverage",
+    "marker-color": "#805ad5",
+    "marker-symbol": "circle",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     25,
+     69
+    ]
+   },
+   "properties": {
+    "name": "Fennoscandia (auroral)",
+    "why": "EISCAT/IMAGE latitude; substorm + GIC",
+    "marker-color": "#805ad5",
+    "marker-symbol": "circle",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -147,
+     65
+    ]
+   },
+   "properties": {
+    "name": "Alaska (auroral)",
+    "why": "Auroral TEC + GIC on the grid",
+    "marker-color": "#805ad5",
+    "marker-symbol": "circle",
+    "marker-size": "small"
+   }
+  }
+ ]
+}

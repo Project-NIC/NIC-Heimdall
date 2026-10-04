@@ -1,0 +1,500 @@
+{
+ "type": "FeatureCollection",
+ "properties": {
+  "title": "NIC priority — earthquake (continental seismic belts, populated & under-covered)",
+  "note": "Orange lines = major seismic belts; orange circles = high-exposure, under-instrumented cities. This layer is the INLAND complement to the tsunami layer: dense cheap seismographs where people live and national networks are thin — the earthquake-early-warning density argument (Japan/California) taken to places that cannot afford it.",
+  "sources": "USGS · Global CMT · GEM seismic hazard · quake/README.md"
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -9,
+      36
+     ],
+     [
+      -4,
+      36
+     ],
+     [
+      2,
+      37
+     ],
+     [
+      7,
+      39
+     ],
+     [
+      12,
+      42
+     ],
+     [
+      16,
+      42
+     ],
+     [
+      20,
+      41
+     ],
+     [
+      24,
+      40
+     ],
+     [
+      28,
+      39
+     ],
+     [
+      33,
+      37
+     ],
+     [
+      37,
+      37
+     ],
+     [
+      42,
+      38
+     ],
+     [
+      47,
+      38
+     ],
+     [
+      52,
+      36
+     ],
+     [
+      57,
+      35
+     ],
+     [
+      62,
+      34
+     ],
+     [
+      67,
+      34
+     ],
+     [
+      71,
+      34
+     ],
+     [
+      75,
+      33
+     ],
+     [
+      79,
+      32
+     ],
+     [
+      83,
+      30
+     ],
+     [
+      87,
+      28
+     ],
+     [
+      91,
+      27
+     ],
+     [
+      95,
+      26
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Alpide belt (Mediterranean → Himalaya)",
+    "why": "2nd-most-seismic belt; dense population, weak coverage — cheap grid pays off",
+    "stroke": "#dd6b20",
+    "stroke-width": 3,
+    "stroke-opacity": 0.9
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      41,
+      40.7
+     ],
+     [
+      38,
+      40.8
+     ],
+     [
+      35,
+      40.7
+     ],
+     [
+      32,
+      40.6
+     ],
+     [
+      29,
+      40.6
+     ],
+     [
+      27,
+      40.5
+     ]
+    ]
+   },
+   "properties": {
+    "name": "North Anatolian Fault",
+    "why": "Istanbul gap; classic dense-network early-warning case",
+    "stroke": "#dd6b20",
+    "stroke-width": 3,
+    "stroke-opacity": 0.9
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -124,
+      40
+     ],
+     [
+      -122.5,
+      38
+     ],
+     [
+      -121,
+      36.5
+     ],
+     [
+      -119.5,
+      35
+     ],
+     [
+      -118,
+      34
+     ],
+     [
+      -116.5,
+      33.5
+     ]
+    ]
+   },
+   "properties": {
+    "name": "San Andreas (California)",
+    "why": "ShakeAlert territory; the density argument proven",
+    "stroke": "#dd6b20",
+    "stroke-width": 3,
+    "stroke-opacity": 0.9
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -24,
+      66
+     ],
+     [
+      -28,
+      60
+     ],
+     [
+      -30,
+      52
+     ],
+     [
+      -33,
+      44
+     ],
+     [
+      -35,
+      36
+     ],
+     [
+      -32,
+      26
+     ],
+     [
+      -25,
+      14
+     ],
+     [
+      -18,
+      4
+     ],
+     [
+      -13,
+      -2
+     ],
+     [
+      -12,
+      -12
+     ],
+     [
+      -13,
+      -22
+     ],
+     [
+      -14,
+      -32
+     ],
+     [
+      -15,
+      -42
+     ],
+     [
+      -16,
+      -50
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Mid-Atlantic Ridge",
+    "why": "Oceanic spreading seismicity (context; sparse land)",
+    "stroke": "#dd6b20",
+    "stroke-width": 3,
+    "stroke-opacity": 0.9
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      36,
+      15
+     ],
+     [
+      38,
+      11
+     ],
+     [
+      39,
+      7
+     ],
+     [
+      37,
+      3
+     ],
+     [
+      36,
+      -1
+     ],
+     [
+      35,
+      -5
+     ],
+     [
+      34,
+      -9
+     ],
+     [
+      33,
+      -13
+     ],
+     [
+      32,
+      -16
+     ]
+    ]
+   },
+   "properties": {
+    "name": "East African Rift",
+    "why": "Continental rifting; almost no dense monitoring",
+    "stroke": "#dd6b20",
+    "stroke-width": 3,
+    "stroke-opacity": 0.9
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      142,
+      44
+     ],
+     [
+      141,
+      41
+     ],
+     [
+      140,
+      38
+     ],
+     [
+      138,
+      36
+     ],
+     [
+      136,
+      35
+     ],
+     [
+      134,
+      34
+     ],
+     [
+      132,
+      34
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Japan inland belt",
+    "why": "Densest existing net — the benchmark to match cheaply",
+    "stroke": "#dd6b20",
+    "stroke-width": 3,
+    "stroke-opacity": 0.9
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     28.97,
+     41.01
+    ]
+   },
+   "properties": {
+    "name": "Istanbul",
+    "why": "North Anatolian gap; millions exposed",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "circle",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     85.32,
+     27.71
+    ]
+   },
+   "properties": {
+    "name": "Kathmandu",
+    "why": "2015 M7.8; Himalayan front, thin coverage",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "circle",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     51.39,
+     35.69
+    ]
+   },
+   "properties": {
+    "name": "Tehran",
+    "why": "Multiple active faults under a megacity",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "circle",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.42,
+     37.77
+    ]
+   },
+   "properties": {
+    "name": "San Francisco Bay",
+    "why": "Dense-array early-warning reference",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "circle",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     13.4,
+     42.35
+    ]
+   },
+   "properties": {
+    "name": "Central Italy (L'Aquila/Amatrice)",
+    "why": "Repeated deadly moderate quakes",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "circle",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -70.65,
+     -33.45
+    ]
+   },
+   "properties": {
+    "name": "Santiago",
+    "why": "Andean thrust behind a capital",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "circle",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.2,
+     34.5
+    ]
+   },
+   "properties": {
+    "name": "Kabul / Hindu Kush",
+    "why": "Deep intermediate seismicity, no net",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "circle",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.78,
+     -41.29
+    ]
+   },
+   "properties": {
+    "name": "Wellington",
+    "why": "On-fault capital; NZ early warning",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "circle",
+    "marker-size": "small"
+   }
+  }
+ ]
+}

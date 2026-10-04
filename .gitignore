@@ -1,0 +1,15 @@
+# build trees
+build/
+*/build/
+*/*/build/
+# python
+__pycache__/
+*.pyc
+# editor / OS cruft
+*.o
+*.a
+.DS_Store
+# regenerable GeoNames input for gaia/tools/gen_network.py (see its docstring)
+gaia/tools/cities20k.json
+# ETOPO tile cache for gen_bathy.py (regenerable)
+gaia/tools/bathy_cache/

@@ -1,0 +1,294 @@
+{
+ "type": "FeatureCollection",
+ "properties": {
+  "title": "NIC priority — radiation / cosmic-ray neutron monitoring",
+  "note": "Green circles = best sites for the neutron heads (Helion/Gadolin) as a cosmic-ray / space-weather monitor: LOW geomagnetic cutoff (high latitude) and/or HIGH altitude, where galactic-ray flux and solar-event ground enhancements are strongest. Green bands mark the high-latitude zones. (Honest note: this is the weakest 'priority geography' — the radiation heads are mainly local/relative alarms; the space-weather case is the one place a global siting map applies.)",
+  "sources": "NMDB neutron monitor network · Sputnik/space-weather context · quark/README.md"
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -180,
+      66
+     ],
+     [
+      -160,
+      66
+     ],
+     [
+      -140,
+      66
+     ],
+     [
+      -120,
+      66
+     ],
+     [
+      -100,
+      66
+     ],
+     [
+      -80,
+      66
+     ],
+     [
+      -60,
+      66
+     ],
+     [
+      -40,
+      66
+     ],
+     [
+      -20,
+      66
+     ],
+     [
+      0,
+      66
+     ],
+     [
+      20,
+      66
+     ],
+     [
+      40,
+      66
+     ],
+     [
+      60,
+      66
+     ],
+     [
+      80,
+      66
+     ],
+     [
+      100,
+      66
+     ],
+     [
+      120,
+      66
+     ],
+     [
+      140,
+      66
+     ],
+     [
+      160,
+      66
+     ],
+     [
+      180,
+      66
+     ]
+    ]
+   },
+   "properties": {
+    "name": "High-latitude cosmic-ray zone (north)",
+    "why": "Low geomagnetic cutoff → strongest galactic-ray + solar-event signal",
+    "stroke": "#2f855a",
+    "stroke-width": 4,
+    "stroke-opacity": 0.4
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -180,
+      -66
+     ],
+     [
+      -160,
+      -66
+     ],
+     [
+      -140,
+      -66
+     ],
+     [
+      -120,
+      -66
+     ],
+     [
+      -100,
+      -66
+     ],
+     [
+      -80,
+      -66
+     ],
+     [
+      -60,
+      -66
+     ],
+     [
+      -40,
+      -66
+     ],
+     [
+      -20,
+      -66
+     ],
+     [
+      0,
+      -66
+     ],
+     [
+      20,
+      -66
+     ],
+     [
+      40,
+      -66
+     ],
+     [
+      60,
+      -66
+     ],
+     [
+      80,
+      -66
+     ],
+     [
+      100,
+      -66
+     ],
+     [
+      120,
+      -66
+     ],
+     [
+      140,
+      -66
+     ],
+     [
+      160,
+      -66
+     ],
+     [
+      180,
+      -66
+     ]
+    ]
+   },
+   "properties": {
+    "name": "High-latitude cosmic-ray zone (south)",
+    "why": "Southern counterpart",
+    "stroke": "#2f855a",
+    "stroke-width": 4,
+    "stroke-opacity": 0.4
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     25.47,
+     65.05
+    ]
+   },
+   "properties": {
+    "name": "Oulu (Finland)",
+    "why": "Low cutoff rigidity (~0.8 GV): sensitive to cosmic-ray flux",
+    "marker-color": "#2f855a",
+    "marker-symbol": "circle",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     7.98,
+     46.55
+    ]
+   },
+   "properties": {
+    "name": "Jungfraujoch (Alps, 3475 m)",
+    "why": "High altitude → high count rate; the classic monitor",
+    "marker-color": "#2f855a",
+    "marker-symbol": "circle",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -68.13,
+     -16.35
+    ]
+   },
+   "properties": {
+    "name": "Chacaltaya (Andes, 5240 m)",
+    "why": "Very high altitude, low latitude — extreme neutron flux",
+    "marker-color": "#2f855a",
+    "marker-symbol": "circle",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     166.67,
+     -77.85
+    ]
+   },
+   "properties": {
+    "name": "McMurdo / polar plateau",
+    "why": "Polar: near-zero cutoff, full galactic-ray sensitivity",
+    "marker-color": "#2f855a",
+    "marker-symbol": "circle",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     15.5,
+     78.2
+    ]
+   },
+   "properties": {
+    "name": "Svalbard",
+    "why": "High-Arctic, low cutoff; space-weather forecasting",
+    "marker-color": "#2f855a",
+    "marker-symbol": "circle",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     90.1,
+     30.0
+    ]
+   },
+   "properties": {
+    "name": "Tibetan Plateau (~4500 m)",
+    "why": "Altitude + mid-latitude; huge open gap",
+    "marker-color": "#2f855a",
+    "marker-symbol": "circle",
+    "marker-size": "small"
+   }
+  }
+ ]
+}

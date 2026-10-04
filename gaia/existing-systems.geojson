@@ -1,0 +1,1090 @@
+{
+ "type": "FeatureCollection",
+ "properties": {
+  "title": "Existing global geophysical monitoring — representative reference stations",
+  "note": "Approximate, representative subset (not the full networks). Counts: DART 74 · GSN ~150 · INTERMAGNET 120 · IGS 532 · CTBTO IMS 321. Legend: T=tsunami buoy (blue) · S=seismic (orange) · M=magnetic (purple) · G=GNSS (green) · C=CTBTO hydro/infrasound (grey).",
+  "sources": "nctr.pmel.noaa.gov/Dart · usgs.gov GSN · intermagnet.org · igs.org · ctbto.org"
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     147,
+     39
+    ]
+   },
+   "properties": {
+    "name": "DART — NW Pacific (off Japan)",
+    "network": "NOAA DART (74 buoys)",
+    "measures": "deep-ocean tsunami (bottom pressure)",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "T",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     155,
+     46
+    ]
+   },
+   "properties": {
+    "name": "DART — Kuril",
+    "network": "NOAA DART (74 buoys)",
+    "measures": "deep-ocean tsunami (bottom pressure)",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "T",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -170,
+     52
+    ]
+   },
+   "properties": {
+    "name": "DART — Aleutian",
+    "network": "NOAA DART (74 buoys)",
+    "measures": "deep-ocean tsunami (bottom pressure)",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "T",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -150,
+     55
+    ]
+   },
+   "properties": {
+    "name": "DART — Gulf of Alaska",
+    "network": "NOAA DART (74 buoys)",
+    "measures": "deep-ocean tsunami (bottom pressure)",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "T",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -130,
+     45
+    ]
+   },
+   "properties": {
+    "name": "DART — Cascadia",
+    "network": "NOAA DART (74 buoys)",
+    "measures": "deep-ocean tsunami (bottom pressure)",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "T",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -127,
+     37
+    ]
+   },
+   "properties": {
+    "name": "DART — off California",
+    "network": "NOAA DART (74 buoys)",
+    "measures": "deep-ocean tsunami (bottom pressure)",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "T",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95,
+     15
+    ]
+   },
+   "properties": {
+    "name": "DART — Middle America",
+    "network": "NOAA DART (74 buoys)",
+    "measures": "deep-ocean tsunami (bottom pressure)",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "T",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -82,
+     -12
+    ]
+   },
+   "properties": {
+    "name": "DART — off Peru",
+    "network": "NOAA DART (74 buoys)",
+    "measures": "deep-ocean tsunami (bottom pressure)",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "T",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75,
+     -33
+    ]
+   },
+   "properties": {
+    "name": "DART — off Chile",
+    "network": "NOAA DART (74 buoys)",
+    "measures": "deep-ocean tsunami (bottom pressure)",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "T",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -177,
+     -30
+    ]
+   },
+   "properties": {
+    "name": "DART — Kermadec (NZ)",
+    "network": "NOAA DART (74 buoys)",
+    "measures": "deep-ocean tsunami (bottom pressure)",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "T",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     158,
+     -20
+    ]
+   },
+   "properties": {
+    "name": "DART — Coral Sea",
+    "network": "NOAA DART (74 buoys)",
+    "measures": "deep-ocean tsunami (bottom pressure)",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "T",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     90,
+     0
+    ]
+   },
+   "properties": {
+    "name": "DART — off Sumatra",
+    "network": "NOAA DART (74 buoys)",
+    "measures": "deep-ocean tsunami (bottom pressure)",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "T",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     88,
+     12
+    ]
+   },
+   "properties": {
+    "name": "DART — Bay of Bengal",
+    "network": "NOAA DART (74 buoys)",
+    "measures": "deep-ocean tsunami (bottom pressure)",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "T",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -10,
+     36
+    ]
+   },
+   "properties": {
+    "name": "DART — NE Atlantic (NEAMTWS)",
+    "network": "NOAA DART (74 buoys)",
+    "measures": "deep-ocean tsunami (bottom pressure)",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "T",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -66,
+     18
+    ]
+   },
+   "properties": {
+    "name": "DART — Caribbean",
+    "network": "NOAA DART (74 buoys)",
+    "measures": "deep-ocean tsunami (bottom pressure)",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "T",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -106.46,
+     34.95
+    ]
+   },
+   "properties": {
+    "name": "ANMO Albuquerque",
+    "network": "IRIS/USGS GSN (~150)",
+    "measures": "broadband seismic",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "S",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -147.86,
+     64.87
+    ]
+   },
+   "properties": {
+    "name": "COLA College, AK",
+    "network": "IRIS/USGS GSN (~150)",
+    "measures": "broadband seismic",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "S",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -158.01,
+     21.42
+    ]
+   },
+   "properties": {
+    "name": "KIP Kipapa, HI",
+    "network": "IRIS/USGS GSN (~150)",
+    "measures": "broadband seismic",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "S",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -159.77,
+     -21.21
+    ]
+   },
+   "properties": {
+    "name": "RAR Rarotonga",
+    "network": "IRIS/USGS GSN (~150)",
+    "measures": "broadband seismic",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "S",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -76.84,
+     -11.99
+    ]
+   },
+   "properties": {
+    "name": "NNA Ñaña, Peru",
+    "network": "IRIS/USGS GSN (~150)",
+    "measures": "broadband seismic",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "S",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     0,
+     -89.9
+    ]
+   },
+   "properties": {
+    "name": "QSPA South Pole",
+    "network": "IRIS/USGS GSN (~150)",
+    "measures": "broadband seismic",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "S",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     27.0,
+     69.76
+    ]
+   },
+   "properties": {
+    "name": "KEV Kevo, Finland",
+    "network": "IRIS/USGS GSN (~150)",
+    "measures": "broadband seismic",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "S",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     17.6,
+     -19.2
+    ]
+   },
+   "properties": {
+    "name": "TSUM Tsumeb, Namibia",
+    "network": "IRIS/USGS GSN (~150)",
+    "measures": "broadband seismic",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "S",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     138.2,
+     36.5
+    ]
+   },
+   "properties": {
+    "name": "MAJO Matsushiro, Japan",
+    "network": "IRIS/USGS GSN (~150)",
+    "measures": "broadband seismic",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "S",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     166.76,
+     -77.85
+    ]
+   },
+   "properties": {
+    "name": "SBA Scott Base",
+    "network": "IRIS/USGS GSN (~150)",
+    "measures": "broadband seismic",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "S",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -14.36,
+     -7.93
+    ]
+   },
+   "properties": {
+    "name": "ASCN Ascension",
+    "network": "IRIS/USGS GSN (~150)",
+    "measures": "broadband seismic",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "S",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -12.32,
+     -37.07
+    ]
+   },
+   "properties": {
+    "name": "TRIS Tristan da Cunha",
+    "network": "IRIS/USGS GSN (~150)",
+    "measures": "broadband seismic",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "S",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     144.87,
+     13.59
+    ]
+   },
+   "properties": {
+    "name": "GUMO Guam",
+    "network": "IRIS/USGS GSN (~150)",
+    "measures": "broadband seismic",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "S",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -68.0,
+     -63.4
+    ]
+   },
+   "properties": {
+    "name": "PMSA Palmer, Antarctica",
+    "network": "IRIS/USGS GSN (~150)",
+    "measures": "broadband seismic",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "S",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -105.24,
+     40.13
+    ]
+   },
+   "properties": {
+    "name": "BOU Boulder",
+    "network": "INTERMAGNET (120)",
+    "measures": "geomagnetic field",
+    "marker-color": "#805ad5",
+    "marker-symbol": "M",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -77.37,
+     38.2
+    ]
+   },
+   "properties": {
+    "name": "FRD Fredericksburg",
+    "network": "INTERMAGNET (120)",
+    "measures": "geomagnetic field",
+    "marker-color": "#805ad5",
+    "marker-symbol": "M",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -4.48,
+     51.0
+    ]
+   },
+   "properties": {
+    "name": "HAD Hartland, UK",
+    "network": "INTERMAGNET (120)",
+    "measures": "geomagnetic field",
+    "marker-color": "#805ad5",
+    "marker-symbol": "M",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     2.26,
+     48.02
+    ]
+   },
+   "properties": {
+    "name": "CLF Chambon-la-Forêt",
+    "network": "INTERMAGNET (120)",
+    "measures": "geomagnetic field",
+    "marker-color": "#805ad5",
+    "marker-symbol": "M",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.68,
+     52.07
+    ]
+   },
+   "properties": {
+    "name": "NGK Niemegk",
+    "network": "INTERMAGNET (120)",
+    "measures": "geomagnetic field",
+    "marker-color": "#805ad5",
+    "marker-symbol": "M",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     140.19,
+     36.23
+    ]
+   },
+   "properties": {
+    "name": "KAK Kakioka",
+    "network": "INTERMAGNET (120)",
+    "measures": "geomagnetic field",
+    "marker-color": "#805ad5",
+    "marker-symbol": "M",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     149.36,
+     -35.3
+    ]
+   },
+   "properties": {
+    "name": "CNB Canberra",
+    "network": "INTERMAGNET (120)",
+    "measures": "geomagnetic field",
+    "marker-color": "#805ad5",
+    "marker-symbol": "M",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     19.23,
+     -34.43
+    ]
+   },
+   "properties": {
+    "name": "HER Hermanus",
+    "network": "INTERMAGNET (120)",
+    "measures": "geomagnetic field",
+    "marker-color": "#805ad5",
+    "marker-symbol": "M",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.34,
+     -12.05
+    ]
+   },
+   "properties": {
+    "name": "HUA Huancayo",
+    "network": "INTERMAGNET (120)",
+    "measures": "geomagnetic field",
+    "marker-color": "#805ad5",
+    "marker-symbol": "M",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     20.41,
+     67.84
+    ]
+   },
+   "properties": {
+    "name": "KIR Kiruna",
+    "network": "INTERMAGNET (120)",
+    "measures": "geomagnetic field",
+    "marker-color": "#805ad5",
+    "marker-symbol": "M",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -94.9,
+     74.69
+    ]
+   },
+   "properties": {
+    "name": "RES Resolute",
+    "network": "INTERMAGNET (120)",
+    "measures": "geomagnetic field",
+    "marker-color": "#805ad5",
+    "marker-symbol": "M",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     15.55,
+     77.0
+    ]
+   },
+   "properties": {
+    "name": "HRN Hornsund, Svalbard",
+    "network": "INTERMAGNET (120)",
+    "measures": "geomagnetic field",
+    "marker-color": "#805ad5",
+    "marker-symbol": "M",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1,
+     -22.22
+    ]
+   },
+   "properties": {
+    "name": "LRM Learmonth",
+    "network": "INTERMAGNET (120)",
+    "measures": "geomagnetic field",
+    "marker-color": "#805ad5",
+    "marker-symbol": "M",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -171.8,
+     -13.8
+    ]
+   },
+   "properties": {
+    "name": "API Apia, Samoa",
+    "network": "INTERMAGNET (120)",
+    "measures": "geomagnetic field",
+    "marker-color": "#805ad5",
+    "marker-symbol": "M",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -116.9,
+     35.4
+    ]
+   },
+   "properties": {
+    "name": "GOLD Goldstone",
+    "network": "IGS GNSS (532)",
+    "measures": "GNSS / TEC, geodesy",
+    "marker-color": "#2f855a",
+    "marker-symbol": "G",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -78.07,
+     45.96
+    ]
+   },
+   "properties": {
+    "name": "ALGO Algonquin",
+    "network": "IGS GNSS (532)",
+    "measures": "GNSS / TEC, geodesy",
+    "marker-color": "#2f855a",
+    "marker-symbol": "G",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.88,
+     49.14
+    ]
+   },
+   "properties": {
+    "name": "WTZR Wettzell",
+    "network": "IGS GNSS (532)",
+    "measures": "GNSS / TEC, geodesy",
+    "marker-color": "#2f855a",
+    "marker-symbol": "G",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     11.9,
+     57.4
+    ]
+   },
+   "properties": {
+    "name": "ONSA Onsala",
+    "network": "IGS GNSS (532)",
+    "measures": "GNSS / TEC, geodesy",
+    "marker-color": "#2f855a",
+    "marker-symbol": "G",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     140.1,
+     36.1
+    ]
+   },
+   "properties": {
+    "name": "TSKB Tsukuba",
+    "network": "IGS GNSS (532)",
+    "measures": "GNSS / TEC, geodesy",
+    "marker-color": "#2f855a",
+    "marker-symbol": "G",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     27.7,
+     -25.9
+    ]
+   },
+   "properties": {
+    "name": "HARB Hartebeesthoek",
+    "network": "IGS GNSS (532)",
+    "measures": "GNSS / TEC, geodesy",
+    "marker-color": "#2f855a",
+    "marker-symbol": "G",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -159.66,
+     22.13
+    ]
+   },
+   "properties": {
+    "name": "KOKB Kokee, HI",
+    "network": "IGS GNSS (532)",
+    "measures": "GNSS / TEC, geodesy",
+    "marker-color": "#2f855a",
+    "marker-symbol": "G",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     96.83,
+     -12.19
+    ]
+   },
+   "properties": {
+    "name": "COCO Cocos Is.",
+    "network": "IGS GNSS (532)",
+    "measures": "GNSS / TEC, geodesy",
+    "marker-color": "#2f855a",
+    "marker-symbol": "G",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -176.57,
+     -43.96
+    ]
+   },
+   "properties": {
+    "name": "CHAT Chatham Is.",
+    "network": "IGS GNSS (532)",
+    "measures": "GNSS / TEC, geodesy",
+    "marker-color": "#2f855a",
+    "marker-symbol": "G",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -47.9,
+     -15.9
+    ]
+   },
+   "properties": {
+    "name": "BRAZ Brasília",
+    "network": "IGS GNSS (532)",
+    "measures": "GNSS / TEC, geodesy",
+    "marker-color": "#2f855a",
+    "marker-symbol": "G",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     166.67,
+     -77.84
+    ]
+   },
+   "properties": {
+    "name": "MCM4 McMurdo",
+    "network": "IGS GNSS (532)",
+    "measures": "GNSS / TEC, geodesy",
+    "marker-color": "#2f855a",
+    "marker-symbol": "G",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.6,
+     -34.9
+    ]
+   },
+   "properties": {
+    "name": "HA01 Cape Leeuwin (hydro)",
+    "network": "CTBTO IMS (321)",
+    "measures": "hydroacoustic / infrasound",
+    "marker-color": "#718096",
+    "marker-symbol": "C",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -14.4,
+     -7.9
+    ]
+   },
+   "properties": {
+    "name": "HA10 Ascension (hydro)",
+    "network": "CTBTO IMS (321)",
+    "measures": "hydroacoustic / infrasound",
+    "marker-color": "#718096",
+    "marker-symbol": "C",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     72.4,
+     -7.3
+    ]
+   },
+   "properties": {
+    "name": "HA08 Diego Garcia (hydro)",
+    "network": "CTBTO IMS (321)",
+    "measures": "hydroacoustic / infrasound",
+    "marker-color": "#718096",
+    "marker-symbol": "C",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -78.8,
+     -33.65
+    ]
+   },
+   "properties": {
+    "name": "HA03 Juan Fernández (hydro)",
+    "network": "CTBTO IMS (321)",
+    "measures": "hydroacoustic / infrasound",
+    "marker-color": "#718096",
+    "marker-symbol": "C",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     51.9,
+     -46.4
+    ]
+   },
+   "properties": {
+    "name": "HA04 Crozet (hydro)",
+    "network": "CTBTO IMS (321)",
+    "measures": "hydroacoustic / infrasound",
+    "marker-color": "#718096",
+    "marker-symbol": "C",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     166.6,
+     19.3
+    ]
+   },
+   "properties": {
+    "name": "HA11 Wake Is. (hydro)",
+    "network": "CTBTO IMS (321)",
+    "measures": "hydroacoustic / infrasound",
+    "marker-color": "#718096",
+    "marker-symbol": "C",
+    "marker-size": "small"
+   }
+  }
+ ]
+}
