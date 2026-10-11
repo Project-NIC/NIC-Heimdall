@@ -50,4 +50,4 @@ never gated: it is how the head finds out when to come back.**
 
 ## Licence
 
-Hardware: CERN-OHL-S v2 (`../LICENSE-HW`) · Software: MIT (`../LICENSE`) — Copyright (c) 2026 NIC — Native Intellect Community
+Hardware: CERN-OHL-P v2 (`../LICENSE-HW`) · Software: MIT (`../LICENSE`) — Copyright (c) 2026 NIC — Native Intellect Community

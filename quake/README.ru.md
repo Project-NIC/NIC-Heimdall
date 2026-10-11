@@ -74,4 +74,4 @@ MEMS — ~25 µg/√Hz у прецизионного компонента — л
 
 ## Лицензия
 
-Аппаратная часть: CERN-OHL-S v2 (`../LICENSE-HW`) · Программы: MIT (`../LICENSE`) — Copyright (c) 2026 NIC — Native Intellect Community
+Аппаратная часть: CERN-OHL-P v2 (`../LICENSE-HW`) · Программы: MIT (`../LICENSE`) — Copyright (c) 2026 NIC — Native Intellect Community

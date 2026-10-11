@@ -36,4 +36,4 @@ Hlavice se dívá dolů na **plastovou depoziční desku 1 m × 1 m**, okénkem 
 
 ## Licence
 
-Hardware: CERN-OHL-S v2 (`../../../LICENSE-HW`) · Software: MIT (`../../../LICENSE`) — Copyright (c) 2026 NIC — Native Intellect Community
+Hardware: CERN-OHL-P v2 (`../../../LICENSE-HW`) · Software: MIT (`../../../LICENSE`) — Copyright (c) 2026 NIC — Native Intellect Community

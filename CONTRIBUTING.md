@@ -51,6 +51,6 @@ for. Nothing here replaces the judgement of the person at the bench.
 ## Licence
 
 By contributing you agree that your contribution is licensed as the repository is: **hardware
-under CERN-OHL-S v2** ([`LICENSE-HW`](LICENSE-HW)), **software under MIT** ([`LICENSE`](LICENSE)).
+under CERN-OHL-P v2** ([`LICENSE-HW`](LICENSE-HW)), **software under MIT** ([`LICENSE`](LICENSE)).
 
 ★ Viva La Resistánce ★

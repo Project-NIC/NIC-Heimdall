@@ -65,4 +65,4 @@ in GitHub's viewer and in the combined map.
 
 ## Licence
 
-Hardware: CERN-OHL-S v2 (`../LICENSE-HW`) · Software: MIT (`../LICENSE`) — Copyright (c) 2026 NIC — Native Intellect Community
+Hardware: CERN-OHL-P v2 (`../LICENSE-HW`) · Software: MIT (`../LICENSE`) — Copyright (c) 2026 NIC — Native Intellect Community

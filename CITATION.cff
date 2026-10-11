@@ -8,7 +8,7 @@ authors:
   - name: "NIC — Native Intellect Community"
 repository-code: "https://github.com/Project-NIC/NIC-Heimdall"
 license:
-  - CERN-OHL-S-2.0
+  - CERN-OHL-P-2.0
   - MIT
 abstract: >-
   A design-stage open concept for a self-contained measuring station that records

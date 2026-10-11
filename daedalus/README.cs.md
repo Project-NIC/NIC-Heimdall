@@ -38,4 +38,4 @@ je používá, a deska patří svému vlastnímu projektu — nic zde nejmenuje 
 
 ## Licence
 
-Hardware: CERN-OHL-S v2 (`../LICENSE-HW`) · Software: MIT (`../LICENSE`) — Copyright (c) 2026 NIC — Native Intellect Community
+Hardware: CERN-OHL-P v2 (`../LICENSE-HW`) · Software: MIT (`../LICENSE`) — Copyright (c) 2026 NIC — Native Intellect Community

@@ -56,4 +56,4 @@ Unicore **UM980** и один STM32H523 на одной плате. Он пер�
 
 ## Лицензия
 
-Аппаратная часть: CERN-OHL-S v2 (`../LICENSE-HW`) · Программы: MIT (`../LICENSE`) — Copyright (c) 2026 NIC — Native Intellect Community
+Аппаратная часть: CERN-OHL-P v2 (`../LICENSE-HW`) · Программы: MIT (`../LICENSE`) — Copyright (c) 2026 NIC — Native Intellect Community

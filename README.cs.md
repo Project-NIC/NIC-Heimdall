@@ -13,7 +13,7 @@ sledují pevnou Zemi, atmosféru a ionosféru, a centrála, hodiny, karty, napá
 nesou. Běžně dostupné součástky a data dost lehká na zpracování na domácím počítači.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
-[![License: CERN-OHL-S v2](https://img.shields.io/badge/License-CERN--OHL--S%20v2-red.svg)](https://ohwr.org/cern_ohl_s_v2.txt)
+[![License: CERN-OHL-P v2](https://img.shields.io/badge/License-CERN--OHL--P%20v2-red.svg)](https://ohwr.org/cern_ohl_p_v2.txt)
 ![Version: 0.2 — concept](https://img.shields.io/badge/version-0.2%20concept-blue.svg)
 
 > ⚠️ **Koncept ve fázi návrhu — NEOVĚŘENO na hardwaru.** Architektura, přenosový protokol a archiv
@@ -334,7 +334,11 @@ NIC-Heimdall/
 
 ## Otevřenost
 
-Hardware pod **CERN-OHL-S v2**, software pod **MIT**. Postavte to, změňte to, rozšiřujte to — jak
+Hardware pod **CERN-OHL-P v2**, software pod **MIT**. Postavte to, změňte to, rozšiřujte to — jak
 pomoci, je v [`CONTRIBUTING.md`](CONTRIBUTING.md), a jak citovat, v [`CITATION.cff`](CITATION.cff).
+
+## Poděkování
+
+AI asistentovi Claude (Anthropic) za velkou pomoc s tímto projektem.
 
 ★ Viva La Resistánce ★

@@ -59,4 +59,4 @@ its identity, its house block and zeros, and a profile per fitted sensor is adde
 
 ## Licence
 
-Hardware: CERN-OHL-S v2 (`../LICENSE-HW`) · Software: MIT (`../LICENSE`) — Copyright (c) 2026 NIC — Native Intellect Community
+Hardware: CERN-OHL-P v2 (`../LICENSE-HW`) · Software: MIT (`../LICENSE`) — Copyright (c) 2026 NIC — Native Intellect Community

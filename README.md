@@ -13,7 +13,7 @@ fronts that watch the solid Earth, the atmosphere and the ionosphere, and the he
 power and cabling that carry them. Commodity parts, light enough to process on a home machine.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
-[![License: CERN-OHL-S v2](https://img.shields.io/badge/License-CERN--OHL--S%20v2-red.svg)](https://ohwr.org/cern_ohl_s_v2.txt)
+[![License: CERN-OHL-P v2](https://img.shields.io/badge/License-CERN--OHL--P%20v2-red.svg)](https://ohwr.org/cern_ohl_p_v2.txt)
 ![Version: 0.2 — concept](https://img.shields.io/badge/version-0.2%20concept-blue.svg)
 
 > ⚠️ **Design-stage concept — NOT hardware-validated.** The architecture, the wire protocol and the
@@ -334,7 +334,11 @@ NIC-Heimdall/
 
 ## Open
 
-Hardware under **CERN-OHL-S v2**, software under **MIT**. Build it, change it, ship it — how to
+Hardware under **CERN-OHL-P v2**, software under **MIT**. Build it, change it, ship it — how to
 help is [`CONTRIBUTING.md`](CONTRIBUTING.md), and how to cite it [`CITATION.cff`](CITATION.cff).
+
+## Acknowledgements
+
+To the AI assistant Claude (Anthropic), for its great help with this project.
 
 ★ Viva La Resistánce ★
