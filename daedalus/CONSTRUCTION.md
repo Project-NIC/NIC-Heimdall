@@ -431,7 +431,7 @@ boards (`../galvani/README.md`). What is drawn is the short stuff inside the enc
 | **the 12 V wire** — the battery rail, from the fuse field to every board that makes its own rails: Mayak, Kronos, each card, Palatine, Sputnik, each `G-48-S` / `G-300-S` / `G-12-S` / `G-24-S` | 2,5 mm², two two-pole terminals per board — an input and a tap (`DGPS2.5R-5.0`, two two-pole blocks); between the vault's boxes one 2,5 mm² pair through a gland | a star from the fuse field, one fuse a board; no board carries it across itself |
 | **the in-box link** — host ↔ host: a card to Palatine or Sputnik where either shares the enclosure, Kronos to Sputnik's time port, **and the MasterNOD trunk, Mayak ↔ card, ×4, which is the same cable** | the **12-pin data** body at both ends, **crossed**: `TXD`↔`RXD`, `ID`↔`ID_RET`; `CLK/PPS` and `GND` straight — **6 wires** — the 12 V off the wire on each host's own terminals (`../galvani/README.md`, *The connectors*). **A ribbon of another colour, an `X` label at both ends**: the cable from a host to a Galvani board is straight, and the two must be told apart on sight | point to point, crossed |
 | **the 12 V wire at a remote Argus** — a `G-300-U-40`'s terminals → the Argus → its four `G-300-S` | the same terminals, tap after tap | a chain of taps |
-| **the time bus**, Kronos → the cards and the Mayak | **one 10-pin ribbon** (`FC-10P` onto `BX2.54-2xNA`) off Kronos's connector, an IDC tap per card and for the Mayak, **30–40 cm in all**; every node carries 2× 10 Ω per pair and a jumpered 75 Ω, fitted on Kronos and on the last node only; `CLK` and `PPS_K` as M-LVDS pairs, `DS91C176` drivers and `THVD1450` receivers, `SDA · SCL · ATTN` beside them | one bus along the card row, no terminator plug |
+| **the time bus**, Kronos → the cards and the Mayak | **one 10-pin ribbon** (`FC-10P` onto `BX2.54-2xNA`) off Kronos's connector, an IDC tap per card and for the Mayak, **30–40 cm in all**; every node carries 2× 10 Ω per pair and a jumpered 80,6 Ω, fitted on Kronos and on the last node only; `CLK` and `PPS_K` as M-LVDS pairs, `DS91C176` drivers and `THVD1450` receivers, `SDA · SCL · ATTN` beside them | one bus along the card row, no terminator plug |
 
 **The in-box link is a cable and not a board.** It carries plain 3,3 V logic — `TXD/RXD` crossed,
 `CLK` or `PPS` on the one clock wire, the two `ID` legs crossed so each host reads the other's
@@ -650,7 +650,7 @@ conductivity, HV and galvanic problems.
   class** (`../galvani/HARDWARE.md`), and none at all on a pressure board. Nothing runs hot, so there
   is no obvious wear-out mechanism; barring a strike, years with nothing to touch.
 - **The one genuinely stressed part** is the **RS-485 termination** — the 10 Ω in series on both
-  legs, and the 75 Ω put across by its jumper at the two ends of a run — and even that only cooks
+  legs, and the 80,6 Ω put across by its jumper at the two ends of a run — and even that only cooks
   **after a surge**, which the isolation and the sacrificial front contain.
 - **The consumables are the pack and Pluvius's pump tube** — a peristaltic tube rated ~1000 h
   (`../pluvius/HARDWARE.md`); nothing else on the station is replaced on a schedule.

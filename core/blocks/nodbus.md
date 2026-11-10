@@ -165,10 +165,10 @@ socket, never an inline connector outside.
   receive-only tap into a second UART's RX on glass. On a point-to-point link the card's own CRC
   check covers the unit anyway, and running the echo there too keeps one code path
   (`../PROTOCOL.md` §3).
-- **Termination: 10 Ω in series on both legs of every pair on every board, and 75 Ω across the
+- **Termination: 10 Ω in series on both legs of every pair on every board, and 80,6 Ω across the
   pair behind them, put in by a jumper at both ends of a run** — on a chain, the board at the
   source end and the last unit's. The cable is UTP, so the target is ~100 Ω differential, and the
-  two 10 Ω legs complete it: **the fitted part is 75 Ω — 95 Ω with the legs, JLCPCB Basic `C4275` in 0603 — not 100 Ω.** The 10 Ω is a surge
+  two 10 Ω legs complete it: **the fitted part is 80,6 Ω, not 100 Ω.** The 10 Ω is a surge
   resistor first — it sits on every board, terminated or not, and halves the `SM712`'s current
   before the tube fires; that it completes the end board's ~100 Ω follows from it. 120 Ω belongs to
   dedicated 485 cable, which the station does not use.

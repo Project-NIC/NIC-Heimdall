@@ -2068,7 +2068,7 @@ that could not tell them apart would ask a 6 W pod for 40 W.
                                                                    strapped at the source end only
 
   four two-pole DGPS2.5R-5.0, eight poles, one pole to a net, a chained run twisted into the pole it shares.
-  Termination: 75 Ω across each pair behind a JUMPER on a 2-pin 2,54 mm header — three, one per
+  Termination: 80,6 Ω across each pair behind a JUMPER on a 2-pin 2,54 mm header — three, one per
   pair — fitted on the first and the last board of a segment and on no board between.
   The tube is the SOURCE END's population: one board serves both ends, so the footprint is on
   every board, and at a unit end the tube and its strap are left off — a floating end gives a
@@ -2116,7 +2116,7 @@ barrier, the same isolated supply, the same ladder on the one pair.
      └── the ID resistor: 8,2 kΩ, the one-pair value;
          B_DIR lands on nothing, there is no channel B
 
-  four two-pole DGPS2.5R-5.0, four positions of the pair; the 75 Ω behind a jumper on a 2-pin
+  four two-pole DGPS2.5R-5.0, four positions of the pair; the 80,6 Ω behind a jumper on a 2-pin
   header, fitted on this board — the source end; the far end of an arm is the sensor's own.
 ```
 
@@ -2370,7 +2370,7 @@ data RX**. **The feed cable is 2× 1,5 mm² or 2× 2,5 mm², 300/500 V class**: 
 return. Gel- or grease-filled cable is not used — stiff, multi-jacketed, dear to buy and to
 pull.
 
-**Termination:** 75 Ω across the pair behind a jumper on a 2-pin header, on the first and the last board of a segment, the two 10 Ω legs on the board completing the ~100 Ω — 80 + 10 and not 90 + 5, because the larger series leg roughly halves the `SM712`'s current before the tube fires, ~4 A against ~7 A, for a dB of signal that Cat 6 does not miss; not
+**Termination:** 80,6 Ω across the pair behind a jumper on a 2-pin header, on the first and the last board of a segment, the two 10 Ω legs on the board completing the ~100 Ω — 80 + 10 and not 90 + 5, because the larger series leg roughly halves the `SM712`'s current before the tube fires, ~4 A against ~7 A, for a dB of signal that Cat 6 does not miss; not
 120 Ω, which belongs to dedicated 485 cable this project does not use. **The 10 Ω series
 resistors stay on every board, terminated or not** — they sit in front of the clamp array and
 halve the `SM712` current before the GDT fires; driving into ~100 Ω, 20 Ω of series costs about a

@@ -591,10 +591,10 @@ longer arm is served by the host going out to it on a fed run.
 **Termination.** Every 485 pair on every copper board carries **2× 10 Ω in series, always** — they
 sit in front of the `SM712` and halve its current before the tube fires, and the receive input is
 ≥ 12 kΩ, so 20 Ω of series costs a quarter of the amplitude against a margin of several times the
-receiver threshold. **The terminating resistor, 75 Ω across the pair behind the 10 Ω, is fitted
+receiver threshold. **The terminating resistor, 80,6 Ω across the pair behind the 10 Ω, is fitted
 on the first and the last board of a segment and on no board between** — point-to-point that is
-both ends, on a chain the board at the source end and the last unit's. 75 + 2 × 10, 95 Ω, is the ~100 Ω
-the UTP wants within 5 %; not 120 Ω, which belongs to dedicated 485 cable this project does not use. **The
+both ends, on a chain the board at the source end and the last unit's. 80,6 + 2 × 10 is the ~100 Ω
+the UTP wants; not 120 Ω, which belongs to dedicated 485 cable this project does not use. **The
 resistor is on the board and a JUMPER on a 2-pin 2,54 mm header puts it across the pair — one
 header per pair**: three on `G-I-N-025`, one on `G-I-M-005`. The jumper is set at commissioning
 with the cable, and a lost jumper fails to the harmless side — an unterminated short segment
@@ -906,7 +906,7 @@ and `LINE_EN` strapped or driven there — and a source end fits the tube and it
                                                                                                      D and R both on the CLK/PPS pin;
                                                                                                      DE and RE# on B_DIR
                                                                                                      │
-                                                                                SM712 ─▶ 2× 10 Ω ══ 75 Ω behind a jumper ══▶ TX · clock · RX
+                                                                                SM712 ─▶ 2× 10 Ω ══ 80,6 Ω behind a jumper ══▶ TX · clock · RX
                                                                                                  2036-07-SM ─▶ ⏚ common earthing point, at the source end only
  four two-pole DGPS2.5R-5.0, eight poles, one pole to a net · three termination jumpers, one per pair
 ```
@@ -914,7 +914,7 @@ and `LINE_EN` strapped or driven there — and a source end fits the tube and it
 - **in:** 3,3 V and logic from the host · **out:** three 485 pairs on the data cable
 - **draw, on the host's 3,3 V:** ~75 mA at a source end, ~18 mA at a unit end, ~130 mA mid-burst; the line side alone 57 / 5 mA
 - **at a source end:** the tube and its earth strap fitted; at a unit end left off — the same board
-- **parts:** `SN6505B` · `750313734` · `PMEG10020ELR` · 2× `ISO1452` · `ISO1450` · 3× `SM712` · 6× 10 Ω · 3× 75 Ω with their headers and jumpers · `2036-07-SM` · `DGPS2.5R-5.0` × 4
+- **parts:** `SN6505B` · `750313734` · `PMEG10020ELR` · 2× `ISO1452` · `ISO1450` · 3× `SM712` · 6× 10 Ω · 3× 80,6 Ω with their headers and jumpers · `2036-07-SM` · `DGPS2.5R-5.0` × 4
 - **`ID`:** 6,8 kΩ, 0,40
 
 ### `G-I-M-005` — communication, 485 on copper, ModBus
@@ -930,13 +930,13 @@ of an arm there is no board at all: a bought sensor and a MOD bring their own 48
 ```
  the host ── data connector ──▶ 3,3 V from the host ──▶ SN6505B ─▶ 750313734 ─▶ PMEG10020ELR ─▶ isolated 3,3 V ─▶ ISO1450 ── A/B, DE from the host
               LINE_EN drives the SN6505B's EN                           THE BARRIER                              │
-                                                                                               SM712 ─▶ 2× 10 Ω ══ 75 Ω behind a jumper ══▶ the pair
+                                                                                               SM712 ─▶ 2× 10 Ω ══ 80,6 Ω behind a jumper ══▶ the pair
                                                                                                             2036-07-SM ─▶ ⏚ common earthing point
 ```
 
 - **in:** 3,3 V and logic from the host · **out:** the arm's pair on eight poles, `DGPS2.5R-5.0` × 4 — four positions, 4× `A` and 4× `B`
 - **draw, on the host's 3,3 V:** ~9 mA listening, ~60 mA asking
-- **parts:** `SN6505B` · `750313734` · `PMEG10020ELR` · `ISO1450` · `SM712` · 2× 10 Ω · 75 Ω with its header and jumper · `2036-07-SM` · `DGPS2.5R-5.0` × 4
+- **parts:** `SN6505B` · `750313734` · `PMEG10020ELR` · `ISO1450` · `SM712` · 2× 10 Ω · 80,6 Ω with its header and jumper · `2036-07-SM` · `DGPS2.5R-5.0` × 4
 - **`ID`:** 8,2 kΩ, 0,45
 
 ### `G-O-10-10` — communication, glass, 10 Mb/s

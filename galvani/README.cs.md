@@ -585,10 +585,10 @@ obslouží hostitel, který k němu jde ven na napájené trase.
 
 **Zakončení.** Každý pár 485 na každé měděné desce nese **2× 10 Ω v sérii, vždy** — sedí před
 `SM712` a půlí jeho proud, než výbojka zapálí, a přijímací vstup má ≥ 12 kΩ, takže 20 Ω v sérii stojí
-čtvrtinu amplitudy proti rezervě několikanásobku prahu přijímače. **Zakončovací rezistor, 75 Ω
+čtvrtinu amplitudy proti rezervě několikanásobku prahu přijímače. **Zakončovací rezistor, 80,6 Ω
 napříč párem za 10 Ω, se osazuje na první a poslední desce segmentu a na žádné desce mezi nimi** —
 u spoje bod–bod jsou to oba konce, u řetězu deska na zdrojovém konci a deska poslední jednotky.
-75 + 2 × 10, tedy 95 Ω, je těch ~100 Ω, které chce UTP; ne 120 Ω, které patří vyhrazenému kabelu pro 485,
+80,6 + 2 × 10 je těch ~100 Ω, které chce UTP; ne 120 Ω, které patří vyhrazenému kabelu pro 485,
 jejž tento projekt nepoužívá. **Rezistor je na desce a JUMPER na dvoupinové liště 2,54 mm ho
 připojí napříč párem — jedna lišta na pár**: tři na `G-I-N-025`, jedna na `G-I-M-005`. Jumper se
 nastavuje při uvádění do provozu spolu s kabelem a ztracený jumper selže na neškodnou stranu —
@@ -900,7 +900,7 @@ nebo buzené — a zdrojový konec osazuje výbojku a její pásek.
                                                                                                      D and R both on the CLK/PPS pin;
                                                                                                      DE and RE# on B_DIR
                                                                                                      │
-                                                                                SM712 ─▶ 2× 10 Ω ══ 75 Ω behind a jumper ══▶ TX · clock · RX
+                                                                                SM712 ─▶ 2× 10 Ω ══ 80,6 Ω behind a jumper ══▶ TX · clock · RX
                                                                                                  2036-07-SM ─▶ ⏚ common earthing point, at the source end only
  four two-pole DGPS2.5R-5.0, eight poles, one pole to a net · three termination jumpers, one per pair
 ```
@@ -908,7 +908,7 @@ nebo buzené — a zdrojový konec osazuje výbojku a její pásek.
 - **vstup:** 3,3 V a logika od hostitele · **výstup:** tři páry 485 na datovém kabelu
 - **odběr, z 3,3 V hostitele:** ~75 mA na zdrojovém konci, ~18 mA na konci jednotky, ~130 mA uprostřed burstu; samotná linková strana 57 / 5 mA
 - **na zdrojovém konci:** výbojka a její zemnicí pásek osazené; na konci jednotky vynechané — tatáž deska
-- **součástky:** `SN6505B` · `750313734` · `PMEG10020ELR` · 2× `ISO1452` · `ISO1450` · 3× `SM712` · 6× 10 Ω · 3× 75 Ω s lištami a jumpery · `2036-07-SM` · `DGPS2.5R-5.0` × 4
+- **součástky:** `SN6505B` · `750313734` · `PMEG10020ELR` · 2× `ISO1452` · `ISO1450` · 3× `SM712` · 6× 10 Ω · 3× 80,6 Ω s lištami a jumpery · `2036-07-SM` · `DGPS2.5R-5.0` × 4
 - **`ID`:** 6,8 kΩ, 0,40
 
 ### `G-I-M-005` — komunikační, 485 po mědi, ModBus
@@ -924,13 +924,13 @@ vzdáleném konci větve není deska vůbec: kupovaný senzor i MOD si přináš
 ```
  the host ── data connector ──▶ 3,3 V from the host ──▶ SN6505B ─▶ 750313734 ─▶ PMEG10020ELR ─▶ isolated 3,3 V ─▶ ISO1450 ── A/B, DE from the host
               LINE_EN drives the SN6505B's EN                           THE BARRIER                              │
-                                                                                               SM712 ─▶ 2× 10 Ω ══ 75 Ω behind a jumper ══▶ the pair
+                                                                                               SM712 ─▶ 2× 10 Ω ══ 80,6 Ω behind a jumper ══▶ the pair
                                                                                                             2036-07-SM ─▶ ⏚ common earthing point
 ```
 
 - **vstup:** 3,3 V a logika od hostitele · **výstup:** pár větve na osmi pólech, `DGPS2.5R-5.0` × 4 — čtyři pozice, 4× `A` a 4× `B`
 - **odběr, z 3,3 V hostitele:** ~9 mA při poslechu, ~60 mA při dotazu
-- **součástky:** `SN6505B` · `750313734` · `PMEG10020ELR` · `ISO1450` · `SM712` · 2× 10 Ω · 75 Ω s lištou a jumperem · `2036-07-SM` · `DGPS2.5R-5.0` × 4
+- **součástky:** `SN6505B` · `750313734` · `PMEG10020ELR` · `ISO1450` · `SM712` · 2× 10 Ω · 80,6 Ω s lištou a jumperem · `2036-07-SM` · `DGPS2.5R-5.0` × 4
 - **`ID`:** 8,2 kΩ, 0,45
 
 ### `G-O-10-10` — komunikační, sklo, 10 Mb/s

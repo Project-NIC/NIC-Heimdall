@@ -17,7 +17,7 @@ instead of on a plug-in, and what is left off. The processors do not know the bo
 
 | link | in a full Heimdall | on Proteus |
 |---|---|---|
-| **Kronos → the Mayak and the Bifrost: `CLK±`, `PPS±`** | the M-LVDS ribbon, a tap on each | **differential traces from Kronos's `DS91C176` outputs past the Mayak's `THVD1450` receivers to the Bifrost's.** Kronos's 2× 10 Ω legs and its 75 Ω fitted as the first node, the Bifrost's as the last; no `TIME BUS` connector, nothing else ever taps the bus |
+| **Kronos → the Mayak and the Bifrost: `CLK±`, `PPS±`** | the M-LVDS ribbon, a tap on each | **differential traces from Kronos's `DS91C176` outputs past the Mayak's `THVD1450` receivers to the Bifrost's.** Kronos's 2× 10 Ω legs and its 80,6 Ω fitted as the first node, the Bifrost's as the last; no `TIME BUS` connector, nothing else ever taps the bus |
 | **`SDA` · `SCL` · `ATTN`** | the ribbon | traces; Kronos's 4,7 kΩ pair the only pull-ups; `ATTN` a trace to Kronos's 3,3 V with the Bifrost's pull-down fitted — a Bifrost by construction, never an Argus |
 | **Mayak trunk 1 → the Bifrost's `MNB/NB IN`** | the crossed in-box cable | **four traces**: Mayak `TXD` (`GPIO54`) → Bifrost `RXD_UP` PA1 and its capture · Bifrost `TXD_UP` PA0 → Mayak `RXD` (`GPIO55`) · the Mayak's 1,1 kΩ `ID_RET` → the Bifrost's `ID` pin (0,10, a Mayak) · the Bifrost's 1,8 kΩ `ID_RET` → the Mayak's port-1 `ID` pin (0,15, a card) · one ground. No pad for a pull-up |
 | **the Mayak's LP I²C → Hermes** | the 8-pin power body, a card on it | **Hermes as a section**: `SDA` · `SCL` (`GPIO6`/`7`), `ALERT` (`GPIO1`), its 3,3 V behind the Mayak's 0,15 A polyfuse, its 0,90 `ID` resistor onto `GPIO46`. Never switched: with no unit on its faces it probes once at boot and sleeps them, milliwatts |
@@ -39,7 +39,7 @@ The Bifrost's port 1 is the one run, and the communication board's parts sit on 
 | C_D | 100 nF 50 V X7R 0603 ×4 | at each isolator's `VCC1` and `VCC2` |
 | R_S1 … R_S6 | 6× 10 Ω, pulse-withstanding, 2512 anti-surge or MELF | two per pair |
 | TVS_P1 … TVS_P3 | `SM712` ×3 | across each pair |
-| R_T1 … R_T3 | 3× 75 Ω 1 % 1206, **fitted** | this is the first board of the segment, the unit the last |
+| R_T1 … R_T3 | 3× 80,6 Ω 1 % 1206, **fitted** | this is the first board of the segment, the unit the last |
 | GDT1 | `2036-07-SM`, **fitted**, its centre strapped to the enclosure's ground point | the source end |
 | `LINE CU` | `DGPS2.5R-5.0` ×4, 8 poles | the four pairs: data TX · clock · ground · data RX |
 

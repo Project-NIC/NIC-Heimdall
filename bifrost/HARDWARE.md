@@ -12,7 +12,7 @@
 ```
    FROM KRONOS — a tap on the 10-pin time bus ribbon: GND · CLK± · GND · PPS± · GND ·
                  SDA · SCL · ATTN — a ground around each pair;
-   per pair 2× 10 Ω in series at the connector, a jumpered 75 Ω behind them (fitted on the
+   per pair 2× 10 Ω in series at the connector, a jumpered 80,6 Ω behind them (fitted on the
    last node of the ribbon only), two THVD1450 receivers a centimetre from the tap,
    RE#, DE and D tied low; no SM712 here
 
@@ -751,7 +751,7 @@ microsecond.
 | `DGPS2.5R-5.0`, two-pole | 2 | the 12 V, input and tap |
 | `5.0SMDJ14A` | 1 | across the 12 V input |
 | 10 Ω, 1 % | 4 | the time bus line block, 2 per pair |
-| 75 Ω, 1 % + jumper | 2 | the termination, fitted on the last node of the ribbon |
+| 80,6 Ω, 1 % + jumper | 2 | the termination, fitted on the last node of the ribbon |
 | 33 Ω | 4 | `CLK/PPS` in series, the down ports |
 | 1,8 kΩ, 1 % | 1 | `ID_RET` on the up port — 0,15, a card |
 | 10 kΩ, 1 % | 10 | the `ID` pull-ups to `VREF+` |

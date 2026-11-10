@@ -395,7 +395,7 @@ channel B. No terminal for 12 V, no buck: 3,3 V from the host over the data conn
 | C_D | **100 nF 50 V X7R 0603** ×4 | class | at each isolator's `VCC1` and `VCC2` |
 | R_S1 … R_S6 | **6× 10 Ω, pulse-withstanding, 2512 anti-surge or MELF** | value | two per pair, on every board, always |
 | TVS_P1 … TVS_P3 | **`SM712`** ×3 | code | across each pair |
-| R_T1 … R_T3 · JP1 … JP3 | **3× 75 Ω 1 % 1206 (`C2889690`) · 3× 2-pin 2,54 mm header with a jumper** | value | one per pair; **the jumper fitted on the first and the last board of a segment, on no board between** — 75 + 2 × 10, 95 Ω, is the ~100 Ω the UTP wants within 5 % |
+| R_T1 … R_T3 · JP1 … JP3 | **3× 80,6 Ω 1 % 1206 · 3× 2-pin 2,54 mm header with a jumper** | value | one per pair; **the jumper fitted on the first and the last board of a segment, on no board between** — 80,6 + 2 × 10 is the ~100 Ω the UTP wants |
 | GDT1 | **`2036-07-SM`** | code | the footprint on every board; the tube and its strap fitted at the source end only |
 | `LINE CU` | **`DGPS2.5R-5.0`** ×4, 8 poles | `10060008518` | the four pairs, one pole to a net; a chained run twisted into the pole it shares |
 
@@ -413,7 +413,7 @@ beside it.
 | U2 | **`ISO1450`** | code | `A`/`B`, `DE` from the host frame by frame |
 | C_D | **100 nF** ×2 | class | |
 | R_S1, R_S2 · TVS_P1 | **2× 10 Ω, pulse-withstanding · `SM712`** | value / code | |
-| R_T1 · JP1 | **75 Ω 1 % 1206 (`C2889690`) · a 2-pin header with a jumper** | value | fitted on this board — the source end of the arm; the far end is the sensor's own |
+| R_T1 · JP1 | **80,6 Ω 1 % 1206 · a 2-pin header with a jumper** | value | fitted on this board — the source end of the arm; the far end is the sensor's own |
 | GDT1 | **`2036-07-SM`** | code | fitted and strapped — this board only ever stands at a source end |
 | `LINE CU` | **`DGPS2.5R-5.0`** ×4, 8 poles | `10060008518` | four positions, 4× `A` and 4× `B` |
 

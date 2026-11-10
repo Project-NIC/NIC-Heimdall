@@ -103,7 +103,7 @@ enclosure (`../galvani/README.md`, *The cable, the ground and the termination*).
   GPSDO-disciplined, fanned out through the Bifrosts — the clock's single source of truth is
   `blocks/nodbus.md`, *The network clock*); the node takes `CLK` off the connector, wired straight to
   **OSC_IN**.
-- **Termination** — 10 Ω series on both legs at every copper board, and **75 Ω** across the pair
+- **Termination** — 10 Ω series on both legs at every copper board, and **80,6 Ω** across the pair
   behind them, put across by a jumper on a 2-pin header on the first and the last board of a
   segment and on no board between; the legs complete the ~100 Ω the UTP wants — 80 + 10 and not 90 + 5, because the larger leg halves the `SM712`'s current before the tube fires. The
   bigger series R buys surge coordination at negligible signal cost on Cat 6.
@@ -165,7 +165,7 @@ rule for every bus on every board, so nothing is chosen per position:
 
 | the bus | the transil, at the terminal | the series resistors | the termination, where the bus needs one |
 |---|---|---|---|
-| **485**, every pair | `SM712` — clamps at the pair's −7 / +12 V | 2× 10 Ω, one a line | **75 Ω behind a jumper** on the transceiver side of the resistors, so the pair sees its 100 Ω |
+| **485**, every pair | `SM712` — clamps at the pair's −7 / +12 V | 2× 10 Ω, one a line | **80,6 Ω behind a jumper** on the transceiver side of the resistors, so the pair sees its 100 Ω |
 | **CAN** | `PESD2CAN` — bidirectional, 24 V stand-off, a few pF | 2× 10 Ω, one a line | **100 Ω behind a jumper** on the transceiver side of the resistors, so the bus sees its 120 Ω |
 | **a logic line to a part the builder connects** — SPI, I²C, UART, 1-Wire, GPIO, a clock on a header | one channel of `TPD4E05U06` — 0,5 pF a line, 5,5 V working, IEC 61000-4-2 level 4 | 33 Ω, one a line | — |
 
