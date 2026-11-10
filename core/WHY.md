@@ -520,3 +520,9 @@ The radio position was LoRa, and a LoRa downlink able to reconfigure a buried no
 **An LTE-M modem is a link like Wi-Fi**: it carries the authenticated session — `HELLO`, the
 `CURSOR`, the command channel under its MAC, the live board. LoRa and a satellite module stay
 out-only, a resend request their one downlink.
+
+## The 300 Ω bead `GZ2012D301TF` — superseded by the Basic 600 Ω `GZ2012D601TF`
+
+The same Sunlord 0805 line, 500 mA, JLCPCB Basic (`C1017`) where the 300 Ω was Extended. Its
+0,30 Ω instead of 0,20 Ω drops at most 39 mV, at Marconi's 131 mA, inside every converter's supply
+window, and it doubles the impedance past the inductor's 69 MHz (10 Nov 2026).

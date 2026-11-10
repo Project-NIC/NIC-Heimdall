@@ -621,6 +621,8 @@ of the cable's**, not the board's.
 | **optical** — `G-O-10-10` · `G-O-2-100` | **none** | **no** | **no** — nothing electrical arrives on a fibre |
 | **a MOD on a ModBus arm** | **2× 10 Ω** | **yes** — `SM712` on the pair, **2× `5.0SMDJ18A`** on the 12 V | **no** |
 
+**The `SM712` is bought as ProTek's `PSM712-LF-T7`**, JLCPCB Basic `C32677`: the same asymmetrical RS-485 array, 7 V and 12 V stand-off, 600 W at 8/20 µs, SOT-23 (ProTek's PSM712 sheet), where Semtech's `SM712` is Extended.
+
 **Why a unit end carries neither the tube nor the chokes.** A GDT's job is dumping common-mode bulk
 into an earth, and a floating board has no earth to dump into — the three-electrode part degenerates
 into two gaps in series the moment its centre floats. The chokes go with it: they sit **between** a
@@ -991,7 +993,7 @@ processor's **1,8 V at 1 MHz in forced PWM** — 12 → 1,8 V is a 15 % duty, 15
 feed at 2,5 MHz in forced PWM**: **5,4 V** on Tesla (its 5 V analogue LDOs, 0,4 V over their
 output) and **4,0 V** on Marconi, `Quark-Photon` and `Quark-Neutron/Positron` (their clean 3,3 V
 LDOs); Tesla's 3,3 V interface rail is a third. **The digital supplies of the converters — `IOVDD`, `DRVDD`, `DVDD` — take the
-processor's rail through the shielded 2,2 µH into 10 µF + 100 nF, then the bead `GZ2012D301TF` into 100 nF at the pin, not a regulator of their own**, and the MCU's `VDDA`/`VREF+` take it through the shielded 2,2 µH into 10 µF + 100 nF, the buck-noise inductor (`../core/POWER.md`, *The filter parts*);
+processor's rail through the shielded 2,2 µH into 10 µF + 100 nF, then the bead `GZ2012D601TF` into 100 nF at the pin, not a regulator of their own**, and the MCU's `VDDA`/`VREF+` take it through the shielded 2,2 µH into 10 µF + 100 nF, the buck-noise inductor (`../core/POWER.md`, *The filter parts*);
 the analogue supplies keep their LDOs, and a converter's quiet analogue 1,8 V takes a
 **`TPS7A2018`** of its own where it is the converter's analogue core (Marconi's `AVDD`, the `AD9251`'s on the scintillation boards); Tesla's `ADS127L14` takes its `AVDD2` off the processor's 1,8 V through the inductor and the bead, its sheet allowing 1,74–5,5 V. The board documents carry
 the trees (`../tesla/HARDWARE.md` §6, `../marconi/HARDWARE.md`, `../quark/tubes/HARDWARE.md`,
