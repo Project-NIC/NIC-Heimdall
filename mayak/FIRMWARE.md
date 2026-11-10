@@ -215,11 +215,11 @@ the highest interrupt on core A: the Wi-Fi off, the charge path (`GPIO51`) off, 
 written to both cards. **Only then is the modem keyed** — the cards' writes and the modem's
 bursts never draw on the cell together, which keeps it under the eFuse's breaker
 (`HARDWARE.md`, *Backup cell*), and a head that browns out at a burst in the cold has lost the
-report, never the data. Core B reads Hermes for the cause, the head sends it on the modem with the charge the cell has given so far — `ILM` on `GPIO53`, 0,604 V/A,
+report, never the data. Core B reads Hermes for the cause, the head sends it on the modem with the charge the cell has given so far — `ILM` on `GPIO53`, 0,601 V/A,
 sampled from the interrupt on and summed — and releases the hold on `GPIO50` — the board goes dark and boots again when
 the 12 V returns (§11). If the 12 V comes back before the release, `PG` falls and the head
 carries on. A short on the rail while on the cell trips the eFuse, which stays off until the
-hold is released; the cut in its `EN` divider turns it off at a rail of 2,82–2,92 V if the head
+hold is released; the cut in its `EN` divider turns it off at a rail of 2,82–2,93 V if the head
 never releases it. The brownout detector on the 3,3 V stays as the last guard.
 
 **On the cell, the silence of everything else is expected.** The cell carries the head, Hermes and

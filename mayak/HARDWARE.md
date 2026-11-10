@@ -545,7 +545,7 @@ nothing.**
 - The 3,3 V holds the module's 0,6 A with Wi-Fi transmitting at its 295 mA peak, the bulk at the
   module.
 - The backup cell: the takeover with the wire cut at full load, the rail above 3,1 V through it;
-  the hold released to a dark board; the cut at 2,82–2,92 V on a bench supply in the cell's place;
+  the hold released to a dark board; the cut at 2,82–2,93 V on a bench supply in the cell's place;
   a short on the rail tripping the breaker and the part staying off; the charge path off below
   −20 °C. **At −40 °C, on the cell, the modem sending after the flush**: the rail stays above the
   module's 3,0 V through its bursts, and the cell's current on `ILM` stays under 0,85 A.
