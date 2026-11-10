@@ -149,7 +149,7 @@ Minute runs, the weight read between; a stone in the vessel is one fault, not a 
 ## A Zener for the tail board's 5 V — rejected
 
 A shunt across 24 V burns its milliamps all the time and dies at the ~45 V clamp. The
-`TPS7A1650`, 3–60 V in, does both.
+`TPS7A1650`, 3–60 V in, did both, and now the `TPS7A4101` (*below*).
 
 ## The gauge without its shell — a lapse of the documents
 
@@ -195,3 +195,10 @@ for the price of one 2,2 µH and one 10 µF + 100 nF more.
 The N side's on-resistance is inside the Kelvin-sensed reference and cancels; the CJ `2N7002`
 (JLCPCB Basic `C8545`) states 7 Ω at most at 5 V and 50 mA, 0,1 V at the bridge's 14 mA. No
 `BSS138` is Basic; the `BSS84` is taken as `LBSS84LT1G`, Preferred (`C8492`), 10 Ω at 5 V.
+
+## The `TPS7A1650` on the tail board — superseded by the `TPS7A4101`
+
+The 60 V part stood at $4,92 with 38 in stock at JLCPCB (10 Nov 2026). The `TPS7A4101DGNR`,
+`C111739`, 50 V in, $1,08 with ~7 800 in stock, takes the same ~10 mA in the same MSOP-8 PowerPAD
+and keeps 4,6 V over the ~45 V clamp — the 2 V an LDO's input keeps over the highest voltage it
+sees (the owner, 10 Nov 2026). It is adjustable: two Basic resistors set the 5 V.

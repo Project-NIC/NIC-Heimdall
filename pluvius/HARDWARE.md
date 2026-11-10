@@ -263,16 +263,17 @@ isolation is on it.** In the order the 24 V travels:
   whole protection: no tube, no choke;
 - **100 nF film across red and black at the head's terminals** against the controller's hash; the
   head's red and black on a second `DGPS2.5R-5.0`, its three signal wires on a 2,54 mm header;
-- **the head-side 5 V from a linear regulator whose input outlives the clamp — `TPS7A1650`**,
-  3–60 V in, fixed 5,0 V, 100 mA, 5 µA quiescent, HVSSOP-8 `DGN` (SBVS171F), pin by pin: **`IN` (8)**
-  on the 24 V behind the transils with **10 µF 100 V X7R, 1210** beside the pin — the sheet asks
-  ≥ 0,1 µF for stability and recommends 10 µF, and 100 V stands well above the clamp; **`OUT` (1)**
-  the 5 V node with **10 µF 50 V 1206** — ≥ 2,2 µF for stability, 10 µF recommended; **`EN` (5) tied
-  to `IN`**, which keeps `V_EN` ≤ `V_IN` always; **`FB/DNC` (2) on no net at all**, not even ground,
-  as the sheet requires of a fixed version; **`NC` (6), `PG` (3) and `DELAY` (7) open**; **`GND` (4)
-  and the PowerPAD on the black's copper**. It feeds the two output couplers' `V_CC` and the
-  pulse LED, ~10 mA, so at 24 V it dissipates ~0,2 W, ~13 °C over ambient at the package's
-  66 °C/W;
+- **the head-side 5 V from a linear regulator whose input outlives the clamp — `TPS7A4101`**,
+  7–50 V in (55 V absolute), adjustable from its 1,173 V reference, 50 mA, 25 µA quiescent, MSOP-8
+  PowerPAD `DGN` (SBVS183), pin by pin: **`IN` (8)** on the 24 V behind the transils with **10 µF
+  100 V X7R, 1210** beside the pin — the sheet's 1 µF is the least, and 100 V stands well above the
+  clamp, 4,6 V of which the part's 50 V keeps in hand; **`OUT` (1)** the 5 V node with **10 µF 50 V
+  1206** — the sheet asks more than 4,7 µF for stability; **`FB` (2)** on **39 kΩ over 12 kΩ**,
+  JLCPCB Basic `C23153` and `C22790`, → 4,99 V ±2,5 %, ~100 µA through the pair against the 10 µA
+  the sheet asks at no load; **`EN` (5) tied to `IN`**, which keeps `V_EN` ≤ `V_IN` always;
+  **`NC` (3, 6, 7) open**; **`GND` (4) and the PowerPAD on the black's copper**. It feeds the two
+  output couplers' `V_CC` and the pulse LED, ~10 mA, so at 24 V it dissipates ~0,2 W, ~13 °C over
+  ambient at the package's 66,7 °C/W;
 - **three optocouplers with totem-pole outputs**, so every output line is driven both ways and
   carries no pull-up and no transistor: two `TLP2745` for `RUN` and `DIR`, one `TLP2361` for the
   pulse;
@@ -785,7 +786,7 @@ and the converter's C0G, which its sheet asks for on the inputs and across `CAPP
 | six pads | 1 | `CELL` | — |
 
 **The head's tail board**: 2× `DGPS2.5R-5.0` · 2× `5.0SMDJ28A` · 100 nF film ·
-`TPS7A1650` `DGN` with 10 µF 100 V 1210 and 10 µF 50 V 1206 · 2× `TLP2745` · `TLP2361` · 3× 100 nF ·
+`TPS7A4101DGNR` (`C111739`) with 10 µF 100 V 1210, 10 µF 50 V 1206 and 39 kΩ / 12 kΩ (`C23153` · `C22790` Basic) · 2× `TLP2745` · `TLP2361` · 3× 100 nF ·
 1,2 kΩ (`C22765` Basic) · 2,54 mm headers, 3 and 5 pins. **A head with two wires**: 2× `5KP28A` and a 100 nF film
 capacitor on its lugs, and the glued magnet with the `55100-3H` where a count is wanted.
 
