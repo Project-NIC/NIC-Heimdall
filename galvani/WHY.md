@@ -677,3 +677,11 @@ The README fixed 1 A for every host, 5 A for `G-48-S` and `G-24-S`, 10 A for `G-
 protects the cable as much as the load**, and its fault current comes from the pack, the BMS trip
 point and the cross-section to the fuse field — so it is sized per install, as Daedalus has it, and
 no rating is written on a board.
+
+## The buck divider on 12,1 kΩ — superseded by JLCPCB Basic values
+
+`R_FBB` 12,1 k with `R_FBT` 28,0 · 36,5 · 29,4 · 54,9 k gave 3,31 · 4,02 · 3,43 · 5,54 V from five
+Extended values, a loading fee each on an assembly order. Basic pairs inside the same 5–10 kΩ window
+hold the rails: 30/13 k 3,31 V, 39/13 k 4,00 V, 20/8,2 k 3,44 V, 56/12 k 5,67 V (10 Nov 2026). The
+one bottom resistor is gone; no rail moved by more than its tolerance except Pluvius's feed, whose
+`LP2985` takes 16 V.

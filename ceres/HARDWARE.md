@@ -196,7 +196,7 @@ Read in the order the current travels:
 | **the unit's 12 V input**, behind the two transils | **4× 10 µF 50 V 1206 + 100 nF 50 V** — 50 V against the transils' ~29 V clamp — the reservoir the whole board's steps come out of |
 | `LMR43610` **`VIN`** | **4,7 µF 50 V + 100 nF 50 V**, at the pin — the house cell |
 | `LMR43610` **`VCC`** · **`BOOT`** | **1 µF** · **100 nF** ≥ 10 V, `BOOT` to `SW` — its sheet |
-| `LMR43610` **divider** · **`CFF`** | **28,0 k / 12,1 k** → 3,31 V and **22 pF C0G** — the house cell |
+| `LMR43610` **divider** · **`CFF`** | **30 k / 13 k** → 3,31 V and **22 pF C0G** — the house cell |
 | `LMR43610` **out**, the 3,3 V node | **3× 10 µF 50 V 1206 + 100 nF** — the charge every branch pulls its steps from, so it is the one not to shrink |
 | `STM32H523` | **100 nF at every `VDD`** + **10 µF** bulk; **`VCAP` 2× 1 µF 50 V 0805 + 2× 100 nF 50 V 0603 on each of the two pins** (48, 98) — 2,2 µF, the sheet's 2,2 µF ±20 %, ESR < 100 mΩ |
 | `THVD1450` | **100 nF + 10 µF** — its transmit step is the largest on the board |
@@ -415,7 +415,7 @@ read is a zero code.
 | 1 kΩ + 100 nF C0G | 2 sets | the detectors' RC |
 | `LMR43610R3RPER` | 1 | the 3,3 V |
 | 10 µH shielded, `I_SAT` ≥ 2,1 A, ≤ 4,0 mm high | 1 | the buck's inductor |
-| 28,0 k · 12,1 k · 22 pF C0G · 7,50 kΩ | 1 set | the divider, `C_FF`, `RT` for 2,08 MHz |
+| 30 k · 13 k · 22 pF C0G · 7,50 kΩ | 1 set | the divider, `C_FF`, `RT` for 2,08 MHz |
 | 4,7 µF 50 V + 100 nF · 1 µF · 100 nF | 1 set | `VIN` · `VCC` · `BOOT` |
 | 3× 10 µF 50 V 1206 + 100 nF | 1 set | the 3,3 V node |
 | 100 kΩ | 1 | `PG` up, to PD14 |

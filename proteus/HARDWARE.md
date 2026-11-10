@@ -74,7 +74,7 @@ clock pair, 500 m on ~100 Ω UTP Cat 6, 3–5 m of hybrid in a vehicle.
 ## The rails — the Mayak's own, and one for the rest
 
 **The Mayak keeps its own rail and its backup cell exactly as `../mayak/HARDWARE.md` draws them** —
-the buck at 3,43 V, the cell behind its `TPS259474LRPW` — and on that rail sit the Mayak, Hermes,
+the buck at 3,44 V, the cell behind its `TPS259474LRPW` — and on that rail sit the Mayak, Hermes,
 the PHY and the modem: **the same backup core as every Heimdall**. When the 12 V goes the cell
 carries those and nothing else; Wi-Fi and the PHY go off, the head writes, the modem sends, the head
 lets go (`../mayak/FIRMWARE.md` §6). **The rail's buck is the `LMR43620`**, as the Mayak draws it

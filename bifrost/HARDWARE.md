@@ -517,7 +517,7 @@ and a source power board takes the host side of its isolator from the same pins.
 
 **`LMR43620` — the down ports' cell**, the house cell one size up (`../galvani/HARDWARE.md`, *The
 buck cell*): `RT` 7,50 kΩ → 2,08 MHz, auto; **4,7 µH shielded, `I_SAT` ≥
-3,5 A**; `R_FBT` 28,0 kΩ / `R_FBB` 12,1 kΩ → 3,31 V, `C_FF` 22 pF C0G; `C_IN` 4,7 µF 50 V + 100 nF;
+3,5 A**; `R_FBT` 30 kΩ / `R_FBB` 13 kΩ → 3,31 V, `C_FF` 22 pF C0G; `C_IN` 4,7 µF 50 V + 100 nF;
 `C_OUT` 3× 10 µF 1206 + 100 nF; `VCC` 1 µF; `BOOT` 100 nF; `PGOOD` to PD14 through 100 kΩ.
 
 **The time-bus receivers are `THVD1450`, `RE#`, `DE` and `D` tied low**, on the processor's rail.
@@ -758,7 +758,7 @@ microsecond.
 | 10 kΩ | 2 | the up port's `LINE_EN` to 3,3 V · `BOOT0` to ground |
 | 4,7 kΩ | 6 | I3C1, I2C3, I3C2 — one pair each |
 | 100 kΩ | 20 | `EN_1`–`EN_4` · `OE_1`–`OE_4` · `SD_UP`, `SD_1`–`SD_4` · `ALERT_0`–`ALERT_4` to ground · `ATTN` to ground · `PGOOD` up |
-| 7,50 kΩ · 28,0 kΩ · 12,1 kΩ, 1 % · 22 pF C0G | 1 each | the `LMR43620`'s `RT`, divider and `C_FF` |
+| 7,50 kΩ · 30 kΩ · 13 kΩ, 1 % · 22 pF C0G | 1 each | the `LMR43620`'s `RT`, divider and `C_FF` |
 | 619 kΩ · 137 kΩ, 1 % · 17,8 kΩ | 2 each | the `TPS629206`s' divider and `MODE/S-CONF` |
 | 2,2 µH shielded, `SWPA252012S2R2MT` | 2 | `VDDA`, `VREF+` |
 | 47 µF 50 V hybrid polymer | 1 | the 12 V node |

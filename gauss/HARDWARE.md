@@ -146,7 +146,7 @@ inductor — no LDO.** The 12 V is the unit power board's island output on the b
 | position | part and value |
 |---|---|
 | 12 V input | **5× 10 µF 50 V 1206 + 100 nF, ceramic only** — a pressure-balanced body takes no hybrid polymer and no electrolytic (`../galvani/README.md`, *Pressure boards and land boards*); the pod draws tens of milliamperes and the unit power board's regulated 12 V has no transil clamp to reserve against |
-| the buck | the house cell: `RT` 7,50 kΩ → 2,08 MHz, auto mode; 4,7 µH shielded, `I_SAT` ≥ 3,5 A; `C_IN` 4,7 µF 50 V + 100 nF; `C_OUT` 3× 10 µF 50 V 1206 + 100 nF; `VCC` 1 µF; `BOOT` 100 nF; `R_FBT` 28,0 kΩ / `R_FBB` 12,1 kΩ → 3,31 V; `C_FF` 22 pF C0G; `PGOOD` to PD14 |
+| the buck | the house cell: `RT` 7,50 kΩ → 2,08 MHz, auto mode; 4,7 µH shielded, `I_SAT` ≥ 3,5 A; `C_IN` 4,7 µF 50 V + 100 nF; `C_OUT` 3× 10 µF 50 V 1206 + 100 nF; `VCC` 1 µF; `BOOT` 100 nF; `R_FBT` 30 kΩ / `R_FBB` 13 kΩ → 3,31 V; `C_FF` 22 pF C0G; `PGOOD` to PD14 |
 | `L1`…`L4` | **`SWPA252012S2R2MT`** — 2,2 µH shielded, `DCR` 0,17 Ω, 2,5 × 2,0 × 1,2 mm |
 | behind `L1` | 10 µF + 100 nF |
 | behind `L2` | 10 µF + 100 nF, then `VDDA` and `VREF+` with 1 µF + 100 nF at the pins |
@@ -508,7 +508,7 @@ that averaging cannot touch. **The pod ships the deviation and does no analysis*
 | `TMP117` or `STS35` + 2× 4,7 kΩ | 1 | the wall, I2C2, by site |
 | `LMR43610R3RPER` | 1 | the 3,3 V |
 | 4,7 µH shielded, `I_SAT` ≥ 3,5 A | 1 | the buck's inductor |
-| 28,0 k · 12,1 k · 22 pF C0G · 7,50 kΩ | 1 set | the divider, `C_FF`, `RT` for 2,08 MHz |
+| 30 k · 13 k · 22 pF C0G · 7,50 kΩ | 1 set | the divider, `C_FF`, `RT` for 2,08 MHz |
 | 4,7 µF 50 V + 100 nF · 1 µF · 100 nF | 1 set | `VIN` · `VCC` · `BOOT` |
 | 3× 10 µF 50 V 1206 + 100 nF | 1 set | the 3,3 V node |
 | 100 kΩ | 1 | `PG` up, to PD14 |

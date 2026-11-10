@@ -15,7 +15,7 @@
 | **STM32H523**, LQFP100 | the whole unit — the mini link, the grid, the gauge, the payload |
 | **the depth gauge** | **TE Connectivity `MS5837-30BA`** (`MS583730BA01-50`), 30 bar, I²C, pressure and temperature, **in a Blue Robotics `Bar30` housing** — an M10 threaded penetrator screwed through a hole in the tube and sealed (`CONSTRUCTION.md`); the gauge's gel face meets the water and the fill stays out of the measurement; its four leads land on I2C3 |
 | **`TMP117`** | the wall thermometer, on the same I²C — thermally coupled to the tube wall, the bottom-water record |
-| **`LMR43610R3RPER`** at 3,3 V | the one rail, off the 12 V on the board's two terminals — the unit power board's island output at the far end of the run. The house cell: `RT` 7,50 kΩ → 2,08 MHz, auto mode; 4,7 µH shielded, `I_SAT` ≥ 3,5 A; `R_FBT` 28,0 kΩ / `R_FBB` 12,1 kΩ, `C_FF` 22 pF C0G; `C_IN` 4,7 µF + 100 nF; `C_OUT` 3× 10 µF 1206 + 100 nF; `VCC` 1 µF; `BOOT` 100 nF (`../galvani/HARDWARE.md`, *The buck cell*). **The 12 V input bank is 5× 10 µF 50 V 1206 + 100 nF, ceramic only** — a pressure-balanced body takes no hybrid polymer and no electrolytic |
+| **`LMR43610R3RPER`** at 3,3 V | the one rail, off the 12 V on the board's two terminals — the unit power board's island output at the far end of the run. The house cell: `RT` 7,50 kΩ → 2,08 MHz, auto mode; 4,7 µH shielded, `I_SAT` ≥ 3,5 A; `R_FBT` 30 kΩ / `R_FBB` 13 kΩ, `C_FF` 22 pF C0G; `C_IN` 4,7 µF + 100 nF; `C_OUT` 3× 10 µF 1206 + 100 nF; `VCC` 1 µF; `BOOT` 100 nF (`../galvani/HARDWARE.md`, *The buck cell*). **The 12 V input bank is 5× 10 µF 50 V 1206 + 100 nF, ceramic only** — a pressure-balanced body takes no hybrid polymer and no electrolytic |
 | **no crystal** | this body is oil-filled and pressure-balanced, and a crystal is a sealed gas cavity: the core and the UART run on the **HSI disciplined by the rung through the PLL** (*The rung disciplines the core*) |
 | the Galvani **data body** and **power body** | the mini link and the feed's telemetry; the unit-end boards are potted in beside it |
 
@@ -391,7 +391,7 @@ body.
 | 4,7 kΩ | 2 | I2C3 |
 | `LMR43610R3RPER` | 1 | the 3,3 V |
 | 4,7 µH shielded, `I_SAT` ≥ 3,5 A | 1 | the buck's inductor |
-| 28,0 k · 12,1 k · 22 pF C0G · 7,50 kΩ | 1 set | the divider, `C_FF`, `RT` for 2,08 MHz |
+| 30 k · 13 k · 22 pF C0G · 7,50 kΩ | 1 set | the divider, `C_FF`, `RT` for 2,08 MHz |
 | 4,7 µF 50 V + 100 nF · 1 µF · 100 nF | 1 set | `VIN` · `VCC` · `BOOT` |
 | 3× 10 µF 50 V 1206 + 100 nF | 1 set | the 3,3 V node |
 | 100 kΩ | 1 | `PG` up, to PD14 |

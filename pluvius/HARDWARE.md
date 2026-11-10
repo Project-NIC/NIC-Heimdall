@@ -501,7 +501,7 @@ carries no clock — a local 2²⁴ crystal, one RS-485 pair.
 the converter's `DVDD` is a digital supply and takes the same rail through the station's shielded 2,2 µH,
 `SWPA252012S2R2MT`, into 10 µF + 100 nF — the position for a converter's digital supply
 (`../core/POWER.md`, *The filter parts*). The one inductor part
-on the board is the shielded 2,2 µH under the MCU's `VDDA`/`VREF+` (*Analogue and reference*). The 5,0 V sits on the 5,54 V — 0,5 V of headroom against the `LP2985`'s dropout, at most 148 mV at 10 mA over −40…+125 °C and 145 mV at 50 mA (SNVS018AB), ~21 mA here.
+on the board is the shielded 2,2 µH under the MCU's `VDDA`/`VREF+` (*Analogue and reference*). The 5,0 V sits on the 5,67 V — 0,67 V of headroom against the `LP2985`'s dropout, at most 148 mV at 10 mA over −40…+125 °C and 145 mV at 50 mA (SNVS018AB), ~21 mA here.
 **Both bucks are the `LMR43610`**, one order code, because the 12 V node is behind the transils
 and they clamp at ~29 V: a 17 V part there dies on the first surge it was fitted to survive. The
 5,5 V branch runs in PFM — its ~20 mA cannot fill a 2 MHz cycle with any inductor the part
@@ -767,7 +767,7 @@ and the converter's C0G, which its sheet asks for on the inputs and across `CAPP
 | 33 Ω | 8 | `SCLK` · `DIN` · `DOUT` · `CS_ADC` · `START` · `RESET` · `PWDN` · `DRDY` | `C23140` Basic |
 | `LP2985IM5X-5.0` — `ON/OFF` to `VIN` · 1 µF at `VIN` · 10 nF `BYPASS`; its output capacitor is the π's first 10 µF + 100 nF | 1 set | the 5,0 V | `C5380652` · `C28323` · `C57112` Basic |
 | `LMR43610R3RPER` | 2 | the 3,3 V and the 5,5 V | `C20345531` |
-| `R_FBT` 28,0 k · 54,9 k, `R_FBB` 12,1 k, `C_FF` 22 pF C0G | 1 set each | the two dividers — 3,31 V and 5,54 V (`../galvani/HARDWARE.md`, *The buck cell*) | the house divider · 22 pF `C1653` Basic |
+| `R_FBT` / `R_FBB` 30 k / 13 k · 56 k / 12 k, `C_FF` 22 pF C0G | 1 set each | the two dividers — 3,31 V and 5,67 V (`../galvani/HARDWARE.md`, *The buck cell*) | `C22984` · `C22797` · `C23206` · `C22790` · 22 pF `C1653` Basic |
 | 10 µH shielded, `I_SAT` ≥ 2,1 A · 4,7 µH shielded, `I_SAT` ≥ 3,5 A | 1 each | the 3,3 V's inductor · the 5,5 V's | the house parts — no power inductor is Basic |
 | 3× 10 µF 50 V 1206 + 100 nF · 4,7 µF 50 V + 100 nF · 1 µF · 100 nF | 2 sets | each buck's `C_OUT` · `C_IN` · `VCC` · `BOOT` | `C13585` · `C29823` · `C28323` · `C14663` Basic |
 | 100 kΩ | 1 | the 3,3 V buck's `PG` up, to PD14 | `C25803` Basic |

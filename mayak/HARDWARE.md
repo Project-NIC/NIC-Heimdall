@@ -15,7 +15,7 @@ and no other — the S3 has too few UARTs. The clock is Kronos's, a board of its
 | the head | **`ESP32-S31-WROOM-3U-N16R16V`** | 16 MB flash, 16 MB octal PSRAM at 1,8 V; the external-antenna variant |
 | 2,4 GHz antenna | one u.FL/SMA connector off the module | Wi-Fi and BLE are one radio on the S31 and share it: where the site runs a Wi-Fi uplink the antenna is the directional one on the mast (`../core/UPLINK_TRANSPORT.md`), and the handheld at the open enclosure works in its back lobe with 20 dB to spare; where it does not, a small 2,4 GHz stub on the box wall. No separate BLE antenna anywhere |
 | 12 V in | **two two-pole terminals**, input and tap — `DGPS2.5R-5.0` blocks, two 2-pole — through its own fuse in the enclosure's fuse field, sized by the construction (`../daedalus/CONSTRUCTION.md`), one **`5.0SMDJ14A`** across the terminals, then a **`PMEG10020ELR`** Schottky | the battery rail as it stands, 10–20 V on the pin. A reversed pack drives the transil forward and the fuse clears; the diode stops the backup cell feeding the 12 V wire back through the buck |
-| 3,3 V | **one `LMR43610`** set to **3,43 V**, bulk capacitor at the module — **the `LMR43620` on the same footprint where the modem is LTE-M** | sized for the 0,6 A the module sheet asks of its source, and with an LTE-M modem for its ~0,5 A bursts beside it; no 5 V, no LDO. 3,43 V is the backup cell's float; every part on the rail stands 3,6 V. **The rail's bulk is 3× 47 µF 50 V hybrid polymer** beside the buck's own output capacitors — the reserve that carries the rail through the backup cell's takeover |
+| 3,3 V | **one `LMR43610`** set to **3,44 V**, bulk capacitor at the module — **the `LMR43620` on the same footprint where the modem is LTE-M** | sized for the 0,6 A the module sheet asks of its source, and with an LTE-M modem for its ~0,5 A bursts beside it; no 5 V, no LDO. 3,44 V is the backup cell's float; every part on the rail stands 3,6 V. **The rail's bulk is 3× 47 µF 50 V hybrid polymer** beside the buck's own output capacitors — the reserve that carries the rail through the backup cell's takeover |
 | backup cell | **one wide-temperature cell, ~3 Ah** — a low-temperature LiFePO4 or a sodium-ion cell, an 18650, a 21700 or a thin prismatic cell (*Power*) — on the 3,3 V rail through one `TPS259474LRPW` eFuse — the hold, the takeover, a 1 A breaker and the undervoltage cut — charged through a `TPS22917` and 10 Ω | carries the head, Hermes and the modem when the 12 V goes: the flush, the BMS read, the modem's report, then the head lets go and the board goes dark (*Power*) |
 | ports to the cards | **four 12-pin data bodies**, wired `TXD` · `RXD` · `ID` · `GND` only; the 1,10 kΩ `ID_RET` resistor. **`TXD` is push-pull and carries no resistor; the pad for a 330 Ω pull-up is on `RXD`, unfitted**, which is the wire the cards' outputs share — the hardware that lets more than one card hang on a trunk port, which the firmware does not implement (*The trunk is a spur*, below) | in-box crossed cables to the Bifrosts; no Galvani board ever hangs here |
 | time bus tap | **one 10-pin 2×5 IDC** on Kronos's ribbon, **two `THVD1450` receivers, one a pair** (`RE#`, `DE`, `D` tied low), the line block (2× 10 Ω per pair, jumpered 80,6 Ω) | the head takes PPS-K and the I²C label; **the clock is received and routed to `GPIO38`, and the firmware does not use it** — it is there for a build that wants it |
@@ -409,7 +409,7 @@ nothing.**
       standard LiFePO4 stops discharging at −20 °C and takes no charge at 0 °C. Its plateau,
       ~3,2–3,3 V, sits inside the module's window across most of its charge;
     - **or a sodium-ion cell** — better in the cold, at its best below zero where LiFePO4 is at its
-      worst, but its voltage slopes: floated at 3,43 V and used down to the module's 3,0 V it gives
+      worst, but its voltage slopes: floated at 3,44 V and used down to the module's 3,0 V it gives
       the rail only part of its charge, which the event's few percent fits with room.
 
     **An 18650, a 21700, or a thin prismatic cell** — a flat 3 Ah cell costs a few hundred crowns —
@@ -450,7 +450,7 @@ nothing.**
     `EN` low and the part is off, drawing **4,4 µA** from the cell (28,7 max). The divider is also
     the cut that needs no processor: `GPIO50` sits at the rail, so `EN` follows the rail at 0,382
     of it, and the part turns off when the rail falls to **2,82–2,92 V** (its 1,076–1,116 V
-    falling threshold) and on from **3,10–3,20 V** (1,183–1,223 V rising) — below the 3,43 V the
+    falling threshold) and on from **3,10–3,20 V** (1,183–1,223 V rising) — below the 3,44 V the
     rail stands at when the head raises the hold. A LiFePO4 cell is nearly empty at the cut, and
     every chemistry here is far above its damage floor. A head that browns out first lets `GPIO50` go high-impedance and the
     56,2 kΩ turns the part off just the same, so a hung or dying head cannot drain the cell.
@@ -485,11 +485,11 @@ nothing.**
   - **The rail stays inside the module's window.** The `ESP32-S31` asks **3,0–3,6 V**, and 3,6 V
     is also its absolute maximum; everything else on the rail goes lower — the SD cards to 2,7 V,
     the `SX1262` to 1,8 V, an LTE-M modem to its sheet's 2,2–2,7 V, the H523 to 1,71 V, the `SHT45` to 1,08 V. The rail is set to
-    **3,43 V** — 3,50 V at the top of its tolerance — so the cell floats at ~3,4 V. **The worst
+    **3,44 V** — 3,50 V at the top of its tolerance — so the cell floats at ~3,4 V. **The worst
     takeover dip:** 125 mV to the threshold, then 50 µs at 0,6 A out of **3× 47 µF hybrid
     polymer + the buck's 3× 10 µF**, ~170 µF, is 0,18 V more — the rail stays above **3,1 V**.
   - **The path in: the rail → `TPS22917` → 10 Ω → the cell**, `EN` on `GPIO51`. The cell floats
-    at the rail's 3,43 V — the LiFePO4 float, and under a sodium-ion cell's ceiling; the resistor
+    at the rail's 3,44 V — the LiFePO4 float, and under a sodium-ion cell's ceiling; the resistor
     limits a recharge to ≤ 0,1 A (~0,03 C on 3 Ah) and an event's ~20 mAh comes back in well under an
     hour. The eFuse blocks every current from the
     rail into the cell, so a recharge goes through the resistor and nowhere else; when the 12 V
@@ -520,8 +520,8 @@ nothing.**
 | `DGPS2.5R-5.0` | 2 | the 12 V input and tap |
 | `5.0SMDJ14A` | 1 | across the 12 V input, ahead of the diode |
 | `PMEG10020ELR` | 2 | the 12 V input · `VBUS` into the buck input |
-| `LMR43610R3RPER` | 1 | the 3,3 V rail, 3,43 V — `LMR43620` on the same footprint where the modem is LTE-M; the house cell (`../galvani/HARDWARE.md`, *The buck cell*) |
-| 29,4 kΩ 1 % · 12,1 kΩ 1 % · 22 pF C0G | 1 each | `R_FBT` · `R_FBB` · `C_FF` — 3,43 V |
+| `LMR43610R3RPER` | 1 | the 3,3 V rail, 3,44 V — `LMR43620` on the same footprint where the modem is LTE-M; the house cell (`../galvani/HARDWARE.md`, *The buck cell*) |
+| 20 kΩ 1 % · 8,2 kΩ 1 % · 22 pF C0G | 1 each | `R_FBT` · `R_FBB` · `C_FF` — 3,44 V; JLCPCB Basic `C4184` · `C25981` · `C1653` |
 | 7,50 kΩ | 1 | `RT`, 2,08 MHz |
 | 4,7 µH shielded, `I_SAT` ≥ 3,5 A | 1 | the buck's inductor |
 | 4,7 µF 50 V X7R 1206 + 100 nF 50 V | 1 + 1 | `C_IN` |

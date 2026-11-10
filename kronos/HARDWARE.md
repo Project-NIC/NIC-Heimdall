@@ -243,7 +243,7 @@ overvoltage it holds for long enough clears the fuse the same way (`../galvani/R
 rails*). **One rail, 3,3 V, off the house buck cell**; no rail comes from the Mayak or a card.
 
 **`LMR43610R3RPER`**: `RT` 7,50 kΩ → 2,08 MHz, auto mode by the `R3` order code; 4,7 µH
-shielded, `I_SAT` ≥ 3,5 A; `R_FBT` 28,0 kΩ / `R_FBB` 12,1 kΩ → 3,31 V, `C_FF` 22 pF C0G across
+shielded, `I_SAT` ≥ 3,5 A; `R_FBT` 30 kΩ / `R_FBB` 13 kΩ → 3,31 V, `C_FF` 22 pF C0G across
 `R_FBT`; `C_IN` 4,7 µF 50 V + 100 nF at `VIN`; `C_OUT` 3× 10 µF 1206 + 100 nF; `VCC` 1 µF;
 `BOOT` 100 nF to `SW`; `PGOOD` to PD14 through 100 kΩ to 3,3 V. The 12 V node carries 47 µF 50 V
 hybrid polymer + 10 µF 50 V 1206 + 100 nF at the terminals.
@@ -438,7 +438,7 @@ tolerance drops out.
 | 4,7 kΩ | 4 | I2C1 (the label bus), I2C3 — a pair each |
 | 10 kΩ | 1 | `BOOT0` to ground |
 | 1 kΩ + LED | 1 | the status LED |
-| 7,50 kΩ · 28,0 kΩ · 12,1 kΩ, 1 % | 1 each | the buck's `RT` and divider |
+| 7,50 kΩ · 30 kΩ · 13 kΩ, 1 % | 1 each | the buck's `RT` and divider |
 | 100 kΩ | 1 | `PGOOD` pull-up |
 | 22 pF C0G | 1 | `C_FF` |
 | 2,2 µH shielded, `SWPA252012S2R2MT` | 3 | `VDDA`, `VREF+`, the TCXO |

@@ -30,7 +30,7 @@ The arm hands the board its isolated 12 V, and the board makes one rail from it.
 ```
 
 **The buck**: `RT` 7,50 kΩ → 2,08 MHz, auto mode by the `R3` order code; 4,7 µH shielded,
-`I_SAT` ≥ 3,5 A; `R_FBT` 28,0 kΩ / `R_FBB` 12,1 kΩ → 3,31 V, `C_FF` 22 pF C0G across `R_FBT`;
+`I_SAT` ≥ 3,5 A; `R_FBT` 30 kΩ / `R_FBB` 13 kΩ → 3,31 V, `C_FF` 22 pF C0G across `R_FBT`;
 `C_IN` 4,7 µF + 100 nF at `VIN`; `C_OUT` 3× 10 µF 1206 + 100 nF; `VCC` 1 µF; `BOOT` 100 nF to `SW`;
 `PGOOD` to PD14 through its pull-up.
 
@@ -240,7 +240,7 @@ SWD, NRST and BOOT0 populated; the LED fitted; nothing is DNP (`../core/HARDWARE
 | 100 nF · 10 kΩ | 1 each | `NRST` · `BOOT0` to ground |
 | `LMR43610R3RPER` | 1 | the 3,3 V |
 | 4,7 µH shielded, `I_SAT` ≥ 3,5 A | 1 | the buck's inductor |
-| 28,0 k · 12,1 k · 22 pF C0G · 7,50 kΩ | 1 set | the divider, `C_FF`, `RT` for 2,08 MHz |
+| 30 k · 13 k · 22 pF C0G · 7,50 kΩ | 1 set | the divider, `C_FF`, `RT` for 2,08 MHz |
 | 4,7 µF 50 V + 100 nF · 1 µF · 100 nF | 1 set | `VIN` · `VCC` · `BOOT` |
 | 3× 10 µF 50 V 1206 + 100 nF | 1 set | the 3,3 V node |
 | 100 kΩ | 1 | `PG` up, to PD14 |
