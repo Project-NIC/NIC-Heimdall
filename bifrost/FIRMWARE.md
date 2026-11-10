@@ -103,9 +103,9 @@ step by the segment table (§7).
 
 | # | step | detail | time |
 |---|---|---|---|
-| 1 | feed | `EN` high. The port's `INA238` — 0x40 or 0x41 on its controller, by the socket's `A_SEL` strap — is programmed with `APOL` = 1 (high = alarm): shunt over-voltage at **the port's trip point** — the far end's start-up peak and running load measured at commissioning, written with `SET` into the per-port register `0xFF20 + port` and persisted; until one is written, the cell's ceiling the power board's `ID` names (the communication board's `ID` says nothing about watts) — and bus under-voltage at the cell's collapse point. `ALERT` armed | 200 ms after the previous port |
+| 1 | feed | `EN` high. The port's `INA237` — 0x40 or 0x41 on its controller, by the socket's `A_SEL` strap — is programmed with `APOL` = 1 (high = alarm): shunt over-voltage at **the port's trip point** — the far end's start-up peak and running load measured at commissioning, written with `SET` into the per-port register `0xFF20 + port` and persisted; until one is written, the cell's ceiling the power board's `ID` names (the communication board's `ID` says nothing about watts) — and bus under-voltage at the cell's collapse point. `ALERT` armed | 200 ms after the previous port |
 | 2 | the clock | the port's `OE` high: its gate in the quad buffer passes `MCO1`, **2²² on a Bifrost, 2¹⁹ on an Argus**, named by `ATTN` (HSE at prescaler 1 or 8). No port's `ID` is read to pick it. **The port clock runs from the moment the port is fed and never stops for the start** | at once |
-| 3 | settle | the far end's island converter starts and its unit boots on RC. The card waits **2 s**, then reads the `INA238`: no current where a unit was expected is reported. A port that answers no `DISCOVER` in step 4 goes to `PROBING` — its clock output stopped, `DISCOVER` once a minute — and the first reply restarts the clock and the sweep from step 2 | 2 s |
+| 3 | settle | the far end's island converter starts and its unit boots on RC. The card waits **2 s**, then reads the `INA237`: no current where a unit was expected is reported. A port that answers no `DISCOVER` in step 4 goes to `PROBING` — its clock output stopped, `DISCOVER` once a minute — and the first reply restarts the clock and the sweep from step 2 | 2 s |
 | 4 | `DISCOVER` | broadcast at 38 400 on the port's USART, `DE` raised for the frame. Then the card holds the round open until **700 ms** of silence — every unit not in a running round answers once, its tag in the two time bytes, after `tag × 10 µs` and listening first; two units that collide back off on their own echo and try again with a new delay. The card records every reply with a good CRC: tag, `TYPE\|NUM` as the unit said it | ≤ 655 ms of delays, closed by 700 ms of silence; `DISCOVER` once more and 700 ms again |
 | 5 | `ASSIGN_ADDR` | to each tag in turn: the NUMBER the card holds for it (the persisted one, or the next free from the bottom on a fresh port) and the slot. Then `GET slots`: a unit whose type takes more than one slot (Sputnik five by type; Tesla one to three, Steinmetz three, an Argus ⌈sondes/4⌉ — read from the register) gets its further NUMBERs and slots by further `ASSIGN_ADDR`s to the same tag. `ACK` closes each | ≤ 10 ms per unit |
 | 6 | the count | **the physical count of the port is the count of `DISCOVER` replies**; the slot count is the sum of the `slots` registers. More than eight slots on one port is refused: the card reports it and the port stays in `SWEEP` | — |
@@ -255,8 +255,8 @@ slot order, zeros for an empty slot. The status byte: 0 running · 1 unranged ·
 
 **The card's `PORTS` frame, from its own address as well — `kind` 7, once a minute and on
 `GET PORTS`, in the card's map:** bytes 0–19 the five sockets' `VBUS` and `CURRENT` as raw
-`INA238` registers, 4 B a socket, the up port first and the four down ports in port order, an
-empty socket zeros; bytes 20–27 the leak watch of down ports 1–4 — the second `INA238`'s raw
+`INA237` registers, 4 B a socket, the up port first and the four down ports in port order, an
+empty socket zeros; bytes 20–27 the leak watch of down ports 1–4 — the second `INA237`'s raw
 `VBUS` where a 300 V source board is seated, 0 elsewhere (`../galvani/HARDWARE.md`, *Leak watch*); bytes
 28–29 the card's own temperature, int16 in 0,01 °C; 30–31 reserve. The card sends no `REPORT`
 about itself — its arrived feed is socket 0. It goes into the FIFO like the segment table and is
@@ -382,8 +382,8 @@ waits in the queue; the timeout is the master's, not the card's.
 | `0xFF03 slots` | r | an Argus: ⌈sondes/4⌉; a Bifrost: 0 — it takes no slot |
 | `0xFF04 HEALTH` | r | link-error count on the up link; wider: per port CRC misses, junk, slot-check failures, PPS-K glitches, label slips |
 | `0xFF13 DELAY` | r/w | an Argus: the 32 its Bifrost writes at floor-up — it holds 16 and writes 16 to each sonde; a Bifrost: 0, it takes none |
-| `0xFF10 + port` | r | port state (§3), the two `ID` codes, the `INA238` bus voltage and current |
-| `0xFF20 + port` | r/w | **the per-port current limit**, in the `INA238`'s shunt LSBs — the one sanctioned `SET` across every port-carrying board. Written to the part's threshold register and to the flash cells |
+| `0xFF10 + port` | r | port state (§3), the two `ID` codes, the `INA237` bus voltage and current |
+| `0xFF20 + port` | r/w | **the per-port current limit**, in the `INA237`'s shunt LSBs — the one sanctioned `SET` across every port-carrying board. Written to the part's threshold register and to the flash cells |
 | `0xFF30 + port` | r/w | the rung pin: 0 by count · 1 pin 2²⁰ · 2 pin 2²¹ |
 | `0xFF40 + port` | r/w | **the `DELAY` written to the port's units** — 32 by default on a Bifrost, 16 on an Argus, never below 8; the card holds 128 less it (an Argus: 32 less it) and the path stays 128; persisted |
 | `0xFF50 + slot` | r | the unit's ranged route in 2²⁷ ticks, as written to it, and its tag |
@@ -417,7 +417,7 @@ told at every step and can override with `PORT_PWR` / `PORT_CLK`; nothing waits 
 
 | trigger | action |
 |---|---|
-| a port's `ALERT` pin — `ALERT_0` (PC8) for the up port, `ALERT_1`–`ALERT_4` (PD4 · PD5 · PD10 · PD11) for the down ports, the port being the pin: its `INA238` reads a shunt over-voltage above the port's limit, or a bus under-voltage | `EN` and `OE` low within **1 ms** (the EXTI handler does it), the table re-sent with the slot's status 5 *port faulted*, `HEALTH` port · *overcurrent* / *collapse*, `FAULT` up; the port stays off until `PORT_PWR` or the next `FLOOR`. Three trips in an hour and the port is not re-fed by `FLOOR` either — `PORT_PWR` from the head only |
+| a port's `ALERT` pin — `ALERT_0` (PC8) for the up port, `ALERT_1`–`ALERT_4` (PD4 · PD5 · PD10 · PD11) for the down ports, the port being the pin: its `INA237` reads a shunt over-voltage above the port's limit, or a bus under-voltage | `EN` and `OE` low within **1 ms** (the EXTI handler does it), the table re-sent with the slot's status 5 *port faulted*, `HEALTH` port · *overcurrent* / *collapse*, `FAULT` up; the port stays off until `PORT_PWR` or the next `FLOOR`. Three trips in an hour and the port is not re-fed by `FLOOR` either — `PORT_PWR` from the head only |
 | `SD` high on an optical port (no light) | the port's units go on the ladder at step 1 with reason *no light*; the table re-sent, `FAULT` up while it is dark and down again when the light returns |
 | `PGOOD` low on the down-port buck | `HEALTH` *down rail*, `FAULT` up; every down port's units to filler; the card keeps its up link and waits for `PGOOD` |
 | a `DISCOVER` reply heard on a `SYNCED` port, or a frame outside every slot for a whole round | *foreign talker*: counted, reported once a minute, ignored |

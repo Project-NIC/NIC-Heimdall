@@ -209,7 +209,7 @@ processor asleep in `WFI` between them.
    after both   the levelling: three axis sets × R_level (FMAC, 3×3) ─▶ pack ─▶ the DMA buffer
    every 16th   SPI3: the SCL3300 (read-latest, 4 × 32-bit pipelined frames, CRC-8 checked)
    every 4th    SPI3: the RM3100 — POLL written on the compare, DRDY (PD10) timestamped, 9 B read; interpolated to g − 4 frames (§5)
-   every 128th  I2C1: the INA238 voltage and current ─▶ VIN, the SUPPLY flag outside the window; I3C1: the TMP117 (2 B) ─▶ the REPORT frame
+   every 128th  I2C1: the INA237 voltage and current ─▶ VIN, the SUPPLY flag outside the window; I3C1: the TMP117 (2 B) ─▶ the REPORT frame
    every period nq-detect on the seismic source ─▶ the ALARM flag; the QC verdict ─▶ status 2 + FAULT, the detail in HEALTH
    at the slot  TIM2 compare ─▶ DE up ─▶ USART1 DMA, 40 B ─▶ DE down ─▶ the echo checked
 ```
@@ -247,7 +247,7 @@ never wraps. Field order: ADXL X/Y/Z · ICM accel X/Y/Z · ICM gyro X/Y/Z · SCL
 X/Y/Z · bytes 30–31 reserve, 0. An absent sensor's six bytes are zeros. Little-endian
 throughout.
 
-**The supply** is the `INA238`'s voltage and current on the power body, read once a second over
+**The supply** is the `INA237`'s voltage and current on the power body, read once a second over
 I2C1 into `VIN`; outside `VIN_WINDOW` the node sets the **SUPPLY flag** in its own header and
 holds it while it lasts — no byte is streamed (`../core/PROTOCOL.md` §5).
 
@@ -355,7 +355,7 @@ frames carry `status` 4 WARMUP; a second failure within a minute is `DEGRADED` i
 reset and a rejoin (§4), counted in `HEALTH`. The CSS on HSE loss: NMI, HSI, mute, sensor clocks
 stopped, rejoin on the returning clock.
 
-**I²C recovery.** A slave holding `SDA` low (the TMP117 or the `INA238` after a glitch) is
+**I²C recovery.** A slave holding `SDA` low (the TMP117 or the `INA237` after a glitch) is
 released by nine `SCL` pulses and a STOP, then the bus is reinitialised; counted in `HEALTH`.
 No rail is cycled for it.
 
@@ -368,7 +368,7 @@ No rail is cycled for it.
 | the ADXL355 lost | the ICM's accelerometer becomes the seismic and levelling source until the next boot; `HEALTH`, `FAULT` up |
 | the clock lost | CSS → mute → rejoin; no frame leaves off the clock |
 | a frame's echo fails CRC | `HEALTH` counts; the frame waits in the circular buffer for `RESEND` |
-| the supply outside `VIN_WINDOW`, or the `INA238` `ALERT` high (PC8) | the SUPPLY flag in the header until it clears; the node changes nothing — the source end decides |
+| the supply outside `VIN_WINDOW`, or the `INA237` `ALERT` high (PC8) | the SUPPLY flag in the header until it clears; the node changes nothing — the source end decides |
 | brownout | the BOR at 2,7 V resets the node; a reset is a rejoin |
 | a `SET` to a register the node does not have | `ERROR` *no such register* |
 | population changed since the persisted set | full enrolment forced — 38 400, silent, waiting for a sweep |
@@ -401,7 +401,7 @@ that fails its check is no set.
 |---|---|---|
 | USARTs | 2 — USART1 the link, USART3 the echo | 7 |
 | SPI | 3 — one per seismic sensor, the RM3100 sharing SPI3 by `CS` | 4 |
-| I²C | 1 — I2C1: the `INA238` | 3 |
+| I²C | 1 — I2C1: the `INA237` | 3 |
 | I3C | 1 — I3C1 in I²C legacy: the TMP117 | 2 |
 | DMA channels | 9 — SPI1/2/3 RX+TX, USART1 TX, USART3 RX, ADC1 | 16 |
 | timers | TIM2 timebase · TIM4 ranging · TIM1 `EXT_CLK` · TIM3 `SYNC` · TIM15 `CLKIN` · TIM6 housekeeping | |

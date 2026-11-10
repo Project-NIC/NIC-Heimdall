@@ -79,7 +79,7 @@ The ICM-42688-P is natively 16 bits and drops nothing.
 ## The report frame and `HEALTH`
 
 **`REPORT`, `kind` 6**, once a `REPORT_INTERVAL` (60 s), unasked, in the fourth frame-time of the
-node's own block: `VBUS` · `CURRENT` raw off the power board's `INA238` · the TMP117 · the coil
+node's own block: `VBUS` · `CURRENT` raw off the power board's `INA237` · the TMP117 · the coil
 NTC — four int16 words, the temperatures in 0,01 °C, positions 1–3 zeros. Leaving `VIN_WINDOW`
 raises the SUPPLY flag in the header, and the head logs the edge (`../core/PROTOCOL.md` §5).
 

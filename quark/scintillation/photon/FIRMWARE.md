@@ -55,7 +55,7 @@ sieverts and no spectrum leaves unasked.
 | 7 | the amplifiers, the bias | `PD` low; `BIAS_EN` high with the DAC at the persisted setpoint; `IBIAS_MON` read every 100 ms until it is inside the persisted window, **2 s** | out of window: `BIAS_EN` low, `HEALTH` NO_RESPONSE *SiPM n*; the other channel runs |
 | 8 | the ring | the PSSI in circular DMA into the 1 MB ring — 524 288 half-words, **5,95 ms** — with a half-transfer interrupt every 2,98 ms; **the A/B parity read from the first words** — positive full scale is channel A, negative is B, and the DMA's start is asynchronous to the converter, so this and not the `SYNC` is what fixes it; the test patterns cleared (`0x0D` = 0 on both); the two spare lines checked to read zero | the pattern not seen, or a spare line at one: `HEALTH` DEGRADED *bus* |
 | 9 | the PSRAM | a pattern written and read back through OCTOSPI1 at 2²⁶ — the part answers or it does not | absent or wrong: `HEALTH` DEGRADED *PSRAM*; the two-record fallback runs |
-| 10 | the thermometers | ADC1: `NTC_EN` high, the NTC dividers read once against `VREF+`, low again; the crystal's reading through the B-curve. I2C1: the `INA238` through the `PCA9306` configured; `ALERT` (PC8) an EXTI on the rising edge — high is the alarm, the 100 kΩ holds it low | a divider at either rail — open or shorted: `HEALTH` NO_RESPONSE *thermometer*; the tempco correction held at 1 |
+| 10 | the thermometers | ADC1: `NTC_EN` high, the NTC dividers read once against `VREF+`, low again; the crystal's reading through the B-curve. I2C1: the `INA237` through the `PCA9306` configured; `ALERT` (PC8) an EXTI on the rising edge — high is the alarm, the 100 kΩ holds it low | a divider at either rail — open or shorted: `HEALTH` NO_RESPONSE *thermometer*; the tempco correction held at 1 |
 | 11 | the ladder | 1 s of the dark stream read (§B6) before the first energy is believed; until then events ship with `status` 4 WARMUP | no ladder in 10 s (a third cumulant at zero: no dark counts, a dead SiPM or no bias): `HEALTH` DEGRADED *ladder* for that channel |
 | 12 | enrol | §B4 | — |
 
@@ -312,7 +312,7 @@ The PSRAM holds the burst records and nothing persistent.
 | resource | used | of |
 |---|---|---|
 | USARTs | 2 — USART1 the link, USART3 the echo | 10 |
-| PSSI · SPI3 · I2C1 · ADC1 · DAC1 | the converter's data and registers; the `INA238` on I2C1 through the `PCA9306`; the NTC dividers, the IDs and `IBIAS_MON`; the bias setpoints | |
+| PSSI · SPI3 · I2C1 · ADC1 · DAC1 | the converter's data and registers; the `INA237` on I2C1 through the `PCA9306`; the NTC dividers, the IDs and `IBIAS_MON`; the bias setpoints | |
 | MDMA | 2 — the ring, circular; the burst copy to the PSRAM, memory to memory, after a burst | 16 |
 | OCTOSPI | 1 — port 2, the PSRAM, 2²⁶ octal DDR, idle while the front measures | 2 |
 | DMA | 3 — USART1 TX, USART3 RX, ADC1 | 16 |

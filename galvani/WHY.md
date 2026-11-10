@@ -731,3 +731,10 @@ drives with `RE#` low, so its receiver reads the pair back — the echo; on the 
 receives. The same family, the same 50 Mb/s timing (SLLSF22I), one load fewer on the shared pair,
 one part type on the board, and at JLCPCB $3,68 against $7,88 a part with 84 against 36 in stock
 (10 Nov 2026) — as NIC-Crazy_Ivan's units did with the `THVD1450` on 7 Nov.
+
+## `INA238` on every power board — superseded by the `INA237`
+
+The same registers, pins and 85 V, 16 bits on the same ranges; the `INA238`'s ±5 µV and ±0,1 % bought
+a precision no threshold, baseline or reading in the family uses — trip points are measured and set
+with margin, the feed and the leak watch are calibrated at commissioning. $23,36 against $1,83 a part
+at JLCPCB (10 Nov 2026), eight parts in a full family.

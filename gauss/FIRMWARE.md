@@ -149,7 +149,7 @@ that already carry `status` 4 WARMUP.
 threshold (`ALARM`, default 200 nT) between two consecutive frames' values, and holds for a
 second. **Bytes 6–7** are reserve, 0. The supply and the temperatures ride the **`REPORT` frame**, `kind` 6,
 once a `REPORT_INTERVAL` (60 s), in the slot's fourth frame-time behind the data: `VBUS` ·
-`CURRENT` as the `INA238`'s raw registers · the wall `TMP117` · the NTC between
+`CURRENT` as the `INA237`'s raw registers · the wall `TMP117` · the NTC between
 the coils, int16 in 0,01 °C; a reply owed goes first and the report waits a round. `GET REPORT`
 brings it now, and the **SUPPLY flag** in the header says when the supply left
 `VIN_WINDOW` (`../core/PROTOCOL.md` §1, §5).

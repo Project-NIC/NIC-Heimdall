@@ -166,7 +166,7 @@ alone is blind to something:
 |---|---|---|
 | **the weight falling** — the vessel loses what the head takes, over a window of 5 s | this board, every second | nothing that matters: whether the water left is the question itself |
 | **the revolutions** — the pulse output, where the head has one | this board, `PUMP_REV` | a split tube, a slipped tube, a blocked outlet, sucked-in air: the head turns, the count climbs, no water moves |
-| **the current** — the source board's `INA238` on the switched 24 V | Palatine, on `ALERT` (`../palatine/FIRMWARE.md` §6) | the same: a head pumping air draws less than one pumping water, not nothing |
+| **the current** — the source board's `INA237` on the switched 24 V | Palatine, on `ALERT` (`../palatine/FIRMWARE.md` §6) | the same: a head pumping air draws less than one pumping water, not nothing |
 
 | what happened | the weight | the revolutions | the current |
 |---|---|---|---|
@@ -180,7 +180,7 @@ this board whatever the other two say**: with `HEAD` at 1 and `RUN` driven, the 
 fall by at least `DEAD_G` over every 5 s, or the drain is dead — `PUMP` cleared, `DRAIN_TIMEOUT`
 set, `FAULT`. The other two name the cause: `PUMP_REV` zero against a weight that did not fall is
 a head that did not turn, `PUMP_REV` climbing against it is a tube or an air lock, and Palatine's
-`INA238` says the same from the other end and cuts the 24 V on its own thresholds. The head is
+`INA237` says the same from the other end and cuts the 24 V on its own thresholds. The head is
 stopped by whichever sees it first.
 
 **`DEAD_G` is set to the head and the cell, never written as one number.** The rule: the fall the

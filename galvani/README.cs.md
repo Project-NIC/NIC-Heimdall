@@ -157,7 +157,7 @@ Trasa 300 V s `G-I-N-025` na dvě stě metrů je přípustná stavba, a stejně 
 s `G-O-2-100`. Na napájecím kabelu dva průřezy a víc ne: **2× 1,5 mm² a 2× 2,5 mm²**.
 
 **Vypínací bod trasy se měří a měnič je strop.** Při uvádění do provozu se změří rozběhová špička
-a provozní zátěž vzdáleného konce a `INA238` zdrojové desky se na ně naprogramuje s rezervou —
+a provozní zátěž vzdáleného konce a `INA237` zdrojové desky se na ně naprogramuje s rezervou —
 registr hostitele pro daný port, přepsaný, když se přidá senzor. Mezi měřením a měničem není žádná
 třída zátěže: vzdálený konec při 3 W dostane vypínací bod blízko 4 W, konec při 21 W blízko 24.
 **To, co měnič dodá, je zeď**: `G-48-S` ~26 W a `G-48-U` ~25 W na vzdálené straně, takže trasa
@@ -168,7 +168,7 @@ třída zátěže: vzdálený konec při 3 W dostane vypínací bod blízko 4 W,
 **Jedna zdrojová deska může napájet několik desek jednotek.** Každá deska jednotky přijímá napájení
 na jednom páru svorek a předává ho přímo skrz na druhém, takže jednotky se řetězí na jednom
 napájecím kabelu. Řetěz je pro zdroj jeden vzdálený konec: jeho zátěže a ztráty každé desky
-jednotky se sčítají, strop zdrojového měniče se sdílí, práh `INA238` se programuje na součet a
+jednotky se sčítají, strop zdrojového měniče se sdílí, práh `INA237` se programuje na součet a
 tabulky dosahu se čtou s celým součtem na poslední jednotce. Jeden `ENABLE` spíná celý řetěz;
 jednotka, která se musí spínat samostatně, dostane vlastní trasu. **Segment NodBus mini bere jednu
 zdrojovou desku a jeho jednotky se na ní řetězí**: už sdílejí pár segmentu, takže jednotka, která
@@ -241,11 +241,11 @@ páry.
 |---|---|---|---|
 | **1** | `ENABLE` | hostitel → deska | do `EN` měniče, stejná zem, žádný optočlen; **stažený dolů na přijímajícím konci**, takže reset, přeříznutý plochý kabel a potemnělý port nechají port vypnutý — **měnič zdrojové desky je vypnutý, dokud ho hostitel nezapne**. Pin zdrojové napájecí desky, buzený GPIO hostitele; na konci jednotky vede tentýž rezistor na desce ke vstupu, deska běží, kdykoli je napájení přítomné, a pin hostitele je nezapojený. Jeho jediný soused na plochém kabelu je zem |
 | **2** | `GND` | — | zpětný vodič |
-| 3 | `ID` | deska → hostitel | rezistor desky proti zemi, jako na datovém konektoru — napájecí deska odpoví rezistorem dřív, než je její `INA238` naprogramovaný, i tehdy, když neodpovídá |
-| 4 | `SDA` | ↔ | I²C obvodu `INA238` přes `ISO1642` desky; **4,7 kΩ na 3,3 V na hostiteli**, jeden pár na řadič |
-| 5 | `A_SEL` | patice → deska | **propojený na L nebo H v zapojení hostitele, žádný pin procesoru**; přechází přes `ISO1642` na `A0` obvodu `INA238`, `A1` uzemněný na desce: **0x40 při L nebo nezapojeném, 0x41 při H** — dvě stejné desky na jedné sběrnici jsou dvě adresy a řadič nese nejvýše dvě napájecí patice. Leží mezi `SDA` a `SCL` |
+| 3 | `ID` | deska → hostitel | rezistor desky proti zemi, jako na datovém konektoru — napájecí deska odpoví rezistorem dřív, než je její `INA237` naprogramovaný, i tehdy, když neodpovídá |
+| 4 | `SDA` | ↔ | I²C obvodu `INA237` přes `ISO1642` desky; **4,7 kΩ na 3,3 V na hostiteli**, jeden pár na řadič |
+| 5 | `A_SEL` | patice → deska | **propojený na L nebo H v zapojení hostitele, žádný pin procesoru**; přechází přes `ISO1642` na `A0` obvodu `INA237`, `A1` uzemněný na desce: **0x40 při L nebo nezapojeném, 0x41 při H** — dvě stejné desky na jedné sběrnici jsou dvě adresy a řadič nese nejvýše dvě napájecí patice. Leží mezi `SDA` a `SCL` |
 | 6 | `SCL` | hostitel → deska | hodiny I²C |
-| 7 | `ALERT` | deska → hostitel | alarm `INA238`, **při alarmu v H, jeden pin na patici na hostiteli, nikdy wired-OR** — jeden zaseknutý alarm nesmí oslepit ostatní; **100 kΩ proti zemi na hostiteli**, takže prázdná patice se čte jako klidová. Vedle `3,3 V`, aby zkrat na tom místě byl trvalým alarmem |
+| 7 | `ALERT` | deska → hostitel | alarm `INA237`, **při alarmu v H, jeden pin na patici na hostiteli, nikdy wired-OR** — jeden zaseknutý alarm nesmí oslepit ostatní; **100 kΩ proti zemi na hostiteli**, takže prázdná patice se čte jako klidová. Vedle `3,3 V`, aby zkrat na tom místě byl trvalým alarmem |
 | 8 | `3,3 V` | hostitel → deska | hostitelská strana `ISO1642`, pár miliampérů |
 
 **Tentýž konektor nese na Mayaku Hermes, měnič BMS/MPPT centrály**: I²C slave, 3,3 V přes
@@ -396,7 +396,7 @@ komunikační deska a hodnota říká médium a stupeň, který dokáže nést �
 unese to, co karta posílá, nikoli to, co vybírá hodiny; karta přidělí všem svým čtyřem portům jeden
 stupeň podle své role (`../bifrost/HARDWARE.md`). 0,60 a výš a 0,30 je napájecí deska: konec
 jednotky se dozví, na jakém měniči visí, zdrojový konec, který měnič budí, a tedy které prahy
-`INA238` naprogramovat — a odpoví i tehdy, když `INA238` neodpovídá. Kdo je na druhé straně, vyplyne
+`INA237` naprogramovat — a odpoví i tehdy, když `INA237` neodpovídá. Kdo je na druhé straně, vyplyne
 z dialogu, který následuje, i tam, kde kód zužuje možnosti na jedinou: rezistor říká, že je něco
 zapojeno, jen odpověď říká, že je něco živé. Jeden kód slouží každé jednotce na časovém spoji,
 včetně té, kterou někdo vymyslí později.
@@ -407,9 +407,9 @@ přivede na `ID` druhého hostitele. Deska Galvani nese rezistor jen na `ID`; id
 jednosměrná, ven, protože deska nemá procesor, kterým by četla. Hostitel, který vždy stojí jen za
 deskou Galvani, nenese žádné číslo a s kabelem se nikdy nesetká.
 
-### Telemetrie — `INA238` a `ISO1642` na každé napájecí desce
+### Telemetrie — `INA237` a `ISO1642` na každé napájecí desce
 
-**Jeden měřicí obvod na každé napájecí desce, a je povinný: `INA238` s bočníkem na straně země a
+**Jeden měřicí obvod na každé napájecí desce, a je povinný: `INA237` s bočníkem na straně země a
 `ISO1642`, který přenáší jeho I²C oběma směry a `ALERT` nahoru přes bariéru; `A_SEL` jím prochází
 dolů na `A0`.** Hostitel čte napětí sběrnice a proud přes konektor a programuje prahy podle toho, co
 `ID` řeklo o usazené desce. **Měřicí strana běží na ostrově, který si deska sama vyrábí z 3,3 V
@@ -420,7 +420,7 @@ takže potemnělý port se čte jako 0 V, a ne jako ticho. Každá deska rodiny 
 **Bočník je snímací rezistor 1210 s kovovým odporovým prvkem na rozsahu ±40,96 mV** — 50 mΩ na 48 V
 a 12 V, 200 mΩ na 300 V, 20 mΩ na 24 V — a **`VBUS` je dělič se spodní větví 100 kΩ na 48 V (horní
 100 kΩ) a 300 V (3× 1 MΩ), na 12 V a 24 V pin přímo**, všude 10 nF na pinu; převod 4,12 ms ×
-128, 16 bitů bez šumu, `ALERT` do 4 ms. **Jen `G-300-S` nese druhý `INA238`, hlídač svodu**, který
+128, 16 bitů bez šumu, `ALERT` do 4 ms. **Jen `G-300-S` nese druhý `INA237`, hlídač svodu**, který
 čte střed výbojky přes 9 MΩ a 8 MΩ obyčejných rezistorů 1206 — zdrojový konec trasy 300 V je
 jediné místo, kde se to dá měřit, a jediné místo, kde se to měřit musí.
 
@@ -428,11 +428,11 @@ jediné místo, kde se to dá měřit, a jediné místo, kde se to měřit musí
 |---|---|---|
 | **zdrojové desky** — `G-48-S` · `G-300-S` · `G-24-S` · `G-12-S` | **na VÝSTUPU, na galvanicky oddělené straně** — trasa je na druhé straně transformátoru a součástka musí vidět, jak trasa klesá: přetížený měnič zkracuje své impulzy a výstup se propadá, zatímco proud sedí na limitu | napětí a proud trasy; **nad** naprogramovanou zátěží je porucha, `ALERT` → hostitel shodí `ENABLE`; **pod** minimem je suchá trasa nebo přeříznutý kabel |
 | **desky jednotek** — `G-48-U` · `G-300-U-6` · `G-300-U-40` | **na VSTUPU** — napájení tak, jak přichází | co přichází na vzdálený konec; čte to hostitel na konci jednotky a hlídání svodu na 48 V je porovnání obou konců |
-| **`G-300-S`, druhý `INA238`** | mezi trasou a zemí | **hlídač svodu, na 300 V povinný**: porušení izolace na plovoucí trase neodebírá žádný proud a nic nevybaví, dokud obvod neuzavře druhé porušení nebo člověk; součástka čte svodový proud ze zdrojového konce každou minutu. **Při zpětném vedení mořem trasa neplave a hlídač nemá co číst**; trasa se hlídá podle svého proudu, jako trasa 48 V |
+| **`G-300-S`, druhý `INA237`** | mezi trasou a zemí | **hlídač svodu, na 300 V povinný**: porušení izolace na plovoucí trase neodebírá žádný proud a nic nevybaví, dokud obvod neuzavře druhé porušení nebo člověk; součástka čte svodový proud ze zdrojového konce každou minutu. **Při zpětném vedení mořem trasa neplave a hlídač nemá co číst**; trasa se hlídá podle svého proudu, jako trasa 48 V |
 
 **Trasa 48 V se hlídá odečtem** — co opustí stanici a nedorazí, uniklo; žádná součástka se
 nepřidává. Trasa 12 V nebo 24 V se nehlídá: je v mezích 30 V DC, limitu, který SELV dodrží i při
-ponoření. Každý práh je naprogramovaný registr `INA238`, nikdy vlastnost měniče; **v celé rodině
+ponoření. Každý práh je naprogramovaný registr `INA237`, nikdy vlastnost měniče; **v celé rodině
 není nikde žádná pojistka** — vratná pojistka se znovu sepne do téhož oblouku a nic nehlásí, kdežto
 `ALERT` a `ENABLE` poruchu odstraní a řeknou to.
 
@@ -532,7 +532,7 @@ regulovaném výstupu 12 V desky jednotky, který se s žádným kabelem nesetk�
 sběrnice*). Datový pár dostává **2× 10 Ω a `SM712`**, na každé měděné desce a na každém MOD.
 **Výbojka 75 V na napájení 48 V sama zhasne; výbojka 300 V ne** — tam je zapálená výbojka zkratem
 napříč napájením, dokud ji nepodrží proudový limit měniče a zdrojový konec napájení neodebere:
-`INA238` vidí propad, zvedne `ALERT`, hostitel shodí `ENABLE`. Tento sled je povinný, protože
+`INA237` vidí propad, zvedne `ALERT`, hostitel shodí `ENABLE`. Tento sled je povinný, protože
 výbojka udržovaná v trvalém oblouku je mrtvá výbojka.
 
 **Deska je obětovaná součástka.** Linkový kabel končí na desce, kaskáda žije na desce a na
@@ -624,10 +624,10 @@ zpětnou cestou je zpětným vodičem napájení pouzdra jeho elektroda.
 konstrukcí. **Vedle magnetometru je proud polem** — `μ₀I/2πr`, 2 nT na 1 m pro 10 mA — takže kabel a
 elektroda zůstávají na kabelovém konci pouzdra, délku trubky daleko od cívek. **Porušení se čte
 jako proud**: u obou způsobů přidá mořská voda cestu — při zpětné cestě mořem jediná známka, protože
-taková trasa neplave a hlídač svodu `G-300-S` nemá co číst — a `INA238` zdrojové desky vidí, jak
+taková trasa neplave a hlídač svodu `G-300-S` nemá co číst — a `INA237` zdrojové desky vidí, jak
 odběr roste nad naprogramovanou zátěž; menší svod se ukáže jako rozdíl mezi zdrojovým koncem a
 součtem desek jednotek na trase. **S mořem jako zpětnou cestou mohou zdrojové desky několika tras
-sdílet jednu anodu**: vodič je záporný, bočník sedí v něm a `INA238` každé desky čte jen proud
+sdílet jednu anodu**: vodič je záporný, bočník sedí v něm a `INA237` každé desky čte jen proud
 vlastní trasy.
 
 ### Dosah
@@ -757,12 +757,12 @@ Vyrábí napájení 48 V pro jednu trasu z 12 V, které odebírá z vodiče.
                                    R_SENSE 9,1 mΩ                                  ▼
                                                               2× 5.0SMDJ54A ─▶ chokes 22 µH ═════════════▶ the feed, 2-core
                                                                                                 2036-07-SM ─▶ ⏚ common earthing point
- INA238 + ISO1642 on the output · the host side on the port's 3,3 V · ENABLE drives the LT3748's EN
+ INA237 + ISO1642 on the output · the host side on the port's 3,3 V · ENABLE drives the LT3748's EN
 ```
 
 - **vstup:** 12 V na svých svorkách; 3,3 V a `ENABLE` z napájecího konektoru · **výstup:** 48 V na dvoužilový kabel; `SDA · SCL · ALERT` zpět
 - **dimenzace:** **~26 W dodaných** v pracovním bodě akumulátoru; 28,4 W příkon. Stropem je 15 A saturace vinutí: v hraničním režimu se indukčnost vykrátí a watty na ampér posouvá jen odražené napětí, a toto je jediné vinutí 12 V → 48 V v katalogu. 41 kHz při plné zátěži; žádný burst režim, takže minimální zátěž 0,65 W
-- **součástky:** `5.0SMDJ14A` na vstupu 12 V · `LT3748` · `ISC165N15NM6` · `750310988` · `V5N22-M3` · `US3M`, blokovací dioda · `INA238` · `ISO1642` · ostrovní `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ54A` · `2036-07-SM` · 2× tlumivka 22 µH · odrušovací tlumivka a vyhlazovací kondenzátory
+- **součástky:** `5.0SMDJ14A` na vstupu 12 V · `LT3748` · `ISC165N15NM6` · `750310988` · `V5N22-M3` · `US3M`, blokovací dioda · `INA237` · `ISO1642` · ostrovní `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ54A` · `2036-07-SM` · 2× tlumivka 22 µH · odrušovací tlumivka a vyhlazovací kondenzátory
 - **`ID`:** 15 kΩ, 0,60
 
 ### `G-300-S` — napájecí, zdrojový konec, 300 V
@@ -777,12 +777,12 @@ jsou jiný výkres.
                                                                                   ▼
                                                               2× 5.0SMDJ350A ─▶ chokes 22 µH ═════════════▶ the feed, 2-core
                                                                                                  2036-30-SM ─▶ ⏚ common earthing point
- INA238 + ISO1642 on the output · a second INA238, the run against earth — the leak watch · ENABLE drives the LT3748's EN
+ INA237 + ISO1642 on the output · a second INA237, the run against earth — the leak watch · ENABLE drives the LT3748's EN
 ```
 
 - **vstup:** 12 V na svých svorkách — 4,2 A při 12 V, 4,6 A na spodní hranici 11 V; 3,3 V a `ENABLE` z napájecího konektoru · **výstup:** 300 V na dvoužilový kabel; `SDA · SCL · ALERT` zpět
-- **dimenzace:** **~47 W dodaných, jedno číslo**, 50,6 W příkon — tatáž deska na stanici i u vzdáleného Argusu. Bočník dovolí ~66 W a práh `INA238` drží těch 47; 145 kHz při plné zátěži, žádný burst režim, takže minimální zátěž 0,63 W. Izolace vinutí 1000 V AC je pro koncept přijata; sériová výroba objedná vinutí se zakázkovou izolací
-- **součástky:** `5.0SMDJ14A` na vstupu 12 V · `LT3748` · `ISC165N15NM6` · `750310349` · 2× `US3M`, usměrňovač a blokovací dioda · 2× `INA238` · `ISO1642` · ostrovní `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ350A` · `2036-30-SM` · 2× tlumivka 22 µH · odrušovací tlumivka a vyhlazovací kondenzátory
+- **dimenzace:** **~47 W dodaných, jedno číslo**, 50,6 W příkon — tatáž deska na stanici i u vzdáleného Argusu. Bočník dovolí ~66 W a práh `INA237` drží těch 47; 145 kHz při plné zátěži, žádný burst režim, takže minimální zátěž 0,63 W. Izolace vinutí 1000 V AC je pro koncept přijata; sériová výroba objedná vinutí se zakázkovou izolací
+- **součástky:** `5.0SMDJ14A` na vstupu 12 V · `LT3748` · `ISC165N15NM6` · `750310349` · 2× `US3M`, usměrňovač a blokovací dioda · 2× `INA237` · `ISO1642` · ostrovní `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ350A` · `2036-30-SM` · 2× tlumivka 22 µH · odrušovací tlumivka a vyhlazovací kondenzátory
 - **`ID`:** 18 kΩ, 0,65
 
 ### `G-48-U` — napájecí, konec jednotky, 48 V
@@ -797,13 +797,13 @@ k další jednotce na řetězeném segmentu.
   the gland no tube and no chokes — a unit end floats                                     ▼
                                                                                               12 V ─▶ 5.0SMDJ12A ─┬─▶ the two terminals ─▶ the unit
                                                                                                                    └─▶ the tap — a bought device, ≤ 0,5 A
- INA238 + ISO1642 on the input · the feed straight through on the second pair, so units chain
+ INA237 + ISO1642 on the input · the feed straight through on the second pair, so units chain
 ```
 
 - **vstup:** 48 V průchodkou · **výstup:** 12 V na dvě svorky; `SDA · SCL · ALERT` na konektoru; 3,3 V hostitele napájí hostitelskou stranu izolátoru
 - **dimenzace:** **~25 W** na 12 V; to, co dorazí, omezuje ~26 W zdrojového měniče, ne tato deska, a bočník dovolí ~50 W. 455 kHz při plné zátěži, omezeno na 1,05 MHz pod asi 10 W; minimální zátěž 0,24 W. Nic ke spínání: jednotka si z 12 V vyrábí vlastní napájení
 - **tlaková deska** — jen keramika a plné součástky
-- **součástky:** `LT3748` · `ISC165N15NM6` · `750311607` · `V10P10-M3` · `INA238` · `ISO1642` · ostrovní `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ54A` · `5.0SMDJ12A` na výstupu 12 V · keramické vyhlazovací kondenzátory
+- **součástky:** `LT3748` · `ISC165N15NM6` · `750311607` · `V10P10-M3` · `INA237` · `ISO1642` · ostrovní `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ54A` · `5.0SMDJ12A` na výstupu 12 V · keramické vyhlazovací kondenzátory
 - **`ID`:** 24 kΩ, 0,70
 
 ### `G-300-U-6` · `G-300-U-40` — napájecí, konec jednotky, 300 V
@@ -819,7 +819,7 @@ kaskáda pro 300 V, tytéž konektory, tatáž telemetrie. Liší se vinutím, `
    the gland no tube and no chokes — a unit end floats                                                                           ▼
                                                                                                                              12 V ─▶ 5.0SMDJ12A ─┬─▶ the two terminals ─▶ a unit
                                                                                                                                                   └─▶ the tap — a device, or a remote site's wire
- INA238 + ISO1642 on the input
+ INA237 + ISO1642 on the input
 ```
 
 | | **`G-300-U-6`** | **`G-300-U-40`** |
@@ -835,8 +835,8 @@ kaskáda pro 300 V, tytéž konektory, tatáž telemetrie. Liší se vinutím, `
 
 - **vstup:** 300 V průchodkou · **výstup:** 12 V na dvě svorky; `SDA · SCL · ALERT` na konektoru
 - **klidová ztráta:** žádná, která by stála za řeč — `LT8316` odebírá 12 µA na `V_IN` ve vypnutém stavu a 75 µA na `BIAS` v burst režimu, miliwatty při 300 V, a ostrov svých 1,5 mA z 3,3 V hostitele; v burst režimu jde dolů až na 3,5 kHz, takže minimální zátěž je ~1 % jmenovité
-- **součástky, `G-300-U-6`:** `LT8316` · `FCD260N65S3` · `11338-T195` · `V10P10-M3` · omezovač RCD, `US3M` · `INA238` · `ISO1642` · ostrovní `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ350A` · `5.0SMDJ12A` na výstupu 12 V · keramická banka
-- **součástky, `G-300-U-40`:** `LT8316` · `FCD260N65S3` · `11328-T078` · `V10P10-M3` · `INA238` · `ISO1642` · ostrovní `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ350A` · `5.0SMDJ12A` na výstupu 12 V · filmová banka
+- **součástky, `G-300-U-6`:** `LT8316` · `FCD260N65S3` · `11338-T195` · `V10P10-M3` · omezovač RCD, `US3M` · `INA237` · `ISO1642` · ostrovní `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ350A` · `5.0SMDJ12A` na výstupu 12 V · keramická banka
+- **součástky, `G-300-U-40`:** `LT8316` · `FCD260N65S3` · `11328-T078` · `V10P10-M3` · `INA237` · `ISO1642` · ostrovní `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ350A` · `5.0SMDJ12A` na výstupu 12 V · filmová banka
 
 ### `G-12-S` — galvanicky oddělených 12 V, zdrojový konec
 
@@ -853,12 +853,12 @@ Zátěž, která chce watty, je napájení na 48 V nebo 300 V, nikdy tato deska 
                                    ENABLE drives its EN                                 ▼
                                                                         2× 5.0SMDJ18A ─▶ chokes ─▶ 2036-07-SM ─▶ ⏚ common earthing point
                                                                                                     ══▶ ± ~12 V, unregulated, on eight poles
-                                    INA238 + ISO1642 on the output — the host side on the port's 3,3 V
+                                    INA237 + ISO1642 on the output — the host side on the port's 3,3 V
 ```
 
 - **vstup:** 12 V z vodiče na dvou svorkách; `ENABLE` a 3,3 V z napájecího konektoru · **výstup:** ~12 V na osmi pólech, `DGPS2.5R-5.0` × 4 — čtyři pozice, 4× + a 4× −, vedle čtyř pozic páru na `G-I-M-005`
-- **dimenzace:** **0,4 A**, asi 5 W. `R_LIM` 33 kΩ → ~0,74 A (0,5–0,95 A přes rozptyl součástky): 0,4 A ven je ~0,45 A přes spínače a limit 0,5 A by u slabšího kusu nechal jmenovitou zátěž poklesnout. **Přetížení řeší `INA238`, ne OCP** — OCP součástky zkracuje impulzy, místo aby vypnula, a přetížení by držela až do tepelného vypnutí, takže `ALERT` nad 0,4 A odebere `ENABLE`; OCP zbývá start do vstupních kondenzátorů senzoru a zkrat
-- **součástky:** `5.0SMDJ14A` na vstupu 12 V · `SN6507` · `750319691` · 2× `PMEG10020ELR` · `INA238` · `ISO1642` · ostrovní `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ18A` · `2036-07-SM` · tlumivky, odrušovací tlumivka a vyhlazovací kondenzátory
+- **dimenzace:** **0,4 A**, asi 5 W. `R_LIM` 33 kΩ → ~0,74 A (0,5–0,95 A přes rozptyl součástky): 0,4 A ven je ~0,45 A přes spínače a limit 0,5 A by u slabšího kusu nechal jmenovitou zátěž poklesnout. **Přetížení řeší `INA237`, ne OCP** — OCP součástky zkracuje impulzy, místo aby vypnula, a přetížení by držela až do tepelného vypnutí, takže `ALERT` nad 0,4 A odebere `ENABLE`; OCP zbývá start do vstupních kondenzátorů senzoru a zkrat
+- **součástky:** `5.0SMDJ14A` na vstupu 12 V · `SN6507` · `750319691` · 2× `PMEG10020ELR` · `INA237` · `ISO1642` · ostrovní `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ18A` · `2036-07-SM` · tlumivky, odrušovací tlumivka a vyhlazovací kondenzátory
 - **`ID`:** 56 kΩ, 0,85
 
 ### `G-24-S` — napájecí, zdrojový konec, 24 V, spínané
@@ -875,13 +875,13 @@ drženým v L a deska neodebírá nic.
                                     ENABLE drives its EN/UVLO                          ▼
                                                               2× 5.0SMDJ28A ─▶ chokes 22 µH ─▶ 2036-07-SM ─▶ ⏚ common earthing point
                                                                                                 ══▶ 24 V, two poles — the load's 2-core cable
-                                    INA238 + ISO1642 on the output — the host side on the port's 3,3 V
+                                    INA237 + ISO1642 on the output — the host side on the port's 3,3 V
 ```
 
 - **vstup:** 12 V z vodiče na dvou svorkách, ~3 A, dokud zátěž běží (36 W příkon v pracovním bodě); `ENABLE` a 3,3 V z napájecího konektoru · **výstup:** 24 V na jedné dvoupólové `DGPS2.5R-5.0`; `SDA · SCL · ALERT` zpět
-- **dimenzace:** **~33 W dodaných** v pracovním bodě akumulátoru — `I_pk` 9,0 A při 10 mΩ, 112 kHz při plné zátěži. To, co port deklaruje, patří zátěži, naprogramovaný práh `INA238`: **nad** limitem je zablokovaná zátěž, **pod** minimem zátěž běžící nasucho nebo přeříznutý kabel — dva prahy, které hostitel programuje. Proudový limit je vlastní `R_SENSE` měniče; do zablokovaného motoru se dodává na limitu a nikdy se nejistí pojistkou
+- **dimenzace:** **~33 W dodaných** v pracovním bodě akumulátoru — `I_pk` 9,0 A při 10 mΩ, 112 kHz při plné zátěži. To, co port deklaruje, patří zátěži, naprogramovaný práh `INA237`: **nad** limitem je zablokovaná zátěž, **pod** minimem zátěž běžící nasucho nebo přeříznutý kabel — dva prahy, které hostitel programuje. Proudový limit je vlastní `R_SENSE` měniče; do zablokovaného motoru se dodává na limitu a nikdy se nejistí pojistkou
 - **kaskáda:** zdrojového konce, jako u `G-12-S` — tříelektrodová výbojka, tlumivky 22 µH a 2× `5.0SMDJ28A` na 24 V. Co stojí na konci zátěže, je věcí zátěže samotné: holý motor dostane dva vývodové transily na svá oka, řízený vlastní malou desku
-- **součástky:** `5.0SMDJ14A` na vstupu 12 V · `LT3748` · `ISC165N15NM6` · `750311592` · `V10P10-M3` · `US3M`, blokovací dioda · `INA238` · `ISO1642` · ostrovní `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ28A` · `2036-07-SM` · 2× tlumivka 22 µH · vyhlazovací kondenzátory
+- **součástky:** `5.0SMDJ14A` na vstupu 12 V · `LT3748` · `ISC165N15NM6` · `750311592` · `V10P10-M3` · `US3M`, blokovací dioda · `INA237` · `ISO1642` · ostrovní `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ28A` · `2036-07-SM` · 2× tlumivka 22 µH · vyhlazovací kondenzátory
 - **`ID`:** 4,3 kΩ, 0,30
 
 ### `G-I-N-025` — komunikační, 485 po mědi, NodBus
@@ -979,7 +979,7 @@ tam, kde nic; a co opouští desku po kabelu, je filtrované — na zdrojové de
 svorkou vyhlazovací kondenzátory a sériové tlumivky, takže vlastní spektrum měniče není kritériem.
 Jeden měnič na desku tam, kde se měří pásmo: dva volně běžící hraniční měniče vytvoří rozdílovou
 frekvenci, která pásmo přejíždí celý den. Kritériem je vlastní laboratorní hodnota měřicí desky a
-práh `INA238` pak to číslo hlídá.
+práh `INA237` pak to číslo hlídá.
 
 ## Soubory
 

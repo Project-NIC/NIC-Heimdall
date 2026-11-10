@@ -185,7 +185,7 @@ capacitance.
 | the H523 at 2²⁷, VOS2, from flash with the cache on — the sheet gives 13 mA with every peripheral off and 29 mA with every one on, 39 mA at 85 °C | ~20 mA | 40 mA |
 | the sensors — ADXL355 0,2 · ICM 0,88 · SCL3300 ~1,2 · RM3100 ~0,5 at 96 axis reads a second, 100 cycle counts · TMP117 µA | ~3 mA | ~4 mA |
 | the continuous lines — `CLK` 2²² in, `EXT_CLK` 2²⁰ out, the two `ID` dividers | ~1 mA | ~1 mA |
-| the power board's telemetry — `INA238` and `ISO1642` | ~3 mA | ~3 mA |
+| the power board's telemetry — `INA237` and `ISO1642` | ~3 mA | ~3 mA |
 | the communication board at a far end — copper · glass | 18 · ~55 mA | ~80 · 125 mA |
 | **the board** — copper · glass | **~45 · ~85 mA** | **~130 · ~175 mA** |
 
@@ -221,7 +221,7 @@ assigned or listed free — nothing is left to guess.*
 | ICM clocking | **TIM15** CH1 | PE5 `CLKIN` | 41,94304 kHz into pin 9 | PWM out, `ARR` 3199 |
 | SCL3300 · RM3100 | **SPI3** + `CS` PD0 · PD1 | PC10 · PC11 · PC12 | the inclinometer, and the magnetometer option on the same bus | mode 0; the RM3100's `DRDY` on PD10 |
 | thermometers | **I3C1**, in I²C legacy · **ADC1** | PD12 `SCL_T` · PD13 `SDA_T` · PC2 `NTC` on `ADC1_INP12`, PC3 `NTC_EN` | the TMP117/STS35 on the wall; the NTC between the coils on a divider switched from a GPIO, ratiometric. **Its own controller** — a jammed power board must not hold the tempco's covariate down. **Not I2C2**: its only `SCL` pad is PB10 and both `SDA` pads are taken — PB12 by the ICM's `CS`, PB3 by the `RXD` capture — so the second controller is I3C1, which is I²C-capable and has PD12/PD13 to itself | 100 kHz; the divider on for the conversion only |
-| the power body | **I2C1** | PB8 · PB9 | the unit power board's `INA238` — **`A_SEL` strapped to ground on this board**, so it is 0x40; one socket here and no processor pin reads the strap (`../galvani/README.md`) | 100 kHz, 4,7 kΩ to 3,3 V on both lines; `ALERT` on PC8, 100 kΩ to ground, high = alarm |
+| the power body | **I2C1** | PB8 · PB9 | the unit power board's `INA237` — **`A_SEL` strapped to ground on this board**, so it is 0x40; one socket here and no processor pin reads the strap (`../galvani/README.md`) | 100 kHz, 4,7 kΩ to 3,3 V on both lines; `ALERT` on PC8, 100 kΩ to ground, high = alarm |
 | ID reads | **ADC1** | PC0 · PC1 | one resistor per body, against 10 kΩ 1 % to `VREF+` | read once at bring-up |
 | clock in | **HSE bypass** | PH0 | the data body's `CLK`, 2²² | PH1 unconnected |
 | debug | **SWD** | PA13 · PA14 | | no JTAG, no trace |
@@ -298,7 +298,7 @@ clocks on three timers, one per frequency.
 | 62 | PD15 | — | | | free |
 | 63 | PC6 | — | | | free |
 | 64 | PC7 | — | | | free |
-| 65 | PC8 | `ALERT` | GPIO, EXTI | in | the power body's `INA238` — 100 kΩ to ground, high = alarm |
+| 65 | PC8 | `ALERT` | GPIO, EXTI | in | the power body's `INA237` — 100 kΩ to ground, high = alarm |
 | 66 | PC9 | — | | | free |
 | 67 | PA8 | — | | | free |
 | 68 | PA9 | — | | | free |
@@ -328,7 +328,7 @@ clocks on three timers, one per frequency.
 | 92 | PB6 | `TXD` | `USART1_TX` / `TIM4_CH1` | out | the NodBus link, to the data body |
 | 93 | PB7 | `RXD` | `USART1_RX` / `TIM4_CH2` | in | the pins switch USART → TIM4 for the ranging instant |
 | 94 | BOOT0 | 10 kΩ to ground | |  | |
-| 95 | PB8 | `SCL` | `I2C1_SCL` | i/o | the power body's `INA238`, alone on this bus — 4,7 kΩ to 3,3 V |
+| 95 | PB8 | `SCL` | `I2C1_SCL` | i/o | the power body's `INA237`, alone on this bus — 4,7 kΩ to 3,3 V |
 | 96 | PB9 | `SDA` | `I2C1_SDA` | i/o | 4,7 kΩ to 3,3 V |
 | 97 | PE0 | — | | | free |
 | 98 | VCAP | 2× 1 µF 50 V 0805 + 2× 100 nF 50 V 0603 — 2,2 µF, the sheet's 2,2 µF ±20 % | | | |
@@ -374,7 +374,7 @@ the same pair at the pins behind it** — the house rule (`../core/POWER.md`, *T
 and `VSSA` to the ground plane at one point. The two `ID` inputs are read single-ended against
 `VREF+`, and the 10 kΩ 1 % pull-up of each `ID` resistor hangs on `VREF+` itself, so the reading
 is a ratio and the rail's tolerance drops out. The arrived 12 V and the input current are the power
-body's `INA238`, over I2C1 — no divider on this board. The
+body's `INA237`, over I2C1 — no divider on this board. The
 processor's ADC measures only the two `ID` ratios and the coil NTC.
 
 ## The Galvani bodies and the 12 V
@@ -410,7 +410,7 @@ headers; the pin numbering is the family's (`../galvani/README.md`, *The connect
 | 2 | `GND` | ground |
 | 3 | `ID` | PC1 `ADC12_INP11` — 10 kΩ 1 % to `VREF+` |
 | 4 | `SDA` | PB9 `I2C1_SDA` — 4,7 kΩ to 3,3 V |
-| 5 | `A_SEL` | strapped to ground — the `INA238` answers at 0x40 |
+| 5 | `A_SEL` | strapped to ground — the `INA237` answers at 0x40 |
 | 6 | `SCL` | PB8 `I2C1_SCL` — 4,7 kΩ to 3,3 V |
 | 7 | `ALERT` | PC8 — GPIO, EXTI, 100 kΩ to ground; high = alarm |
 | 8 | `3,3 V` | the buck's 3,3 V node — the power board's supply |

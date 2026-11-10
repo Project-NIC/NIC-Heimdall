@@ -24,7 +24,7 @@ tím, co nese záložní článek: když zmizí 12 V, poslední hlášení přes
 Pojmenován po prostředním jménu, které nesl **Charles Proteus Steinmetz**.
 
 ```
-   vehicle 12 V / pack ──▶ [isolated DC/DC brick] ──▶ the 12 V node ── INA238 (LP I²C)
+   vehicle 12 V / pack ──▶ [isolated DC/DC brick] ──▶ the 12 V node ── INA237 (LP I²C)
                                                         │
       ┌─────────────────────────────────────────────────┴─────────────────────────────────────────────────────────────────────┐
       │  KRONOS ◀ TIME IN 1 ◀ POLARIS ── CLK · PPS_K · label as traces ──▶ BIFROST                                            │

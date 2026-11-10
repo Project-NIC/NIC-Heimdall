@@ -25,7 +25,7 @@ Chinook's** (`chinook/`), whose bought units hang on these same arms.
 | class | **NOD** — NodBus **type 6**, one slot, address `0x6n`; behind a Bifrost spur |
 | MCU | `STM32H523VE`, LQFP100, the house H523 |
 | arms | **four ModBus RTU arms, one USART each** (USART2 · USART6 · UART4 · UART5), identical; **two populated as standard, four the ceiling**. Each leaves the box on a communication board and feeds its sensors from a power board, 50 m, about sixteen units an arm. A plot wider than four arms is a second Palatine, never a fifth arm |
-| `PWR EXT` | **one power body on its own**, not an arm: a source power board switched by `EN_X` for Pluvius's pump — its `INA238` the load's ammeter (`FIRMWARE.md` §6) |
+| `PWR EXT` | **one power body on its own**, not an arm: a source power board switched by `EN_X` for Pluvius's pump — its `INA237` the load's ammeter (`FIRMWARE.md` §6) |
 | power | 12 V on its two terminals — the battery wire in the box, the unit power board's terminals on a fed run — one `LMR43610` to 3,3 V for the MCU and the communication boards; **no sensor rail on this board**, a sensor takes the arm's isolated 12 V |
 | load | ~7 W with today's sensors, **~21 W** with four arms on their limit; the run's trip point is measured at commissioning, start-up peak and running load with margin (`HARDWARE.md`, *The budget*) |
 | payload | 32 B of **self-delimiting blocks**, `[address][length][data]`, one per ModBus transaction, whole blocks only; decoded by the module's own address and its profile where the archive is read (`../core/PROTOCOL.md` §5) |

@@ -64,11 +64,11 @@ clock pair, 500 m on ~100 Ω UTP Cat 6, 3–5 m of hybrid in a vehicle.
   - **`CTRL` open** — on; the one control the board does not need. **EMC to EN 55032 class B with
     the sheet's filter**: 3× 10 µF, 33 µH, a 5 µH common-mode choke at the input, 2× 4,7 nF across
     the barrier. The output carries at most 470 µF.
-- **The 12 V node behind the brick carries one `INA238`** on the Mayak's LP I²C beside Hermes,
+- **The 12 V node behind the brick carries one `INA237`** on the Mayak's LP I²C beside Hermes,
   `A0` high for 0x41, a 20 mΩ shunt: the whole board's voltage and current into `HEALTH`. **Nothing
   is measured ahead of the brick** — the vehicle's side is the vehicle's, a pack's is the BMS's,
   which Hermes reads.
-- **The run's feed is the plug-in isolated 12 V cell on `PWR OUT 1`**, its own `INA238` reading
+- **The run's feed is the plug-in isolated 12 V cell on `PWR OUT 1`**, its own `INA237` reading
   the run as on any port; the feed pair leaves on the cell's terminals.
 
 ## The rails — the Mayak's own, and one for the rest
@@ -86,7 +86,7 @@ eFuse's 0,85 A floor.
 the island's `SN6505B`. Kronos's TCXO, PLL and drivers take their 3,3 V through a 2,2 µH shielded
 inductor into 10 µF + 100 nF, as its own buck fed them. They go dark with the 12 V, as in a full
 Heimdall; nothing holds them up. The further per-section bucks are not laid out: the one port is
-isolated on the board and the one plug-in has its own `INA238`, so a short reaches the buck through
+isolated on the board and the one plug-in has its own `INA237`, so a short reaches the buck through
 nothing this board owns.
 
 ## What is fitted, and what is not
@@ -94,7 +94,7 @@ nothing this board owns.
 - **Fitted**: the brick with its input terminals and fuse; the four data-pair terminals; the Bifrost's
   `PWR OUT 1`; the Mayak's two SD seats, Wi-Fi/BLE antenna, USB-C receptacle and Ethernet port;
   Hermes's 485 and CAN terminals and its TTL and I²C pin headers; Kronos's `TIME IN 1` for
-  Polaris; the modem and its antenna connector; the Mayak's backup cell; the `INA238`.
+  Polaris; the modem and its antenna connector; the Mayak's backup cell; the `INA237`.
 - **Not laid out**: the LoRa module — the modem is LTE-M; the `PWR HERMES` body, every data body,
   the Mayak's `MNB OUT 2`–`4`, the Bifrost's `MNB/NB IN`, `PWR IN` and ports 2–4, Kronos's
   `TIME BUS` and `TIME IN 2`, the other sections' own bucks, and the 12 V terminal pairs a full

@@ -521,7 +521,7 @@ two rules and nothing else is invented.
   the supply edge are flags in the header (§1). **B — the report frames, unasked once a minute,
   and the health frame on request.** **`kind` 6 `REPORT` — a unit about itself**, once a
   `REPORT_INTERVAL` (default 60 s, the house register `0xFF0B`): **8 B a unit, four little-endian
-  16-bit words** — `VBUS` and `CURRENT` as the `INA238`'s raw registers (the head knows the board
+  16-bit words** — `VBUS` and `CURRENT` as the `INA237`'s raw registers (the head knows the board
   from its `ID` and converts; nothing is rounded on the way; 0 in the box, where no power body is
   fitted), the board's temperature from its one main thermometer as int16 in 0,01 °C, and a
   fourth word the TYPE defines or leaves 0. **Sensor die temperatures do not ride it** — the
@@ -534,7 +534,7 @@ two rules and nothing else is invented.
   about its power sockets**, once a minute, from its own address, **in the host's own TYPE map**
   like every payload: **4 B a socket, `VBUS` · `CURRENT` raw, socket 0 the up port** and the
   rest in socket order — **a card**: sockets 0–4 (up, down 1–4) at bytes 0–19, the leak watch of
-  down ports 1–4 at 20–27 (the second `INA238`'s raw `VBUS`, 0 where no `G-300-S` is seated),
+  down ports 1–4 at 20–27 (the second `INA237`'s raw `VBUS`, 0 where no `G-300-S` is seated),
   the card's temperature at 28–29, reserve 30–31; **Palatine**: sockets 0–5 (up, arms 1–4,
   `EXT`) at bytes 0–23, its temperature at 24–25, reserve after. A host sends no `REPORT` about
   itself — its own arrived feed is socket 0. So the head holds what left the station and what
@@ -690,7 +690,7 @@ The **radiation does not pass through Palatine** — Quark-Tubes is a mini-NOD o
 frames (`../quark/tubes/BUS.md`). The whole payload is the meteo set — about sixteen units an
 arm, Chinook's air units among them — which asks for a couple of values a minute.
 
-**And Palatine carries no supply in its DATA payload, like every unit.** Its `PORTS` frame reads the up port's `INA238` as socket 0
+**And Palatine carries no supply in its DATA payload, like every unit.** Its `PORTS` frame reads the up port's `INA237` as socket 0
 where it stands behind a Galvani barrier — a second mast, a sensor plot out on 48 V or 300 V —
 and 0 in the head's enclosure, where the battery is hard-wired half a metre from a head that
 reads it off the BMS; its arms' and `EXT`'s feeds are sockets 1–5 of the same frame (§5). The SUPPLY flag says when the reading leaves its window. The same goes for Argus.
@@ -986,7 +986,7 @@ alike (`0x0000` the value · `0x0001` a second value where the quantity has one 
 | HARD_RESET | 7 | bcast or addressed | — | — | back to the default number and the default configuration cells; the TYPE and a factory calibration stay (§2) |
 | RESEND | 8 | M→N | frame | unix.0 | CRC miss → send that frame again from the buffer |
 | GET | 9 | M→N; the reply N→M under the same op | register | reply: the value, `arg1` low and `arg2` high | up to 16 bits answer here; a wider register answers as a DATA frame, `kind` 5, the register number first; **`GET REPORT` · `GET PORTS` · `GET HEALTH` answer with that frame itself** (§5). The node's own registers only — never the ModBus bridge, which is the tunnel's alone |
-| SET | 10 | M→N | register | value, `arg1` low and `arg2` high | written, then ACK. **A register wider than 16 bits is written as a DATA frame down, `kind` 5, the register number first, the value after it, zeros to 32 B — the same frame a `GET` answers with, sent the other way** — in the unit's third frame-time like any CONTROL, and answered `ACK`; a card relays it as it relays a `TUNNEL` frame, an Argus by `SUB` onto the segment. **One sanctioned use across every port-carrying board: the per-port current limit** — the number the firmware trips on, read from the block's INA238 and executed with `PORT_PWR`, so a limit is set from the handset at run time and **nothing in the frame grows for it** (`../galvani/HARDWARE.md`, *Protecting the feed*) |
+| SET | 10 | M→N | register | value, `arg1` low and `arg2` high | written, then ACK. **A register wider than 16 bits is written as a DATA frame down, `kind` 5, the register number first, the value after it, zeros to 32 B — the same frame a `GET` answers with, sent the other way** — in the unit's third frame-time like any CONTROL, and answered `ACK`; a card relays it as it relays a `TUNNEL` frame, an Argus by `SUB` onto the segment. **One sanctioned use across every port-carrying board: the per-port current limit** — the number the firmware trips on, read from the block's INA237 and executed with `PORT_PWR`, so a limit is set from the handset at run time and **nothing in the frame grows for it** (`../galvani/HARDWARE.md`, *Protecting the feed*) |
 | ACK | 11 | N→M | the op acknowledged | — | |
 | ERROR | 12 | N→M, **only as the answer to a command** | code | detail | the op that failed and why — a register the node does not have, a tunnel that timed out, a calibration too noisy. **Never unasked**: a board's own fault is the header's `FAULT` flag and `HEALTH` on `GET` (§1, §7) |
 | DIAG | 13 | — | — | — | **retired, the number not reused** — its vocabulary is the `HEALTH` frame's, its trigger the `FAULT` flag (`WHY.md`) |
@@ -1046,7 +1046,7 @@ will not answer a clock restart gets the supply pulled.
 | **`FAULT` in its own frames' header, and the table** | while a port is killed, lost or unknown | the segment table re-sent on the change, the slot's status saying which and why — 3 dead · 4 unknown board · 5 port faulted; the detail on `GET HEALTH`. Nothing unasked beyond the flag and the table |
 | **filler frames** | every round a proxied unit is absent | a DATA frame under the unit's address, `kind` 3, the reason code in the payload — *unit missing* · *no data arrived* · *arrived corrupt*. **The slot is never given up**, so absence is positive data rather than silence |
 | **the segment table** | after FLOOR, and on any population change | one 32 B payload from the card's own address, `kind` 4 — **8 × 4 B: unit address · port · rung code · status** — the wiring the sweep built, delivered as data. **The same table shape lives at every level**: a card reports its spurs' units, an Argus reports its positions' sondes, and each master knows only its own children; **the Mayak composes the reported tables into the station tree** and decodes by walking it — port → table → slot → unit → (a carrier's) table → position → sonde. The roster and the mirror are written from these, never typed |
-| **`PORTS`** | once a minute, and on `GET PORTS` | one 32 B payload from the card's own address, `kind` 7, in the card's map — `VBUS` · `CURRENT` per power socket as raw `INA238` registers, 4 B a socket, the up port first then down 1–4; the four down ports' leak-watch words; the card's temperature (§5) |
+| **`PORTS`** | once a minute, and on `GET PORTS` | one 32 B payload from the card's own address, `kind` 7, in the card's map — `VBUS` · `CURRENT` per power socket as raw `INA237` registers, 4 B a socket, the up port first then down 1–4; the four down ports' leak-watch words; the card's temperature (§5) |
 | **`HEALTH`** | on `GET HEALTH` only | from the card's own address, `kind` 8, in the card's map — the link-error counts per port and the rest of the card's internals (§5) |
 | **a unit's `REPORT`** | as it arrives | passed through like a DATA frame — the second prepended, nothing read. An Argus tiles its sondes' 8 B report payloads by position under the NUMBER that owns them, as it tiles data |
 

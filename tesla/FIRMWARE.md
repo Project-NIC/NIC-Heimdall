@@ -49,7 +49,7 @@ the mains phase underneath it.
 | 4 | the converter, found — **at `LOCKED`, once `MCO1` drives `CLKIN`**: `RESET` released, 104 cycles waited | SPI1, mode 1: `DEV_ID` (00h) read — **04h** is the ADS127L14, 06h the L18 (same package, same pins, the fourth channel pair); anything else and the node enrols with `HEALTH` NO_RESPONSE for the front | the L18 is accepted and run as an L14 |
 | 5 | the converter, configured — **at `LOCKED`, before `START`** | `STATUS` (02h) **cleared first** — `ALV_FLAG` and `POR_FLAG` reset to 1, and `SPI_ERR` blocks every write but `STATUS` while set; then, over SPI1: sinc4, OSR 16, `CLK_DIV` 1, the status header by `DP_STAT_EN`, `DP_TDM` 11b (four lanes), the three input precharge buffers and the `REFP` buffer on, `REF_RNG` the high range for the external 4,096 V, `REG_CRC_EN`, `SPI_CRC_EN`, `CLK_CNT_EN`; every register read back; `STATUS` cleared once more and PD2's EXTI armed, so `ERROR` is high from here on | a read-back mismatch: `RESET` pulsed, the sequence repeated once, then `HEALTH` DEGRADED and the node runs the thermometers and the bus alone |
 | 6 | the clock | the data body's `CLK` on `OSC_IN` validated — N clean periods at 2²² against the HSI — and **not taken** until `BUSCFG`; the converter's `CLKIN` is not started off the HSI: a ΔΣ clocked off a ±1 % source would run a phase the grid cannot place | no clock: RC, silent, waiting |
-| 7 | IDs and the power body | ADC1 reads `ID_D` and `ID_P` once, ratiometric — the boards on `NB IN`, the data body, and `PWR IN`, the power body; into `HEALTH`. `ID_PIP` is read into `HEALTH` too and nothing is done with it — `TIME OUT` is Pip's. Then I2C1: the `INA238` on `PWR IN`'s board at 0x40 configured — `APOL` = 1, `ALERT` high on alarm and latched; PC8 on EXTI, rising edge | a ratio in no window is *unknown board*, `FAULT` up; the node runs. No answer where `ID_P` names a power board: `HEALTH` *no telemetry*, `FAULT` up |
+| 7 | IDs and the power body | ADC1 reads `ID_D` and `ID_P` once, ratiometric — the boards on `NB IN`, the data body, and `PWR IN`, the power body; into `HEALTH`. `ID_PIP` is read into `HEALTH` too and nothing is done with it — `TIME OUT` is Pip's. Then I2C1: the `INA237` on `PWR IN`'s board at 0x40 configured — `APOL` = 1, `ALERT` high on alarm and latched; PC8 on EXTI, rising edge | a ratio in no window is *unknown board*, `FAULT` up; the node runs. No answer where `ID_P` names a power board: `HEALTH` *no telemetry*, `FAULT` up |
 | 8 | the thermometers | the four NTC dividers read once, 256× oversampled over 100 ms; the rod temperatures seed the µ(T) correction | an open or shorted divider (full scale or zero) is `HEALTH` DEGRADED for that rod; the correction for it holds its last value |
 | 9 | enrol | §4 | — |
 
@@ -270,7 +270,7 @@ detector's rolling background as 14-bit log in 2⁻⁶ dB. It is the one type 2 
 emits; the carriers themselves are Pip's (`pip/FIRMWARE.md` §6), in the same record shape.
 
 **The report frame.** Once a `REPORT_INTERVAL`, 60 s, NOD 1's block carries the `REPORT` frame
-behind its data: `VBUS` · `CURRENT` raw from the `INA238` · `NTC_PCB`, int16 in 0,01 °C · 0
+behind its data: `VBUS` · `CURRENT` raw from the `INA237` · `NTC_PCB`, int16 in 0,01 °C · 0
 (`../core/PROTOCOL.md` §5).
 
 ## 8. The control plane
@@ -344,7 +344,7 @@ DMA is a hang; the CSS on HSE loss.
 | the clock lost | CSS → `START` low → mute → rejoin |
 | a record older than 8 frames | dropped, counted |
 | PSRAM absent | the learned classifier is not loaded; the rule set runs; `HEALTH`, `FAULT` up |
-| `ALERT` on PC8 (EXTI) | the `INA238`'s reading latched into `HEALTH`, `FAULT` up; nothing to switch on this board — the source end acts on its own `ALERT` |
+| `ALERT` on PC8 (EXTI) | the `INA237`'s reading latched into `HEALTH`, `FAULT` up; nothing to switch on this board — the source end acts on its own `ALERT` |
 
 Nothing on the node is switched to clear a fault; the source end's `ENABLE` is the cold restart.
 

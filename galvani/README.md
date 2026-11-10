@@ -158,7 +158,7 @@ rather than voltage, the host goes out there on a fed run and its leaves stay sh
 `G-O-2-100`. Two cross-sections and no more on the feed cable: **2× 1,5 mm² and 2× 2,5 mm²**.
 
 **A run's trip point is measured, and the cell is the ceiling.** At commissioning the far end's
-start-up peak and running load are measured and the source board's `INA238` is programmed to
+start-up peak and running load are measured and the source board's `INA237` is programmed to
 them with margin — the host's per-port register, rewritten when a sensor is added. There is no
 load class between the measurement and the cell: a far end at 3 W gets a trip near 4 W, one at
 21 W near 24. **What the cell delivers is the wall**: `G-48-S` ~26 W and `G-48-U` ~25 W on the far
@@ -169,7 +169,7 @@ the 48 V table carries goes to 300 V; a load past ~25 W at any distance needs a 
 **One source board may feed several unit boards.** Every unit board takes the feed in on one
 terminal pair and hands it on, straight through, on the other, so units chain on one feed cable.
 The chain is one far end to the source: its loads and every unit board's loss are summed, the
-source cell's ceiling is shared, the `INA238` threshold is programmed to the sum, and the reach
+source cell's ceiling is shared, the `INA237` threshold is programmed to the sum, and the reach
 tables are read with the whole sum at the last unit. One `ENABLE` switches the whole chain; a
 unit that must be switched alone takes a run of its own. **A NodBus mini segment takes one source
 board and its units chain on it**: they already share the segment's pair, so a unit that holds the
@@ -241,11 +241,11 @@ on 5–6 sit side by side so the in-box cable is a six-way ribbon with two adjac
 |---|---|---|---|
 | **1** | `ENABLE` | host → board | into the converter's `EN`, same ground, no opto; **pulled down at the receiving end**, so a reset, a cut ribbon and a dark port leave the port off — **a source board's converter is off until its host switches it on**. A source power board's pin, driven by the host's GPIO; at the unit end the same pull goes to the input on the board, the board runs whenever the feed is there, and the host's pin is unconnected. Its one ribbon neighbour is ground |
 | **2** | `GND` | — | the return |
-| 3 | `ID` | board → host | the board's resistor to ground, as on the data connector — a power board answers with a resistor before its `INA238` is programmed, and when it does not answer |
-| 4 | `SDA` | ↔ | the `INA238`'s I²C, across the board's `ISO1642`; **4,7 kΩ to 3,3 V on the host**, one pair per controller |
-| 5 | `A_SEL` | socket → board | **strapped low or high in the host's wiring, no processor pin**; crosses the `ISO1642` onto the `INA238`'s `A0`, `A1` grounded on the board: **0x40 low or unwired, 0x41 high** — two identical boards on one bus are two addresses, and a controller carries at most two power sockets. Stands between `SDA` and `SCL` |
+| 3 | `ID` | board → host | the board's resistor to ground, as on the data connector — a power board answers with a resistor before its `INA237` is programmed, and when it does not answer |
+| 4 | `SDA` | ↔ | the `INA237`'s I²C, across the board's `ISO1642`; **4,7 kΩ to 3,3 V on the host**, one pair per controller |
+| 5 | `A_SEL` | socket → board | **strapped low or high in the host's wiring, no processor pin**; crosses the `ISO1642` onto the `INA237`'s `A0`, `A1` grounded on the board: **0x40 low or unwired, 0x41 high** — two identical boards on one bus are two addresses, and a controller carries at most two power sockets. Stands between `SDA` and `SCL` |
 | 6 | `SCL` | host → board | the I²C clock |
-| 7 | `ALERT` | board → host | the `INA238`'s alarm, **high on alarm, a pin per socket on the host, never a wire-OR** — one stuck alarm must not blind the rest; **100 kΩ to ground on the host**, so an empty socket reads quiet. Beside `3,3 V` so a short there is a permanent alarm |
+| 7 | `ALERT` | board → host | the `INA237`'s alarm, **high on alarm, a pin per socket on the host, never a wire-OR** — one stuck alarm must not blind the rest; **100 kΩ to ground on the host**, so an empty socket reads quiet. Beside `3,3 V` so a short there is a permanent alarm |
 | 8 | `3,3 V` | host → board | the host side of the `ISO1642`, a few milliamps |
 
 **The same connector carries Hermes, the head's BMS/MPPT converter**, on the Mayak: an I²C slave,
@@ -401,7 +401,7 @@ communication board, and the value says the medium and the rung it can carry —
 board seated can carry what the card is sending, not what picks the clock; a card hands all
 four of its ports one rung by its role (`../bifrost/HARDWARE.md`). 0,60 and above, and 0,30, is a
 power board: the unit end learns which cell it hangs on, the source end which cell it is
-driving and therefore which `INA238` thresholds to programme — and it answers when the `INA238`
+driving and therefore which `INA237` thresholds to programme — and it answers when the `INA237`
 does not. Who is on the other side comes from the dialogue that follows, even where the code
 narrows it to one thing: a resistor says something is plugged in, only an answer says something
 is alive. One code serves every unit on a time link, including one somebody invents later.
@@ -412,9 +412,9 @@ cable lands it on the other host's `ID`. A Galvani board carries a resistor on `
 identification off a board is one-way, outward, because a board has no processor to read with.
 A host that only ever stands behind a Galvani board carries no number and never meets the cable.
 
-### The telemetry — `INA238` and `ISO1642` on every power board
+### The telemetry — `INA237` and `ISO1642` on every power board
 
-**One front on every power board, and it is mandatory: an `INA238` with a low-side shunt, and an `ISO1642` carrying
+**One front on every power board, and it is mandatory: an `INA237` with a low-side shunt, and an `ISO1642` carrying
 its I²C both ways and `ALERT` up across the barrier; `A_SEL` crosses it down onto `A0`.** The host
 reads bus voltage and current over the connector and programs the thresholds from what `ID` said
 was seated. **The measuring side runs on an island the board makes for itself from the host's
@@ -426,7 +426,7 @@ one supply, the host's 3,3 V, and makes its own isolated copy of it where it nee
 12 V, 200 mΩ on 300 V, 20 mΩ on 24 V — and **`VBUS` is a divider with a 100 kΩ bottom leg on 48 V
 (100 kΩ top) and 300 V (3× 1 MΩ), the pin straight on 12 V and 24 V**, 10 nF on the pin
 everywhere; conversion 4,12 ms × 128, 16 bits without noise, `ALERT` within 4 ms. **`G-300-S`
-alone carries a second `INA238`, the leak watch**, reading the tube's centre through 9 MΩ and
+alone carries a second `INA237`, the leak watch**, reading the tube's centre through 9 MΩ and
 8 MΩ of ordinary 1206 resistors — the source end of a 300 V run is the one place it can be
 measured, and the one place it must be.
 
@@ -434,11 +434,11 @@ measured, and the one place it must be.
 |---|---|---|
 | **the source boards** — `G-48-S` · `G-300-S` · `G-24-S` · `G-12-S` | **on the OUTPUT, on the isolated side** — the run is on the far side of the transformer and what the part must see is the run drooping: an overloaded cell shortens its pulses and the output sags while the current sits on the limit | the run's voltage and current; **over** the programmed load is a fault, `ALERT` → the host drops `ENABLE`; **under** the minimum is a dry run or a cut cable |
 | **the unit boards** — `G-48-U` · `G-300-U-6` · `G-300-U-40` | **on the INPUT** — the feed as it arrives | what arrives at the far end; the host at the unit end reads it, and the 48 V leak watch is the two ends compared |
-| **`G-300-S`, the second `INA238`** | between the run and earth | **the leak watch, mandatory on 300 V**: an insulation break on a floating run draws no current and trips nothing until the second break, or a person, closes the circuit; the part reads the leakage current from the source end every minute. **On a sea return the run is not floating and the watch has nothing to read**; the run is watched by its current, as a 48 V one |
+| **`G-300-S`, the second `INA237`** | between the run and earth | **the leak watch, mandatory on 300 V**: an insulation break on a floating run draws no current and trips nothing until the second break, or a person, closes the circuit; the part reads the leakage current from the source end every minute. **On a sea return the run is not floating and the watch has nothing to read**; the run is watched by its current, as a 48 V one |
 
 **A 48 V run is watched by subtraction** — what leaves the station and does not arrive has leaked;
 no part is added. A 12 V or 24 V run is not watched: within 30 V DC, the limit SELV keeps even
-immersed. Every threshold is a programmed `INA238` register, never a converter property; **there
+immersed. Every threshold is a programmed `INA237` register, never a converter property; **there
 is no fuse anywhere in the family** — a polyfuse re-closes into the same arc and reports nothing,
 where `ALERT` and `ENABLE` clear the fault and say so.
 
@@ -538,7 +538,7 @@ the unregulated 12 V (`G-12-S`'s output, a MOD's input) · **one `5.0SMDJ12A`** 
 regulated 12 V output, which meets no cable · **`5.0SMDJ28A`** on 24 V · **one `5.0SMDJ14A`** across every 12 V input in the enclosure, behind its fuse (*The rails*). A data pair takes **2× 10 Ω and an `SM712`**, on every copper board
 and on every MOD. **The 75 V tube quenches itself on a 48 V feed; the 300 V tube does not** — there
 a fired tube is a short across the feed until the converter's current limit holds it and the
-source end takes the feed away: the `INA238` sees the collapse, raises `ALERT`, the host drops
+source end takes the feed away: the `INA237` sees the collapse, raises `ALERT`, the host drops
 `ENABLE`. That sequence is mandatory, because a struck tube held in a continuous arc is a dead
 tube.
 
@@ -631,10 +631,10 @@ by construction. **Beside a magnetometer the current is a field** — `μ₀I/2�
 10 mA — so the cable and the electrode stay at the cable end of the pod, the tube's length away
 from the coils. **A breach reads as current**: on either method the seawater adds a path — on a sea return the
 only sign, because that run does not float and `G-300-S`'s leak watch has nothing to read — and the source
-board's `INA238` sees the draw rise past its programmed load; a smaller leak shows as the
+board's `INA237` sees the draw rise past its programmed load; a smaller leak shows as the
 difference between the source end and the sum of the unit boards on the run. **With the sea as the
 return, the source boards of several runs may share one anode**: the conductor is the negative,
-the shunt sits in it, and each board's `INA238` reads its own run's current alone.
+the shunt sits in it, and each board's `INA237` reads its own run's current alone.
 
 ### Reach
 
@@ -762,12 +762,12 @@ Makes the 48 V feed for one run from the 12 V it taps off the wire.
                                    R_SENSE 9,1 mΩ                                  ▼
                                                               2× 5.0SMDJ54A ─▶ chokes 22 µH ═════════════▶ the feed, 2-core
                                                                                                 2036-07-SM ─▶ ⏚ common earthing point
- INA238 + ISO1642 on the output · the host side on the port's 3,3 V · ENABLE drives the LT3748's EN
+ INA237 + ISO1642 on the output · the host side on the port's 3,3 V · ENABLE drives the LT3748's EN
 ```
 
 - **in:** 12 V on its terminals; 3,3 V and `ENABLE` off the power connector · **out:** 48 V on a 2-core cable; `SDA · SCL · ALERT` back
 - **rating:** **~26 W delivered** at the pack's working corner; 28,4 W in. The ceiling is the winding's 15 A of saturation: in boundary mode the inductance cancels and only the reflected voltage moves the watts per ampere, and this is the one 12 V → 48 V winding in the catalogue. 41 kHz at full load; no burst mode, so a minimum load of 0,65 W
-- **parts:** `5.0SMDJ14A` across the 12 V input · `LT3748` · `ISC165N15NM6` · `750310988` · `V5N22-M3` · `US3M`, the blocking diode · `INA238` · `ISO1642` · the island `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ54A` · `2036-07-SM` · 2× 22 µH chokes · the EMI choke and the bulk
+- **parts:** `5.0SMDJ14A` across the 12 V input · `LT3748` · `ISC165N15NM6` · `750310988` · `V5N22-M3` · `US3M`, the blocking diode · `INA237` · `ISO1642` · the island `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ54A` · `2036-07-SM` · 2× 22 µH chokes · the EMI choke and the bulk
 - **`ID`:** 15 kΩ, 0,60
 
 ### `G-300-S` — power, source, 300 V
@@ -782,12 +782,12 @@ are a different drawing.
                                                                                   ▼
                                                               2× 5.0SMDJ350A ─▶ chokes 22 µH ═════════════▶ the feed, 2-core
                                                                                                  2036-30-SM ─▶ ⏚ common earthing point
- INA238 + ISO1642 on the output · a second INA238, the run against earth — the leak watch · ENABLE drives the LT3748's EN
+ INA237 + ISO1642 on the output · a second INA237, the run against earth — the leak watch · ENABLE drives the LT3748's EN
 ```
 
 - **in:** 12 V on its terminals — 4,2 A at 12 V, 4,6 A at the 11 V floor; 3,3 V and `ENABLE` off the power connector · **out:** 300 V on a 2-core cable; `SDA · SCL · ALERT` back
-- **rating:** **~47 W delivered, one number**, 50,6 W in — the same board at the station and at a remote Argus. The shunt allows ~66 W and the `INA238` threshold holds the 47; 145 kHz at full load, no burst mode, so a minimum load of 0,63 W. The winding's 1000 V AC insulation is accepted for the concept; a production run orders a custom-insulated winding
-- **parts:** `5.0SMDJ14A` across the 12 V input · `LT3748` · `ISC165N15NM6` · `750310349` · 2× `US3M`, the rectifier and the blocking diode · 2× `INA238` · `ISO1642` · the island `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ350A` · `2036-30-SM` · 2× 22 µH chokes · the EMI choke and the bulk
+- **rating:** **~47 W delivered, one number**, 50,6 W in — the same board at the station and at a remote Argus. The shunt allows ~66 W and the `INA237` threshold holds the 47; 145 kHz at full load, no burst mode, so a minimum load of 0,63 W. The winding's 1000 V AC insulation is accepted for the concept; a production run orders a custom-insulated winding
+- **parts:** `5.0SMDJ14A` across the 12 V input · `LT3748` · `ISC165N15NM6` · `750310349` · 2× `US3M`, the rectifier and the blocking diode · 2× `INA237` · `ISO1642` · the island `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ350A` · `2036-30-SM` · 2× 22 µH chokes · the EMI choke and the bulk
 - **`ID`:** 18 kΩ, 0,65
 
 ### `G-48-U` — power, unit, 48 V
@@ -802,13 +802,13 @@ board's ladder, to the next unit on a chained segment.
   the gland no tube and no chokes — a unit end floats                                     ▼
                                                                                               12 V ─▶ 5.0SMDJ12A ─┬─▶ the two terminals ─▶ the unit
                                                                                                                    └─▶ the tap — a bought device, ≤ 0,5 A
- INA238 + ISO1642 on the input · the feed straight through on the second pair, so units chain
+ INA237 + ISO1642 on the input · the feed straight through on the second pair, so units chain
 ```
 
 - **in:** 48 V through the gland · **out:** 12 V on the two terminals; `SDA · SCL · ALERT` on the connector; the host's 3,3 V feeds the isolator's host side
 - **rating:** **~25 W** at 12 V; what arrives is capped by the source cell's ~26 W, not by this board, and the shunt allows ~50 W. 455 kHz at full load, clamped at 1,05 MHz below about 10 W; minimum load 0,24 W. Nothing to switch: the unit makes its own rails from the 12 V
 - **a pressure board** — ceramic and solid parts only
-- **parts:** `LT3748` · `ISC165N15NM6` · `750311607` · `V10P10-M3` · `INA238` · `ISO1642` · the island `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ54A` · `5.0SMDJ12A` on the 12 V output · the ceramic bulk
+- **parts:** `LT3748` · `ISC165N15NM6` · `750311607` · `V10P10-M3` · `INA237` · `ISO1642` · the island `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ54A` · `5.0SMDJ12A` on the 12 V output · the ceramic bulk
 - **`ID`:** 24 kΩ, 0,70
 
 ### `G-300-U-6` · `G-300-U-40` — power, unit, 300 V
@@ -825,7 +825,7 @@ differ in the winding, in `R_SNS` and in the rectifier.
    the gland no tube and no chokes — a unit end floats                                                                           ▼
                                                                                                                              12 V ─▶ 5.0SMDJ12A ─┬─▶ the two terminals ─▶ a unit
                                                                                                                                                   └─▶ the tap — a device, or a remote site's wire
- INA238 + ISO1642 on the input
+ INA237 + ISO1642 on the input
 ```
 
 | | **`G-300-U-6`** | **`G-300-U-40`** |
@@ -841,8 +841,8 @@ differ in the winding, in `R_SNS` and in the rectifier.
 
 - **in:** 300 V through the gland · **out:** 12 V on the two terminals; `SDA · SCL · ALERT` on the connector
 - **standing loss:** none worth the name — `LT8316` draws 12 µA on `V_IN` off and 75 µA on `BIAS` in burst, milliwatts at 300 V, and the island its 1,5 mA on the host's 3,3 V; it bursts down to 3,5 kHz, so the minimum load is ~1 % of the rating
-- **parts, `G-300-U-6`:** `LT8316` · `FCD260N65S3` · `11338-T195` · `V10P10-M3` · the RCD clamp, `US3M` · `INA238` · `ISO1642` · the island `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ350A` · `5.0SMDJ12A` on the 12 V output · the ceramic bank
-- **parts, `G-300-U-40`:** `LT8316` · `FCD260N65S3` · `11328-T078` · `V10P10-M3` · `INA238` · `ISO1642` · the island `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ350A` · `5.0SMDJ12A` on the 12 V output · the film bank
+- **parts, `G-300-U-6`:** `LT8316` · `FCD260N65S3` · `11338-T195` · `V10P10-M3` · the RCD clamp, `US3M` · `INA237` · `ISO1642` · the island `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ350A` · `5.0SMDJ12A` on the 12 V output · the ceramic bank
+- **parts, `G-300-U-40`:** `LT8316` · `FCD260N65S3` · `11328-T078` · `V10P10-M3` · `INA237` · `ISO1642` · the island `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ350A` · `5.0SMDJ12A` on the 12 V output · the film bank
 
 ### `G-12-S` — the isolated 12 V, source
 
@@ -859,12 +859,12 @@ wants watts is a feed at 48 V or 300 V, never this board at a lower one.
                                    ENABLE drives its EN                                 ▼
                                                                         2× 5.0SMDJ18A ─▶ chokes ─▶ 2036-07-SM ─▶ ⏚ common earthing point
                                                                                                     ══▶ ± ~12 V, unregulated, on eight poles
-                                    INA238 + ISO1642 on the output — the host side on the port's 3,3 V
+                                    INA237 + ISO1642 on the output — the host side on the port's 3,3 V
 ```
 
 - **in:** 12 V off the wire on two terminals; `ENABLE` and 3,3 V off the power connector · **out:** ~12 V on eight poles, `DGPS2.5R-5.0` × 4 — four positions, 4× + and 4× −, beside `G-I-M-005`'s four positions of the pair
-- **rating:** **0,4 A**, about 5 W. `R_LIM` 33 kΩ → ~0,74 A (0,5–0,95 A over the part's spread): 0,4 A out is ~0,45 A through the switches, and a 0,5 A limit would droop the rated load on a low part. **The overload is the `INA238`'s, not the OCP's** — the part's OCP shortens pulses rather than switching off and would hold an overload until thermal shutdown, so `ALERT` past 0,4 A takes `ENABLE` away; the OCP is left the start into a sensor's input capacitors and a short
-- **parts:** `5.0SMDJ14A` across the 12 V input · `SN6507` · `750319691` · 2× `PMEG10020ELR` · `INA238` · `ISO1642` · the island `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ18A` · `2036-07-SM` · the chokes, the EMI choke and the bulk
+- **rating:** **0,4 A**, about 5 W. `R_LIM` 33 kΩ → ~0,74 A (0,5–0,95 A over the part's spread): 0,4 A out is ~0,45 A through the switches, and a 0,5 A limit would droop the rated load on a low part. **The overload is the `INA237`'s, not the OCP's** — the part's OCP shortens pulses rather than switching off and would hold an overload until thermal shutdown, so `ALERT` past 0,4 A takes `ENABLE` away; the OCP is left the start into a sensor's input capacitors and a short
+- **parts:** `5.0SMDJ14A` across the 12 V input · `SN6507` · `750319691` · 2× `PMEG10020ELR` · `INA237` · `ISO1642` · the island `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ18A` · `2036-07-SM` · the chokes, the EMI choke and the bulk
 - **`ID`:** 56 kΩ, 0,85
 
 ### `G-24-S` — power, source, 24 V, switched
@@ -881,13 +881,13 @@ cell stands off with the `LT3748`'s `EN/UVLO` held low and the board draws nothi
                                     ENABLE drives its EN/UVLO                          ▼
                                                               2× 5.0SMDJ28A ─▶ chokes 22 µH ─▶ 2036-07-SM ─▶ ⏚ common earthing point
                                                                                                 ══▶ 24 V, two poles — the load's 2-core cable
-                                    INA238 + ISO1642 on the output — the host side on the port's 3,3 V
+                                    INA237 + ISO1642 on the output — the host side on the port's 3,3 V
 ```
 
 - **in:** 12 V off the wire on two terminals, ~3 A while the load runs (36 W in at the working corner); `ENABLE` and 3,3 V off the power connector · **out:** 24 V on one two-pole `DGPS2.5R-5.0`; `SDA · SCL · ALERT` back
-- **rating:** **~33 W delivered** at the pack's working corner — `I_pk` 9,0 A at 10 mΩ, 112 kHz at full load. What the port declares is the load's, a programmed `INA238` threshold: **over** the limit is a stalled load, **under** the minimum a load running dry or a cut cable — two thresholds the host programs. The current limit is the cell's own `R_SENSE`; a stalled motor is delivered into at the limit and never fused
+- **rating:** **~33 W delivered** at the pack's working corner — `I_pk` 9,0 A at 10 mΩ, 112 kHz at full load. What the port declares is the load's, a programmed `INA237` threshold: **over** the limit is a stalled load, **under** the minimum a load running dry or a cut cable — two thresholds the host programs. The current limit is the cell's own `R_SENSE`; a stalled motor is delivered into at the limit and never fused
 - **the ladder:** the source end's, like `G-12-S` — the three-electrode tube, the 22 µH chokes and 2× `5.0SMDJ28A` on the 24 V. What stands at the load's end is the load's own affair: a bare motor takes two leaded transils on its lugs, a controlled one a small board of its own
-- **parts:** `5.0SMDJ14A` across the 12 V input · `LT3748` · `ISC165N15NM6` · `750311592` · `V10P10-M3` · `US3M`, the blocking diode · `INA238` · `ISO1642` · the island `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ28A` · `2036-07-SM` · 2× 22 µH chokes · the bulk
+- **parts:** `5.0SMDJ14A` across the 12 V input · `LT3748` · `ISC165N15NM6` · `750311592` · `V10P10-M3` · `US3M`, the blocking diode · `INA237` · `ISO1642` · the island `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ28A` · `2036-07-SM` · 2× 22 µH chokes · the bulk
 - **`ID`:** 4,3 kΩ, 0,30
 
 ### `G-I-N-025` — communication, 485 on copper, NodBus
@@ -986,7 +986,7 @@ nothing does; and what leaves a board on a cable is filtered — on a source boa
 series chokes stand between the converter and the terminal, so the converter's own spectrum is
 not a criterion. One converter per board where a band is measured: two free-running boundary
 converters make a difference frequency that sweeps the band all day. The criterion is the
-measuring board's own bench figure, and the `INA238` threshold guards the number afterwards.
+measuring board's own bench figure, and the `INA237` threshold guards the number afterwards.
 
 ## Files
 

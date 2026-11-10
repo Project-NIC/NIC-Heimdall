@@ -26,7 +26,7 @@ na týchž větvích.
 | třída | **NOD** — NodBus **typ 6**, jeden slot, adresa `0x6n`; za odbočkou Bifrost |
 | MCU | `STM32H523VE`, LQFP100, standardní H523 projektu |
 | větve | **čtyři větve ModBus RTU, každá na vlastním USART** (USART2 · USART6 · UART4 · UART5), shodné; **standardně osazené dvě, strop jsou čtyři**. Každá opouští skříň na komunikační desce a napájí svá čidla z napájecí desky, 50 m, zhruba šestnáct jednotek na větev. Plocha širší, než pokryjí čtyři větve, znamená druhou Palatine, nikdy pátou větev |
-| `PWR EXT` | **jeden samostatný napájecí konektor**, ne větev: zdrojová napájecí deska spínaná signálem `EN_X` pro čerpadlo jednotky Pluvius — její `INA238` je ampérmetr zátěže (`FIRMWARE.md` §6) |
+| `PWR EXT` | **jeden samostatný napájecí konektor**, ne větev: zdrojová napájecí deska spínaná signálem `EN_X` pro čerpadlo jednotky Pluvius — její `INA237` je ampérmetr zátěže (`FIRMWARE.md` §6) |
 | napájení | 12 V na jejích dvou svorkách — vodič od baterie ve skříni, na napájené trase svorky napájecí desky jednotky — jeden `LMR43610` na 3,3 V pro MCU a komunikační desky; **na této desce není žádná napájecí větev pro čidla**, čidlo si bere izolovaných 12 V z větve |
 | zátěž | ~7 W s dnešními čidly, **~21 W** se čtyřmi větvemi na jejich limitu; vypínací práh trasy se měří při uvádění do provozu — špička při rozběhu a provozní zátěž, s rezervou (`HARDWARE.md`, *The budget*) |
 | payload | 32 B **samoohraničených bloků**, `[address][length][data]`, jeden na každou transakci ModBus, jen celé bloky; dekódují se podle vlastní adresy modulu a jeho profilu tam, kde se čte archiv (`../core/PROTOCOL.md` §5) |

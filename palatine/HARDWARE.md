@@ -12,7 +12,7 @@
 | **`STM32H523VE`**, LQFP100 | the ModBus master of four arms and the NodBus unit toward its card. No analogue front, no sensor of its own, no SPI or ADC measurement — every value arrives over an arm |
 | **`LMR43610`**, 3,3 V | the one buck: the MCU, the NodBus communication board and the four ModBus communication boards hang on it (*The rails*) |
 | **four Galvani port positions** | one per arm, each a 12-pin data body and an 8-pin power body; the arm's communication board and power board plug in, and the line side, the barrier and the sensors' isolated 12 V are theirs |
-| **`PWR EXT`** | a fifth power body on its own — the switched source board for Pluvius's pump, `EN_X` its switch, its `INA238` the load's ammeter |
+| **`PWR EXT`** | a fifth power body on its own — the switched source board for Pluvius's pump, `EN_X` its switch, its `INA237` the load's ammeter |
 | **the up port** | the unit's own two bodies toward its card, or the crossed in-box cable |
 | **2× `DGPS2.5R-5.0`** | the 12 V in and the tap, one node; nothing of the 12 V crosses the board |
 | LED on PD4, button on PD5 | the status blink; the commissioning button |
@@ -37,8 +37,8 @@ Every pin is assigned or listed free.
 | arm 2 | **USART6** | PC6 · PC7 · PE7 · PE8 | same | |
 | arm 3 | **UART4** | PC10 · PC11 · PE10 · PE12 | same | |
 | arm 4 | **UART5**, `SWAP` set | PB12 · PB13 · PE13 · PE14 | same | |
-| `PWR EXT` — the switched supply body | GPIO · **ADC1** · **I2C1** | PD1 `EN_X` · PA0 `ID_X` | **the fifth power body, on its own**: a source power board switched by `ENABLE` for Pluvius's pump, on the switched 24 V board (`../galvani/README.md`) | `EN_X` carries a 100 kΩ pull-down — a reset leaves the load off; the board's `INA238` on I2C1 beside the up port's, its `ALERT` a pin of its own |
-| power bodies | **I2C1 · I2C3 · I3C1**, master on each | I2C1 PB8 `SCL` · PB9 `SDA` · I2C3 PD6 `SCL` · PD7 `SDA` · **I3C1 PD12 `SCL` · PD13 `SDA`, in I²C legacy** | six `INA238`s — the up port's, the four arm power boards and the `PWR EXT` body's board — **two sockets to a controller, and two is the ceiling**: `A_SEL` is one bit, so a bus carries 0x40 and 0x41 and nothing more (`../galvani/README.md`). The up port and `PWR EXT` on I2C1, arms 1 and 2 on I2C3, arms 3 and 4 on I3C1; in each pair the first socket's `A_SEL` is strapped low and the second's high. **I2C2 does not exist on this board**: its only `SCL` pad is PB10 and both its `SDA` pads are taken — PB12 by arm 4's `TXD`, PB3 by the `RXD` capture — so the third controller is I3C1, which is I²C-capable and has PD12/PD13 to itself | 100 kHz; **an `ALERT` pin per socket, six of them, no wire-OR**: `ALERT_P` PC8 · `ALERT_1` PC9 · `ALERT_2` PD10 · `ALERT_3` PD11 · `ALERT_4` PC12 · `ALERT_X` PD2 — **EXTI 8 · 9 · 10 · 11 · 12 · 2, six different numbers**, because EXTI is shared by pin number across ports and the board's seventh EXTI user is `BUTTON` on PD5 |
+| `PWR EXT` — the switched supply body | GPIO · **ADC1** · **I2C1** | PD1 `EN_X` · PA0 `ID_X` | **the fifth power body, on its own**: a source power board switched by `ENABLE` for Pluvius's pump, on the switched 24 V board (`../galvani/README.md`) | `EN_X` carries a 100 kΩ pull-down — a reset leaves the load off; the board's `INA237` on I2C1 beside the up port's, its `ALERT` a pin of its own |
+| power bodies | **I2C1 · I2C3 · I3C1**, master on each | I2C1 PB8 `SCL` · PB9 `SDA` · I2C3 PD6 `SCL` · PD7 `SDA` · **I3C1 PD12 `SCL` · PD13 `SDA`, in I²C legacy** | six `INA237`s — the up port's, the four arm power boards and the `PWR EXT` body's board — **two sockets to a controller, and two is the ceiling**: `A_SEL` is one bit, so a bus carries 0x40 and 0x41 and nothing more (`../galvani/README.md`). The up port and `PWR EXT` on I2C1, arms 1 and 2 on I2C3, arms 3 and 4 on I3C1; in each pair the first socket's `A_SEL` is strapped low and the second's high. **I2C2 does not exist on this board**: its only `SCL` pad is PB10 and both its `SDA` pads are taken — PB12 by arm 4's `TXD`, PB3 by the `RXD` capture — so the third controller is I3C1, which is I²C-capable and has PD12/PD13 to itself | 100 kHz; **an `ALERT` pin per socket, six of them, no wire-OR**: `ALERT_P` PC8 · `ALERT_1` PC9 · `ALERT_2` PD10 · `ALERT_3` PD11 · `ALERT_4` PC12 · `ALERT_X` PD2 — **EXTI 8 · 9 · 10 · 11 · 12 · 2, six different numbers**, because EXTI is shared by pin number across ports and the board's seventh EXTI user is `BUTTON` on PD5 |
 | ID reads | **ADC1** | eleven channels, below | one resistor per body: two on the up port, two per arm, one on `PWR EXT` | read once at bring-up, before a body is fed |
 | clock in | **HSE bypass** | PH0 | the data body's `CLK`, 2²² | PH1 unconnected |
 | debug | **SWD** | PA13 · PA14 | | no JTAG, no trace |
@@ -109,7 +109,7 @@ serves an arm: ModBus carries no clock and is never ranged, and TIM6 times the R
 | 56 | PD9 | `RXD_ECHO` | `USART3_RX` | in | the echo check on the board's own transmission |
 | 57 | PD10 | `ALERT_2` | GPIO, EXTI10 | in | arm 2's power board — off its `ISO1642`, high is the alarm |
 | 58 | PD11 | `ALERT_3` | GPIO, EXTI11 | in | arm 3's power board |
-| 59 | PD12 | `SCL_3` | `I3C1_SCL`, I²C legacy | i/o | arms 3 and 4 — their power boards' `INA238`s |
+| 59 | PD12 | `SCL_3` | `I3C1_SCL`, I²C legacy | i/o | arms 3 and 4 — their power boards' `INA237`s |
 | 60 | PD13 | `SDA_3` | `I3C1_SDA`, I²C legacy | i/o | |
 | 61 | PD14 | `PGOOD` | GPIO | in | the 3,3 V buck's window |
 | 62 | PD15 | — | | | free |
@@ -137,7 +137,7 @@ serves an arm: ModBus carries no clock and is never ranged, and TIM6 times the R
 | 84 | PD3 | — | | | free |
 | 85 | PD4 | `LED` | GPIO | out | the status LED, fitted — 1 kΩ from the 3,3 V, one 50 ms blink a minute while healthy, two on a fault (`../core/HARDWARE.md`) |
 | 86 | PD5 | `BUTTON` | GPIO, EXTI | in | the commissioning button (`FIRMWARE.md`) |
-| 87 | PD6 | `SCL_2` | `I2C3_SCL` | i/o | arms 1 and 2 — their power boards' `INA238`s. |
+| 87 | PD6 | `SCL_2` | `I2C3_SCL` | i/o | arms 1 and 2 — their power boards' `INA237`s. |
 | 88 | PD7 | `SDA_2` | `I2C3_SDA` | i/o | |
 | 89 | PB3 | `RXD` | `TIM2_CH2` capture | in | the same net as PB7 — the timebase captures the start edge of the card's frame |
 | 90 | PB4 | — | | | free |
@@ -145,14 +145,14 @@ serves an arm: ModBus carries no clock and is never ranged, and TIM6 times the R
 | 92 | PB6 | `TXD` | `USART1_TX` / `TIM4_CH1` | out | the NodBus link, to the data body |
 | 93 | PB7 | `RXD` | `USART1_RX` / `TIM4_CH2` | in | the pins switch USART → TIM4 for the ranging instant |
 | 94 | BOOT0 | 10 kΩ to ground | |  | |
-| 95 | PB8 | `SCL` | `I2C1_SCL` | i/o | the up port's and `PWR EXT`'s power bodies — their boards' `INA238`s, 0x40 and 0x41 |
+| 95 | PB8 | `SCL` | `I2C1_SCL` | i/o | the up port's and `PWR EXT`'s power bodies — their boards' `INA237`s, 0x40 and 0x41 |
 | 96 | PB9 | `SDA` | `I2C1_SDA` | i/o | |
 | 97 | PE0 | — | | | free |
 | 98 | VCAP | 2× 1 µF 50 V 0805 + 2× 100 nF 50 V 0603 — 2,2 µF, the sheet's 2,2 µF ±20 % | | | |
 | 99 | VSS | | | | |
 | 100 | VDD | 3,3 V | | | |
 
-**52 GPIO used, 27 free, `PH1` unconnected** (PA1 · PA8–PA12 · PA15 · PB0 · PB2 · PB4 · PB5 · PB10 · PB14 · PB15 · PC1 · PC13–PC15 · PD0 · PD3 · PD8 · PD15 · PE0 · PE3 · PE9 · PE11 · PE15). The `PWR EXT` body takes two pins of its own, `EN_X` and `ID_X`; its `INA238` shares I2C1 with the up port's and its `ALERT` is one of the six.
+**52 GPIO used, 27 free, `PH1` unconnected** (PA1 · PA8–PA12 · PA15 · PB0 · PB2 · PB4 · PB5 · PB10 · PB14 · PB15 · PC1 · PC13–PC15 · PD0 · PD3 · PD8 · PD15 · PE0 · PE3 · PE9 · PE11 · PE15). The `PWR EXT` body takes two pins of its own, `EN_X` and `ID_X`; its `INA237` shares I2C1 with the up port's and its `ALERT` is one of the six.
 
 ### The sockets, pin by pin
 
@@ -278,7 +278,7 @@ the same pair at the pins behind it** — the house rule (`../core/POWER.md`, *T
 10 µF + 100 nF at the pins, the house filter for an ADC reference on a buck's output
 (`../core/POWER.md`, *The filter parts*); `VREF−` and `VSSA` to the ground plane at one point. The eleven `ID` inputs are read single-ended against
 `VREF+`, and the 10 kΩ 1 % pull-up of each `ID` resistor hangs on the same `VREF+` node, so the reading is a
-ratio and the rail's tolerance drops out. The arms' 12 V and their currents are the four arm power boards' `INA238`s, over I2C3 and I3C1; the
+ratio and the rail's tolerance drops out. The arms' 12 V and their currents are the four arm power boards' `INA237`s, over I2C3 and I3C1; the
 up port's and `PWR EXT`'s are on I2C1 — no divider on this board.
 
 ## Rain and snow — two blocks from two instruments
@@ -307,14 +307,14 @@ arm, so an arm's 12 V switches on its own.
 `ALERT_P` PC8 · `ALERT_1`–`ALERT_4` PC9 · PD10 · PD11 · PC12 · `ALERT_X` PD2, **EXTI 8 · 9 · 10 ·
 11 · 12 · 2, six different numbers**, because EXTI is shared by pin number across ports. The
 alarm crosses each board's barrier on its `ISO1642`'s channel B, **high on alarm** (`APOL` = 1 at
-the `INA238`), so a dark socket reads quiet; hanging six of them on one pin would blind the five
+the `INA237`), so a dark socket reads quiet; hanging six of them on one pin would blind the five
 that are working. Six pins buy the attribution. What the alert means does not change: it says
 somebody has a threshold crossed, and which one and why comes from the read that follows, on the
 ordinary poll round. A socket whose `ALERT` sits high is flagged and polled like the rest.
 
 **`PWR EXT` is a power body and nothing else — the switched supply for Pluvius's pump.**
 A source power board plugs into it and is switched by its `ENABLE`, `EN_X` on this board, and
-its `INA238` is the pump's ammeter, and the rule that switches it is in the firmware (`FIRMWARE.md` §6, *The `PWR EXT` body*). The board taps the 12 V wire on
+its `INA237` is the pump's ammeter, and the rule that switches it is in the firmware (`FIRMWARE.md` §6, *The `PWR EXT` body*). The board taps the 12 V wire on
 its own terminals like every source power board, so its watts never cross this board; on a
 remote Palatine they count toward the far end's load, and the feed is picked from the
 load table like any run's (`../galvani/README.md`, *Reach*). Everything that leaves the box
@@ -453,19 +453,19 @@ here.
 ### The budget — what the iron allows, and the trip point that is measured
 
 **Palatine's trip point is measured at commissioning, like every run's**: the start-up peak and the
-running load, with margin, written into the source board's `INA238` through the card's per-port
+running load, with margin, written into the source board's `INA237` through the card's per-port
 register, and rewritten when a sensor is added (`../galvani/README.md`, *The two choices, and they are independent*). There
 is no class to declare; the ceiling is the iron:
 
 | | |
 |---|---|
-| an arm power board, one arm | 0,4 A at ~12 V, **~5 W**; the `SN6507`'s `R_LIM` sits at ~0,7 A, the 0,4 A ceiling is the `INA238`'s |
+| an arm power board, one arm | 0,4 A at ~12 V, **~5 W**; the `SN6507`'s `R_LIM` sits at ~0,7 A, the 0,4 A ceiling is the `INA237`'s |
 | four arms at 0,4 A | **~19 W** |
 | the node itself, through its buck | ~1,5 W |
 | **four arms on their limit and the node** | **~21 W**, inside the 48 V unit power board's ~25 W on a fed run |
 
 An arm asked for more than its cell gives **droops**: the `SN6507` shortens its pulses, the arm's
-12 V sags with the current on the limit, and the arm's own `INA238` sees the sag
+12 V sags with the current on the limit, and the arm's own `INA237` sees the sag
 (`../galvani/README.md`). Nothing on this board is in that path.
 
 **Today's set** uses a third of that:

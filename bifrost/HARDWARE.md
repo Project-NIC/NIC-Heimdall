@@ -197,7 +197,7 @@ assigned or listed free — nothing is left to guess.*
 | timebase | **TIM2** (32-bit) | PA15 `PPS_K` capture on CH1 | free-running at 2²⁷; CH2–CH4 internal compares for the frame grid | never reset, read as differences |
 | the port clock | **MCO1** ← HSE | PA8; the gates' `OE_1`–`OE_4` on PE9 · PB14 · PB15 · PD8 | **one output for all four ports**, into the quad buffer's strapped inputs; the number is the card's role — **2²² on a Bifrost, 2¹⁹ on an Argus**, named by `ATTN`; each port's gate opened by its own `OE` | `MCO1SEL` = HSE, `MCO1PRE` **1** or **8** |
 | time bus label | **I2C1**, multi-master | PB8 `SCL` · PB9 `SDA` | Kronos's coarse second and quality, the Mayak's seed | 100 kHz |
-| power boards | **I2C3 · I3C1 · I3C2**, master on each — the label keeps I2C1 | I2C3 PD6 `SCL` · PD7 `SDA` · **I3C1 PD12 `SCL` · PD13 `SDA`** · **I3C2 PC10 `SCL` · PC11 `SDA`**, the two I3C in I²C legacy | the five ports' `INA238`s — **at most two sockets to a controller, because `A_SEL` is one bit and two boards on a bus are 0x40 and 0x41**: the up port and down port 1 on I3C1, down ports 2 and 3 on I2C3, down port 4 alone on I3C2. Each port's `A_SEL` is strapped in its socket, the first of a pair low and the second high (`../galvani/README.md`). **Not I2C2**: its only `SCL` pad is PB10 and its usable `SDA` pads are PB12, which is port 3's `TXD`, and PB3, which is `JTDO/TRACESWO` — the I3C pairs cost neither 100 kHz; **4,7 kΩ to 3,3 V on `SDA` and `SCL` of each of the three pairs**; **an `ALERT` pin per port, five of them, no wire-OR, each 100 kΩ to ground**: `ALERT_0` PC8 for the up port, `ALERT_1`–`ALERT_4` on PD4 · PD5 · PD10 · PD11 — **EXTI 8 · 4 · 5 · 10 · 11, five different numbers**, EXTI being shared by pin number across ports. Each rides its board's `ISO1642` channel B and is **high on alarm**, so a dark port reads quiet. A stuck `ALERT` on a wire-OR blinds every other port; a pin each makes it one board's fault |
+| power boards | **I2C3 · I3C1 · I3C2**, master on each — the label keeps I2C1 | I2C3 PD6 `SCL` · PD7 `SDA` · **I3C1 PD12 `SCL` · PD13 `SDA`** · **I3C2 PC10 `SCL` · PC11 `SDA`**, the two I3C in I²C legacy | the five ports' `INA237`s — **at most two sockets to a controller, because `A_SEL` is one bit and two boards on a bus are 0x40 and 0x41**: the up port and down port 1 on I3C1, down ports 2 and 3 on I2C3, down port 4 alone on I3C2. Each port's `A_SEL` is strapped in its socket, the first of a pair low and the second high (`../galvani/README.md`). **Not I2C2**: its only `SCL` pad is PB10 and its usable `SDA` pads are PB12, which is port 3's `TXD`, and PB3, which is `JTDO/TRACESWO` — the I3C pairs cost neither 100 kHz; **4,7 kΩ to 3,3 V on `SDA` and `SCL` of each of the three pairs**; **an `ALERT` pin per port, five of them, no wire-OR, each 100 kΩ to ground**: `ALERT_0` PC8 for the up port, `ALERT_1`–`ALERT_4` on PD4 · PD5 · PD10 · PD11 — **EXTI 8 · 4 · 5 · 10 · 11, five different numbers**, EXTI being shared by pin number across ports. Each rides its board's `ISO1642` channel B and is **high on alarm**, so a dark port reads quiet. A stuck `ALERT` on a wire-OR blinds every other port; a pin each makes it one board's fault |
 | ID reads | **ADC1** | ten channels, a data-body and a power-body `ID` per port, below | one resistor per body, against 10 kΩ | read once at bring-up, before a port is fed |
 | clock in | **HSE bypass** | PH0 `OSC_IN` | the two joined 3-state buffers, one enabled by `ATTN`: 2²² either way — the time bus's (Bifrost) or the up port's (Argus) | PH1 unconnected |
 | debug | **SWD** | PA13 `SWDIO` · PA14 `SWCLK` | | no JTAG, no trace |
@@ -264,7 +264,7 @@ assigned or listed free — nothing is left to guess.*
 | 56 | PD9 | `RXD_ECHO` | `USART3_RX` | in | the up port's echo |
 | 57 | PD10 | `ALERT_3` | GPIO, EXTI10 | in | down port 3's power board |
 | 58 | PD11 | `ALERT_4` | GPIO, EXTI11 | in | down port 4's power board |
-| 59 | PD12 | `SCL_2` | `I3C1_SCL`, I²C legacy | i/o | the up port's and port 1's `INA238`s |
+| 59 | PD12 | `SCL_2` | `I3C1_SCL`, I²C legacy | i/o | the up port's and port 1's `INA237`s |
 | 60 | PD13 | `SDA_2` | `I3C1_SDA`, I²C legacy | i/o | |
 | 61 | PD14 | `PGOOD` | GPIO | in | the `LMR43620`'s window |
 | 62 | PD15 | — | | | free |
@@ -283,7 +283,7 @@ assigned or listed free — nothing is left to guess.*
 | 75 | VDD | 3,3 V | | | |
 | 76 | PA14 | `SWCLK` | SWD | in | |
 | 77 | PA15 | `PPS_K` | `TIM2_CH1` capture | in | behind the `THVD1450` receiver on the time bus |
-| 78 | PC10 | `SCL_3` | `I3C2_SCL`, I²C legacy | i/o | down port 4's `INA238` — alone on its controller |
+| 78 | PC10 | `SCL_3` | `I3C2_SCL`, I²C legacy | i/o | down port 4's `INA237` — alone on its controller |
 | 79 | PC11 | `SDA_3` | `I3C2_SDA`, I²C legacy | i/o | |
 | 80 | PC12 | — | | | free |
 | 81 | PD0 | — | | | free |
@@ -292,7 +292,7 @@ assigned or listed free — nothing is left to guess.*
 | 84 | PD3 | — | | | free |
 | 85 | PD4 | `ALERT_1` | GPIO, EXTI4 | in | down port 1's power board — high is the alarm, 100 kΩ pull-down at the pin |
 | 86 | PD5 | `ALERT_2` | GPIO, EXTI5 | in | down port 2's power board |
-| 87 | PD6 | `SCL_PWR` | `I2C3_SCL` | i/o | down ports 2 and 3's `INA238`s |
+| 87 | PD6 | `SCL_PWR` | `I2C3_SCL` | i/o | down ports 2 and 3's `INA237`s |
 | 88 | PD7 | `SDA_PWR` | `I2C3_SDA` | i/o | |
 | 89 | PB3 | — | | | free |
 | 90 | PB4 | — | | | free |
@@ -395,7 +395,7 @@ once however many sockets share it; every `ALERT` **100 kΩ to ground, high = al
 | 2 | `GND` | ground |
 | 3 | `ID` | PB1, `ADC12_INP5`, 10 kΩ 1 % to `VREF+` |
 | 4 | `SDA` | PD13, `I3C1_SDA` in I²C legacy — I3C1's pull-up pair, shared with down port 1 |
-| 5 | `A_SEL` | to ground — `INA238` at 0x40 |
+| 5 | `A_SEL` | to ground — `INA237` at 0x40 |
 | 6 | `SCL` | PD12, `I3C1_SCL` in I²C legacy |
 | 7 | `ALERT` | PC8, EXTI8, 100 kΩ to ground |
 | 8 | `3,3 V` | the up port's `TPS629206` |

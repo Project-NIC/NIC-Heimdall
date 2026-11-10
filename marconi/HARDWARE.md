@@ -632,7 +632,7 @@ assigned or listed free — nothing is left to guess.*
 | PSRAM | **OCTOSPI1**, port 2 | PF0–PF5 · PG0 · PG1 · PG10–PG12 · PF12 | the APS25608N, 32 MB octal DDR — the trace and the ionogram parameters | 2²⁶, DQS on PF12 |
 | the second PSRAM — **the `LONG` option** | **OCTOSPI2**, port 1 | PD11 · PD12 · PF7 · PD13 · PD4–PD7 · PF10 · PC5 · PG6 | a second APS25608N, **unpopulated unless the site takes `LONG`**; the raw 2²⁶ record split over the two buses | 2²⁶, DQS on PC5 |
 | ID reads | **ADC1** | PC0 · PC1 | one resistor per body, against 10 kΩ 1 % to `VREF+`, the 1,8 V | read once at bring-up |
-| power body | **I2C1** through the `PCA9306` | PB8 · PB9 | the unit power board's `INA238` | 100 kHz; `ALERT` on PC8, EXTI |
+| power body | **I2C1** through the `PCA9306` | PB8 · PB9 | the unit power board's `INA237` | 100 kHz; `ALERT` on PC8, EXTI |
 | the thermometer | **ADC1** | `NTC` PA0 · `NTC_EN` PF6 | one 0603 `NCP18XH103F03RB` on the board — the band's temperature covariate in the `REPORT` frame; corrects nothing (`FIRMWARE.md`). the station's divider: 10 kΩ from `NTC_EN` to the pin, the NTC from the pin to `VSSA`, **3 kΩ + 100 nF at the ADC pin**, read against `VREF+` so the rail drops out (`../tesla/HARDWARE.md` §7) | read every 10 s, `NTC_EN` high for the conversion only |
 | clock in | **HSE bypass** | PH0 | `NB IN`'s `CLK`, 2²², through the inbound translator | PH1 unconnected |
 | debug | **SWD** | PA13 · PA14 | | no JTAG, no trace |
@@ -773,7 +773,7 @@ it. The `DCO` phase and polarity are a converter register, written at boot (`FIR
 | 114 | VDD33USB | tied to `VDD` | | | USB unused |
 | 115 | PC6 | — | | | free |
 | 116 | PC7 | — | | | free |
-| 117 | PC8 | `ALERT` | GPIO, EXTI | in | through the inbound translator — the power body's `INA238`, high = alarm |
+| 117 | PC8 | `ALERT` | GPIO, EXTI | in | through the inbound translator — the power body's `INA237`, high = alarm |
 | 118 | PC9 | — | | | free |
 | 119 | PA8 | — | | | free |
 | 120 | PA9 | — | | | free |
@@ -823,7 +823,7 @@ it. The `DCO` phase and polarity are a converter register, written at boot (`FIR
 | 164 | PB6 | `TXD` | `USART1_TX` / `TIM4_CH1` | out | the NodBus link — through the outbound translator to `NB IN`; 100 kΩ to 1,8 V |
 | 165 | PB7 | `RXD` | `USART1_RX` / `TIM4_CH2` | in | through the inbound translator; the pins switch USART → TIM4 for the ranging instant |
 | 166 | BOOT0 | 10 kΩ to ground | | | |
-| 167 | PB8 | `SCL` | `I2C1_SCL` | i/o | through the `PCA9306` to `PWR IN` — the `INA238`, alone on it; 4,7 kΩ to 1,8 V on this side |
+| 167 | PB8 | `SCL` | `I2C1_SCL` | i/o | through the `PCA9306` to `PWR IN` — the `INA237`, alone on it; 4,7 kΩ to 1,8 V on this side |
 | 168 | PB9 | `SDA` | `I2C1_SDA` | i/o | the same; 4,7 kΩ to 1,8 V |
 | 169 | PE0 | — | | | free |
 | 170 | PE1 | — | | | free |
@@ -894,7 +894,7 @@ resistance and cable capacitance.
 | 11 | `SD` | through the inbound translator onto PE4; 100 kΩ to ground on the 3,3 V side — a copper board leaves it unpopulated and it reads quiet |
 | 12 | `3,3 V` | the ordinary 3,3 V, the interface LDO off the 4,0 V (§7) |
 
-**`PWR IN` — the power body.** One power socket on the board, so its `INA238` is 0x40, alone on I2C1.
+**`PWR IN` — the power body.** One power socket on the board, so its `INA237` is 0x40, alone on I2C1.
 
 | pin | signal | on this board |
 |---|---|---|
@@ -958,4 +958,4 @@ the same pair at the pins behind it** — the house rule (`../core/POWER.md`, *T
 the ground plane at one point — the LQFP176 bonds `VREF−` to `VSSA` inside. The two `ID` inputs are read
 single-ended against `VREF+`, and their 10 kΩ 1 % pull-ups hang on the same 1,8 V, so the reading is a
 ratio and the rail's tolerance drops out; the bodies' 3,3 V is not used for the `ID` on this
-board. The arrived 12 V and the input current are the power body's `INA238`, over I2C1.
+board. The arrived 12 V and the input current are the power body's `INA237`, over I2C1.

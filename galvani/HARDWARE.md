@@ -16,13 +16,13 @@ wins on any conflict. A number here is read from a datasheet or computed.
 |---|---|---|
 | **every 1 A buck position** — a unit's own 3,3 V and, where its sensor LDOs want it, 4,0 V from the 12 V it is handed; a board's own logic; the head's ESP (Wi-Fi TX peaks 295 mA, the source sized for 0,6 A); the UM980; every MOD, behind transils clamping at ~29 V | **`LMR43610R3RPER`, 1 A — the house buck** | one converter, no rail, no LDO; one part covers 20 mA and 700 alike, and **one order code covers every frequency** because the `R_T` resistor sets it (200 kHz – 2,2 MHz). **`R`-trim, spread spectrum OFF from the factory, no `SYNC` pin, `PGOOD` present.** The full cell is *The buck cell*, worksheet below |
 | **the 48 V onto the cable** | **LT3748 + the `ISC165N15NM6` + 750310988** (1:4,42, 14 µH) | the battery-side feed cell — worksheet below; **`G-48-S` carries it** |
-| **the 300 V onto the cable** | **LT3748 + the `ISC165N15NM6` + 750310349** (1:10, 5 µH) | **`G-300-S` carries it — ~47 W, one number.** Its input is 12 V at a station and 12 V at a remote Argus, so nothing about the board changes between them; what a port hands out is a programmed `INA238` threshold |
+| **the 300 V onto the cable** | **LT3748 + the `ISC165N15NM6` + 750310349** (1:10, 5 µH) | **`G-300-S` carries it — ~47 W, one number.** Its input is 12 V at a station and 12 V at a remote Argus, so nothing about the board changes between them; what a port hands out is a programmed `INA237` threshold |
 | **the card's four down ports' 3,3 V** — 12 V → 3,3 V for the boards on the four down ports, its `EN` on no pin; the processor and the up port take a `TPS629206` each. **The down branch carries ~420 mA with four optical ends, 700 mA at their ceiling, ~300 mA with four copper** (*The fibre front*; *What a communication board costs the host's 3,3 V*) | **`LMR43620`, 2 A — the same cell one size up** | the same inductor value as the 1 A design (3,3–4,7 µH) with `I_SAT` ≥ 3,5 A, so light-load behaviour is the 1 A part's and the reserve is real (*The buck cell*) |
 | **a rail up to 600 mA on a 12 V that stays under 17 V** — the card's processor and up port; a unit whose whole board fits it (Quake); **both rails of every H7A3 board**, the processor's 1,8 V and the analogue feed — never on a MOD, whose 12 V sits behind transils clamping at ~29 V | **`TPS629206`, 600 mA** | 3–17 V in, `V_OUT` 0,6–5,5 V by divider against 0,6 V, 2,5 or 1 MHz and forced PWM or auto by one resistor on `MODE/S-CONF`, 40 ns minimum on-time, 1,1–1,7 A high-side limit, `PG`, SOT-5X3 — pin-to-pin the `TPS629203` and `TPS629210` (*The buck cell*) |
 | **the lasers** (`G-O-10-10` · `G-O-2-100`) | **the host's 3,3 V through the module's own π filter — no buck, no LDO** | the TX half is digitally keyed, so ripple does not reach anything that cares and an LDO there would only burn watts; the RX half is the one that has to *hear*, so it takes its 3,3 V through the module's own π filter on the host's rail. The seat carries local bulk. **The draw is ~105 mA at a sending end and ~55 mA at a receiving end on average, 175 and 125 mA at most** — every module this project fits reads `I_TX + I_RX` = 100 mA on its own sheet, the receiver ~25 mA and the laser ~75 of it, and the data laser is dark between slots (*The fibre front*) |
 | **the 300 V off the cable** | **`LT8316` + `FCD260N65S3`** + `11328-T078` (8:1:1, 670 µH) or `11338-T195` (14:1:1,7, 1000 µH) → 12 V | **the `G-300-U` pair carries it — 40 W on `G-300-U-40`, 6 W on `G-300-U-6`.** `G-300-U` without a suffix means both: what the two boards share is everything but the winding, the shunt and the rectifier |
 | **the 485 line side** (`G-I-N-025`, `G-I-M-005`) | **the host's 3,3 V over the connector** | the isolated line-side copy: **SN6505B (its own 420 kHz oscillator — no clock, no sync, nothing to set) + a WE-PP centre-tap transformer + Schottky rectifier + capacitors, NO LDO** — the raw rectified rail wanders a few hundred mV with load and diode drops, and the ISO145x VCC2 window (3–5,5 V) eats that whole; the regulating already happened at the buck-fed 3,3 V input. The winding is **Würth 750313734** — the sheet's own *3,3 V → 3,3 V, 100 mA, no LDO* row: 1:1,1 ±2 %, V×T **7 Vµs**, **5000 VRMS**, and at 420 kHz it uses 3,9 Vµs of that 7 — one winding on every island in the family |
-| **the telemetry's measuring side** — every power board | **the host's 3,3 V over the power connector, through the same island** | `SN6505B` + `750313734` + 2× `PMEG10020ELR` make the isolated 3,3 V the `INA238` and the far side of the `ISO1642` run on — ~3 mA, always on (*The measuring-side island*) |
+| **the telemetry's measuring side** — every power board | **the host's 3,3 V over the power connector, through the same island** | `SN6505B` + `750313734` + 2× `PMEG10020ELR` make the isolated 3,3 V the `INA237` and the far side of the `ISO1642` run on — ~3 mA, always on (*The measuring-side island*) |
 
 **The 150 V FET is the `ISC165N15NM6`** (Infineon OptiMOS 6, PG-TDSON-8) — one part on every
 `LT3748` position. What carries it: **150 V**, 100 % avalanche tested (`E_AS` 123 mJ, `I_AS`
@@ -70,12 +70,12 @@ different converter.**
 | **every buck** | `LMR43610` (1 A) · `LMR43620` (2 A, the card's port rail) · `TPS629206` (600 mA, the small rail and the H7A3 boards) | the part's rating, `V_OUT ≤ 0.95·V_IN` | **the part's own current.** One buck per rail; **40–50 % of the rating on average, 70 % at the ceiling** (*The low rails*) |
 | **`G-48-S`** | **`LT3748` + the `ISC165N15NM6`** + **750310988**, 1:4,42, 14 µH, `R_SENSE` **9,1 mΩ** | **~26 W delivered** — `I_pk` **9,90 A** at the guaranteed 90 mV threshold, 41 kHz at full load, 393 kHz on a 3 W leaf | **the winding, and it is now the wall.** `I_SAT` **15 A min**: the 110 mV threshold corner lands at 12,1 A, **81 % of saturation**, and that is what fixes the shunt |
 | **`G-48-U`** | **`LT3748` + the `ISC165N15NM6`** + **750311607**, 2,5:1, 14 µH, `R_SENSE` **15 mΩ** | **~25 W at 12 V out** — `I_pk` **3,00 A**, 455 kHz at the rated point; the shunt allows 6,0 A at 90 mV, ~50 W | **the source cell, not this board.** The shunt is fixed by the winding rule (*The one rule that screens a transformer*); its 110 mV corner is 7,33 A, **77 %** of the 9,5 A saturation. `V_IN(MAX)` is **50 V**, not 75 — the feed is a regulated 48 V. The winding does not set the output voltage, `R_FB`/`R_REF` do |
-| **`G-300-S`** | **`LT3748` + the `ISC165N15NM6`** + **750310349**, 1:10, 5 µH, `R_SENSE` **5,5 mΩ** | 300 V out, **~47 W declared** — `I_pk` **11,8 A**, 145 kHz, 50,6 W in and 3,0 W of loss, held there by the `INA238` threshold; the shunt allows 16,4 A at the guaranteed 90 mV, ~66 W. **One number at both ends**: the input is 12 V at a station and 12 V at a remote Argus | **the winding rule** (*The one rule that screens a transformer*): 4,41 µH needed at 5,5 mΩ against 4,5 µH at the winding's low corner. The 110 mV corner is 20,0 A, **80 % of the 25 A typical saturation** |
+| **`G-300-S`** | **`LT3748` + the `ISC165N15NM6`** + **750310349**, 1:10, 5 µH, `R_SENSE` **5,5 mΩ** | 300 V out, **~47 W declared** — `I_pk` **11,8 A**, 145 kHz, 50,6 W in and 3,0 W of loss, held there by the `INA237` threshold; the shunt allows 16,4 A at the guaranteed 90 mV, ~66 W. **One number at both ends**: the input is 12 V at a station and 12 V at a remote Argus | **the winding rule** (*The one rule that screens a transformer*): 4,41 µH needed at 5,5 mΩ against 4,5 µH at the winding's low corner. The 110 mV corner is 20,0 A, **80 % of the 25 A typical saturation** |
 | **`G-300-U-40`** | `LT8316` + `FCD260N65S3` + **11328-T078**, 8:1:1 (`N_TS` = 1), 670 µH, `R_SNS` **58 mΩ** | **40 W at 12 V declared**, 91 kHz — the 12 V bus of a remote Argus, or any load of that size (a heated unit, a camera — examples, not units of the station) | **the station, not this board.** `G-300-S` delivers ~47 W and this board's own loss is 3,7 W of it, so 43 W reaches the far end at 12 V and 41 W at the 11 V floor; 40 W is declared under both |
 | **`G-300-U-6`** | `LT8316` + `FCD260N65S3` + **11338-T195**, 14:1:1,7, 1000 µH, `R_SNS` **130 mΩ** | **6 W at 12 V** — a pod, where a 40 mm pipe is the volume. **140 kHz**, discontinuous, at full load | **the enclosure.** Electrically `G-300-U-40` would do it; 8,6 mm of height against 23,5 is why this board exists |
 | **`G-24-S`** | **`LT3748` + the `ISC165N15NM6`** + **750311592**, 1:1, 8 µH, `R_SENSE` **10 mΩ** | **~33 W delivered** at 24 V — `I_pk` **9,0 A** at 90 mV, 112 kHz at full load, ~166 kHz under a 22 W load; **switched by `ENABLE`**, off between runs | **the sampling rule, not the winding.** At 24,7 V reflected the 400 ns window wants `L ≥ 6.6 µH` at this shunt and the winding's −10 % corner is 7,2; a smaller shunt would want more. `I_SAT` 18 A: the 110 mV corner is 11,0 A, **61 %** |
 | **`G-I-N-025`** 485 line side | `SN6505B` + 750313734, 1:1,1 | **~100 mA** of isolated 3,3 V, no LDO | the winding's **7 Vµs**, of which 420 kHz uses 3,9. Barrier **5000 V_RMS** |
-| **`G-12-S`** isolated 12 V, source | `SN6507` + 750319691, 1,13:1 + `INA238` · `ISO1642` **on the output** | **0,4 A** at ~12 V — the pack through the winding, **unregulated**, so ~10,7 V at the 11 V reserve floor and ~16,2 V at the 15 V ceiling under light load | **`R_LIM` 33 kΩ → ~0,74 A** (*`G-12-S`*, below). **The `SN6507`'s OCP shortens the pulses, it does not switch off**, so a limit above the switches' rating is sustained until the die overheats. The rate has a floor too: `f_min ≥ V_IN(max)/(2·V-t)` = **1,0 MHz** at the part's slowest, so `R_CLK` = 7,5 kΩ → ~1,32 MHz typical, ≥ 1,12 MHz |
+| **`G-12-S`** isolated 12 V, source | `SN6507` + 750319691, 1,13:1 + `INA237` · `ISO1642` **on the output** | **0,4 A** at ~12 V — the pack through the winding, **unregulated**, so ~10,7 V at the 11 V reserve floor and ~16,2 V at the 15 V ceiling under light load | **`R_LIM` 33 kΩ → ~0,74 A** (*`G-12-S`*, below). **The `SN6507`'s OCP shortens the pulses, it does not switch off**, so a limit above the switches' rating is sustained until the die overheats. The rate has a floor too: `f_min ≥ V_IN(max)/(2·V-t)` = **1,0 MHz** at the part's slowest, so `R_CLK` = 7,5 kΩ → ~1,32 MHz typical, ≥ 1,12 MHz |
 
 **Three consequences worth having in one place:**
 
@@ -129,7 +129,7 @@ each one bounds it differently:
 | position | what caps the fault | secondary sees |
 |---|---|---|
 | **the 485 crossing** | the driver's own 1 A class against an 11 V, 30 mA position | never near the part |
-| **`G-48-U`** island | **`I_DIODE(MAX) = I_SW(MAX)·N_PS`, and `I_SW(MAX)` is the shunt** rather than a chip ceiling: 110 mV / 15 mΩ = **7,33 A** at the threshold's hot corner, times 2,5:1. `LT3748` has no output-current pin — the fault is bounded by the peak-current limit and the winding, which is why the declared rating is set at the shunt (*`G-48-U`*) | **18,3 A** of secondary peak, carried by `V10P10-M3`'s surge rating until the `INA238`'s `ALERT` trips the source; its 10 A average rating never sees it |
+| **`G-48-U`** island | **`I_DIODE(MAX) = I_SW(MAX)·N_PS`, and `I_SW(MAX)` is the shunt** rather than a chip ceiling: 110 mV / 15 mΩ = **7,33 A** at the threshold's hot corner, times 2,5:1. `LT3748` has no output-current pin — the fault is bounded by the peak-current limit and the winding, which is why the declared rating is set at the shunt (*`G-48-U`*) | **18,3 A** of secondary peak, carried by `V10P10-M3`'s surge rating until the `INA237`'s `ALERT` trips the source; its 10 A average rating never sees it |
 | **`G-48-S`** feed cell | the shunt: `I_pk` **9,90 A** at the guaranteed 90 mV, **12,1 A** at the 110 mV hot corner, then foldback | the 220 V Schottky, `V5N22-M3`, is picked against it (*Switch and rectifier stress*) |
 | **`G-300-U-40`** island | **we set it, and the part regulates into a short rather than running away** — `LT8316` is constant-current as well as constant-voltage. `R_SNS` sets the *switch* peak; the **output**-current regulation point is `IREG/SS`, one resistor to ground, which is how one sheet's shunt and another's declared amperes stay separate things | **`R_SNS` = 58 mΩ, 8:1** gives `I_pk` 1,55 A at 90 mV and 1,90 A at the 110 mV corner, 63 % of the winding's 3,0 A; the output's own limit is `IREG/SS`: **75 kΩ → 4,14 A**, 124 % of the 3,33 A declared, from `R_IREG/SS = 2,5 MΩ · I_OUT · R_SNS / N_PS` (the `LT8316` sheet, *Output Current Regulation*), which asks 120–150 % of the maximum load so the current loop never meets the voltage loop |
 
@@ -559,7 +559,7 @@ tube quenches itself.*
                                                            through the common earthing point
 ```
 *`ENABLE` is the switch and **the board stands off between runs**, so this ladder is unpowered most
-of the time. The `INA238` sits in the **isolated output** as the load's ammeter. The tube quenches
+of the time. The `INA237` sits in the **isolated output** as the load's ammeter. The tube quenches
 on 24 V for the same reason it does on 48.*
 
 **`G-I-N-025` at a source end** *(`G-I-M-005` is the same ladder on its one pair)*
@@ -675,13 +675,13 @@ The tube extinguishes only if the line sits below its DC holdover:
 | | holdover | the rail | |
 |---|---|---|---|
 | `2036-07-SM` | **52 V** | 48 V | **extinguishes on its own** |
-| `2036-30-SM` | **135 V** | 150 V a gap | **does not.** The one tube at that position stays lit on the feed once struck; the converter's current limit holds the arc and **`ENABLE` is what clears it** — the `INA238` on the output raises `ALERT` and the host takes the feed away |
+| `2036-30-SM` | **135 V** | 150 V a gap | **does not.** The one tube at that position stays lit on the feed once struck; the converter's current limit holds the arc and **`ENABLE` is what clears it** — the `INA237` on the output raises `ALERT` and the host takes the feed away |
 
 **So on a 300 V run a fired tube is a dead short across the feed until something else acts** — the
 converter's current limit, which holds the arc but does not end it, and then **`ENABLE`**. Both are
 already in the design and are now mandatory rather than belt-and-braces. **No fuse anywhere in the
 family** (`WHY.md`): a polyfuse re-closes into the same arc and reports nothing, where the
-`INA238`'s `ALERT` reports it and `ENABLE` stays off until somebody decides.
+`INA237`'s `ALERT` reports it and `ENABLE` stays off until somebody decides.
 On 48 V the 52 V holdover clears the feed and the tube quenches itself.
 
 **And which positions a board carries is not a grade question at all** — it is which board it
@@ -1011,10 +1011,16 @@ rather than arithmetic:** the spur coupled into the receiver's chain input must 
 **65 mV** for the folded product to sit under the noise floor of a 16 kHz analysis strip
 (`../tesla/HARDWARE.md` §2, §5); a sane layout clears that by two to three orders.
 
-## Feed telemetry — INA238, at both ends of a run that leaves the ground
+## Feed telemetry — INA237, at both ends of a run that leaves the ground
 
 The feed voltage is a property of the cable, and the cable lands on the block — dragging RAW
 onto a host board just to measure it re-imports the surge path the block exists to keep out.
+
+**The part is the `INA237`** (SBOSA20A): the `INA238`'s sibling with the same registers, pins,
+VSSOP-10 and 85 V common mode, 16 bits on the same ranges. It gives up offset and gain — ±50 µV and
+±0,3 % against ±5 µV and ±0,1 % — and nothing here asks for them: the trip points are measured at
+commissioning and set with margin, the feed is calibrated against a baseline, and a shunt's
+milliamp of offset is nothing against amperes. At JLCPCB $1,83 against $23,36 (10 Nov 2026).
 
 **Which boards carry it:**
 
@@ -1026,11 +1032,11 @@ onto a host board just to measure it re-imports the surge path the block exists 
 **Which side of the barrier the shunt sits on — one rule, no exceptions.** **The low-side shunt
 goes on the side away from the host**: the feed on a source cell, the feed on a unit board, the
 isolated arm on `G-12-S`. **So every power board crosses the barrier and every one carries the
-`ISO1642`.** The reason is not symmetry — it is that the `INA238` reads bus
+`ISO1642`.** The reason is not symmetry — it is that the `INA237` reads bus
 voltage as well as current, and on the far side both halves are the thing that fails. On the
 host's side the voltage is the host's own rail and does not move.
 
-**Monitor: INA238** (16-bit / 85 V) — bus voltage AND current through a low-side shunt.
+**Monitor: INA237** (16-bit / 85 V) — bus voltage AND current through a low-side shunt.
 It earns the position by being **dumb**: the host asks, the part measures, the part answers. No
 sample stream to receive, no coefficients to apply, no processor time between questions — the poll
 rate is whatever the host wants it to be, once a second or 128× a second.
@@ -1056,7 +1062,7 @@ it is 90,9 kΩ ±2 %, one scale calibration at commissioning and 1 % parts after
 | **48 V** | **100 kΩ**, 1206, Basic `C17900` | 23 V · 41 V | 7 mV | 12 mW |
 | **300 V** | **3× 1 MΩ in series**, 1206, Basic `C17927` — 97 V a part at the rail, 183 V at the clamp, inside a 1206's 200 V | 8,8 V · 16,7 V | 106 mV | 29 mW |
 
-**10 nF 50 V X7R from `VBUS` to `GND` at every `INA238`**: a low-pass of 0,45 ms on 48 V and ~0,85 ms
+**10 nF 50 V X7R from `VBUS` to `GND` at every `INA237`**: a low-pass of 0,45 ms on 48 V and ~0,85 ms
 on 300 V — the divider's Thévenin resistance into the 10 nF — so a strike's front — hundreds of nanoseconds at the tube's sparkover — arrives at the pin
 as millivolts. Above 85 V the pin's own protection conducts, and the sheet's limit is then 5 mA into
 any pin: behind 100 kΩ that is 585 V, behind 3 MΩ 15 kV, both above what the transil lets
@@ -1065,7 +1071,7 @@ stand — so an overvoltage stops the measurement for its duration and does not 
 **Conversion 4,12 ms, averaging 128 — 527 ms a sample, noise-free 16 bits on the 40 mV range** (the
 sheet's Table 7-2); `ALERT` is evaluated after every conversion, so a threshold trips within 4 ms
 between the host's minute reads. **The host reads every register twice and takes the value when
-the two agree**, re-reading on a mismatch — the `INA238` has no CRC, and that is the whole defence
+the two agree**, re-reading on a mismatch — the `INA237` has no CRC, and that is the whole defence
 against a glitch across the isolator.
 
 **What it sees, and what it does not:**
@@ -1081,14 +1087,14 @@ The rest of the front:
 
 - **Isolator: `ISO1642`** — the I²C both ways **plus one unidirectional channel each way, which
   is why it is this member of the family and not `ISO1640`/`1641`**: channel A carries `A_SEL`
-  down to the `INA238`'s `A0` (`INA` pin 4 on the host side → `OUTA` pin 13 on the measuring
+  down to the `INA237`'s `A0` (`INA` pin 4 on the host side → `OUTA` pin 13 on the measuring
   side), channel B carries `ALERT` up (`INB` pin 12 → `OUTB` pin 5). Side 1 is 3,0–5,5 V —
   **it does not take 1,8 V**, so on an H7A3 board the I²C crosses a level shifter on the unit
   board, never here. Its host side runs on the host's 3,3 V — the card's over the port
   connector on a source board, the unit's rail on a unit board. **The channel defaults fall
   the right way**: an output goes low when its input is open or its input side is unpowered, so
   an unwired `A_SEL` lands the board on the base address by itself, and a dark board reads *no
-  alarm* with `APOL` = 1 at the `INA238`. **`DW-16`, and it is the only package this member has** —
+  alarm* with `APOL` = 1 at the `INA237`. **`DW-16`, and it is the only package this member has** —
   reinforced: **5000 V<sub>RMS</sub> isolation, 1500 V<sub>RMS</sub> working, 10 kV surge**, which
   is what the 300 V boards want anyway. **One part carries the whole front's crossing**: the
   I²C, the address down and the alarm up, so no photorelay is fitted on a power board at all
@@ -1096,21 +1102,21 @@ The rest of the front:
   converter's `EN` directly** — same ground, pull-down at the receiving end, no opto. **At the unit end the same resistor goes to the
   input**: the board runs by itself and the unit's processor drives nothing — a population,
   like the earth strap.
-- **Powering — the measuring-side island, on every power board.** The `INA238` and the far side
+- **Powering — the measuring-side island, on every power board.** The `INA237` and the far side
   of the `ISO1642` run on an isolated 3,3 V the board makes for itself from the host's 3,3 V on
   the power connector: **`SN6505B` + `750313734` + 2× `PMEG10020ELR`** — the same cell as a
   communication board's line-side supply, one winding for every island in the family, `750313734`
   being the 1:1,1 centre-tap part with **5 kV** isolation. **10 µF 50 V 1206 + 100 nF at the
   `SN6505B`'s `VCC`**; the two Schottkys on the centre-tapped secondary; **10 µF + 100 nF on the
-  isolated 3,3 V**, and 100 nF at the `INA238`'s `VS` and the `ISO1642`'s `VCC2`. **`EN` tied to
+  isolated 3,3 V**, and 100 nF at the `INA237`'s `VS` and the `ISO1642`'s `VCC2`. **`EN` tied to
   the 3,3 V — always on, never behind `ENABLE`**, so the board reads a dark port too: an output at
   0 V is a reading, not a silence. ~3 mA out, the `SN6505B`'s 1,5 mA on top; the raw rectified rail
-  wanders a few hundred millivolts with load and needs no LDO — the `INA238` runs 2,7–5,5 V and the
+  wanders a few hundred millivolts with load and needs no LDO — the `INA237` runs 2,7–5,5 V and the
   `ISO1642`'s side 2 3,0–5,5 V.
 - **Duty:** the host reads `VBUS` and `CURRENT` once a minute into its `PORTS` frame and the
   Mayak keeps the baselines (`../core/PROTOCOL.md` §5); between reads the programmed thresholds
   raise `ALERT`. The front runs continuously, paid from the host's 3,3 V.
-- **The shunt's input filter**, on every `INA238`: **2× 82 Ω in series and 100 nF across `IN+`/`IN−`**,
+- **The shunt's input filter**, on every `INA237`: **2× 82 Ω in series and 100 nF across `IN+`/`IN−`**,
   the sheet's Figure 7-1 (≤ 100 Ω, 0,1–1 µF). A 10 µs corner, which also takes the flyback's
   40–500 kHz off the input. Against the part's 92 kΩ differential input it is a **0,18 % gain
   error, taken out by the commissioning calibration**. No clamp diodes: reaching the input's
@@ -1125,19 +1131,19 @@ insulation break to earth draws no current and trips nothing, and the second bre
 
 | feed | the watch | why |
 |---|---|---|
-| **300 V** — `G-300-S` | **a second `INA238`** measuring the run against earth, below | the contact hazard |
+| **300 V** — `G-300-S` | **a second `INA237`** measuring the run against earth, below | the contact hazard |
 | **48 V** — `G-48-S` / `G-48-U` | **the two ends' currents compared** — what leaves the station and does not arrive has leaked. No part added | SELV in the dry (≤ 60 V DC); only a large leak matters |
 | **12 V, 24 V** — `G-12-S`, `G-24-S` | none | within 30 V DC, the limit SELV keeps even immersed |
 
-**On `G-300-S`: one more `INA238`, two legs, nothing else.**
+**On `G-300-S`: one more `INA237`, two legs, nothing else.**
 
 ```
-   + ──[R_A 9 MΩ]─────┬──[R_B 8 MΩ]───── VBUS ──(ZVBUS ~1 MΩ)── −   (the second INA238's ground)
+   + ──[R_A 9 MΩ]─────┬──[R_B 8 MΩ]───── VBUS ──(ZVBUS ~1 MΩ)── −   (the second INA237's ground)
                       │
                       the tube's centre ── the strap ── the common earthing point
 ```
 
-- **The part:** a second `INA238`, **`A1` to `VS` and `A0` from `A_SEL`** — **0x44 / 0x45**, clear of
+- **The part:** a second `INA237`, **`A1` to `VS` and `A0` from `A_SEL`** — **0x44 / 0x45**, clear of
   the first one's 0x40 / 0x41 on the same crossing. **`VBUS` only**; its shunt inputs are tied.
   **Its `ALERT` is not wired** — `APOL` = 1 makes two open-drain alarms on one line mask each
   other, and a leak is slow: the host polls it.
@@ -1177,10 +1183,10 @@ insulation break to earth draws no current and trips nothing, and the second bre
   has no insulation to measure and the run falls back to the 48 V method too: a breach of the
   negative conductor is current into the sea, and it shows as the two ends' currents parting.
 - **How the readings reach the head:** the host carrying the `G-300-S` — a card, a Palatine —
-  sends the second `INA238`'s raw `VBUS` per 300 V port in its **`PORTS` frame, `kind` 7**, once a
+  sends the second `INA237`'s raw `VBUS` per 300 V port in its **`PORTS` frame, `kind` 7**, once a
   minute with its sockets' `VBUS` and `CURRENT`, and the Mayak holds the commissioning baseline
   and watches the drift; **the 48 V comparison is made at the Mayak** from the same `PORTS`
-  frame (what left the station) and the unit's `REPORT` frame (what arrived), both raw `INA238`
+  frame (what left the station) and the unit's `REPORT` frame (what arrived), both raw `INA237`
   registers once a minute (`../core/PROTOCOL.md` §5). **12 V and 24 V are watched by current
   alone** — a low-side shunt on one potential sees a short and nothing subtler, and that is the
   accepted state: a port that drops is read with `GET PORTS`, and the socket at the current limit
@@ -1198,7 +1204,7 @@ stop all exist elsewhere, and each of them is a part that is fitted for another 
 | the job | what does it | where |
 |---|---|---|
 | **bound the fault** | the flyback's own switch limit and foldback — the fault is not sustained and the arithmetic is worked in *What a short does* | every island and the feed cell |
-| **detect it** | **INA238**, bus voltage and current at the board, with an **open-drain `ALERT`** on programmable thresholds — shunt over-voltage is the overcurrent trip, and bus under-voltage catches the collapse | both ends of every power board (*Feed telemetry*) |
+| **detect it** | **INA237**, bus voltage and current at the board, with an **open-drain `ALERT`** on programmable thresholds — shunt over-voltage is the overcurrent trip, and bus under-voltage catches the collapse | both ends of every power board (*Feed telemetry*) |
 | **report a converter's own trouble** | **`PGOOD`** on the buck — open-drain, and it is a **window on the output, not the converter's opinion of itself**: it trips **above 108 %** of the regulation target and **below 91 %** (min/max 104–111 and 89–94,2), with 2,4 % / 3,3 % of recovery hysteresis, so a broken track or a shorted load reads as a fault and not as a healthy regulator. It needs a pull-up, stays valid down to `V_IN` **1,5 V** with `EN` low, and takes a **6 ms** start-up delay before it first flags high. **The flybacks have no fault output at all** — neither `LT3748` nor `LT8316` gives one — which is why the INA ahead of them is what sees their trouble | every board that carries a buck |
 | **act** | the block's **`EN`**, driven by the host: the port kill the rogue-unit ladder already pulls. **It sits outside the supply path**, which is the whole point | every port board |
 | **protect the copper** | **the installation's fuses** — PV → MPPT, MPPT → pack, pack → BMS, and the enclosure's fuse field behind the BMS, one fast-acting cartridge to a board, rated to open only on a real fault. **No fuse on a board**: its supply's current limit is its fuse | the cabling (`../daedalus/CONSTRUCTION.md`) |
@@ -1387,7 +1393,7 @@ leakage energy is a fixed share of the input — `L_LK/L_PRI`, 1,4 % · 2 % · 3
   sheet asks for a Schottky: a slow PN diode lets the spike through before it clamps. It blocks at
   most 151 V and carries `I_pk` for tens of nanoseconds.
 - **The corner is a fault, not a load.** The 110 mV column is the shunt's own limit, which the
-  `INA238` threshold keeps the board from reaching in service; an overload that gets there trips
+  `INA237` threshold keeps the board from reaching in service; an overload that gets there trips
   `ALERT` and the source's `ENABLE` within milliseconds. `G-48-U`'s 4,1 W is past its two 2 W
   resistors for that time only, and its 151 V — an overload and a surge residue at once — is 1 V
   into the FET's avalanche, which the `ISC165N15NM6` is rated for, 100 % tested, `E_AS` 123 mJ.
@@ -1500,14 +1506,14 @@ changed transformer, diode or MOSFET, or a dramatically altered layout, moves `V
 and the `LT8316` cells — is set to its target on the bench by a trimmer, and the trimmer is then
 locked with a drop of lacquer** (the owner, 10 Nov 2026). The sheet's own procedure asks for a
 build, a measured `V_OUT` and a corrected `R_FB`, because board-to-board regulation is ±5 %; the
-trimmer does that on every board, to a few tenths of a percent, read on the board's own `INA238`.
+trimmer does that on every board, to a few tenths of a percent, read on the board's own `INA237`.
 
 | | |
 |---|---|
 | **the part** | **Bourns `3314J-1-102E`**, 1 kΩ, 4 mm SMD, single turn over 210°, **sealed cermet** — the seal takes the conformal coat — ±100 ppm/°C, ±20 %, end resistance 2 Ω at most (`C124640`, Extended: JLCPCB has no Basic or Preferred trimmer). Wired as a rheostat, the wiper tied to one end |
 | **`LT3748` — in `R_REF`** | **5,6 kΩ (Basic `C23189`) + the 1 kΩ, 5,6–6,6 kΩ.** `R_FB` hangs on the switch node and its 100–170 V pulses; `R_REF` is the ground end, so the screwdriver stays off the high side and no trimmer's capacitance loads the sampled pulse. The output follows 1/`R_REF`: the travel moves it −8 … +9 % about mid, the sheet's ±5 % inside that, and a board set to its target lands inside the 5,76–6,34 kΩ window. A lifted wiper raises `R_REF`, and by the equation the output falls — the safe way |
 | **`LT8316` — in `R_FB1`** | **4,7 kΩ (Basic `C23162`) + the 1 kΩ, 4,7–5,7 kΩ**, the divider's ground leg on the tertiary, inside the sheet's 1–10 kΩ; `R_FB2` halves with it — **47 kΩ** on `G-300-U-40`, **82 kΩ** on `G-300-U-6`, both Basic — and `R_TC` with `R_FB2`, **130 kΩ** (Preferred) on both. The 12 V sits near mid-travel; the reach is 11,0–13,1 V and 10,7–12,9 V. A lifted wiper raises `R_FB1` and the output falls |
-| **the targets** | `G-48-S` 48 V · `G-300-S` 300 V · `G-48-U` 12 V · the 24 V cell 24 V · `G-300-U-40` and `-6` 12 V — each read on the output's `INA238` at no load and checked at the rated load. The `R_FB`s are Basic or Preferred values chosen so each target falls inside the travel and the window |
+| **the targets** | `G-48-S` 48 V · `G-300-S` 300 V · `G-48-U` 12 V · the 24 V cell 24 V · `G-300-U-40` and `-6` 12 V — each read on the output's `INA237` at no load and checked at the rated load. The `R_FB`s are Basic or Preferred values chosen so each target falls inside the travel and the window |
 | **the procedure** | at bring-up, with **an insulated tool** — Bourns H-90 or any ceramic blade; on `G-300-*` the primary stands at the cable's potential — set, read, then **a drop of lacquer across the rotor and the body**, the conformal coat over it |
 
 ## The fibre front — the actual parts
@@ -1884,7 +1890,7 @@ transceiver on one pair is one transceiver on one pair, and what runs over it is
 
 **0,00 is left empty on both connectors** — no board and no host takes it, the Mayak included. The
 pin's remaining failure is a short to ground, and leaving 0 unassigned is what turns that from a
-board into a reported fault. **The resistor answers before the `INA238` is programmed, and when it
+board into a reported fault. **The resistor answers before the `INA237` is programmed, and when it
 does not answer**: the source end needs to know which cell it is driving before it can programme
 any threshold at all, and a board whose isolator or island has failed still reads as itself.
 
@@ -1907,23 +1913,23 @@ merging them into one board with two populations saved nothing (`WHY.md`).
      │                                                                   the three-electrode tube ──▶ ⏚ earth point
      │                                                                     2036-07-SM · 2036-30-SM
      │
-     └── INA238 + ISO1642 on the output; the host side on the port's 3,3 V
+     └── INA237 + ISO1642 on the output; the host side on the port's 3,3 V
 
   to the host:  the POWER body — 3,3 V in, ENABLE in, SDA · SCL · ALERT out,
                 ID out: 15 kΩ on G-48-S · 18 kΩ on G-300-S
                 the 12 V comes in on the two terminals, not on a connector
-  telemetry:    INA238 fitted, both ends
+  telemetry:    INA237 fitted, both ends
 ```
 
 | | `G-48-S` | `G-300-S` |
 |---|---|---|
 | **the winding** | **`750310988`** — 1:4,42, `L_PRI` 14 µH ±10 %, `I_SAT` 15 A min, leakage 200 nH (1,4 %), `R_DC` 20 / 520 mΩ, **1500 V AC**, SMD 32,31 × 27,03 × 13,69 mm. Its own target application is 12 V → 48 V / 0,85 A at 200 kHz — used in the direction it was specified for | **`750310349`** — 1:10, `L_PRI` 5 µH ±10 %, `I_SAT` 25 A typ (Δ`L` < 20 %), `I_R` 18 A thermal (ΔT 25 K), leakage 100 nH (2 %), `R_DC` 10 / 500 mΩ, EE35/18/10 with wire leads, 29,1 mm pitch; target application 12–24 V → 300 V at 100–300 kHz. **Its insulation is 1000 V AC, below the family's 1,5 kV floor — accepted for the concept**; a production run orders a custom-insulated winding (*The frequency window*, below) |
-| **`R_SENSE`** | **9,1 mΩ** → `I_pk` **9,90 A** at the guaranteed 90 mV threshold, **~26 W delivered**. **The shunt is chosen against saturation, not against the rating**: the 110 mV corner is 12,1 A, 81 % of the winding's 15 A, and the part's own 130 mV overcurrent trip lands at 14,3 A, still inside the core. The minimum-inductance rule wants only 3,0 µH against 12,6 at the winding's low corner, so it never binds. Peak power in the shunt is **0,9 W** — a 1 W part | **5,5 mΩ, two 11 mΩ in parallel** → `I_pk` **16,4 A** at 90 mV, ~66 W. **The shunt is fixed by the winding rule**: 30,1 V reflected wants `L ≥ 4.41 µH` at 5,5 mΩ against 4,5 at the winding's low corner, so it cannot be larger (*The one rule that screens a transformer*). The 110 mV corner is 20,0 A, **80 % of the 25 A typical saturation**, and the 130 mV overcurrent trip 23,6 A, still inside it. **~47 W declared** — the `INA238` threshold holds `I_pk` at 11,8 A, where the shunt dissipates **0,77 W** peak; 1,1 W in each part at the corner |
+| **`R_SENSE`** | **9,1 mΩ** → `I_pk` **9,90 A** at the guaranteed 90 mV threshold, **~26 W delivered**. **The shunt is chosen against saturation, not against the rating**: the 110 mV corner is 12,1 A, 81 % of the winding's 15 A, and the part's own 130 mV overcurrent trip lands at 14,3 A, still inside the core. The minimum-inductance rule wants only 3,0 µH against 12,6 at the winding's low corner, so it never binds. Peak power in the shunt is **0,9 W** — a 1 W part | **5,5 mΩ, two 11 mΩ in parallel** → `I_pk` **16,4 A** at 90 mV, ~66 W. **The shunt is fixed by the winding rule**: 30,1 V reflected wants `L ≥ 4.41 µH` at 5,5 mΩ against 4,5 at the winding's low corner, so it cannot be larger (*The one rule that screens a transformer*). The 110 mV corner is 20,0 A, **80 % of the 25 A typical saturation**, and the 130 mV overcurrent trip 23,6 A, still inside it. **~47 W declared** — the `INA237` threshold holds `I_pk` at 11,8 A, where the shunt dissipates **0,77 W** peak; 1,1 W in each part at the corner |
 | **the rectifier** | **`V5N22-M3`** — 114 V reverse (`PIV = V_OUT + N·V_IN` = 48 + 4,42 × 15), a **220 V / 5 A** Schottky at 0,54 A. The grade is bought for the voltage margin, not the current | **`US3M`** — 435–450 V reverse at the 300 V feed, a 1000 V / 3 A ultrafast |
 | **stress** | the FET sees 26 V on the plateau, **78 V** at the leakage clamp's worst corner, of its 150 | `V_in + V_refl` = 45 V on the plateau, **132 V** at the clamp's worst corner, of its 150 |
 | **frequency** | boundary mode, so it falls as the load rises: **508 kHz at 2 W · 393 at 3 W · 236 at 5 W · 41 kHz at the full 26 W.** The station enclosure has nothing that listens in that band | **145 kHz** at the full 47 W, rising as the load falls: 199 kHz at 37 W, 589 kHz discontinuous at 8,6 W. The station enclosure has nothing that listens there either |
 | **minimum load** | **0,65 W** — `f_FLOOR` 42 kHz against 41 kHz at full load, so 2,5 % and the one cell in the family the sheet's generic 2 % fits (*No burst, and therefore a minimum load*). Below it the rail climbs to the transil, because the load downstream is constant-power and does not self-limit | **0,63 W** — the same rule at the shunt's 16,4 A, 1,3 % of the declared ~47 W |
-| **the port budget** | **the far end's measured load with margin, up to the cell's ~26 W** — a programmed `INA238` threshold with `ENABLE` behind it. What a port hands out is a number, not a converter property (`README.md`, *The two choices, and they are independent*) | the same, up to ~47 W (`README.md`, *The two choices, and they are independent*) |
+| **the port budget** | **the far end's measured load with margin, up to the cell's ~26 W** — a programmed `INA237` threshold with `ENABLE` behind it. What a port hands out is a number, not a converter property (`README.md`, *The two choices, and they are independent*) | the same, up to ~47 W (`README.md`, *The two choices, and they are independent*) |
 | **the ladder** | `2036-07-SM`, 22 µH chokes, `5.0SMDJ54A` | `2036-30-SM`, 22 µH chokes, `5.0SMDJ350A`; **holdover 135 V is under the rail**, so a fired tube is a short until the current limit holds it and `ENABLE` clears it |
 | **the earth stud and its strap** | a population: the M4 brass stack and the 2,5 mm² strap bolted at a station; the hole empty at a remote Argus | the same |
 
@@ -1936,13 +1942,13 @@ this cell's ~47 W (`README.md`, *Reach*).
 **A station and a remote Argus are not two loads on this board.** Both feed it **12 V** — the pack
 at one, the remote Argus's own bus at the other — and both take 300 V off it, so there is nothing for two
 figures to come from. The board delivers **~47 W** and what a port hands out is a programmed
-`INA238` threshold, the way `G-48-S`'s port is programmed.
+`INA237` threshold, the way `G-48-S`'s port is programmed.
 
 The relation that sizes it is `P = ½·I_pk·(V_in·V_refl)/(V_in+V_refl)` = **4,286 · `I_pk`** at
 1:10 from a 12 V pack — **in boundary mode the inductance cancels**, `f` falling exactly as
 `½·L·I²` rises, so only `I_pk` and the two voltages move the answer. At `R_SENSE` **5,5 mΩ** the
 shunt allows 16,4 A guaranteed, ~70 W in and ~66 W out; **the board is declared at ~47 W** — 11,8 A,
-**50,6 W in**, 3,0 W of loss at 145 kHz — and the `INA238` threshold is what holds it there.
+**50,6 W in**, 3,0 W of loss at 145 kHz — and the `INA237` threshold is what holds it there.
 
 **What a remote Argus actually draws — four ports, and never eight.** Each port is a mini
 segment whose far end is its own site: glass carries no power, so the remote Argus's own budget is its five
@@ -1982,14 +1988,14 @@ cable, at watts × distance, and the module count only moves the load along that
      │                                                                           └─▶ the 12 V terminal — a bought device, ≤ 0,5 A
      │                                                                     NO buck on this board
      │
-     └── INA238 + ISO1642 on the input; the host side on the unit's 3,3 V over the connector
+     └── INA237 + ISO1642 on the input; the host side on the unit's 3,3 V over the connector
 
   The feed in and out on two terminal pairs, straight through, so units chain on one segment.
 
   to the unit:  the POWER body — ID out: 24 kΩ · SDA · SCL · ALERT out · ENABLE strapped · 3,3 V in for the
                 12 V out on the two terminals, not on a connector; and for the
                 isolator's host side (README.md, The connectors)
-  telemetry:    INA238 fitted — this end is often the unreachable one
+  telemetry:    INA237 fitted — this end is often the unreachable one
 ```
 
 | | |
@@ -2027,7 +2033,7 @@ that could not tell them apart would ask a 6 W pod for 40 W.
      │                                                                                                  100 V Schottky ─▶ 12 V ─┬─▶ the two terminals ─▶ a unit
      │                                                                                                                          └─▶ the 12 V terminal — a device, or the remote Argus's bus, 3,33 A
      │
-     └── INA238 + ISO1642 on the input
+     └── INA237 + ISO1642 on the input
 
   NO GDT and NO earth strap — a pod cannot be earthed, and a remote box floats by construction.
   to the unit:  the POWER body and the two terminals, as on G-48-U; at a remote Argus the Argus takes the 12 V on its own input
@@ -2040,7 +2046,7 @@ that could not tell them apart would ask a 6 W pod for 40 W.
 | **the winding — `G-300-U-40`** | **`11328-T078`** — PQ2620, 8:1:1, `N_TS` = 1, 670 µH, **rate current 3,0 A**, leakage 8,0 µH max / 4,0 typ, **reinforced 3 kV**, 31 × 28,5 × **23,5** mm, PIN |
 | **the winding — `G-300-U-6`** | **`11338-T195`** — CEEH178, 14:1:1,7, `N_TS` = 1,7, 1000 µH ±10 %, **rate current 0,9 A** on the primary, leakage 34 µH max / 17 typ, `R_DC` 3,0 Ω / 60 mΩ / 420 mΩ max, **basic, 3000 V AC** Np,Naux–Ns, 19 × 17,4 × **8,6** mm, **SMD**. Same Sumida datasheet as `G-300-U-40`'s, so it is one order and not two |
 | **`R_SNS`** | **58 mΩ** on `G-300-U-40` · **130 mΩ** on `G-300-U-6` — the largest the sampling floor allows on `11338-T195`: `t_OFF(MIN)` 800 ns × 172 V over 20 mV / 130 mΩ asks 896 µH, against 900 at the winding's low corner |
-| **rated output — `G-300-U-40`** | **40 W at 12 V declared.** `R_SNS` stays at 58 mΩ because **the shunt protects the winding and the threshold declares the watts**: `I_pk` 1,55 A at 90 mV, the 110 mV corner 1,90 A, **63 % of the winding's 3,0 A**. The board itself would carry ~54 W; **what caps it is the station.** `G-300-S` delivers ~47 W, this board's own loss is **3,7 W** of it, and the far end therefore sees **43 W at a 12 V pack and 41 W at the 11 V floor**. 40 W is declared under both, as a programmed `INA238` threshold, so the same board delivers more the day a stronger source cell exists |
+| **rated output — `G-300-U-40`** | **40 W at 12 V declared.** `R_SNS` stays at 58 mΩ because **the shunt protects the winding and the threshold declares the watts**: `I_pk` 1,55 A at 90 mV, the 110 mV corner 1,90 A, **63 % of the winding's 3,0 A**. The board itself would carry ~54 W; **what caps it is the station.** `G-300-S` delivers ~47 W, this board's own loss is **3,7 W** of it, and the far end therefore sees **43 W at a 12 V pack and 41 W at the 11 V floor**. 40 W is declared under both, as a programmed `INA237` threshold, so the same board delivers more the day a stronger source cell exists |
 | **where the 3,7 W goes, at 47 W in** | rectifier `V10P10-M3` at 3,71 A average **2,41 W** · winding leakage, 8 µH at 91 kHz, **0,56 W** · secondary winding, 9 mΩ at 4,95 A rms, **0,22 W** · core ~**0,40 W** · primary, FET, shunt and gate together **0,11 W**. **Two thirds of it is the rectifier**, and the only way past that is a higher output voltage, which a 12 V island does not have. A higher-current grade of the same Vishay family would buy about 0,4 W — 1 % of the throughput, for a stock number — and is not taken |
 | **rated output — `G-300-U-6`** | **6 W at 12 V, ~7,5 W in, 81 %.** The boundary point would be ~870 kHz, so the part runs **discontinuous at its 140 kHz clamp** at every load — legal, and the sheet's front page regulates that way. `I_pk` **0,33 A** at full load; `t_ON` 1,1 µs at 300 V, `t_OFF` 1,9 µs, both clear of the part's 300 ns and 800 ns. **The shunt's cycle limit is 0,77 A at 100 mV and 0,85 A at the 110 mV corner, 94 % of the winding's 0,9 A** — under the sheet's 30 % saturation margin, and taken: no sustained state reaches it, because full load is 0,33 A and a short is held by `IREG/SS` at 0,65 A out, ~0,1 A on the primary; only a transient touches the limit. Loss: the clamp 0,81 W, the rectifier ~0,3 W, the windings ~0,1 W, the core, FET and bias ~0,2 W |
 | **nothing stands still** | `LT8316` draws **12 µA** on `V_IN` shut down and **75 µA** on `BIAS` in burst — **milliwatts at 300 V** — because `N_TS` takes the bias over once the converter runs and the high-voltage start path closes. It bursts to a **3,5 kHz** floor, **220 Hz** with `SMODE`, which leaves a **minimum load of ~1 % of the rating** — 0,4 W on `G-300-U-40`, 60 mW on `G-300-U-6` — so a 3 W node on either board is in the converter's normal range |
@@ -2054,7 +2060,7 @@ that could not tell them apart would ask a 6 W pod for 40 W.
 | **the current limit** | `R_SNS` sets the *switch* peak; the **output**-current regulation point is `IREG/SS`, one resistor to ground: `R_IREG/SS = 2,5 MΩ · I_OUT · R_SNS / N_PS`, set at 120–150 % of the maximum load. **`G-300-U-40`: 75 kΩ → 4,14 A**, 124 % of 3,33 A. **`G-300-U-6`: 15,0 kΩ → 0,65 A** at 130 mΩ and 14:1, 129 % of 0,5 A. The part is constant-current as well as constant-voltage: a short is regulated, not survived. The sheet puts the loop within 5 %, the winding's capacitance being the error |
 | the rectifier | **`G-300-U-40`**: `PIV` = 12 + 300/8 = **50 V** at **3,7 A** average → **`V10P10-M3`**, 100 V / 10 A, 37 % loaded. **`G-300-U-6`**: `PIV` = 12 + 300/14 = **33 V** at 0,5 A, 4,6 A peak → **`V10P10-M3`**, 100 V / 10 A |
 | **no low rails** | the 12 V is the only output — a unit on the connector, the remote Argus's bus on the terminal |
-| the 12 V terminals | a device, or **the remote Argus's 12 V wire — the card and its source boards tap it, terminal to terminal, and their sum stays within the board's 3,33 A**: the card's own draw plus the four ports' `INA238` thresholds, each source board carrying only its own far ends and running far below its ceiling. The wire's input window (the pack's 12–13,5 V) has a regulated 12 V in the middle of it |
+| the 12 V terminals | a device, or **the remote Argus's 12 V wire — the card and its source boards tap it, terminal to terminal, and their sum stays within the board's 3,33 A**: the card's own draw plus the four ports' `INA237` thresholds, each source board carrying only its own far ends and running far below its ceiling. The wire's input window (the pack's 12–13,5 V) has a regulated 12 V in the middle of it |
 | the ladder | **2× `5.0SMDJ350A` across the pair, and nothing else** — no gas tube and no chokes. A floating end has nothing for a three-electrode part to reference, and the run's own ~600 µH a kilometre is the series element |
 | **under pressure** | **`G-300-U-6` passes, part by part**: the bank five 1 µF 500 V X7R 2220, the clamp's 100 nF 1 kV X7R 1812 and its 2512 resistors, the 12 V output eight 10 µF 50 V 1206, `BIAS` and `INTVCC` on 4,7 µF 50 V 1206, the semiconductors plastic-moulded, `11338-T195` a winding the vacuum fill soaks — no film, no electrolytic, no hybrid, no cavity. **`G-300-U-40` is land only**: its bank is polypropylene film and its 12 V output carries two hybrid polymers; a pressure build of it takes the `U-6` parts and the recalculation is the reader's |
 
@@ -2201,7 +2207,7 @@ barrier, the same isolated supply, the same ladder on the one pair.
 
   to the host:  the POWER body — 3,3 V in, ENABLE in, ID out: 56 kΩ, SDA · SCL · ALERT out;
                 the 12 V in on the two terminals
-  telemetry:    INA238 + ISO1642 ON THE OUTPUT, the same front as every other
+  telemetry:    INA237 + ISO1642 ON THE OUTPUT, the same front as every other
                 power board.  The arm is on the far side of the transformer, so the shunt is
                 too, and the I2C and ALERT cross the barrier; the host side runs on the
                 port's 3,3 V.  It is what sees an overload: the SN6507 answers one by
@@ -2216,14 +2222,14 @@ barrier, the same isolated supply, the same ladder on the one pair.
 | the part | **`SN6507`** — 3–36 V in, **0,5 A**, UVLO/OVLO/OCP, soft start |
 | transformer | **Würth `750319691`** — the sheet's own 12 V → 12 V row (Table 9-3): **N = 1,13**, V-t **7,5 Vµs**, isolation **2,5 kVRMS**, 8,5 × 12,87 × 5,16 mm |
 | the input | **`SWPA252012S2R2MT`**, the house 2,2 µH, into **2× 10 µF 50 V 1206 + 100 nF** at `VCC` — the station's filter part for a 1 MHz node (`../core/POWER.md`); 0,5 A average against its 1,15 A |
-| **`R_LIM` = 33 kΩ → ~0,74 A** | **between the sheet's 30,1 kΩ row, 0,79 A typical, and its 35 kΩ row, 700 mA; its characterised rows spread ~±30 %, so ~0,5–0,95 A.** It is set above the switches' 0,5 A on purpose: 0,4 A out is ~0,45 A through the switches at N = 1,13, and a 50 kΩ limit (0,5 A typical, ~0,35 A at the low end) would droop the rated load on a low part. **The overload is not left to the OCP** — which shortens pulses rather than switching off, and would hold a sustained overload until the die reached thermal shutdown: the `INA238` on the output sees the arm past its 0,4 A, `ALERT` goes to the host and `ENABLE` takes the board off. The OCP covers the start into a sensor's input capacitors and a short, inside the 1,6 A absolute peak |
+| **`R_LIM` = 33 kΩ → ~0,74 A** | **between the sheet's 30,1 kΩ row, 0,79 A typical, and its 35 kΩ row, 700 mA; its characterised rows spread ~±30 %, so ~0,5–0,95 A.** It is set above the switches' 0,5 A on purpose: 0,4 A out is ~0,45 A through the switches at N = 1,13, and a 50 kΩ limit (0,5 A typical, ~0,35 A at the low end) would droop the rated load on a low part. **The overload is not left to the OCP** — which shortens pulses rather than switching off, and would hold a sustained overload until the die reached thermal shutdown: the `INA237` on the output sees the arm past its 0,4 A, `ALERT` goes to the host and `ENABLE` takes the board off. The OCP covers the start into a sensor's input capacitors and a short, inside the 1,6 A absolute peak |
 | **rated output — 0,4 A** | ~0,45 A through the switches under a ~0,7 A limit, which leaves the start into a bought sensor's input capacitors somewhere to go. At the pack's working corner that is **~12,7 V × 0,4 A ≈ 5,1 W** out and **~6,0 W in at 85 %**, so **0,5 A off the host's port** — the figure Palatine's ribbon is counted against. At the 11 V reserve floor it is ~11,5 V and 4,6 W |
 | the rate — **not a free choice** | the winding's V-t sets a floor: `f_min ≥ V_IN(max) / (2·V-t)` = 15 V / (2 × 7,5 Vµs) = **1,0 MHz**. **The floor applies to the LOWEST rate, and the sheet puts that 15 % under the typical one** for a resistor-set clock (and 780 kHz for the default, CLK to ground). So the typical rate must be ≥ 1,18 MHz: **`R_CLK` = 7,5 kΩ, JLCPCB Basic, → ~1,32 MHz typical, ≥ 1,12 MHz**, from the sheet's table (9,6 kΩ → 1,07 MHz, 4,1 kΩ → 2,13 MHz) and its Figure 8-6 — **6,7 Vµs used of 7,5** at 15 V, 6,0 at the pack's 13,5 V |
 | why 1,13 and not 1:1 | the ratio makes up the two rectifier drops, so the port lands near the pack rather than a diode pair below it |
 | rectifier | **`PMEG10020ELR`** — `V_R > 1.5 · 2 · N · V_IN(max)` = 1,5 × 2 × 1,13 × 15 V = **51 V**; ≤ 0,4 A shared by two diodes on alternate half-cycles → ~0,2 A each |
 | **why the transil is an 18 V part** | the secondary is **unregulated** — the pack through a 1,13 winding, less two rectifier drops — so it rises with the battery and is highest exactly when the drops are smallest: **16,2 V at a full pack under light load**, which is the corner that actually happens because a port sits idle most of the time |
 | what it is not | **an isolation barrier, not a supply.** Nothing regulates; the ~12 V label is the battery's own voltage. **The bought population runs to 24–30 V, so the port's swing is never the constraint** |
-| **the telemetry front** | **`INA238` + `ISO1642` — one part for the whole crossing: the I²C both ways, `A_SEL` down onto `A0` and `ALERT` up, high on alarm — the same front the whole family carries, with the low-side shunt in the ISOLATED OUTPUT.** The family's rule is that the shunt sits on the side away from the host, and the side away from the host here is the arm. **What it must see is the droop**: an overloaded `SN6507` shortens its pulses, so the output voltage falls while the current sits on the limit — the `INA238` reads bus voltage as well as current and that pair is the whole diagnostic. **On the primary neither half survives**: the current reads the arm plus the converter's own quiescent, magnetizing and loss current in a proportion that moves with load, and the voltage is the host's 12 V, which does not move at all. The host side of the isolator runs on the port's 3,3 V |
+| **the telemetry front** | **`INA237` + `ISO1642` — one part for the whole crossing: the I²C both ways, `A_SEL` down onto `A0` and `ALERT` up, high on alarm — the same front the whole family carries, with the low-side shunt in the ISOLATED OUTPUT.** The family's rule is that the shunt sits on the side away from the host, and the side away from the host here is the arm. **What it must see is the droop**: an overloaded `SN6507` shortens its pulses, so the output voltage falls while the current sits on the limit — the `INA237` reads bus voltage as well as current and that pair is the whole diagnostic. **On the primary neither half survives**: the current reads the arm plus the converter's own quiescent, magnetizing and loss current in a proportion that moves with load, and the voltage is the host's 12 V, which does not move at all. The host side of the isolator runs on the port's 3,3 V |
 | the measuring-side island | the same `SN6505B` + `750313734` island as every power board, off the host's 3,3 V on the power connector (*Feed telemetry*) |
 | reach | **isolation only.** A leaf that also needs reach takes the 48 V pair — reach is the feed cell's job, and this board has none |
 
@@ -2242,7 +2248,7 @@ rectifier and the transil code are its own, and the tube is fitted like every so
      │                                     2× 5.0SMDJ28A ─▶ the two chokes ─────────────────▶ ═══ 24 V, one two-pole DGPS2.5R-5.0
      │                                                      2036-07-SM ─────────────────────▶ ⏚ earth point
      │
-     └── INA238 + ISO1642 on the output, on the board's own island; the host side on the port's 3,3 V
+     └── INA237 + ISO1642 on the output, on the board's own island; the host side on the port's 3,3 V
 
   to the host:  the POWER connector — 3,3 V in, ENABLE in, SDA · SCL · ALERT out, ID out: 4,3 kΩ
 ```
@@ -2365,7 +2371,7 @@ that needs them; a board's own drawing then carries only what is its own:
 | **the cable-side island cell** — `R_SNS` + the DCM network + the FB/TC divider, **the controller follows the input voltage**: `LT3748` + the `ISC165N15NM6` on **`G-48-U`** off 48 V; `LT8316` + `FCD260N65S3` on **`G-300-U`** off 300 V (*Choosing the FET*) | `G-48-U` · `G-300-U-6` · `G-300-U-40` |
 | **the 12 V output** — the island's output onto the two-pole terminal, the only place 12 V leaves the board; no buck, nothing to switch | `G-48-U` · `G-300-U-6` · `G-300-U-40` |
 | **the measuring-side island** — `SN6505B` + `750313734` + 2× `PMEG10020ELR`, `EN` tied on | every power board |
-| **the telemetry front** — `INA238` + the 1210 shunt + the `VBUS` divider and its 10 nF + `ISO1642` (the I²C both ways, `A_SEL` down on channel A to the `INA238`'s `A0`, `ALERT` up on channel B, high = alarm with `APOL` = 1; `ENABLE` needs no channel, it never crosses the barrier); the host side on the host's 3,3 V; the measuring side on the board's island; on `G-12-S` the VBUS series resistor is not needed | every power board |
+| **the telemetry front** — `INA237` + the 1210 shunt + the `VBUS` divider and its 10 nF + `ISO1642` (the I²C both ways, `A_SEL` down on channel A to the `INA237`'s `A0`, `ALERT` up on channel B, high = alarm with `APOL` = 1; `ENABLE` needs no channel, it never crosses the barrier); the host side on the host's 3,3 V; the measuring side on the board's island; on `G-12-S` the VBUS series resistor is not needed | every power board |
 | **the isolated line-side supply** — `SN6505B` + `750313734` + `PMEG10020ELR`, `LINE_EN` on its `EN` with 100 kΩ to ground | `G-I-N-025` · `G-I-M-005` |
 | **the protection ladder** | every board that meets a cable |
 | **the connectors** — the data connector and the power connector, and what each board takes and gives on them | every board |

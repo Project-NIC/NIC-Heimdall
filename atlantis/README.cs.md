@@ -163,7 +163,7 @@ dávkami zhasnutý:
 | datový modul, obě sekce, TX v dávkách | ~80–100 mA |
 | modul hodin, jen přijímací sekce | ~20 mA |
 | `STM32H523`, jeden UART a SPI | ~30–60 mA |
-| `RM3100`, `INA238` + `ISO1642`, zbytek | ~10 mA |
+| `RM3100`, `INA237` + `ISO1642`, zbytek | ~10 mA |
 | **na 3,3 V** | **~0,5–0,6 W** |
 | **na kabelu**, přes snižující měnič a izolovaný ostrov při ~85 % | **~0,6–0,7 W** |
 

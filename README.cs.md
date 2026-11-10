@@ -199,7 +199,7 @@ Bateriový rozvod je 12 V stanice, hvězda z pojistkového pole skříně, jedna
 deska si z něj dělá vlastní nízká napětí. Napájená trasa opouští skříň na **48 V**, nebo na
 **300 V** tam, kde 48 V neunese zátěž tak daleko; vyrábí je zdrojová buňka Galvani a deska jednotky
 na vzdáleném konci je převádí zpět na 12 V. Vypínací bod trasy se měří při uvádění do provozu
-a programuje do `INA238` na straně zdroje, pod stropem buňky — ~26 W při 48 V, ~47 W při 300 V.
+a programuje do `INA237` na straně zdroje, pod stropem buňky — ~26 W při 48 V, ~47 W při 300 V.
 Měď do 500 m, dál sklo. **Koncept stojí na tom, co se běžně prodává**: běžný venkovní Cat 6, ne
 speciální kabel (`galvani/README.md`).
 

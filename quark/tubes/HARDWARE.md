@@ -95,14 +95,14 @@ assigned or listed free — nothing is left to guess.*
 | the neutron ring | **EXTI** 0 · 1 · 2 · 3 · 4 · 5 · 6 · 7 · 8 · 9 · 10 · 11 · 12 | PD0 · PD1 · PD2 · PD3 · PC4 · PD5 · PD6 · PD7 · PD8 · PC9 · PD10 · PD11 · PD12 | Gadolin/Rhodion, 1 centre + 12 ring — software interrupts because the merge compares arrival times | rising edge; the handler reads TIM2 for the arrival time |
 | high voltage | GPIO · **ADC1** | PE6 `HV_EN` · PC2 `HV_MON` | the ~400 V module | |
 | thermometers | **ADC1** | `NTC_B` PC3 the board's; `NTC_1`…`NTC_4` PA0–PA3 the four heads', K1–K4; `NTC_EN` PE7 | five `NCP18XH103F03RB` dividers, corrected here, never in the data — the board's in the `REPORT` frame (*The thermometers sit on the head boards*) | the dividers on for the conversion only; read every 10 s |
-| power body | **I2C1** | PB8 · PB9 | the unit power board's `INA238`, alone on its controller, 4,7 kΩ pull-ups to 3,3 V | 100 kHz; `ALERT` on PB13, 100 kΩ to ground, high = alarm |
+| power body | **I2C1** | PB8 · PB9 | the unit power board's `INA237`, alone on its controller, 4,7 kΩ pull-ups to 3,3 V | 100 kHz; `ALERT` on PB13, 100 kΩ to ground, high = alarm |
 | ID reads | **ADC1** | PC0 · PC1 | one resistor per body, against 10 kΩ | read once at bring-up |
 | clock | **HSI, disciplined by the rung** | no pin — PH0 · PH1 free | there is no crystal on this board (*The rung disciplines the core*, below) | `TIM5` gates the core against the rung, `FRACN` steers the PLL |
 | debug | **SWD** | PA13 · PA14 | | no JTAG, no trace |
 
 Eighteen inputs and no interrupt shared: five on timers that count without the core, thirteen
 on thirteen distinct EXTI numbers — which is why the ring sits on port D and borrows PC4 and
-PC9 for the two numbers port D has spent elsewhere. The `INA238`'s `ALERT` is the fourteenth
+PC9 for the two numbers port D has spent elsewhere. The `INA237`'s `ALERT` is the fourteenth
 EXTI and sits on PB13, above the ring's 0–12: PC8 is EXTI8 and tube 9 is on PD8.
 
 ### Pins
@@ -160,7 +160,7 @@ EXTI and sits on PB13, above the ring's 0–12: PC8 is EXTI8 and tube 9 is on PD
 | 49 | VSS | | | | |
 | 50 | VDD | 3,3 V | | | |
 | 51 | PB12 | — | | | free |
-| 52 | PB13 | `ALERT` | GPIO, EXTI13 | in | the power body's `INA238` — 100 kΩ to ground, high = alarm |
+| 52 | PB13 | `ALERT` | GPIO, EXTI13 | in | the power body's `INA237` — 100 kΩ to ground, high = alarm |
 | 53 | PB14 | `K4A` | `TIM12_CH1`, external clock | in | the He³ head's LLD count, γ + n — the tube's health |
 | 54 | PB15 | — | | | free |
 | 55 | PD8 | `T9` | GPIO, EXTI8 | in | Gadolin/Rhodion tube 9, the ring |
@@ -203,7 +203,7 @@ EXTI and sits on PB13, above the ring's 0–12: PC8 is EXTI8 and tube 9 is on PD
 | 92 | PB6 | `TXD` | `USART1_TX` / `TIM4_CH1` | out | the NodBus mini link, to the data body |
 | 93 | PB7 | `RXD` | `USART1_RX` / `TIM4_CH2` | in | the pins switch USART → TIM4 for the ranging instant |
 | 94 | BOOT0 | 10 kΩ to ground | |  | |
-| 95 | PB8 | `SCL` | `I2C1_SCL` | i/o | the power body's `INA238`, alone on this bus — 4,7 kΩ to 3,3 V |
+| 95 | PB8 | `SCL` | `I2C1_SCL` | i/o | the power body's `INA237`, alone on this bus — 4,7 kΩ to 3,3 V |
 | 96 | PB9 | `SDA` | `I2C1_SDA` | i/o | 4,7 kΩ to 3,3 V |
 | 97 | PE0 | — | | | free |
 | 98 | VCAP | 2× 1 µF 50 V 0805 + 2× 100 nF 50 V 0603 — 2,2 µF, the sheet's 2,2 µF ±20 % | | | |
@@ -251,7 +251,7 @@ the same pair at the pins behind it** — the house rule (`../../core/POWER.md`,
 and `VSSA` to the ground plane at one point. The two `ID` inputs are read single-ended against
 `VREF+`, and the 10 kΩ 1 % pull-up of each `ID` resistor hangs on `VREF+` itself, so the reading is a
 ratio and the rail's tolerance drops out. The arrived 12 V and the input current are the power
-body's `INA238`, over I2C1 — no divider on this board. The HV monitor on PC2 is read through the module's own divider, against
+body's `INA237`, over I2C1 — no divider on this board. The HV monitor on PC2 is read through the module's own divider, against
 the same reference. The five NTC dividers hang on `NTC_EN` and are read against `VREF+` the
 same way — a ratio, since the GPIO's high level and `VREF+` are both the 3,3 V.
 
@@ -321,7 +321,7 @@ resistors: no processor pin switches anything on either body.
 | 2 | `GND` | ground |
 | 3 | `ID` | PC1 `ID_P`, 10 kΩ 1 % to `VREF+` |
 | 4 | `SDA` | PB9 `I2C1_SDA`, 4,7 kΩ to 3,3 V |
-| 5 | `A_SEL` | to ground — the `INA238` at 0x40, alone on I2C1 |
+| 5 | `A_SEL` | to ground — the `INA237` at 0x40, alone on I2C1 |
 | 6 | `SCL` | PB8 `I2C1_SCL`, 4,7 kΩ to 3,3 V |
 | 7 | `ALERT` | PB13, EXTI13, 100 kΩ to ground, high = alarm |
 | 8 | `3,3 V` | the board's 3,3 V, the `LMR43610` — the power board's supply |

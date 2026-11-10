@@ -197,7 +197,7 @@ in one housing with a cable:
 The battery rail is the station's 12 V, a star from the enclosure's fuse field, one fuse a board;
 every board makes its own low rails from it. A fed run leaves the enclosure at **48 V**, or **300 V** where 48 does not carry
 the load that far, made by a Galvani source cell and converted back to 12 V by the unit board at the
-far end. A run's trip point is measured at commissioning and programmed into an `INA238` at the
+far end. A run's trip point is measured at commissioning and programmed into an `INA237` at the
 source end, under the cell's ceiling — ~26 W at 48 V, ~47 W at 300 V. Copper to 500 m, glass beyond.
 **The concept is built on what is normally on sale**: stock outdoor Cat 6, not a specialist cable
 (`galvani/README.md`).

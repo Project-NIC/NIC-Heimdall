@@ -75,7 +75,7 @@ assigned or listed free — nothing is left to guess.*
 | the grid | **TIM2** (32-bit) | PA15 `CLK_SEG` on `ETR` · PB3 ← `RXD` on CH2 | the segment's rung is the counter's clock; Argus's frame start is the anchor | external clock mode 2; a compare every 2ⁿ ticks is the sample instant |
 | echo receiver | **USART3**, RX only | PD9 `RXD_ECHO` | hears the board's own frames | |
 | the gauge | **I2C3** | PD6 `SCL` · PD7 `SDA` | the MS5837-30BA, pressure and temperature; the `TMP117` on the wall, read every 10 s | 400 kHz; a conversion is started on the grid and read after its `OSR` time |
-| power body | **I2C1** | PB8 `SCL` · PB9 `SDA` | the `INA238` — the arrived voltage and current, sent once a minute in the `REPORT` frame and on `GET REPORT`; the SUPPLY flag in the header outside `VIN_WINDOW` — nothing rides the data payload | 100 kHz, 4,7 kΩ to 3,3 V on both lines; `ALERT` on PC8, 100 kΩ to ground, high = alarm |
+| power body | **I2C1** | PB8 `SCL` · PB9 `SDA` | the `INA237` — the arrived voltage and current, sent once a minute in the `REPORT` frame and on `GET REPORT`; the SUPPLY flag in the header outside `VIN_WINDOW` — nothing rides the data payload | 100 kHz, 4,7 kΩ to 3,3 V on both lines; `ALERT` on PC8, 100 kΩ to ground, high = alarm |
 | ID reads | **ADC1** | PC0 · PC1 | one resistor per body, against 10 kΩ 1 % to `VREF+` | read once at bring-up |
 | clock | **HSI, disciplined by the rung** | no pin — PH0 · PH1 free | there is no crystal on this board (*The rung disciplines the core*) | `TIM5` gates the core against the rung, `FRACN` steers the PLL |
 | the holdover's covariates | **ADC1** internal channels · **DTS** | no pin — both are internal | the die's temperature by two routes: `VSENSE` against `VREFINT` in one sequence, and the DTS's own count in `DTS_DR`. Indexed as raw readings, never as a temperature (*The rung disciplines the core*) | the pair in one ADC sequence; the DTS is a register read, no timer |
@@ -152,7 +152,7 @@ sensor read must never wait behind a telemetry read.
 | 62 | PD15 | — | | | free |
 | 63 | PC6 | — | | | free |
 | 64 | PC7 | — | | | free |
-| 65 | PC8 | `ALERT` | GPIO, EXTI | in | the power body's `INA238` — 100 kΩ to ground, high = alarm |
+| 65 | PC8 | `ALERT` | GPIO, EXTI | in | the power body's `INA237` — 100 kΩ to ground, high = alarm |
 | 66 | PC9 | — | | | free |
 | 67 | PA8 | — | | | free |
 | 68 | PA9 | — | | | free |
@@ -182,7 +182,7 @@ sensor read must never wait behind a telemetry read.
 | 92 | PB6 | `TXD` | `USART1_TX` / `TIM4_CH1` | out | the NodBus mini link, to the data body |
 | 93 | PB7 | `RXD` | `USART1_RX` / `TIM4_CH2` | in | the pins switch USART → TIM4 for the ranging instant |
 | 94 | BOOT0 | 10 kΩ to ground | |  | |
-| 95 | PB8 | `SCL` | `I2C1_SCL` | i/o | the power body's `INA238` — 4,7 kΩ to 3,3 V |
+| 95 | PB8 | `SCL` | `I2C1_SCL` | i/o | the power body's `INA237` — 4,7 kΩ to 3,3 V |
 | 96 | PB9 | `SDA` | `I2C1_SDA` | i/o | 4,7 kΩ to 3,3 V |
 | 97 | PE0 | — | | | free |
 | 98 | VCAP | 2× 1 µF 50 V 0805 + 2× 100 nF 50 V 0603 — 2,2 µF, the sheet's 2,2 µF ±20 % | | | |
@@ -320,7 +320,7 @@ holdover table, so the filter is the buck-noise inductor of `../core/POWER.md` a
 ferrite; `VREF−` and `VSSA` to the ground plane at one point. The two `ID` inputs are read single-ended against
 `VREF+`, and the 10 kΩ 1 % pull-up of each `ID` resistor hangs on `VREF+` itself, so the reading
 is a ratio and the rail's tolerance drops out. The arrived 12 V and the input current are the power
-body's `INA238`, over I2C1 — no divider on this board.
+body's `INA237`, over I2C1 — no divider on this board.
 
 ## Terminals and bodies
 
@@ -360,7 +360,7 @@ body.
 | 2 | `GND` | ground |
 | 3 | `ID` | PC1 `ADC12_INP11` — 10 kΩ 1 % to `VREF+` |
 | 4 | `SDA` | PB9 `I2C1_SDA` — 4,7 kΩ to 3,3 V |
-| 5 | `A_SEL` | strapped to ground — one socket on this board, so its `INA238` answers at 0x40 |
+| 5 | `A_SEL` | strapped to ground — one socket on this board, so its `INA237` answers at 0x40 |
 | 6 | `SCL` | PB8 `I2C1_SCL` — 4,7 kΩ to 3,3 V |
 | 7 | `ALERT` | PC8 — GPIO, EXTI, 100 kΩ to ground; high = alarm |
 | 8 | `3,3 V` | the `LMR43610`'s 3,3 V — the power board's supply |

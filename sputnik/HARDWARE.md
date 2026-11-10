@@ -40,7 +40,7 @@ assigned or listed free — nothing is left to guess.*
 | UM980 COM1 | **USART2** | PA2 · PA3 | the receiver's binary logs — `OBSVMCMP`, `SATSINFO`, the ionosphere models, the HAS and B2b pages | 921 600 8N1 |
 | UM980 COM2 | **UART4** | PA0 · PA1 | the lean NMEA the H523 relays onto the clock run | 115 200 |
 | UM980 COM3 | **UART5**, `SWAP` set | PB12 · PB13 | the configuration at boot and its answers | 115 200 |
-| power body | **I2C1** | PB8 `SCL` · PB9 `SDA`, 4,7 kΩ to 3,3 V | the power board's `INA238` — the arrived voltage; **`A_SEL` strapped to ground on this board**, so it is 0x40, one socket and no processor pin on the strap (`../galvani/README.md`) | 100 kHz; `ALERT` on PC8 |
+| power body | **I2C1** | PB8 `SCL` · PB9 `SDA`, 4,7 kΩ to 3,3 V | the power board's `INA237` — the arrived voltage; **`A_SEL` strapped to ground on this board**, so it is 0x40, one socket and no processor pin on the strap (`../galvani/README.md`) | 100 kHz; `ALERT` on PC8 |
 | ID reads | **ADC1** | PC0 · PC1 · PC2 | one resistor per body, against 10 kΩ | read once at bring-up |
 | clock in | **HSE bypass** | PH0 | the data body's `CLK`, 2²² | PH1 unconnected |
 | debug | **SWD** | PA13 · PA14 | | no JTAG, no trace |
@@ -176,7 +176,7 @@ and Kronos the source end:
 | 62 | PD15 | — | | | free |
 | 63 | PC6 | `TXD_T` | `USART6_TX` / `TIM3_CH1` | out | the RX/TX + PPS socket to Kronos — the lean `RMC`/`GGA` stream |
 | 64 | PC7 | `RXD_T` | `USART6_RX` / `TIM3_CH2` | in | Kronos ranges this run; TIM3 turns the edge round |
-| 65 | PC8 | `ALERT` | GPIO, EXTI | in | the power body's `INA238` — 100 kΩ to ground, high = alarm |
+| 65 | PC8 | `ALERT` | GPIO, EXTI | in | the power body's `INA237` — 100 kΩ to ground, high = alarm |
 | 66 | PC9 | — | | | free |
 | 67 | PA8 | — | | | free |
 | 68 | PA9 | — | | | free |
@@ -206,7 +206,7 @@ and Kronos the source end:
 | 92 | PB6 | `TXD` | `USART1_TX` / `TIM4_CH1` | out | the NodBus link, to the data body |
 | 93 | PB7 | `RXD` | `USART1_RX` / `TIM4_CH2` | in | the pins switch USART → TIM4 for the ranging instant |
 | 94 | BOOT0 | 10 kΩ to ground | |  | |
-| 95 | PB8 | `SCL` | `I2C1_SCL` | i/o | the power body's `INA238`; the board's I²C parts |
+| 95 | PB8 | `SCL` | `I2C1_SCL` | i/o | the power body's `INA237`; the board's I²C parts |
 | 96 | PB9 | `SDA` | `I2C1_SDA` | i/o | |
 | 97 | PE0 | — | | | free |
 | 98 | VCAP | 2× 1 µF 50 V 0805 + 2× 100 nF 50 V 0603 — 2,2 µF, the sheet's 2,2 µF ±20 % | | | |
@@ -247,7 +247,7 @@ the same pair at the pins behind it** — the house rule (`../core/POWER.md`, *T
 and `VSSA` to the ground plane at one point. The three `ID` inputs are read single-ended against
 `VREF+`, and the 10 kΩ 1 % pull-up of each `ID` resistor hangs on `VREF+`, so the reading is a
 ratio and the rail's tolerance drops out. The arrived 12 V and the input current are the power
-body's `INA238`, over I2C1 — no divider on this board.
+body's `INA237`, over I2C1 — no divider on this board.
 
 ---
 

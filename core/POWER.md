@@ -20,7 +20,7 @@ normal running, the average is the steady state. **Count 40 W, 1 kWh a day**: th
 no-load draw, which the sum leans on hardest, is estimated. A bare station — the head, Kronos, one
 card, Palatine — is **~13 W**. **Peak, everything at once, ~60 W** — the pump, a Wi-Fi dump, a
 heater: 5 A off 12 V, which is what the BMS's current rating and the fuses see. **The sum of the
-boards' ratings is ~340 W** and never happens: it is what the `INA238` thresholds and the fuses
+boards' ratings is ~340 W** and never happens: it is what the `INA237` thresholds and the fuses
 stand if every port carried a far end at its cell's ceiling. Each build sums its own population.
 
 **Nothing is underclocked to save power, and no build is advised to.** The processor rate is one

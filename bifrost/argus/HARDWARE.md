@@ -33,7 +33,7 @@ Argus; the two `THVD1450` time-bus receivers are fitted and hear nothing.
 |---|---|
 | mini segment (×4) | a **12-pin data body and an 8-pin power body**; the power board taps the 12 V wire on its own terminals |
 | board | the NodBus upstream — the fifth USART, its echo receiver on the sixth — on its own data body and power body |
-| board | three I²C controllers for the five power bodies' `INA238`s — I3C1, I2C3, I3C2, at most two sockets to one |
+| board | three I²C controllers for the five power bodies' `INA237`s — I3C1, I2C3, I3C2, at most two sockets to one |
 
 **`CLK` is populated on every port, upstream and segments alike.** Mini is NodBus: it carries the
 wire clock, and that is the whole reason a unit goes on a segment instead of on a ModBus arm. The
@@ -103,7 +103,7 @@ buck; the 3,3 V and the logic cross the connector together, and a source power b
 taps the 12 V wire on its own terminals.
 
 **Telemetry is the Bifrost's, because it is the same board.** Each of the five sockets — the up
-port and the four segments — carries its power board's `INA238` behind that board's `ISO1642`,
+port and the four segments — carries its power board's `INA237` behind that board's `ISO1642`,
 and **the socket sets the address**: `A_SEL` is strapped low on the first socket of a controller's
 pair and high on the second, so a bus carries 0x40 and 0x41 and **two sockets is the ceiling on
 one controller**. The card therefore spreads the five over I3C1 (the up port and segment 1), I2C3

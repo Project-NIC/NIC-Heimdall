@@ -162,7 +162,7 @@ between bursts:
 | data module, both sections, TX bursting | ~80–100 mA |
 | clock module, receive section only | ~20 mA |
 | `STM32H523`, one UART and SPI | ~30–60 mA |
-| `RM3100`, `INA238` + `ISO1642`, the rest | ~10 mA |
+| `RM3100`, `INA237` + `ISO1642`, the rest | ~10 mA |
 | **on the 3,3 V** | **~0,5–0,6 W** |
 | **at the cable**, through the buck and the island at ~85 % | **~0,6–0,7 W** |
 

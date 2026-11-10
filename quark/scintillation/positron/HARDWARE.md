@@ -265,7 +265,7 @@ assigned or listed free — nothing is left to guess.*
 | thermometers | **ADC1** | `NTC_S` PA0 · `NTC_P` PA1 · `NTC_EN` PF6 | **two NTCs of one kind, never in the data** — the SiPM's rides the minute's `REPORT` frame, the photomultiplier's the `HEALTH` frame: the 0603 `NCP18XH103F03RB` beside the **block's SiPM**, the leaded `NXFT15XH103FA2B` at the **photomultiplier's base**, on the head, its two wires in the anode's cable — no correction consumes them today; they are there because the parts carry no sensor of their own and a bias law written on temperature is then firmware and not a board (`../photon/SCINTILLATION.md`). the station's divider: 10 kΩ from `NTC_EN` to the pin, the NTC from the pin to `VSSA`, **3 kΩ + 100 nF at the ADC pin**, read against `VREF+` so the rail drops out (`../../../tesla/HARDWARE.md` §7) | `NTC_EN` high for the conversion only; no bus, no edges, nothing to blank |
 | ID reads | **ADC1** | PC0 · PC1 | one resistor per body, against 10 kΩ 1 % to `VREF+`, the 1,8 V | read once at bring-up |
 | PSRAM | **OCTOSPI1**, port 2 | PF0–PF5 · PG0 · PG1 · PG10–PG12 · PF12 | the `APS25608N`, 32 MB octal DDR (*The PSRAM*, below) | 2²⁶, DQS on PF12; **the bus is silent while the front measures** — unloaded on this board |
-| power body | **I2C1** through the `PCA9306` | PB8 · PB9 | the unit power board's `INA238`, alone on its controller — the bus stops at the connector and never reaches the front end, so this read is not blanked | 100 kHz; `ALERT` on PC8 |
+| power body | **I2C1** through the `PCA9306` | PB8 · PB9 | the unit power board's `INA237`, alone on its controller — the bus stops at the connector and never reaches the front end, so this read is not blanked | 100 kHz; `ALERT` on PC8 |
 | clock in | **HSE bypass** | PH0 | the data body's `CLK`, 2²², through the translator | PH1 unconnected |
 | debug | **SWD** | PA13 · PA14 | | no JTAG, no trace |
 
@@ -392,7 +392,7 @@ that sleep sleep by their own pins — the converter's `PDWN`, the amplifiers' `
 | 114 | VDD33USB | tied to `VDD` | | | USB unused |
 | 115 | PC6 | — | | | free |
 | 116 | PC7 | — | | | free |
-| 117 | PC8 | `ALERT` | GPIO, EXTI | in | through the translator — the power body's `INA238`; 100 kΩ to ground on the 3,3 V side, high = alarm |
+| 117 | PC8 | `ALERT` | GPIO, EXTI | in | through the translator — the power body's `INA237`; 100 kΩ to ground on the 3,3 V side, high = alarm |
 | 118 | PC9 | `ENC` | `MCO2` — PLL2 `P` | out | **88,080384 MHz** — through a `74AUC2G34` tight against the converter, one gate to its `CLK+` (÷2 inside → the 44,04 encode, the grid), one to `PDCK` |
 | 119 | PA8 | — | | | free |
 | 120 | PA9 | — | | | free |
@@ -442,7 +442,7 @@ that sleep sleep by their own pins — the converter's `PDWN`, the amplifiers' `
 | 164 | PB6 | `TXD` | `USART1_TX` / `TIM4_CH1` | out | the NodBus link — through the `SN74AXC` translator to the data body |
 | 165 | PB7 | `RXD` | `USART1_RX` / `TIM4_CH2` | in | through the translator; the pins switch USART → TIM4 for the ranging instant |
 | 166 | BOOT0 | 10 kΩ to ground | | | |
-| 167 | PB8 | `SCL` | `I2C1_SCL` | i/o | through the `PCA9306` to the power body — the `INA238`, alone on this bus; 4,7 kΩ on each side |
+| 167 | PB8 | `SCL` | `I2C1_SCL` | i/o | through the `PCA9306` to the power body — the `INA237`, alone on this bus; 4,7 kΩ on each side |
 | 168 | PB9 | `SDA` | `I2C1_SDA` | i/o | through the `PCA9306`; 4,7 kΩ on each side |
 | 169 | PE0 | — | | | free |
 | 170 | PE1 | — | | | free |
@@ -514,7 +514,7 @@ resistors: no processor pin switches anything on either body. Every logic line c
 | 2 | `GND` | ground |
 | 3 | `ID` | PC1 `ID_P`, 10 kΩ 1 % to `VREF+`, the 1,8 V |
 | 4 | `SDA` | PB9 `I2C1_SDA` through the `PCA9306`, 4,7 kΩ on each side |
-| 5 | `A_SEL` | to ground — the `INA238` at 0x40, alone on I2C1 |
+| 5 | `A_SEL` | to ground — the `INA237` at 0x40, alone on I2C1 |
 | 6 | `SCL` | PB8 `I2C1_SCL` through the `PCA9306`, 4,7 kΩ on each side |
 | 7 | `ALERT` | PC8, EXTI, through the translator; 100 kΩ to ground on the 3,3 V side, high = alarm |
 | 8 | `3,3 V` | the same ordinary 3,3 V — the power board's supply |
@@ -568,7 +568,7 @@ the same pair at the pins behind it** — the house rule (`../../../core/POWER.m
 the ground plane at one point — the LQFP176 bonds `VREF−` to `VSSA` inside. The two `ID` inputs are read
 single-ended against `VREF+`, and their 10 kΩ 1 % pull-ups hang on `VREF+` itself, so the reading is a
 ratio and the rail's tolerance drops out; the data body's 3,3 V is not used for the `ID` on this
-board. The arrived 12 V and the input current are the power body's `INA238`, over I2C1. The fitted `LT3571`'s monitor and DAC are inside its
+board. The arrived 12 V and the input current are the power body's `INA237`, over I2C1. The fitted `LT3571`'s monitor and DAC are inside its
 servo loop, so the reference's value reaches no measurement.
 
 ## What this board takes from `Quark-Photon`

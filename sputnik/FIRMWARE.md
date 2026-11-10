@@ -51,7 +51,7 @@ in every record says which constellation it was (`BUS.md`, *The five slots are o
 | 6 | the streams | USART2 (COM1) at 921 600, circular DMA into a 4 kB ring, idle-line interrupt; UART4 (COM2) at 115 200, circular DMA into 256 B | — |
 | 7 | the relay | if `ID_T` names a board: USART6 at 115 200 listening, `DE_T` low, until Kronos's heartbeat `$PNIC,HELLO*hh` arrives (`../kronos/FIRMWARE.md` §4) — every second from a live Kronos; then `DE_T` high — the heartbeat gates the stream on `DE_T` alone — and the idle-line handler of UART4 queues what arrived as one USART6 DMA transmit. Nothing within **30 s**: the socket stays off, `HEALTH` *clock run unanswered*, `FAULT` up; a heartbeat arriving later serves it | — |
 | 8 | the timebase | TIM2 free-running at 2²⁷ once locked (step 10); CH1 captures the PPS on PA15, CH2 the start-bit edges on PB3 | — |
-| 9 | the power body | I2C1: the `INA238` on `ID_P`'s board configured; `ALERT` (PC8) an EXTI | no answer where `ID_P` names a power board: `HEALTH` *no telemetry*, `FAULT` up |
+| 9 | the power body | I2C1: the `INA237` on `ID_P`'s board configured; `ALERT` (PC8) an EXTI | no answer where `ID_P` names a power board: `HEALTH` *no telemetry*, `FAULT` up |
 | 10 | enrol | §4 | — |
 
 ## 3. The states

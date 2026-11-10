@@ -1442,7 +1442,7 @@ driver off and no edge — **`TXD` to the 1,8 V**, a UART's idle.
 | 11 | `SD` | through `U25` onto PD10; 100 kΩ to ground on the 3,3 V side — a copper board leaves it unpopulated and it reads quiet |
 | 12 | `3,3 V` | the 3,3 V interface rail, `U24` |
 
-**`PWR IN` — the power body.** One power socket on the board, so its `INA238` is 0x40.
+**`PWR IN` — the power body.** One power socket on the board, so its `INA237` is 0x40.
 
 | pin | signal | on this board |
 |---|---|---|
@@ -1533,7 +1533,7 @@ board goes back to the H523.**
 | ID reads | **ADC1** | PC0 · PC1 · PB0 | `NB IN`'s data body, `PWR IN`'s power body and `TIME OUT`'s data body | read once at bring-up |
 | PSRAM | **OCTOSPI1**, port 2 | PF0–PF5 · PG0 · PG1 · PG10–PG12 · PF12 | the APS25608N, 32 MB octal DDR — the classifier's background model; a population | ≤ 2²⁶, DQS on PF12 |
 | `TIME OUT`, Pip's socket | **USART2** + **TIM15** · TIM2 CH1 | PA2 · PA3 · PA15 · PE12 · PE13 | NMEA out and the PPS out, channel B outward — Kronos's capture end, this board's compare end. **Populated on every board; Tesla's image leaves it idle, Pip's serves it under Kronos's heartbeat** (`pip/FIRMWARE.md`) | 115 200 8N1; TIM15 the turnaround |
-| power body | **I2C1** through the `PCA9306` | PB8 · PB9 | the unit power board's `INA238` | 100 kHz; `ALERT` on PC8, EXTI |
+| power body | **I2C1** through the `PCA9306` | PB8 · PB9 | the unit power board's `INA237` | 100 kHz; `ALERT` on PC8, EXTI |
 | clock in | **HSE bypass** | PH0 | the data body's `CLK`, 2²², through the translator | PH1 unconnected |
 | debug | **SWD** | PA13 · PA14 | | no JTAG, no trace |
 
@@ -1664,7 +1664,7 @@ clock pins, so `DCLK` and `FSYNC` are two nets on four pins, and the fourth bloc
 | 114 | VDD33USB | tied to `VDD` | | | USB unused |
 | 115 | PC6 | — | | | free |
 | 116 | PC7 | — | | | free |
-| 117 | PC8 | `ALERT` | GPIO, EXTI | in | through `U25` — the power body's `INA238`, high = alarm |
+| 117 | PC8 | `ALERT` | GPIO, EXTI | in | through `U25` — the power body's `INA237`, high = alarm |
 | 118 | PC9 | — | | | free |
 | 119 | PA8 | `CLKIN` | `MCO1` ← PLL1_Q, prescaler 1 | out | **2²⁵ = 33,554432 MHz** into the ADS127L14's `CLKIN`, at 1,8 V directly |
 | 120 | PA9 | — | | | free |
@@ -1714,7 +1714,7 @@ clock pins, so `DCLK` and `FSYNC` are two nets on four pins, and the fourth bloc
 | 164 | PB6 | `TXD` | `USART1_TX` / `TIM4_CH1` | out | the NodBus link — through `U26` to `NB IN`; 100 kΩ to 1,8 V |
 | 165 | PB7 | `RXD` | `USART1_RX` / `TIM4_CH2` | in | through `U25`; the pins switch USART → TIM4 for the ranging instant |
 | 166 | BOOT0 | 10 kΩ to ground | | | |
-| 167 | PB8 | `SCL` | `I2C1_SCL` | i/o | through the `PCA9306` to `PWR IN` — the `INA238`; 4,7 kΩ to 1,8 V on this side |
+| 167 | PB8 | `SCL` | `I2C1_SCL` | i/o | through the `PCA9306` to `PWR IN` — the `INA237`; 4,7 kΩ to 1,8 V on this side |
 | 168 | PB9 | `SDA` | `I2C1_SDA` | i/o | the same; 4,7 kΩ to 1,8 V |
 | 169 | PE0 | — | | | free |
 | 170 | PE1 | — | | | free |
@@ -1765,7 +1765,7 @@ the same pair at the pins behind it** — the house rule (`../core/POWER.md`, *T
 the ground plane at one point — the LQFP176 bonds `VREF−` to `VSSA` inside. The three `ID` inputs are read
 single-ended against `VREF+`, and their 10 kΩ 1 % pull-ups hang on the same 1,8 V, so the reading is a
 ratio and the rail's tolerance drops out; the bodies' 3,3 V is not used for the `ID` on this
-board. The arrived 12 V and the input current are the power body's `INA238`, over I2C1. The four NTC dividers hang on the same `VREF+`, so the thermometers
+board. The arrived 12 V and the input current are the power body's `INA237`, over I2C1. The four NTC dividers hang on the same `VREF+`, so the thermometers
 read whenever the processor runs.
 
 ## 9. Reference BOM (JLCPCB-assemblable)

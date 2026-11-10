@@ -215,7 +215,7 @@ assigned or listed free — nothing is left to guess.*
 | echo receiver | **USART3**, RX only | PD9 `RXD_ECHO` | hears the board's own frames | |
 | RM3100 | **SPI1** + `SSN` PA4 | PA5 · PA6 · PA7 | the magnetometer, chipset build | mode 0, ≤ 1 MHz; `DRDY` on PB5, captured on TIM3 |
 | thermometers | **I2C2** · **ADC1** | PB10 `SCL_T` · PB12 `SDA_T` · PC2 `NTC` on `ADC1_INP12`, PC3 `NTC_EN` | the TMP117/STS35 on the wall; the NTC between the coils on a divider switched from a GPIO, ratiometric. **Its own controller** — a jammed power board must not hold the tempco's covariate down, and the bus takes four `TMP117` where a build wants more of them | 100 kHz; the divider on for the conversion only |
-| the power body | **I2C1** | PB8 · PB9 | the unit power board's `INA238` — **`A_SEL` strapped to ground on this board**, so it is 0x40; one socket here and no processor pin reads the strap (`../galvani/README.md`) | 100 kHz, 4,7 kΩ to 3,3 V on both lines; `ALERT` on PC8, 100 kΩ to ground, high = alarm |
+| the power body | **I2C1** | PB8 · PB9 | the unit power board's `INA237` — **`A_SEL` strapped to ground on this board**, so it is 0x40; one socket here and no processor pin reads the strap (`../galvani/README.md`) | 100 kHz, 4,7 kΩ to 3,3 V on both lines; `ALERT` on PC8, 100 kΩ to ground, high = alarm |
 | ID reads | **ADC1** | PC0 · PC1 | one resistor per body, against 10 kΩ 1 % to `VREF+` | read once at bring-up |
 | clock | **HSI, disciplined by the rung** | no pin — PH0 · PH1 free | there is no crystal on this board (*The rung disciplines the core*) | `TIM5` gates the core against the rung, `FRACN` steers the PLL |
 | the holdover's covariates | **ADC1** internal channels · **DTS** | no pin — both are internal | the die's temperature by two routes: `VSENSE` against `VREFINT` in one sequence, and the DTS's own count in `DTS_DR`. Indexed as raw readings, never as a temperature (*The rung disciplines the core*) | the pair in one ADC sequence; the DTS is a register read, no timer |
@@ -289,7 +289,7 @@ assigned or listed free — nothing is left to guess.*
 | 62 | PD15 | — | | | free |
 | 63 | PC6 | — | | | free |
 | 64 | PC7 | — | | | free |
-| 65 | PC8 | `ALERT` | GPIO, EXTI | in | the power body's `INA238` — 100 kΩ to ground, high = alarm |
+| 65 | PC8 | `ALERT` | GPIO, EXTI | in | the power body's `INA237` — 100 kΩ to ground, high = alarm |
 | 66 | PC9 | — | | | free |
 | 67 | PA8 | — | | | free |
 | 68 | PA9 | — | | | free |
@@ -319,7 +319,7 @@ assigned or listed free — nothing is left to guess.*
 | 92 | PB6 | `TXD` | `USART1_TX` / `TIM4_CH1` | out | the NodBus mini link, to the data body |
 | 93 | PB7 | `RXD` | `USART1_RX` / `TIM4_CH2` | in | the pins switch USART → TIM4 for the ranging instant |
 | 94 | BOOT0 | 10 kΩ to ground | |  | |
-| 95 | PB8 | `SCL` | `I2C1_SCL` | i/o | the power body's `INA238`, alone on this bus — 4,7 kΩ to 3,3 V |
+| 95 | PB8 | `SCL` | `I2C1_SCL` | i/o | the power body's `INA237`, alone on this bus — 4,7 kΩ to 3,3 V |
 | 96 | PB9 | `SDA` | `I2C1_SDA` | i/o | 4,7 kΩ to 3,3 V |
 | 97 | PE0 | — | | | free |
 | 98 | VCAP | 2× 1 µF 50 V 0805 + 2× 100 nF 50 V 0603 — 2,2 µF, the sheet's 2,2 µF ±20 % | | | |
@@ -362,7 +362,7 @@ the same pair at the pins behind it** — the house rule (`../core/POWER.md`, *T
 and `VSSA` to the ground plane at one point. The two `ID` inputs are read single-ended against
 `VREF+`, and the 10 kΩ 1 % pull-up of each `ID` resistor hangs on `VREF+` itself, so the reading
 is a ratio and the rail's tolerance drops out. The arrived 12 V and the input current are the power
-body's `INA238`, over I2C1 — no divider on this board.
+body's `INA237`, over I2C1 — no divider on this board.
 The RM3100's `REXT` is not on this list: it sets the sensor's own LR clock and the processor
 never sees it.
 
@@ -401,7 +401,7 @@ the unit power board for 48 V or for 300 V — and nothing on this board changes
 | 2 | `GND` | ground |
 | 3 | `ID` | PC1 `ADC12_INP11` — 10 kΩ 1 % to `VREF+` |
 | 4 | `SDA` | PB9 `I2C1_SDA` — 4,7 kΩ to 3,3 V |
-| 5 | `A_SEL` | strapped to ground — the `INA238` answers at 0x40 |
+| 5 | `A_SEL` | strapped to ground — the `INA237` answers at 0x40 |
 | 6 | `SCL` | PB8 `I2C1_SCL` — 4,7 kΩ to 3,3 V |
 | 7 | `ALERT` | PC8 — GPIO, EXTI, 100 kΩ to ground; high = alarm |
 | 8 | `3,3 V` | the board's 3,3 V — the power board's supply |

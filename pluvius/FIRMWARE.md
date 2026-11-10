@@ -96,7 +96,7 @@ boundaries. `DRAINED` free-runs and never resets (`MODBUS.md`).
    `PUMP` without `DRAIN_TIMEOUT`, and if `WEIGHT` is still above `THRESH` the next cycle starts
    three seconds later, so a full vessel after a dead head is emptied in instalments — and by
    `DRAIN` written 0. `HEAD`
-   written 0 by the host mid-cycle — its `INA238` saw a stall or a dry run, or its own ceiling —
+   written 0 by the host mid-cycle — its `INA237` saw a stall or a dry run, or its own ceiling —
    ends the cycle the same way, `DRAIN_TIMEOUT` set.
 3. **Stop**: the median at or below `EMPTY`: `RUN` released. **`EMPTY` is the base the vessel is
    never pumped under**: ~100 ml of water over the intake in the base build, and where oil is

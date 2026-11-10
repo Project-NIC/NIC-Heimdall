@@ -28,12 +28,12 @@ provisioning session when the head asks.
 | the firmware does | on | how often |
 |---|---|---|
 | polls the roster | USART2 · USART6 · UART4 · UART5, one per arm, DMA | per sensor, by its interval, 1 s to 3600 s, at the phase the schedule gave it |
-| drives `PWR EXT` | `EN_X` (PD1); the board's `INA238` on I2C1, its own `ALERT` pin | on a slave's request — Pluvius's `STATUS` bit 1 — and off on its clearing, on `ALERT`, on the ceiling, on a lost slave |
+| drives `PWR EXT` | `EN_X` (PD1); the board's `INA237` on I2C1, its own `ALERT` pin | on a slave's request — Pluvius's `STATUS` bit 1 — and off on its clearing, on `ALERT`, on the ceiling, on a lost slave |
 | ships blocks | USART1, one TIM2 compare a round | 128 frames/s, the latest blocks repeated |
 | relays the tunnel | any arm | when a `kind` 1 frame arrives |
 | verifies the roster, sweeps the MODs | every arm | at boot, on `SWEEP`, on a population mismatch |
 | gates an arm | `EN` per arm — PE6 · PE8 · PE12 · PE14, joined to `LINE_EN` on the board | by the arm's gating — ungated or gated (the arm table) |
-| reads the power bodies | I2C1 · I2C3 · I3C1, six `INA238`s, two to a controller | once a second |
+| reads the power bodies | I2C1 · I2C3 · I3C1, six `INA237`s, two to a controller | once a second |
 | sends its `PORTS` frame | the six sockets — socket 0 the up port, 1–4 the arms, 5 `PWR EXT` — `VBUS` · `CURRENT` raw, 4 B each, then its own temperature, from its own address in its block's fourth frame-time behind the data; no `REPORT` about itself | once a minute, and on `GET PORTS` (`../core/PROTOCOL.md` §5) |
 
 ## 2. Boot
@@ -44,7 +44,7 @@ provisioning session when the head asks.
 | 2 | RC | HSI; the flash cells read (§11): the set, the arm table, the roster with its phases, the QC thresholds; the tag computed — CRC-16-CCITT over the 96-bit UID | a set that fails its check is no set: the node boots as fresh, with no roster and every arm dark |
 | 3 | the rail | `PGOOD` (PD14) read | low: `HEALTH` *rail*, `FAULT` up, the node runs |
 | 4 | IDs | ADC1 reads the eleven `ID` inputs once, 16× oversampled, ratiometric: the up port's two bodies, each arm's two and `PWR EXT`'s one — on an arm a ModBus communication board and an arm power board, or 1,00 empty, or 0,00 shorted | an arm whose data body reads 1,00 is *unfitted* and never fed; a shorted `ID` is *shorted* and never fed; a ratio in no window is *unknown board*, not fed |
-| 5 | the power bodies | I2C1, I2C3 and I3C1, **two sockets to a controller at 0x40 and 0x41 — the socket's `A_SEL` strap decides which**: each `INA238` present configured — the thresholds from the arm table's current limit, the arm's load measured at commissioning with margin, `APOL` = 1 so the alarm is the high level, `ALERT` latched; a pin per socket: `ALERT_P` (PC8) · `ALERT_1`–`ALERT_4` (PC9 · PD10 · PD11 · PC12) · `ALERT_X` (PD2), EXTI 8 · 9 · 10 · 11 · 12 · 2 | an `INA238` silent where `ID` names an arm power board: `HEALTH` *no telemetry*, `FAULT` up, the arm still fed |
+| 5 | the power bodies | I2C1, I2C3 and I3C1, **two sockets to a controller at 0x40 and 0x41 — the socket's `A_SEL` strap decides which**: each `INA237` present configured — the thresholds from the arm table's current limit, the arm's load measured at commissioning with margin, `APOL` = 1 so the alarm is the high level, `ALERT` latched; a pin per socket: `ALERT_P` (PC8) · `ALERT_1`–`ALERT_4` (PC9 · PD10 · PD11 · PC12) · `ALERT_X` (PD2), EXTI 8 · 9 · 10 · 11 · 12 · 2 | an `INA237` silent where `ID` names an arm power board: `HEALTH` *no telemetry*, `FAULT` up, the arm still fed |
 | 6 | the arms | for each arm in the arm table: `EN` high, **200 ms apart in arm order**; the USART at the arm's rate, 8N1, DMA RX into a 256 B buffer, the RTU gap timed on TIM6; **2 s** of warm-up | — |
 | 7 | verify | every roster entry read once (§6); the reply's presence and, for a house MOD, its `0xFF01 IDENT` and `0xFF02 TAG`, compared with the roster | a mismatch — a sensor missing, a tag changed, a house MOD at a default address — is a population change: `HEALTH`, `FAULT` up per entry, and the node announces at RC as a fresh unit does (`../core/PROTOCOL.md` §7) |
 | 8 | the sweep | the house MODs' default addresses read (§6); a MOD found at a default is given the lowest free NUMBER of its type | two MODs of one type at the default collide and neither answers cleanly: `HEALTH` *collision on arm n*, `FAULT` up, the operator plugs them one at a time |
@@ -140,7 +140,7 @@ the schedule land wherever it lands.
 | fitted | 0 · 1 |
 | rate | 9 600 · **19 200** — one rate per arm, set per arm; a baud-locked sensor gets an arm at its own rate |
 | gating | **ungated** — fed always · **gated** — fed for the poll window of its hourly sensors and cut between, warm-up in seconds |
-| current limit | the arm power board's `INA238` thresholds to programme — the arm's start-up peak and running load, measured at commissioning, with margin; rewritten with `SET ARM` when a sensor is added |
+| current limit | the arm power board's `INA237` thresholds to programme — the arm's start-up peak and running load, measured at commissioning, with margin; rewritten with `SET ARM` when a sensor is added |
 
 **The roster** — up to **64 entries**, written by the head, persisted, verified at every boot:
 
@@ -181,7 +181,7 @@ recomputed only when the roster is rewritten, so a sensor keeps its second.
 **The gated arm.** A gated arm's entries are placed the other way round: **packed from phase 0
 upward into consecutive seconds**, so the arm is fed once a window and not once a sensor. Its
 `EN` goes high **warm-up seconds** before the first of them — the warm-up is the arm's, sized to
-its slowest sensor, 60 s the default — and low when the last has been served. Its `INA238` is
+its slowest sensor, 60 s the default — and low when the last has been served. Its `INA237` is
 read while fed; between windows the arm draws nothing. A gated arm takes no entry under 600 s:
 **`SET` refuses it**, because a sensor read more often than its warm-up allows is not one worth
 cutting. A sensor that must never
@@ -209,7 +209,7 @@ a paused poll.
 
 **`PWR EXT` is one power body, one load, and the rule that drives it is the load's.** The body is read
 at boot like every other: its `ID` says which board is seated (the switched 24 V board reads 0,30) and the
-`INA238` is programmed with the load's thresholds. A slave cannot speak first on ModBus, so **the
+`INA237` is programmed with the load's thresholds. A slave cannot speak first on ModBus, so **the
 request rides in the answer this node asks for anyway**: the load's unit sets a bit in a register
 the node already polls, and the node acts on it in the same round. One poll period of latency,
 and no traffic added.
@@ -222,7 +222,7 @@ head at either end are nothing to the measurement, and the rain totals are minut
 1. `STATUS` bit 1 `PUMP` read as 1 on a Pluvius in the roster, and `PWR EXT` free → `EN_X` high, and
    `HEAD` (`0x0014`) written 1 to that Pluvius, so its dead-drain window starts when the head
    actually runs and not when it was asked for.
-2. While on: the `INA238`'s `ALERT` **over** the limit is a stalled head, **under** the minimum is a
+2. While on: the `INA237`'s `ALERT` **over** the limit is a stalled head, **under** the minimum is a
    head running dry or a cut cable — `EN_X` low, `HEAD` written 0, `HEALTH` counts it, `FAULT` up
    says which. A ceiling of **12 minutes** — Pluvius's own 10 plus margin — ends any cycle. A
    Pluvius that misses **three polls** in a row, 30 s, is switched off before it is declared lost.
@@ -324,7 +324,7 @@ back by itself when it recovers.
 
 | trigger | action | reported |
 |---|---|---|
-| an `ALERT` pin | the socket is the pin, and that `INA238` is read; **that arm's `EN` low within 1 ms** if it is an arm's, the reading latched; the arm stays off until `SET ARM` or the next boot — three trips in an hour and it is not re-fed at boot either | `HEALTH` *arm n overcurrent* / *collapse*, `FAULT` up |
+| an `ALERT` pin | the socket is the pin, and that `INA237` is read; **that arm's `EN` low within 1 ms** if it is an arm's, the reading latched; the arm stays off until `SET ARM` or the next boot — three trips in an hour and it is not re-fed at boot either | `HEALTH` *arm n overcurrent* / *collapse*, `FAULT` up |
 | a roster entry misses twice | `NO_RESPONSE`; polled on at its interval | `HEALTH`, `FAULT` up, `SENSORS` |
 | a house MOD's tag differs from the roster's | a replaced module: the entry is marked, the announce runs, the head decides | `HEALTH` *replaced*, `FAULT` up |
 | a house MOD found at a default with its type's four NUMBERs taken | not assigned | `HEALTH` *type full*, `FAULT` up |
@@ -382,7 +382,7 @@ QC fault and the cool-off; the register map, every refusal; the cells.
 
 **On the bench, against `HARDWARE.md`:** four arms polling sixteen bought sensors each at
 19 200 for 24 h with a miss rate under 0,1 %; the arms fed 200 ms apart on a scope; a gated
-arm at zero current between polls on its `INA238`; `ALERT` to `EN` low in under 1 ms; a Pluvius
+arm at zero current between polls on its `INA237`; `ALERT` to `EN` low in under 1 ms; a Pluvius
 `DRAIN` tunnelled from the head and its reply back in under 60 ms; `PWR EXT` on within one poll of a
 Pluvius raising `PUMP` and off within one of its clearing, `ALERT` to `EN_X` low in under 1 ms; the link's ranging constant
 reproduced to ±1 tick over a hundred launches; the node's frame in its slot at 128 Hz for 24 h

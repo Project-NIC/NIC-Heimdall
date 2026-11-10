@@ -32,7 +32,7 @@ the box, a few bytes a second on the wire** (`BUS.md`).
 | catches a chirp | 65 536-sample bursts, 1 ms every **100 ms** while a sounder is due | per the sounder table |
 | ships records | USART1, one TIM2 compare a round | up to 8 records a frame; a carrier record per carrier per revisit, the floor once a second |
 | watches the converter | `OR`, SPI3 | per burst |
-| sends the report frame | USART1, in its own block behind its data: `VBUS` · `CURRENT` raw from the `INA238` · the board's NTC, int16 in 0,01 °C · 0 | once a `REPORT_INTERVAL`, 60 s (`../core/PROTOCOL.md` §5) |
+| sends the report frame | USART1, in its own block behind its data: `VBUS` · `CURRENT` raw from the `INA237` · the board's NTC, int16 in 0,01 °C · 0 | once a `REPORT_INTERVAL`, 60 s (`../core/PROTOCOL.md` §5) |
 
 ## 2. Boot
 
@@ -46,7 +46,7 @@ the box, a few bytes a second on the wire** (`BUS.md`).
 | 6 | the clock | the data body's `CLK` on `OSC_IN` validated — N clean periods at 2²² against the HSI — and **not taken** until `BUSCFG`; the encode is not started off the HSI: the converter is never encoded from a ±1 % source | no clock: RC, silent, waiting |
 | 7 | the amplifiers | `PD` low on the `LMH5401` and the `THS4541`; **500 ms** of settling before the first burst | — |
 | 8 | the PSSI | 16-bit receive, `DE`/`RDY` disabled, one DMA linear transfer of 524 288 half-words; one burst of the converter's checkerboard test pattern captured and every line checked | a stuck line is a wiring fault: `HEALTH` DEGRADED *bus*, the line named |
-| 9 | IDs and the power body | ADC1 reads `ID_D`, `ID_P` once, ratiometric against the 1,8 V. Then I2C1: the `INA238` on `PWR IN`'s board at 0x40 configured — `APOL` = 1, `ALERT` high on alarm and latched; PC8 on EXTI, rising edge | a ratio in no window is *unknown board*; the node runs. No answer where `ID_P` names a power board: `HEALTH` *no telemetry*, `FAULT` up |
+| 9 | IDs and the power body | ADC1 reads `ID_D`, `ID_P` once, ratiometric against the 1,8 V. Then I2C1: the `INA237` on `PWR IN`'s board at 0x40 configured — `APOL` = 1, `ALERT` high on alarm and latched; PC8 on EXTI, rising edge | a ratio in no window is *unknown board*; the node runs. No answer where `ID_P` names a power board: `HEALTH` *no telemetry*, `FAULT` up |
 | 10 | enrol | §4 | — |
 
 ## 3. The states
@@ -313,7 +313,7 @@ count in `HEALTH`, and ten in an hour is `HEALTH` DEGRADED *bus*.
 | `OR` on three bursts running | nothing switched; the levels ship flagged | `HEALTH` DEGRADED *headroom* |
 | a tone on the strong list disappears for a day | dropped from the strong list; a monitored slot is never dropped by the node | — |
 | the CSS fires | NMI: HSI, `PDWN` high, mute; the rejoin of §4 | `status` 1 REJOINED |
-| `ALERT` on PC8 (EXTI) | the `INA238`'s reading latched into `HEALTH`; nothing to switch on this board — the source end acts on its own `ALERT` | `HEALTH`, `FAULT` up |
+| `ALERT` on PC8 (EXTI) | the `INA237`'s reading latched into `HEALTH`; nothing to switch on this board — the source end acts on its own `ALERT` | `HEALTH`, `FAULT` up |
 | `PGOOD` low | noted | `HEALTH` *rail*, `FAULT` up |
 | the IWDG expires | reset; the converter reconfigured by the boot of §2 | `HEALTH` |
 

@@ -34,7 +34,7 @@ own table names them by their block name.
 
 | ref | part / value | how | note |
 |---|---|---|---|
-| U_T | **`INA238`** | code | `ADCRANGE` = 1, ±40,96 mV; conversion 4,12 ms × 128 averages; `APOL` = 1. `A1` to ground on the board, `A0` from the isolator's channel A — 0x40 / 0x41 by the socket's `A_SEL` |
+| U_T | **`INA237`** | code | `ADCRANGE` = 1, ±40,96 mV; conversion 4,12 ms × 128 averages; `APOL` = 1. `A1` to ground on the board, `A0` from the isolator's channel A — 0x40 / 0x41 by the socket's `A_SEL` |
 | U_I | **`ISO1642`**, DW-16 | code | the I²C both ways, `A_SEL` down on channel A, `ALERT` up on channel B; side 1 on the host's 3,3 V, side 2 on block S |
 | R_SHUNT | **1210 metal-element sense resistor, 1 %, ≤ 75 ppm/°C, 0,5 W** — the value is the board's | value | Kelvin-connected to `IN+`/`IN−`; low-side, in the − pole |
 | R_F1, R_F2 · C_F | **2× 82 Ω 0603 · 100 nF 50 V X7R 0603** | class | the shunt input filter, the sheet's figure 7-1 — a 10 µs corner; 0,18 % gain error, calibrated out |
@@ -178,7 +178,7 @@ three, because the ripple is 3,9 A rms. The tap is 4,6 A at the 11 V floor.
 
 | ref | part / value | how | note |
 |---|---|---|---|
-| U_L | **`INA238`**, the second | code | `A1` to `VS`, `A0` from `A_SEL` → 0x44 / 0x45; `VBUS` only, shunt inputs tied, `ALERT` unwired — the host polls it |
+| U_L | **`INA237`**, the second | code | `A1` to `VS`, `A0` from `A_SEL` → 0x44 / 0x45; `VBUS` only, shunt inputs tied, `ALERT` unwired — the host polls it |
 | R_A | **9× 1 MΩ 1206, 1 %, in series**, Basic `C17927` | value | + to the tube's centre, 9 MΩ; 16 V a part at the rail, 72 V at a gap's sparkover |
 | R_B | **8× 1 MΩ 1206, 1 %, in series**, Basic `C17927` | value | the centre to `VBUS`, 8 MΩ; with the pin's 1 MΩ the lower leg equals `R_A` and the centre sits at half the feed |
 | C_L | **10 nF 50 V X7R 0603**, `VBUS` to `GND` | class | τ ≈ 9 ms |
@@ -209,7 +209,7 @@ and nothing lower, hands it out on its two terminals, passes the feed on to the 
 | R_REF · R_FB · R_TC | **5,6 kΩ + 1 kΩ trimmer · 160 kΩ · 62 kΩ**, 1 %, Preferred | value | at `N_PS` 2,5, `V_F` 0,75 V → **12 V**, set by the trimmer; 194 µA through `R_FB` against the sheet's ~200 |
 | R_C, C_C · C_SS · R_GATE | as `G-48-S` | class | |
 | C_VIN · C_VCC | **2,2 µF 100 V X7R 1210 · 4,7 µF 50 V X7R 1206** | class | the gate drive comes off 48 V through the part's LDO, ~0,64 W at the light-load clamp |
-| R_CL | **2× 845 Ω, 2512, 2 W class** | value | 60 V, 2,1 W rated, 4,1 W at the corner — a fault, until the `INA238` trips the source |
+| R_CL | **2× 845 Ω, 2512, 2 W class** | value | 60 V, 2,1 W rated, 4,1 W at the corner — a fault, until the `INA237` trips the source |
 | C_CL | **2,2 µF 100 V X7R 1210** | class | |
 | D_CL | **`V5N22-M3`** | code | |
 

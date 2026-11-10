@@ -25,7 +25,7 @@ Mayak, Kronos, Bifrost и Hermes на одной печатной плате, в
 Назван по среднему имени **Charles Proteus Steinmetz**.
 
 ```
-   vehicle 12 V / pack ──▶ [isolated DC/DC brick] ──▶ the 12 V node ── INA238 (LP I²C)
+   vehicle 12 V / pack ──▶ [isolated DC/DC brick] ──▶ the 12 V node ── INA237 (LP I²C)
                                                         │
       ┌─────────────────────────────────────────────────┴─────────────────────────────────────────────────────────────────────┐
       │  KRONOS ◀ TIME IN 1 ◀ POLARIS ── CLK · PPS_K · label as traces ──▶ BIFROST                                            │

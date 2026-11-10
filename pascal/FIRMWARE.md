@@ -137,7 +137,7 @@ interval, and nothing else touches I2C3.
 ```
 
 **The report frame, `kind` 6, once a `REPORT_INTERVAL` (60 s), in the fourth frame-time of the
-sonde's own block, behind the data:** `VBUS` · `CURRENT` as the `INA238`'s raw registers — the
+sonde's own block, behind the data:** `VBUS` · `CURRENT` as the `INA237`'s raw registers — the
 sonde stands on the sea floor behind a barrier, so the arrived feed is worth the two words · the
 wall `TMP117`, the bottom-water record · the gauge's own temperature, int16 in 0,01 °C; a reply
 owed goes first and the report waits a round. `GET REPORT` brings it now, and the
