@@ -988,7 +988,7 @@ the station would mean translators everywhere instead of on the boards with the 
 processor's **1,8 V at 1 MHz in forced PWM** — 12 → 1,8 V is a 15 % duty, 150 ns of on-time,
 122 ns at the 14,7 V the unit board's transil lets through, against the part's 40 ns minimum; at
 2,5 MHz it would be 49 ns, which is why this rail runs at 1 MHz. The other makes the **analogue
-feed at 2,5 MHz in forced PWM**: **5,3 V** on Tesla (its 5 V analogue LDOs, 0,3 V over their
+feed at 2,5 MHz in forced PWM**: **5,4 V** on Tesla (its 5 V analogue LDOs, 0,4 V over their
 output) and **4,0 V** on Marconi, `Quark-Photon` and `Quark-Neutron/Positron` (their clean 3,3 V
 LDOs); Tesla's 3,3 V interface rail is a third. **The digital supplies of the converters — `IOVDD`, `DRVDD`, `DVDD` — take the
 processor's rail through the shielded 2,2 µH into 10 µF + 100 nF, then the bead `GZ2012D301TF` into 100 nF at the pin, not a regulator of their own**, and the MCU's `VDDA`/`VREF+` take it through the shielded 2,2 µH into 10 µF + 100 nF, the buck-noise inductor (`../core/POWER.md`, *The filter parts*);
@@ -1252,7 +1252,7 @@ sheet; the family is pin-to-pin, 300 mA / 600 mA / 1 A).
 | position | value |
 |---|---|
 | `MODE/S-CONF`, 1 % to ground | **9,31 kΩ** — external feedback, forced PWM, 2,5 MHz · **22,1 kΩ** — external feedback, forced PWM, 1 MHz · **17,8 kΩ** — external feedback, auto, 1 MHz (the card, where nothing listens). No output discharge on any |
-| the divider, `R2` 137 kΩ 1 % on every position | `R1` **274 k → 1,800 V** · **619 k → 3,311 V** · **787 k → 4,047 V** · **1,07 M → 5,286 V** |
+| the divider, `R1` / `R2`, 1 %, JLCPCB Basic or Preferred | **300 k / 150 k → 1,800 V** · **680 k / 150 k → 3,320 V** · **390 k / 68 k → 4,041 V** · **120 k / 15 k → 5,400 V** — 300 k `C23024`, 150 k `C22807`, 680 k `C25822`, 390 k `C23150`, 68 k `C23231`, 120 k `C25808`, 15 k `C22809`; `V_OUT` = 0,6 V × (1 + `R1`/`R2`), `R2` under the sheet's 300 kΩ (SLVSGE1, 9.2.2.2) |
 | the inductor | **2,2 µH, shielded, `XGL3530-222`** — the sheet's value |
 | `C_OUT` · `C_IN` · `VCC` · `BOOT` | 3× 10 µF 50 V 1206 + 100 nF · 4,7 µF 50 V 1206 + 100 nF · 1 µF · 100 nF |
 | `PG` | to the processor through 100 kΩ, where the board reads it |

@@ -255,7 +255,7 @@ strength and strong-carrier list. One instrument, one sweep, one record.
  │        └──────────────── MCO1 (VCO 2²⁹ ÷ 16) ◄────────────── H7A3 (same PCB) ◄───┘   │
  │                                                                                      │
  │   POWER, §6:                                                                         │
- │     12 V → TPS629206 (FPWM, 2,5 MHz) → 5,3 V → 3× TPS7A4701 → 5,0 V analog           │
+ │     12 V → TPS629206 (FPWM, 2,5 MHz) → 5,4 V → 3× LP2985-5.0, π → 5,0 V analog       │
  │     12 V → TPS629206 (FPWM, 1 MHz) → 1,8 V MCU · 2,2 µH → VDDA/VREF+                 │
  │                                           · 2,2 µH + bead → ADC IOVDD · AVDD2        │
  │     12 V → TPS629206 (FPWM, 2,5 MHz) → 3,3 V interface                               │
@@ -1043,11 +1043,22 @@ switched** — a processor that cuts its own supply cannot be woken — so no re
 board has its `EN` on a pin, exactly as 3,3 V is never cut on the other units. **Off is the
 source end's**: `ENABLE` at the source power board takes the whole feed away and every rail
 here with it.
-**Three `TPS629206` straight off the 12 V, no cascade**: one makes **5,3 V** at 2,5 MHz, one the
+**The 5,0 V analogue rails — an `LP2985-5.0` each, into the house π filter.** What reaches the
+signal from these rails is the regulator's noise times the rejection behind it: the converter
+rejects `AVDD1` 98 dB at dc (SBASAM0B, 5.5), each `THS4551` either
+supply 93 dB at least (SBOS778D, *Electrical Characteristics*), the `REF6041` 60–75 dB across the
+band (SBOS708C Figure 6-15), and what passes the reference scales the reading, not the floor. The
+`LP2985`'s 30 µVrms with 10 nF on `BYPASS` (SNVS018AB) is then ~1 nV at the converter against its
+25,1 µV. **Where the LDO is weak, at the buck's 2,5 MHz** — 40 dB at 1 MHz — the house π behind
+each regulator takes ~70 dB more (`../core/POWER.md`, *The filter parts*): the two front-end
+regulators feed the channel split's inductors, the third its own π before `AVDD1` and the
+`REF6041`. The 16 V input stands 10 V over the 5,4 V feed.
+
+**Three `TPS629206` straight off the 12 V, no cascade**: one makes **5,4 V** at 2,5 MHz, one the
 processor's **1,8 V** at 1 MHz — 12 → 1,8 V is 150 ns of on-time there, 122 ns at the 14,7 V the
 transil lets through, against the part's 40 ns minimum — 49 ns at 2,5 MHz, too close — and one the **3,3 V** interface rail at 2,5 MHz; all three in
-forced PWM (`../galvani/HARDWARE.md`, *The buck cell*). The three `TPS7A4701` stand on the same 5,3 V (0,3 V of
-headroom, enough at their ~100 mA). **The 3,3 V is the interface rail only** — the translators' 3,3 V side,
+forced PWM (`../galvani/HARDWARE.md`, *The buck cell*). The three `LP2985-5.0` stand on the same 5,4 V — 0,4 V of
+headroom against a dropout of at most 225 mV at 50 mA over temperature (SNVS018AB) — each into the house π filter (*The 5,0 V analogue rails*, below). **The 3,3 V is the interface rail only** — the translators' 3,3 V side,
 the `PCA9306`, the communication boards on `NB IN` and `TIME OUT`, the power board's `ISO1642` on `PWR IN` — and it is its own `TPS629206` in
 forced PWM, because at 5 mA on a copper end a power-save buck's burst rate would land in the
 band. **No rail is switched from a pin**: every regulator runs whenever the 12 V is there, and a
@@ -1057,11 +1068,11 @@ nothing on it wants feedstock.
 
 | rail on board | made by | from | feeds | switched |
 |---|---|---|---|---|
-| **5,3 V** | **`TPS629206`**, forced PWM at 2,5 MHz, `MODE/S-CONF` 9,31 kΩ, `R1` 1,07 MΩ / `R2` 137 kΩ → 5,286 V | 12 V | the three 5 V LDOs | never |
-| **5,0 V analog** ×3 | TPS7A4701 ×3 | 5,3 V | ADC `AVDD1` and the `REF6041` (their own regulator) · S1+S2 of the channels (two regulators, channels split behind shielded 2,2 µH inductors) | never |
-| **1,8 V digital** | **`TPS629206`**, forced PWM at 1 MHz, `MODE/S-CONF` 22,1 kΩ, `R1` 274 kΩ / `R2` 137 kΩ → 1,800 V | 12 V | **the whole MCU — `VDD` and `VDDA` alike**, `VREF+` strapped to it (§7), and **`VDDA`/`VREF+` through the station's shielded 2,2 µH `SWPA252012S2R2MT` into 10 µF + 100 nF** — the buck's own 1 MHz on an ADC reference is the inductor's position — and **ADC `IOVDD` through a second shielded 2,2 µH into 10 µF + 100 nF, then the bead `GZ2012D301TF` into 100 nF at the pin** — a digital supply whose 33 MHz clock is under the inductor's 69 MHz self-resonance and whose edges' harmonics are above it (`../core/POWER.md`, *The filter parts*); ≤ 5 mA, digital interface and core, no regulator of its own | **never** |
+| **5,4 V** | **`TPS629206`**, forced PWM at 2,5 MHz, `MODE/S-CONF` 9,31 kΩ, `R1` 120 kΩ / `R2` 15 kΩ → 5,400 V | 12 V | the three 5 V LDOs | never |
+| **5,0 V analog** ×3 | **`LP2985-5.0`** ×3, each into the house π filter | 5,4 V | ADC `AVDD1` and the `REF6041` (their own regulator) · S1+S2 of the channels (two regulators, channels split behind shielded 2,2 µH inductors) | never |
+| **1,8 V digital** | **`TPS629206`**, forced PWM at 1 MHz, `MODE/S-CONF` 22,1 kΩ, `R1` 300 kΩ / `R2` 150 kΩ → 1,800 V | 12 V | **the whole MCU — `VDD` and `VDDA` alike**, `VREF+` strapped to it (§7), and **`VDDA`/`VREF+` through the station's shielded 2,2 µH `SWPA252012S2R2MT` into 10 µF + 100 nF** — the buck's own 1 MHz on an ADC reference is the inductor's position — and **ADC `IOVDD` through a second shielded 2,2 µH into 10 µF + 100 nF, then the bead `GZ2012D301TF` into 100 nF at the pin** — a digital supply whose 33 MHz clock is under the inductor's 69 MHz self-resonance and whose edges' harmonics are above it (`../core/POWER.md`, *The filter parts*); ≤ 5 mA, digital interface and core, no regulator of its own | **never** |
 | **`AVDD2`** | no regulator — the 1,8 V through the shielded 2,2 µH into 2× 10 µF + 100 nF (~24 kHz, Q ~2), then the bead `GZ2012D301TF` into 100 nF at the pin | the 1,8 V | ADC `AVDD2`, ≤ 21 mA | never |
-| **3,3 V interface** | **`TPS629206`**, forced PWM at 2,5 MHz, `MODE/S-CONF` 9,31 kΩ, `R1` 619 kΩ / `R2` 137 kΩ → 3,311 V | 12 V | the 3,3 V side of the two `SN74AXC8T245` · the `PCA9306` · the communication boards on `NB IN` and `TIME OUT` · the power body's pin 8 (**18 mA copper** — its line side is 5 mA, the island ~50 % at that load and three transceivers add their `ICC1`, `../galvani/HARDWARE.md` — ~55 mA on glass at a far end, 125 mA at most). **Nothing on the MCU touches it** | never |
+| **3,3 V interface** | **`TPS629206`**, forced PWM at 2,5 MHz, `MODE/S-CONF` 9,31 kΩ, `R1` 680 kΩ / `R2` 150 kΩ → 3,320 V | 12 V | the 3,3 V side of the two `SN74AXC8T245` · the `PCA9306` · the communication boards on `NB IN` and `TIME OUT` · the power body's pin 8 (**18 mA copper** — its line side is 5 mA, the island ~50 % at that load and three transceivers add their `ICC1`, `../galvani/HARDWARE.md` — ~55 mA on glass at a far end, 125 mA at most). **Nothing on the MCU touches it** | never |
 
 **Ranging:** the return is this board's timer — `RXD` and `TXD` on two channels of one timer,
 `RXD` on CH1 or CH2, the pin choice at CubeMX (`../bifrost/HARDWARE.md`, *Ranging*).
@@ -1143,7 +1154,7 @@ nothing on it wants feedstock.
   | **1,8 V digital** | MCU 173 mA · ADC `IOVDD` 5 mA · ADC `AVDD2` 21 mA · PSRAM ≤ 20 mA while it is written | **≤ 219 mA, 394 mW** — 37 % of its `TPS629206` |
   | **5,0 V `AVDD1`** | the converter's core 8,1 mA · eight input buffers 16,8 · four reference buffers 6,8 · `VCM` 0,1 · the `REF6041` 1,1 | **≤ 33 mA, 165 mW** |
   | **5,0 V fronts**, two LDOs | six `THS4551` at 1,92 mA · S1's full swing into the ladder, 4,6 mA a channel | **≤ 26 mA, 130 mW** |
-  | **5,3 V** | the three LDOs 59 mA | **≤ 59 mA, 0,31 W** — 10 % of its `TPS629206` |
+  | **5,4 V** | the three LDOs 59 mA | **≤ 60 mA, 0,32 W** — 10 % of its `TPS629206` |
   | **3,3 V interface** | the communication board — **18 mA on copper, ~55 mA on glass, 125 mA at most** · the translators and the `PCA9306`, ~1 mA | **~20 mA copper, ≤ 126 mA glass** |
   | **the 12 V** | the three `TPS629206` at ~80–85 % | **~1,1 W on copper, ~1,5 W on glass** |
 
@@ -1766,14 +1777,15 @@ read whenever the processor runs.
 | U10 | **`REF6041IDGKR`** — the converter's 4,096 V reference, VSSOP-8, on the `AVDD1` LDO; 1 µF on `FILT`, 22 µF on the output, 100 nF at `VIN` (§4) | Extended | 1 |
 | U14 | **STM32H7A3IIT6** — the node MCU, same PCB | Extended | 1 |
 | U15 | **`APS25608N-OBR-BD`** — the OCTOSPI PSRAM, a position: fitted for the learned classifier, open for the rule set alone; `NCS` 10 kΩ to the 1,8 V, 33 Ω at `CLK`, 1 µF + 10 µF (§8) | Extended | 0–1 |
-| U11..U13 | **TPS7A4701** — 5,0 V: `AVDD1` (max-speed mode needs 4,5–5,5 V) and the front-end rails, fed from the 5,3 V (§6) | Extended `C90084` | 3 |
-| U23 | **`TPS629206`** — 12 V → 5,3 V for the three 5 V LDOs, forced PWM at 2,5 MHz (§6) | | 1 |
+| U11..U13 | **`LP2985IM5X-5.0`** — 5,0 V: `AVDD1` (max-speed mode needs 4,5–5,5 V) and the front-end rails, fed from the 5,4 V, each into the house π filter (§6); `ON/OFF` to `VIN`, 1 µF at `VIN`, 10 nF on `BYPASS` | Extended `C5380652` | 3 |
+| U23 | **`TPS629206`** — 12 V → 5,4 V for the three 5 V LDOs, forced PWM at 2,5 MHz (§6) | | 1 |
 | U22 | **`TPS629206`** — 12 V → 1,8 V for the MCU, never switched, forced PWM at 1 MHz (§6) | | 1 |
 | U24 | **`TPS629206`** — 12 V → 3,3 V, the interface rail, forced PWM at 2,5 MHz (§6) | | 1 |
 | D1..D3 | **BAV199** — the coil clamp, two diodes anti-parallel across each rod's pair, on the amplifier side of `Rs1` (§0.2) | Extended — `LBAV199LT1G` `C12740` | 3 |
 | R/C | Rf/Cf (with the 10 Ω in each `Cf1` leg)/`R1`/`R2`/`C1`/`C2`/Rg/Cin/Rs/decoupling per §0.2, §2, §4 | Basic (jellybean) | — |
 | L1 | **`SWPA252012S2R2MT`** — shielded 2,2 µH, the station's buck-noise inductor: the MCU's `VDDA`/`VREF+` off the 1,8 V, into 10 µF + 100 nF (§6, §7) | Extended `C23894` | 1 |
 | L2..L5 | **`SWPA252012S2R2MT`** — the station's shielded 2,2 µH: the converter's `IOVDD` and `AVDD2`, and the channel split behind the two 5,0 V front-end LDOs (§6) | Extended `C23894` | 4 |
+| L6 | **`SWPA252012S2R2MT`** — the π behind the `AVDD1` and `REF6041` LDO, 10 µF + 100 nF on each side (§6) | Extended `C23894` | 1 |
 | FB | **`GZ2012D301TF`** — the 0805 bead, 300 Ω at 100 MHz, behind the inductors of `IOVDD` and `AVDD2`, for what reaches past the inductor's 69 MHz (§6) | | 2 |
 | U25, U26 | **`SN74AXC8T245`** — the direction-set translators, 1,8 V ↔ 3,3 V, `OE#` to ground: `U25` inbound, `DIR` to ground; `U26` outbound, `DIR` to the 1,8 V (§8, *The Galvani sockets*) | Extended | 2 |
 | U27 | **`PCA9306`** — the I²C to `PWR IN`, `VREF1` on the 1,8 V, `VREF2` and `EN` on 200 kΩ to the 3,3 V (§8) | Extended | 1 |

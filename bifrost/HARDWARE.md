@@ -510,7 +510,7 @@ and a source power board takes the host side of its isolator from the same pins.
 | `L` | **2,2 µH**, shielded — the sheet's Coilcraft `XGL3530-222` |
 | `C_IN` | **4,7 µF 50 V X7R 1206 + 100 nF 50 V** at `VIN` |
 | `C_OUT` | **3× 10 µF 50 V X5R 1206** — ~21 µF effective at 3,3 V, the sheet's 22 |
-| the divider | **`R1` 619 kΩ / `R2` 137 kΩ, 1 %** → 3,311 V against the 0,6 V reference |
+| the divider | **`R1` 680 kΩ / `R2` 150 kΩ, 1 %** → 3,320 V against the 0,6 V reference |
 | `MODE/S-CONF` | **17,8 kΩ to ground** — external feedback, 1 MHz, auto PFM/PWM, no AEE: ~93 % at 100 mA |
 | `EN` | to `VIN` — the rail runs whenever the 12 V is there |
 | `PG` | not connected |
@@ -759,7 +759,7 @@ microsecond.
 | 4,7 kΩ | 6 | I3C1, I2C3, I3C2 — one pair each |
 | 100 kΩ | 20 | `EN_1`–`EN_4` · `OE_1`–`OE_4` · `SD_UP`, `SD_1`–`SD_4` · `ALERT_0`–`ALERT_4` to ground · `ATTN` to ground · `PGOOD` up |
 | 7,50 kΩ · 30 kΩ · 13 kΩ, 1 % · 22 pF C0G | 1 each | the `LMR43620`'s `RT`, divider and `C_FF` |
-| 619 kΩ · 137 kΩ, 1 % · 17,8 kΩ | 2 each | the `TPS629206`s' divider and `MODE/S-CONF` |
+| 680 kΩ · 150 kΩ, 1 % · 17,8 kΩ | 2 each | the `TPS629206`s' divider and `MODE/S-CONF` |
 | 2,2 µH shielded, `SWPA252012S2R2MT` | 2 | `VDDA`, `VREF+` |
 | 47 µF 50 V hybrid polymer | 1 | the 12 V node |
 | 10 µF 50 V 1206 | 1 | the 12 V node |

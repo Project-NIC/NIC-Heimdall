@@ -258,3 +258,10 @@ port's `ENABLE`, which at the source power board removes the whole feed.
 - **The `ADS117L14`**, the 16-bit sibling — three bits below the `ADS127L14`, under this chain.
 - **A pipeline converter** — no oversampling; ~12,5 ENOB at 80–125 MSPS, 11–14 dB lost.
 - **The NTC read over 20 ms** — one 50 Hz period; 100 ms spans whole periods of 50 and 60 Hz.
+
+## Three `TPS7A4701` at 5,0 V — superseded by `LP2985-5.0`s and the house π filter
+
+A 1 A, 4 µVrms regulator at ~20 mA each, behind which the converter rejects `AVDD1` 98 dB, the
+`THS4551` its supplies 93 dB and the `REF6041` 60–75 dB: an `LP2985`'s 30 µVrms arrives ~1 nV, and
+the π filter takes the buck's 2,5 MHz where the cheap LDO is weak. JLCPCB on 10 Nov 2026: $11,56 a
+`TPS7A4701` against $0,18. The feed rose from 5,3 to 5,4 V for the `LP2985`'s dropout.

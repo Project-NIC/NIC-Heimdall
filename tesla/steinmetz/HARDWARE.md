@@ -54,7 +54,7 @@ where a vehicle flexes.
 
 **The isolated 12 V board in the Proteus's one power socket**: the board's 12 V across a barrier,
 0,4 A, ~5 W, its `INA238` reading the whole run. **The unit takes it on its own `12V`
-terminals** and makes its 5,3 V, 1,8 V and 3,3 V from it as it does behind any feed; no power
+terminals** and makes its 5,4 V, 1,8 V and 3,3 V from it as it does behind any feed; no power
 board stands on the roof and no converter switches beside the rods. The load is the measuring
 unit's ~3 W and the communication board's ~0,3 W, against the cell's 5 W.
 

@@ -149,7 +149,7 @@ rejects there.
 | | |
 |---|---|
 | the buck | **`TPS629206`**, 600 mA, SOT-5X3, 3–17 V in: its 12 V is the unit power board's regulated output, whose `5.0SMDJ12A` breaks down at 13,3–14,7 V |
-| the divider | `R1` 619 kΩ / `R2` 137 kΩ, 1 % → 3,311 V against the 0,6 V reference |
+| the divider | `R1` 680 kΩ / `R2` 150 kΩ, 1 % → 3,320 V against the 0,6 V reference |
 | `MODE/S-CONF` | **9,31 kΩ 1 % to ground** — external feedback, **forced PWM, 2,5 MHz**, no output discharge (the sheet's Smart-CONFIG setting 4; ~2,7 MHz at 12 V in) — the sensors listen, and forced PWM keeps a fixed frequency at any load. The on-time at 14,7 V in is 90 ns against the part's 40 ns minimum |
 | the inductor | 2,2 µH shielded, `XGL3530-222` |
 | around it | `C_OUT` 3× 10 µF 1206 + 100 nF — the node every branch draws its steps from; `VCC` 1 µF; `BOOT` 100 nF; `PG` to PD14, 100 kΩ to the 3,3 V |
@@ -434,7 +434,7 @@ power board's island output lands on the input, and nothing on this board carrie
 | TMP117 or STS35 | 1 | the wall thermometer, by population |
 | `TPS629206` | 1 | the 3,3 V |
 | 2,2 µH shielded, `XGL3530-222` | 1 | the buck's inductor |
-| 619 kΩ · 137 kΩ, 1 % | 1 each | the buck's divider |
+| 680 kΩ · 150 kΩ, 1 % | 1 each | the buck's divider |
 | 100 kΩ | 1 | `PG` up |
 | 2,2 µH `SWPA252012S2R2MT` | 6 | `L_MCU` · `L_VDDA` · `L_ANA` · `L_IO` · `L_RM_A` · `L_RM_D` |
 | 10 µF + 100 nF | 8 sets | behind each branch, and at the RM3100 chipset's `AVDD` and `DVDD` |
