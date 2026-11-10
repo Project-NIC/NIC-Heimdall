@@ -12,7 +12,7 @@
 ```
    FROM KRONOS — a tap on the 10-pin time bus ribbon: GND · CLK± · GND · PPS± · GND ·
                  SDA · SCL · ATTN — a ground around each pair;
-   per pair 2× 10 Ω in series at the connector, a jumpered 80,6 Ω behind them (fitted on the
+   per pair 2× 10 Ω in series at the connector, a jumpered 75 Ω behind them (fitted on the
    last node of the ribbon only), two THVD1450 receivers a centimetre from the tap,
    RE#, DE and D tied low; no SM712 here
 
@@ -511,7 +511,7 @@ and a source power board takes the host side of its isolator from the same pins.
 | `C_IN` | **4,7 µF 50 V X7R 1206 + 100 nF 50 V** at `VIN` |
 | `C_OUT` | **3× 10 µF 50 V X5R 1206** — ~21 µF effective at 3,3 V, the sheet's 22 |
 | the divider | **`R1` 680 kΩ / `R2` 150 kΩ, 1 %** → 3,320 V against the 0,6 V reference |
-| `MODE/S-CONF` | **17,8 kΩ to ground** — external feedback, 1 MHz, auto PFM/PWM, no AEE: ~93 % at 100 mA |
+| `MODE/S-CONF` | **18 kΩ to ground** — external feedback, 1 MHz, auto PFM/PWM, no AEE: ~93 % at 100 mA |
 | `EN` | to `VIN` — the rail runs whenever the 12 V is there |
 | `PG` | not connected |
 
@@ -751,7 +751,7 @@ microsecond.
 | `DGPS2.5R-5.0`, two-pole | 2 | the 12 V, input and tap |
 | `5.0SMDJ14A` | 1 | across the 12 V input |
 | 10 Ω, 1 % | 4 | the time bus line block, 2 per pair |
-| 80,6 Ω, 1 % + jumper | 2 | the termination, fitted on the last node of the ribbon |
+| 75 Ω, 1 % + jumper | 2 | the termination, fitted on the last node of the ribbon |
 | 33 Ω | 4 | `CLK/PPS` in series, the down ports |
 | 1,8 kΩ, 1 % | 1 | `ID_RET` on the up port — 0,15, a card |
 | 10 kΩ, 1 % | 10 | the `ID` pull-ups to `VREF+` |
@@ -759,7 +759,7 @@ microsecond.
 | 4,7 kΩ | 6 | I3C1, I2C3, I3C2 — one pair each |
 | 100 kΩ | 20 | `EN_1`–`EN_4` · `OE_1`–`OE_4` · `SD_UP`, `SD_1`–`SD_4` · `ALERT_0`–`ALERT_4` to ground · `ATTN` to ground · `PGOOD` up |
 | 7,50 kΩ · 30 kΩ · 13 kΩ, 1 % · 22 pF C0G | 1 each | the `LMR43620`'s `RT`, divider and `C_FF` |
-| 680 kΩ · 150 kΩ, 1 % · 17,8 kΩ | 2 each | the `TPS629206`s' divider and `MODE/S-CONF` |
+| 680 kΩ · 150 kΩ, 1 % · 18 kΩ | 2 each | the `TPS629206`s' divider and `MODE/S-CONF` |
 | 2,2 µH shielded, `SWPA252012S2R2MT` | 2 | `VDDA`, `VREF+` |
 | 47 µF 50 V hybrid polymer | 1 | the 12 V node |
 | 10 µF 50 V 1206 | 1 | the 12 V node |

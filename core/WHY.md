@@ -526,3 +526,10 @@ out-only, a resend request their one downlink.
 The same Sunlord 0805 line, 500 mA, JLCPCB Basic (`C1017`) where the 300 Ω was Extended. Its
 0,30 Ω instead of 0,20 Ω drops at most 39 mV, at Marconi's 131 mA, inside every converter's supply
 window, and it doubles the impedance past the inductor's 69 MHz (10 Nov 2026).
+
+## The 80,6 Ω termination — superseded by 75 Ω
+
+80,6 Ω is no JLCPCB Basic value and 80 Ω no standard one; 75 Ω is Basic in 0603 (`C4275`). With
+the two 10 Ω legs the end makes 95 Ω on a ~100 Ω cable, a 3 % reflection, and Kronos's ribbon loses
+12 mV at the last node, 2,0× the receiver's threshold for a low instead of 2,1× (10 Nov 2026). The
+communication boards keep their 1206 part, Extended either way.

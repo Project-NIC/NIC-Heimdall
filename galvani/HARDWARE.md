@@ -1253,7 +1253,7 @@ sheet; the family is pin-to-pin, 300 mA / 600 mA / 1 A).
 
 | position | value |
 |---|---|
-| `MODE/S-CONF`, 1 % to ground | **9,31 kΩ** — external feedback, forced PWM, 2,5 MHz · **22,1 kΩ** — external feedback, forced PWM, 1 MHz · **17,8 kΩ** — external feedback, auto, 1 MHz (the card, where nothing listens). No output discharge on any |
+| `MODE/S-CONF`, 1 % to ground | **9,1 kΩ** — external feedback, forced PWM, 2,5 MHz · **22 kΩ** — external feedback, forced PWM, 1 MHz · **18 kΩ** — external feedback, auto, 1 MHz (the card, where nothing listens). No output discharge on any — the sheet's E96 9,31 · 22,1 · 17,8 kΩ (SLVSGE1, Table 8-1) taken as the JLCPCB Basic 9,1 kΩ `C23260` · 22 kΩ `C31850` · 18 kΩ `C25810`, within 2,3 % of them against levels ~24 % apart |
 | the divider, `R1` / `R2`, 1 %, JLCPCB Basic or Preferred | **300 k / 150 k → 1,800 V** · **680 k / 150 k → 3,320 V** · **390 k / 68 k → 4,041 V** · **120 k / 15 k → 5,400 V** — 300 k `C23024`, 150 k `C22807`, 680 k `C25822`, 390 k `C23150`, 68 k `C23231`, 120 k `C25808`, 15 k `C22809`; `V_OUT` = 0,6 V × (1 + `R1`/`R2`), `R2` under the sheet's 300 kΩ (SLVSGE1, 9.2.2.2) |
 | the inductor | **2,2 µH, shielded, `XGL3530-222`** — the sheet's value |
 | `C_OUT` · `C_IN` · `VCC` · `BOOT` | 3× 10 µF 50 V 1206 + 100 nF · 4,7 µF 50 V 1206 + 100 nF · 1 µF · 100 nF |
@@ -2068,7 +2068,7 @@ that could not tell them apart would ask a 6 W pod for 40 W.
                                                                    strapped at the source end only
 
   four two-pole DGPS2.5R-5.0, eight poles, one pole to a net, a chained run twisted into the pole it shares.
-  Termination: 80,6 Ω across each pair behind a JUMPER on a 2-pin 2,54 mm header — three, one per
+  Termination: 75 Ω across each pair behind a JUMPER on a 2-pin 2,54 mm header — three, one per
   pair — fitted on the first and the last board of a segment and on no board between.
   The tube is the SOURCE END's population: one board serves both ends, so the footprint is on
   every board, and at a unit end the tube and its strap are left off — a floating end gives a
@@ -2116,7 +2116,7 @@ barrier, the same isolated supply, the same ladder on the one pair.
      └── the ID resistor: 8,2 kΩ, the one-pair value;
          B_DIR lands on nothing, there is no channel B
 
-  four two-pole DGPS2.5R-5.0, four positions of the pair; the 80,6 Ω behind a jumper on a 2-pin
+  four two-pole DGPS2.5R-5.0, four positions of the pair; the 75 Ω behind a jumper on a 2-pin
   header, fitted on this board — the source end; the far end of an arm is the sensor's own.
 ```
 
@@ -2370,7 +2370,7 @@ data RX**. **The feed cable is 2× 1,5 mm² or 2× 2,5 mm², 300/500 V class**: 
 return. Gel- or grease-filled cable is not used — stiff, multi-jacketed, dear to buy and to
 pull.
 
-**Termination:** 80,6 Ω across the pair behind a jumper on a 2-pin header, on the first and the last board of a segment, the two 10 Ω legs on the board completing the ~100 Ω — 80 + 10 and not 90 + 5, because the larger series leg roughly halves the `SM712`'s current before the tube fires, ~4 A against ~7 A, for a dB of signal that Cat 6 does not miss; not
+**Termination:** 75 Ω across the pair behind a jumper on a 2-pin header, on the first and the last board of a segment, the two 10 Ω legs on the board completing the ~100 Ω — 80 + 10 and not 90 + 5, because the larger series leg roughly halves the `SM712`'s current before the tube fires, ~4 A against ~7 A, for a dB of signal that Cat 6 does not miss; not
 120 Ω, which belongs to dedicated 485 cable this project does not use. **The 10 Ω series
 resistors stay on every board, terminated or not** — they sit in front of the clamp array and
 halve the `SM712` current before the GDT fires; driving into ~100 Ω, 20 Ω of series costs about a

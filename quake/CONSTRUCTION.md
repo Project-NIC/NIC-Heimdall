@@ -113,6 +113,6 @@ ground at depth is a channel no other unit has there.
 
 **UTP Cat 6, outdoor, UV-stable jacket, and the feed's own two-core cable, each on its own
 gland** — or the hybrid of both in one jacket. Both land on the power and communication boards
-inside the tube, and the node's board sees logic only. The spur is point-to-point; the 80,6 Ω
+inside the tube, and the node's board sees logic only. The spur is point-to-point; the 75 Ω
 termination is a jumper on the communication board at each end, set at commissioning. There is no
 inline connector outside the enclosure: outdoors, a hanging junction is the part that fails.

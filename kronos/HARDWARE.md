@@ -153,18 +153,18 @@ catches.
 ### The line block, and the termination on the last node
 
 **Every node — Kronos, each card, the Mayak — carries, per pair, 2× 10 Ω in series at the
-connector and behind them a position for 80,6 Ω across the pair.** The legs complete the ~100 Ω
-the ribbon wants. **The 80,6 Ω is fitted on Kronos always and on the last node of the ribbon by a
+connector and behind them a position for 75 Ω across the pair.** The legs make it 95 Ω of the ~100 Ω
+the ribbon wants, a 3 % reflection. **The 75 Ω is fitted on Kronos always and on the last node of the ribbon by a
 jumper on a 2-pin header**; the ribbon ends at that tap and there is no terminator plug. **No
 `SM712`**: ~75 pF a line on six taps would drag the clock's edge out to ~20 ns, and nothing here
 leaves the box.
 
-**The levels.** At the driver the 20 Ω carry only the branch to the far node, 5,2 mA, and take
-**0,104 V** of the headroom. The ribbon holds **526 mV** and the last node's 80,6 Ω **421 mV**,
+**The levels.** At the driver the 20 Ω carry only the branch to the far node, 5,5 mA, and take
+**0,109 V** of the headroom. The ribbon holds **518 mV** and the last node's 75 Ω **409 mV**,
 against the `THVD1450`'s worst-case thresholds — high above −20 mV, low below −200 mV, the offset
-being its failsafe: **2,1× at the worst tap for a low**, far more for a high, and **1,6×** at the
-driver's minimum `|VAB|` of 480 mV. The driver sees 80,6 Ω ∥ (20 + 100,6) = **48,3 Ω**, the
-sheet's own test load of 50 Ω, so its `ICCD` applies as printed.
+being its failsafe: **2,0× at the worst tap for a low**, far more for a high, and **1,6×** at the
+driver's minimum `|VAB|` of 480 mV. The driver sees 75 Ω ∥ (20 + 95) = **45,4 Ω**, within
+10 % of the sheet's own test load of 50 Ω, so its `ICCD` applies within that.
 
 ### The label bus
 
@@ -431,7 +431,7 @@ tolerance drops out.
 | `DGPS2.5R-5.0`, two-pole | 2 | the 12 V, input and tap |
 | `5.0SMDJ14A` | 1 | across the 12 V input |
 | 10 Ω, 1 % | 4 | the line block, 2 per pair |
-| 80,6 Ω, 1 % | 2 | the termination, fitted — Kronos is always an end |
+| 75 Ω, 1 % | 2 | the termination, fitted — Kronos is always an end |
 | 5,6 kΩ, 1 % | 2 | `ID_RET`, `GNSS`, one per socket |
 | 10 kΩ, 1 % | 2 | the `ID` pull-ups |
 | 100 kΩ | 2 | `SD_1`, `SD_2` to ground |
