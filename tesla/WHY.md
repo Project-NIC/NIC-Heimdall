@@ -265,3 +265,10 @@ A 1 A, 4 µVrms regulator at ~20 mA each, behind which the converter rejects `AV
 `THS4551` its supplies 93 dB and the `REF6041` 60–75 dB: an `LP2985`'s 30 µVrms arrives ~1 nV, and
 the π filter takes the buck's 2,5 MHz where the cheap LDO is weak. JLCPCB on 10 Nov 2026: $11,56 a
 `TPS7A4701` against $0,18. The feed rose from 5,3 to 5,4 V for the `LP2985`'s dropout.
+
+## Thin film in the chain — superseded by JLCPCB Basic and Preferred thick film
+
+`Rs1`, `Rf1`, the 10 Ω in `Cf1`'s legs and `Rs2` were 1 % thin film. No dc flows through any of
+them, so thick film's excess noise has nothing to ride on, and at these levels its voltage
+coefficient is nothing: 15 Ω Preferred, 2,2 kΩ Basic for 2,21 kΩ (inside the part's own 1 %), 10 Ω
+Basic, 27 Ω Preferred for the converter's 24,9 Ω, its pole at 1,34 MHz instead of 1,45 (10 Nov 2026).

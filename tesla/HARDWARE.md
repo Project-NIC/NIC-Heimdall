@@ -74,10 +74,10 @@ transimpedance one.
 | Ref | value | tol / dielectric | what it sets |
 |---|---|---|---|
 | **S1** `THS4551` | **+5 V**, `VOCM` = 2,5 V | — | transimpedance, virtual short across the loop. **The 5 V is the converter's requirement, not the amplifier's**: `VCM` is 2,5 V and the FSR is ±4,096 V differential, so each pin has to reach **0,452 … 4,548 V**. On +5 V the THS4551 gives 0,20 … 4,80 V, a 0,25 V margin at each end; on +3,3 V it gives 0,21 … 3,09 V and is **1,46 V short at the top** |
-| `Rs1` | **15 Ω ×2** | 1 % thin film | **in series with the coil, one per leg — the same value on both legs, so the differential input sees a symmetric source.** With the winding's own 1,0 Ω that is 31,0 Ω, which puts S1's lower corner at **2,0 kHz** — **31,9 dB of mains rejection at 50 Hz**, for **0,6 dB** at the bottom of the band. The 31,0 Ω together are 0,72 nV/√Hz against the amplifier's 3,3 nV. **It is also the current limit for the clamp below, so it goes first** |
+| `Rs1` | **15 Ω ×2** | 1 % thick film, JLCPCB Preferred `C22810` — no dc flows through it, so a thick film's excess noise has nothing to ride on | **in series with the coil, one per leg — the same value on both legs, so the differential input sees a symmetric source.** With the winding's own 1,0 Ω that is 31,0 Ω, which puts S1's lower corner at **2,0 kHz** — **31,9 dB of mains rejection at 50 Hz**, for **0,6 dB** at the bottom of the band. The 31,0 Ω together are 0,72 nV/√Hz against the amplifier's 3,3 nV. **It is also the current limit for the clamp below, so it goes first** |
 | `D1` | **BAV199** ×1, two diodes anti-parallel across the pair | low leakage | **the surge clamp, on the amplifier side of `Rs1`.** Behind the virtual short the coil sees 4,3 mV at full swing, so a 0,5 V threshold is 120× clear; it conducts only once S1 has stopped holding the short. ~3 pF against the winding's 125 pF. Shot noise at 1 nA leakage is 0,018 pA/√Hz against 6,2 pA/√Hz of signal floor — 340× below |
-| `Rf1` | **4,42 kΩ** differential → **2,21 kΩ ×2** | 1 % thin film | the transimpedance, and the **build constant — the same on every board, no trim.** It sets the **clipping field, ≈ 690 nT** on the prototype rod (§0.4 for what range that is, and for the recompute against the built rod). The noise floor that comes with it (~9 pT) still sits under outdoor QRN everywhere realistic |
-| `Cf1` | **31 pF** differential → **62 pF ×2**, each with **10 Ω** in series | C0G · 0402 thin film | **the first pole of the chain** — corner **1,16 MHz**, an octave above the 512 kHz band top rather than at it (§2); the parts land where E24 lands and the node's FIR calibrates the whole measured curve. Stability: the minimum against the winding's 125 pF is **5,8 pF**, so this keeps 5,3× of margin, the high-frequency noise gain `1 + C_in/Cf1` is ~5,0, and the THS4551 is unity-gain stable. **10 Ω in series with each `Cf1`** — TI's differential-transimpedance procedure, so the capacitor does not resonate with the amplifier's inductive open-loop output impedance; the zero it makes with 62 pF sits at 257 MHz, two decades above the 27 MHz closed loop, so the 1,16 MHz pole does not move |
+| `Rf1` | **4,42 kΩ** differential → **2,21 kΩ ×2**, fitted as **2,2 kΩ ×2** | 1 % thick film, JLCPCB Basic `C4190` — 2,21 kΩ lies inside a 2,2 kΩ part's 1 %, so every figure computed at 4,42 kΩ stands; no dc, as `Rs1` | the transimpedance, and the **build constant — the same on every board, no trim.** It sets the **clipping field, ≈ 690 nT** on the prototype rod (§0.4 for what range that is, and for the recompute against the built rod). The noise floor that comes with it (~9 pT) still sits under outdoor QRN everywhere realistic |
+| `Cf1` | **31 pF** differential → **62 pF ×2**, each with **10 Ω** in series | C0G · 0402, the 10 Ω JLCPCB Basic `C25077` | **the first pole of the chain** — corner **1,16 MHz**, an octave above the 512 kHz band top rather than at it (§2); the parts land where E24 lands and the node's FIR calibrates the whole measured curve. Stability: the minimum against the winding's 125 pF is **5,8 pF**, so this keeps 5,3× of margin, the high-frequency noise gain `1 + C_in/Cf1` is ~5,0, and the THS4551 is unity-gain stable. **10 Ω in series with each `Cf1`** — TI's differential-transimpedance procedure, so the capacitor does not resonate with the amplifier's inductive open-loop output impedance; the zero it makes with 62 pF sits at 257 MHz, two decades above the 27 MHz closed loop, so the 1,16 MHz pole does not move |
 | **S2** `THS4551` | +5 V, `VOCM` = ADC `VCM` | — | band-pass + ADC drive, gain ×2. Swing **4,60 V** differential at 25 °C, **4,56 V** over −40/+125 (rails 0,20/4,80 and 0,22/4,78) |
 | `Cin` | **33 nF** ×2 | X7R | high-pass **4,8 kHz** — the second high-pass pole (the antenna's 2,0 kHz is the first). The corner is set against the whole 990 Ω series sum below, so it did not move when `Rg` shrank |
 | **RC ladder** | **2 sections**: `R1` **270 Ω** ×2 → `C1` **330 pF** across the pair → `R2` **390 Ω** ×2 → `C2` **330 pF** across the pair | 1 % / C0G | **the inter-stage chain.** Effective poles **1,23 and 1,10 MHz** — with `Cf1` (1,16 MHz) and `Cf2` (1,17 MHz) four staggered real poles, all of them above the band, each section different values, the high-pass poles turning back part of the phase the low-pass poles cost. The shunt capacitors bridge the pair (one part per node, no ground reference). No inductor anywhere — the only wound part in the chain is the antenna |
@@ -85,8 +85,8 @@ transimpedance one.
 | `Rf2` | **2 kΩ** ×2 | 1 % | **×2 — settled** (2 kΩ / 990 Ω = 2,02): the insertion-loss question dissolved with the series-sum trick above, and ×4 is not needed |
 | `Cf2` | **68 pF** ×2 | C0G | the closing low-pass pole, **1,17 MHz** |
 | **attenuation terminals** | 2× push-in clamp across the `Rf2` legs, **unpopulated** | — | the only field trim: a metal-film resistor pressed in per leg lowers the driver gain without touching any filter corner. For the site that turns out to sit under a transmitter; every board ships identical |
-| `Rs2` | **24,9 Ω ×2** | 1 % thin film | the series arm between S2 and the converter — they form the RC at `AIN±` with the footprint below, and they are what the datasheet's own input network asks for |
-| `Cd` | **not populated — settled** | — | the datasheet's 2 × 22 Ω + 2,2 nF is the charge reservoir for a sampling input; with the precharge buffers ON the input is a fixed ±1,5 µA and `Rs2` alone is the network. Fitted, 2,2 nF against 2 × 24,9 Ω is a fifth pole at 1,45 MHz — 0,5 dB more droop at 512 kHz and 1,3 dB more at 1 MHz, inside the one curve the FIR corrects and worth neither. The footprint stays across `AIN±` as the fallback if the buffers are ever turned off |
+| `Rs2` | **27 Ω ×2** | 1 % thick film, JLCPCB Preferred `C25190` | the series arm between S2 and the converter — they form the RC at `AIN±` with the footprint below; the datasheet's own input network asks 24,9 Ω, and 27 Ω is the nearest Basic or Preferred value on the side that isolates the amplifier more |
+| `Cd` | **not populated — settled** | — | the datasheet's 2 × 22 Ω + 2,2 nF is the charge reservoir for a sampling input; with the precharge buffers ON the input is a fixed ±1,5 µA and `Rs2` alone is the network. Fitted, 2,2 nF against 2 × 27 Ω is a fifth pole at 1,34 MHz — 0,6 dB more droop at 512 kHz and 1,3 dB more at 1 MHz, inside the one curve the FIR corrects and worth neither. The footprint stays across `AIN±` as the fallback if the buffers are ever turned off |
 
 **Nothing in the chain switches.** The gain is a build constant sized to a clip field that is the
 same everywhere (≈ 690 nT on the prototype rod, §0.4), so there is nothing left for a per-site
@@ -305,7 +305,7 @@ Two **THS4551** FDAs per loop, fully differential end-to-end into the differenti
 | **Rf2** | S2 gain | **×2,02** = Rf2/(R1+R2+Rg), **per leg** | **2 kΩ ×2** = 4 kΩ differential | the smallest gain that keeps the front end above the converter; ×4 was the fallback and is not needed. Stated both ways for the same reason Rf1 is |
 | **Cin** | high-pass (4,8 kHz) | f = 1/(2π·(R1+R2+Rg)·Cin) | **33 nF** | AC-couples the chain; kills mains/sub-kHz |
 | **Cf2** | closing low-pass pole | f = 1/(2π·Rf2·Cf2) | **68 pF** | corner **1,17 MHz** |
-| **Rs2** | series into the ADC pins | — | **24,9 Ω** ×2 | the datasheet's own input network; the precharge buffers carry the rest |
+| **Rs2** | series into the ADC pins | — | **27 Ω** ×2 | the datasheet's own input network; the precharge buffers carry the rest |
 
 **The chain's computed response** (0 dB = the 30–100 kHz plateau; analog only, before the sinc4
 and the FIR):
@@ -596,7 +596,7 @@ trackers (Goertzel per carrier, ≤ 8, `pip/FIRMWARE.md`), and the board and the
 contract are the same under either image. Tesla's image tracks no carriers — during the storms
 and arcing it exists for, they are the quietest thing in the band.
 
-**Tolerances / dielectrics:** Rf/Rg **1 %** (a *ratio* sets the gain, so even 5 % is fine); `Rs1` and `Rs2` 1 % thin film, as §0.2 has them.
+**Tolerances / dielectrics:** Rf/Rg **1 %** (a *ratio* sets the gain, so even 5 % is fine); `Rs1` and `Rs2` 1 % thick film, JLCPCB Basic or Preferred, as §0.2 has them.
 Small caps **C0G/NP0** (Cf1, Cf2 — they hold the corner over temperature and are low-loss).
 **Cin: X7R is fine** (it only sets the 4,8 kHz mains-killer HP); make it **C0G only if you want that
 corner pinned** — X7R drifts ±15 % over temperature. All 0402/0603 **JLC Basic** jellybeans; only the
@@ -711,7 +711,7 @@ anyway.
   | buffers **off** | 95 µA/V, drift 3 nA/V/°C | **10,5 kΩ** — a signal-dependent load that would also change with the speed mode |
   | buffers **on** | **±1,5 µA**, drift 5 nA/°C | fixed current, no voltage dependence |
 
-  Through the **50 Ω** source the pins actually see (`2·Rs2`), the fixed ±1,5 µA leaves **75 µV**
+  Through the **54 Ω** source the pins actually see (`2·Rs2`), the fixed ±1,5 µA leaves **81 µV**
   of DC offset and sub-µV/°C of drift, both out of band. The `2×` input range is offered only with the buffers off, which
   is one more reason not to use it.
 - **Digital: the frame-sync data port on the H7A3's SAI**, the config SPI beside it, no `DRDY`

@@ -117,8 +117,8 @@ deliberately tilted install. During a large event it saturates and its values ar
 ### Magnetometer — RM3100, SPI3 by population
 
 **Built from the chipset**: the 13156 ASIC and three 13104 coils, **`REXT` 33 kΩ thin-film 0,1 %**
-— the timing reference, the oscillator budget's one precision resistor — and **6× 121 Ω
-thin-film** in series with the coils, a gain term that cancels to first order in the ± polarity
+— the timing reference, the oscillator budget's one precision resistor — and **6× 120 Ω**,
+JLCPCB Basic, in series with the coils for PNI's 121 Ω thin film, a gain term that cancels to first order in the ± polarity
 difference; the rest is gain calibration and temperature regression. On SPI3 with its own `CS`,
 `DRDY` on PD10. Its `AVDD` and `DVDD` are two branches of the board's 3,3 V, their inductors at the
 buck and no magnetic part beside the coils (*The supply*).
@@ -429,7 +429,7 @@ power board's island output lands on the input, and nothing on this board carrie
 | SCL3300-D01 | 1 | SPI3, the inclinometer |
 | RM3100 chipset — 13156 + 3× 13104 | 1 set | SPI3, by population |
 | 33 kΩ thin-film 0,1 % | 1 | the RM3100's `REXT` |
-| 121 Ω thin-film | 6 | the RM3100's coil series resistors |
+| 120 Ω 1 %, Basic `C22787` | 6 | the RM3100's coil series resistors |
 | NTC + switched divider | 1 | between the coils, with the RM3100 |
 | TMP117 or STS35 | 1 | the wall thermometer, by population |
 | `TPS629206` | 1 | the 3,3 V |

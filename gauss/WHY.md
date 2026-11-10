@@ -140,3 +140,9 @@ The house bank, 47 µF hybrid polymer beside ceramics, in a pressure-balanced bo
 polymer is a can with an electrolyte and a seal**, barred from every pod. Now ceramic only, 5×
 10 µF 50 V: the pod draws 3–10 mA, and the regulated 12 V carries no transil clamp to reserve
 against.
+
+## PNI's 121 Ω thin film at the coils — superseded by Basic 120 Ω
+
+The six coil series resistors are a gain term that cancels to first order in the ± difference and
+is calibrated with the gain; a Basic 120 Ω thick film serves (10 Nov 2026). `REXT`, the timing
+reference whose value and tempco are the gain, keeps its 33 kΩ thin film at 0,1 %.

@@ -164,7 +164,7 @@ from the board.
 a ~34 kHz corner, ~70 dB down at the buck's 2,08 MHz, with a Q of ~2,8.
 
 **`AVDD` and `DVDD` stay within the sheet's 0,1 V.** The coil drive peaks at no more than
-3,3 V / (121 + 30 + 121 Ω) ≈ 12 mA on `AVDD`, 0,17 Ω × 12 mA = 2 mV; the average is 70–260 µA;
+3,3 V / (120 + 30 + 120 Ω) ≈ 12 mA on `AVDD`, 0,17 Ω × 12 mA = 2 mV; the average is 70–260 µA;
 `DVDD` draws under 1 mA. The difference is ~2 mV.
 
 **The sensor's input pins are rated to `DVDD` and not above**, so the SPI from the H523 must not
@@ -192,7 +192,7 @@ orientation is not.
 
 - **`REXT` 33 kΩ thin-film 0,1 %** — the LR timing reference: its value and tempco enter the
   reading as a gain term.
-- **6× 121 Ω thin-film coil series resistors**, PNI's reference circuit — a gain term that cancels
+- **6× 120 Ω coil series resistors**, JLCPCB Basic `C22787`, for the 121 Ω thin film of PNI's reference circuit — a gain term that cancels
   to first order in the ± difference and is absorbed by the gain calibration and the temperature
   regression; the precision family right, a tighter grade not needed.
 - **33 Ω in series on every SPI line.**
@@ -501,7 +501,7 @@ that averaging cannot touch. **The pod ships the deviation and does no analysis*
 | 100 nF · 10 kΩ | 1 each | `NRST` · `BOOT0` to ground |
 | `13156` + 3× `13104` | 1 set | the RM3100 chipset, the coils at the tip |
 | 33 kΩ thin-film 0,1 % | 1 | `REXT` |
-| 121 Ω thin-film | 6 | the coil series resistors |
+| 120 Ω 1 %, Basic `C22787` | 6 | the coil series resistors |
 | 33 Ω | 4 | `SCK` · `MISO` · `MOSI` · `SSN` |
 | 10 µF + 100 nF, ceramic | 2 sets | the MagI2C's `AVDD` and `DVDD` |
 | NTC 10 kΩ 1 % + 10 kΩ 1 % | 1 | between the coils; the divider switched from PC3 |

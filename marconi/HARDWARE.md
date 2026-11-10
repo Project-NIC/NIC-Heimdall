@@ -212,7 +212,7 @@ path, and a high-value bias (kΩ-class) would let that current drag the pins off
 **The overdrive case — checked against the absolute maximums.** The pin window is
 **−0,3 V to AVDD + 0,2 V = 2,0 V**. In range, the pins swing 0,4–1,4 V; but S2 on 3,3 V can
 swing ~±1,45 V a leg at full clip, which through the coupling lands the pin at −0,55…+2,35 V —
-**~0,3 V past the window at both ends**. What limits it is the 24,9 Ω series arm: ~12 mA class
+**~0,3 V past the window at both ends**. What limits it is the 27 Ω series arm: ~11 mA class
 into the converter's internal clamps, transient, and only when the range is already exhausted.
 **A `BAV199` pair per pin to AVDD/AGND is fitted** — its ~1,5 pF vanishes against the 150 pF
 reservoir, the part is already on Tesla's BOM, and a few cents is the price of never running the
@@ -416,7 +416,7 @@ are, corrects it 12–22 dB better, and its noise sits behind S1's gain. **It wa
 | **`Rf1`** | **2,35 kΩ** differential → **1,18 kΩ ×2** | the −6 dB default: 6 dB of headroom and 17 dB of intermodulation for 1,0 dB of SNR, fixed at build — there is no field trim (the clamp pair across `Rf2` is the only provision). On the `LMH5401` the loop gain stays high enough that the gain is the resistor, not the process |
 | **`Cf1`** | **not fitted** | minimum stable is **0,63 pF** against the loop's ~10 pF — below any part worth placing, even before the convention's factor of two |
 | **S2** | **gain ×1,015** | `Rf2` **200 Ω** against the chain's series sum of 197 Ω (`R1`+`R2`+`R3`+`Rg` — the ladder resistors are part of the gain resistance); `Cf2` **47 pF** across `Rf2` closes the chain at 16,9 MHz. There is no voltage gain anywhere on this board; the RC chain it terminates is above, in *Direct sampling* |
-| `Rs` at the converter | **24,9 Ω** ×2 + **150 pF** differential | 21,2 MHz, above the band and below Nyquist. The `AD9265` input is an unbuffered switched-capacitor S/H, so this is not optional. **Re-anchored against the datasheet ✅**: the driver figure uses a 33 Ω / 10 pF-class network and says the values are chosen per application; ours is deliberately the larger charge reservoir — the sample-and-hold settles against the 150 pF and the series arm only recharges it across the whole sample period |
+| `Rs` at the converter | **27 Ω** ×2 (Preferred `C25190`) + **150 pF** differential | 19,6 MHz, above the band and below Nyquist. The `AD9265` input is an unbuffered switched-capacitor S/H, so this is not optional. **Re-anchored against the datasheet ✅**: the driver figure uses a 33 Ω / 10 pF-class network and says the values are chosen per application; ours is deliberately the larger charge reservoir — the sample-and-hold settles against the 150 pF and the series arm only recharges it across the whole sample period |
 | termination at the converter | **200 Ω ×2 to `VCM`**, behind **0,1 µF ×2** | 400 Ω differential — S2's load and the dc bias in one pair of parts, straight from the datasheet's differential-amplifier front end (the RC ladder terminates upstream, into `Rg`) |
 | power | **~0,8–1,2 W board, ~0,95–1,4 W from 12 V** | `LMH5401` ~180 mW + `THS4541` 34 mW + `AD9265-80` ~250 mW (its sheet at 80 MSPS: `AVDD` 126 mA typical, 131 maximum, and `DRVDD` 14 mA in CMOS, 254 mW with a sine input — ~110 mA on `AVDD` at the board's 67 MSPS) + MCU ~200 mW + PSRAM ≤ 36 mW + the LDOs' drops and the communication board, 60 mW on copper to ~400 mW on glass, through the buck at ~87 %. Inside the measuring unit's 3 W |
 
@@ -601,7 +601,7 @@ amplifier. This is the exact opposite of Tesla, where the converter's 2,5 V comm
 
 **And unlike Tesla's converter, this one has no input precharge buffer** — the datasheet asks for
 an RC filter right at the pins to isolate the drive from the sample-and-hold switching. What Tesla
-could delete, this board must keep — `Rs` 24,9 Ω ×2 and 150 pF, above.
+could delete, this board must keep — `Rs` 27 Ω ×2 and 150 pF, above.
 
 ### The gain is fixed, one step down, and the only field provision is a clamp pair
 
