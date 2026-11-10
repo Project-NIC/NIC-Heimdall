@@ -849,7 +849,7 @@ Zátěž, která chce watty, je napájení na 48 V nebo 300 V, nikdy tato deska 
 
 ```
  12 V off the wire, two terminals ─▶ EMI choke ─▶ SN6507 push-pull ─▶ 750319691 ─▶ 2× PMEG10020ELR ─┐
-                                   1,26 MHz, R_LIM 33 + 1,8 kΩ → ~0,7 A   N = 1,13          │ THE BARRIER
+                                   1,32 MHz, R_LIM 33 kΩ → ~0,74 A   N = 1,13          │ THE BARRIER
                                    ENABLE drives its EN                                 ▼
                                                                         2× 5.0SMDJ18A ─▶ chokes ─▶ 2036-07-SM ─▶ ⏚ common earthing point
                                                                                                     ══▶ ± ~12 V, unregulated, on eight poles
@@ -857,7 +857,7 @@ Zátěž, která chce watty, je napájení na 48 V nebo 300 V, nikdy tato deska 
 ```
 
 - **vstup:** 12 V z vodiče na dvou svorkách; `ENABLE` a 3,3 V z napájecího konektoru · **výstup:** ~12 V na osmi pólech, `DGPS2.5R-5.0` × 4 — čtyři pozice, 4× + a 4× −, vedle čtyř pozic páru na `G-I-M-005`
-- **dimenzace:** **0,4 A**, asi 5 W. `R_LIM` 33 + 1,8 kΩ → ~0,7 A (0,5–0,9 A přes rozptyl součástky): 0,4 A ven je ~0,45 A přes spínače a limit 0,5 A by u slabšího kusu nechal jmenovitou zátěž poklesnout. **Přetížení řeší `INA238`, ne OCP** — OCP součástky zkracuje impulzy, místo aby vypnula, a přetížení by držela až do tepelného vypnutí, takže `ALERT` nad 0,4 A odebere `ENABLE`; OCP zbývá start do vstupních kondenzátorů senzoru a zkrat
+- **dimenzace:** **0,4 A**, asi 5 W. `R_LIM` 33 kΩ → ~0,74 A (0,5–0,95 A přes rozptyl součástky): 0,4 A ven je ~0,45 A přes spínače a limit 0,5 A by u slabšího kusu nechal jmenovitou zátěž poklesnout. **Přetížení řeší `INA238`, ne OCP** — OCP součástky zkracuje impulzy, místo aby vypnula, a přetížení by držela až do tepelného vypnutí, takže `ALERT` nad 0,4 A odebere `ENABLE`; OCP zbývá start do vstupních kondenzátorů senzoru a zkrat
 - **součástky:** `5.0SMDJ14A` na vstupu 12 V · `SN6507` · `750319691` · 2× `PMEG10020ELR` · `INA238` · `ISO1642` · ostrovní `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ18A` · `2036-07-SM` · tlumivky, odrušovací tlumivka a vyhlazovací kondenzátory
 - **`ID`:** 56 kΩ, 0,85
 

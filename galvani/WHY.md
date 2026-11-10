@@ -693,11 +693,13 @@ Basic and Preferred values land within 0,009 — the worst 0,35's 5,6 kΩ — an
 worst is 0,014 inside the ±0,025 window, so no code moves and every board's `ID` resistor costs
 no loading fee (10 Nov 2026). The 10 kΩ reference, the scale itself, did not change.
 
-## The flyback cells' E96 resistors — superseded by Basic pairs in series
+## The flyback cells' E96 resistors — superseded by JLCPCB Basic values
 
-`R_FB`, `R_TC`, `R_IREG`, `R_LIM` and `R_CLK` were single E96 values, each an Extended part. Each
-is now two JLCPCB Basic or Preferred resistors in series within 0,4 % of the value its equation
-asks — 51 + 3,9 k for 54,9 k, 75 + 1,8 k for 76,8 k, 6,8 + 1,1 k for 7,87 k — so no output,
-current limit or rate moves; `R_FB2` 90,9 k became the Preferred 91 k (+0,1 %), and the
-compensation's 24,9 k the Basic 24 k (10 Nov 2026). The 2512 clamps, the 1206 `VBUS` and leak-watch
+`R_FB`, `R_TC`, `R_IREG`, `R_LIM` and `R_CLK` were single E96 values, each an Extended part. What
+sets an output voltage keeps its value as two Basic resistors in series within 0,4 % — 51 + 3,9 k
+for 54,9 k, 150 + 15 k, 100 + 24 k, 150 + 12 k — since one Basic value would move a feed by 2–3 %.
+Everything else takes the nearest single Basic or Preferred value: the `R_TC`s (a few percent of a
+small correction), `R_IREG` 75 k (4,14 A, 124 % of the declared), `R_LIM` 33 k (~0,74 A, further
+above the switches' 0,5 A), `R_CLK` 7,5 k (~1,32 MHz, further above the 1,0 MHz floor), `R_FB2`
+91 k and the compensation's 24 k (10 Nov 2026). The 2512 clamps and the 1206 `VBUS` and leak-watch
 legs have no Basic part at their values and stay.
