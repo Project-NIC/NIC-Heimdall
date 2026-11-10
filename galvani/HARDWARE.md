@@ -107,7 +107,7 @@ a current these positions never reach.
 | **`G-48-U`** island output | `V_OUT + V_IN/N` = 12 + 50/2,5 = **32 V** | 24 W at 12 V → **2,0 A** average, the secondary peak `N · I_pk` = 2,5 × 3,00 = 7,5 A | **`V10P10-M3`** — 100 V / 10 A. **The over-rating is what kills the leakage**: a 100 V die at 32 V of reverse stress leaks a fraction of its datasheet figure, and that is the answer to a Schottky at 100 °C |
 | **`G-300-U-40`** island output | 12 + 300/8 = **50 V** | 40 W at 12 V → **3,7 A** average | **`V10P10-M3`**, 100 V / 10 A — 37 % loaded. **It is the board's biggest single loss, 2,4 W of 3,7**, and the only way past it is a higher output voltage, which this position does not have |
 | **`G-300-U-6`** island output | 12 + 300/14 = **33 V** | 6 W at 12 V → **0,5 A** average, 4,6 A secondary peak | **`V10P10-M3`**, 100 V / 10 A |
-| **`G-48-S`** feed cell output | `PIV = V_OUT + N·V_IN` = 48,9 + 4,42 × 15 = **115 V** | 26 W at 48 V → **~0,54 A** | **`V5N22-M3`**, 220 V / 5 A |
+| **`G-48-S`** feed cell output | `PIV = V_OUT + N·V_IN` = 48 + 4,42 × 15 = **114 V** | 26 W at 48 V → **~0,54 A** | **`V5N22-M3`**, 220 V / 5 A |
 | **`G-300-S`** feed cell output | `PIV` = **435–450 V at the 300 V feed** | 47 W at 300 V → **~0,16 A** | **`US3M`**, a 1000 V ultrafast part — the family's rectifier on 300 V, and its blocking diode on every feed |
 
 | part | ratings | why it sits where it does |
@@ -1475,7 +1475,7 @@ ratio and the part's own bandgap** — not by the winding, and not by an opto:
 
 | | |
 |---|---|
-| **`R_REF`** | **6,04 kΩ** — **the part is trimmed and specified at this value**, so it is not a free choice; several percent of variation is accepted and the window is 5,76–6,34 kΩ |
+| **`R_REF`** | **5,6 kΩ + a 1 kΩ trimmer, 5,6–6,6 kΩ** — the part is trimmed and specified at 6,04 kΩ and accepts 5,76–6,34 kΩ; the trimmer stands here because this is the loop's ground end (*Setting the output — a trimmer on the ground end*, below) |
 | **`V_BG`** | **1,223 V**, the internal bandgap |
 | **`V_TC`** | **0,55 V** |
 | **`N_PS`** | the effective **primary-to-secondary** turns ratio |
@@ -1489,10 +1489,26 @@ value the equation gives lands there by construction.
 **The sheet's procedure does not end at the equation.** It says to build the first iteration with
 the final transformer, diode and MOSFET, **measure `V_OUT`, and re-evaluate**:
 `R_FB(NEW) = V_OUT(desired)/V_OUT(measured) · R_FB(OLD)`. With `R_FB` and `R_TC` then fixed,
-board-to-board regulation is **typically under ±5 %** at 1 % resistors and 1 % winding matching. **The `R_FB`s are the nearest JLCPCB Basic or Preferred values** (the owner, 10 Nov 2026): 56 k gives `G-48-S` 48,9 V, 160 k `G-48-U` 11,7 V, 120 k the 24 V cell 23,3 V — inside that ±5 % and inside every input that takes them, and the first build re-trims them anyway. **A
+board-to-board regulation is **typically under ±5 %** at 1 % resistors and 1 % winding matching. **So every cell that senses on the primary or a tertiary is set by a trimmer on the bench** (*Setting the output — a trimmer on the ground end*, below). **A
 changed transformer, diode or MOSFET, or a dramatically altered layout, moves `V_OUT` again.**
 
 `V_F` is each board's rectifier's, at its average current, from its sheet. The compensation and the soft start are set (*The power stage*, above).
+
+### Setting the output — a trimmer on the ground end
+
+**Every converter here that senses its output on the primary or on a tertiary — the `LT3748` cells
+and the `LT8316` cells — is set to its target on the bench by a trimmer, and the trimmer is then
+locked with a drop of lacquer** (the owner, 10 Nov 2026). The sheet's own procedure asks for a
+build, a measured `V_OUT` and a corrected `R_FB`, because board-to-board regulation is ±5 %; the
+trimmer does that on every board, to a few tenths of a percent, read on the board's own `INA238`.
+
+| | |
+|---|---|
+| **the part** | **Bourns `3314J-1-102E`**, 1 kΩ, 4 mm SMD, single turn over 210°, **sealed cermet** — the seal takes the conformal coat — ±100 ppm/°C, ±20 %, end resistance 2 Ω at most (`C124640`, Extended: JLCPCB has no Basic or Preferred trimmer). Wired as a rheostat, the wiper tied to one end |
+| **`LT3748` — in `R_REF`** | **5,6 kΩ (Basic `C23189`) + the 1 kΩ, 5,6–6,6 kΩ.** `R_FB` hangs on the switch node and its 100–170 V pulses; `R_REF` is the ground end, so the screwdriver stays off the high side and no trimmer's capacitance loads the sampled pulse. The output follows 1/`R_REF`: the travel moves it −8 … +9 % about mid, the sheet's ±5 % inside that, and a board set to its target lands inside the 5,76–6,34 kΩ window. A lifted wiper raises `R_REF`, and by the equation the output falls — the safe way |
+| **`LT8316` — in `R_FB1`** | **4,7 kΩ (Basic `C23162`) + the 1 kΩ, 4,7–5,7 kΩ**, the divider's ground leg on the tertiary, inside the sheet's 1–10 kΩ; `R_FB2` halves with it — **47 kΩ** on `G-300-U-40`, **82 kΩ** on `G-300-U-6`, both Basic — and `R_TC` with `R_FB2`, **130 kΩ** (Preferred) on both. The 12 V sits near mid-travel; the reach is 11,0–13,1 V and 10,7–12,9 V. A lifted wiper raises `R_FB1` and the output falls |
+| **the targets** | `G-48-S` 48 V · `G-300-S` 300 V · `G-48-U` 12 V · the 24 V cell 24 V · `G-300-U-40` and `-6` 12 V — each read on the output's `INA238` at no load and checked at the rated load. The `R_FB`s are Basic or Preferred values chosen so each target falls inside the travel and the window |
+| **the procedure** | at bring-up, with **an insulated tool** — Bourns H-90 or any ceramic blade; on `G-300-*` the primary stands at the cable's potential — set, read, then **a drop of lacquer across the rotor and the body**, the conformal coat over it |
 
 ## The fibre front — the actual parts
 
@@ -1903,7 +1919,7 @@ merging them into one board with two populations saved nothing (`WHY.md`).
 |---|---|---|
 | **the winding** | **`750310988`** — 1:4,42, `L_PRI` 14 µH ±10 %, `I_SAT` 15 A min, leakage 200 nH (1,4 %), `R_DC` 20 / 520 mΩ, **1500 V AC**, SMD 32,31 × 27,03 × 13,69 mm. Its own target application is 12 V → 48 V / 0,85 A at 200 kHz — used in the direction it was specified for | **`750310349`** — 1:10, `L_PRI` 5 µH ±10 %, `I_SAT` 25 A typ (Δ`L` < 20 %), `I_R` 18 A thermal (ΔT 25 K), leakage 100 nH (2 %), `R_DC` 10 / 500 mΩ, EE35/18/10 with wire leads, 29,1 mm pitch; target application 12–24 V → 300 V at 100–300 kHz. **Its insulation is 1000 V AC, below the family's 1,5 kV floor — accepted for the concept**; a production run orders a custom-insulated winding (*The frequency window*, below) |
 | **`R_SENSE`** | **9,1 mΩ** → `I_pk` **9,90 A** at the guaranteed 90 mV threshold, **~26 W delivered**. **The shunt is chosen against saturation, not against the rating**: the 110 mV corner is 12,1 A, 81 % of the winding's 15 A, and the part's own 130 mV overcurrent trip lands at 14,3 A, still inside the core. The minimum-inductance rule wants only 3,0 µH against 12,6 at the winding's low corner, so it never binds. Peak power in the shunt is **0,9 W** — a 1 W part | **5,5 mΩ, two 11 mΩ in parallel** → `I_pk` **16,4 A** at 90 mV, ~66 W. **The shunt is fixed by the winding rule**: 30,1 V reflected wants `L ≥ 4.41 µH` at 5,5 mΩ against 4,5 at the winding's low corner, so it cannot be larger (*The one rule that screens a transformer*). The 110 mV corner is 20,0 A, **80 % of the 25 A typical saturation**, and the 130 mV overcurrent trip 23,6 A, still inside it. **~47 W declared** — the `INA238` threshold holds `I_pk` at 11,8 A, where the shunt dissipates **0,77 W** peak; 1,1 W in each part at the corner |
-| **the rectifier** | **`V5N22-M3`** — 115 V reverse (`PIV = V_OUT + N·V_IN` = 48,9 + 4,42 × 15), a **220 V / 5 A** Schottky at 0,54 A. The grade is bought for the voltage margin, not the current | **`US3M`** — 435–450 V reverse at the 300 V feed, a 1000 V / 3 A ultrafast |
+| **the rectifier** | **`V5N22-M3`** — 114 V reverse (`PIV = V_OUT + N·V_IN` = 48 + 4,42 × 15), a **220 V / 5 A** Schottky at 0,54 A. The grade is bought for the voltage margin, not the current | **`US3M`** — 435–450 V reverse at the 300 V feed, a 1000 V / 3 A ultrafast |
 | **stress** | the FET sees 26 V on the plateau, **78 V** at the leakage clamp's worst corner, of its 150 | `V_in + V_refl` = 45 V on the plateau, **132 V** at the clamp's worst corner, of its 150 |
 | **frequency** | boundary mode, so it falls as the load rises: **508 kHz at 2 W · 393 at 3 W · 236 at 5 W · 41 kHz at the full 26 W.** The station enclosure has nothing that listens in that band | **145 kHz** at the full 47 W, rising as the load falls: 199 kHz at 37 W, 589 kHz discontinuous at 8,6 W. The station enclosure has nothing that listens there either |
 | **minimum load** | **0,65 W** — `f_FLOOR` 42 kHz against 41 kHz at full load, so 2,5 % and the one cell in the family the sheet's generic 2 % fits (*No burst, and therefore a minimum load*). Below it the rail climbs to the transil, because the load downstream is constant-power and does not self-limit | **0,63 W** — the same rule at the shunt's 16,4 A, 1,3 % of the declared ~47 W |
@@ -2032,9 +2048,9 @@ that could not tell them apart would ask a 6 W pod for 40 W.
 | **the snubber, `G-300-U-40`** | **RC, not fitted unless the drain ring asks for it.** No clamp diode is owed: the drain sits at **402 V of 650**, so the leakage spike has 250 V to land in; it dissipates **0,70 W** from the winding's own leakage at the operating peak. Where a drain ring asks for an RCD clamp instead, its diode is **`US3M`** |
 | **the clamp, `G-300-U-6`** | **an RCD, fitted**: 14:1 reflects 172 V and leaves 178 V to the FET's 650, and 34 µH of leakage at 0,33 A rings past it. **`D_CL` `US3M` · `C_CL` 100 nF 1 kV X7R 1812 · `R_CL` 2× 38,3 kΩ 2512 in series** → `V_CL` 250 V above the input: `P_CL` = ½·`L_LK`·`I_pk²`·`f`·`V_CL`/(`V_CL` − `V_OR`) = **0,81 W**, 0,56 W of it taken from the output. 550 V on the drain at the steady rail, 640 V with the node held at the transil's `V_BR`. All ceramic and solid — a pressure part |
 | **why 12 V** | `BIAS` needs `N_TS` 0,83–2,5 at 12 V instead of ≥ 1,6 at 6 V, which opens the catalogue; and 40 W at 12 V is 3,33 A across the output where 6 V would be 6,7 A |
-| the BIAS coupling | `BIAS` rides the output through the tertiary: **12,3 V** on `G-300-U-40` (`N_TS` 1) and **20,7 V** on `G-300-U-6` (`N_TS` 1,7), inside the sheet's 10–30 V |
-| **the feedback — `G-300-U-40`** | the sheet's `V_OUT = (1 + R_FB2/R_FB1) · 1,22 V / N_TS − V_F`, `R_FB1` 1–10 kΩ for the divider's speed: **`R_FB1` 10 kΩ · `R_FB2` 91 kΩ** at `N_TS` 1 and the diode's 0,3 V near zero current — the sheet's own 12 V example. **`R_TC` 240 kΩ**, Preferred, from `R_TC = −R_FB2 · 4,1 mV/°C / (TCF · N_TS)` at the sheet's nominal −1,5 mV/°C for the diode, TC pin to FB |
-| **the feedback — `G-300-U-6`** | the same equations at `N_TS` 1,7: **`R_FB1` 10 kΩ · `R_FB2` 160 kΩ**, Preferred, → 11,90 V · **`R_TC` 270 kΩ**, Preferred |
+| the BIAS coupling | `BIAS` rides the output through the tertiary: **12,3 V** on `G-300-U-40` (`N_TS` 1) and **20,9 V** on `G-300-U-6` (`N_TS` 1,7), inside the sheet's 10–30 V |
+| **the feedback — `G-300-U-40`** | the sheet's `V_OUT = (1 + R_FB2/R_FB1) · 1,22 V / N_TS − V_F`, `R_FB1` 1–10 kΩ for the divider's speed: **`R_FB1` 4,7 kΩ + the 1 kΩ trimmer · `R_FB2` 47 kΩ** at `N_TS` 1 and the diode's 0,3 V near zero current — the sheet's own 12 V example. **`R_TC` 130 kΩ**, Preferred, from `R_TC = −R_FB2 · 4,1 mV/°C / (TCF · N_TS)` at the sheet's nominal −1,5 mV/°C for the diode, TC pin to FB |
+| **the feedback — `G-300-U-6`** | the same equations at `N_TS` 1,7: **`R_FB1` 4,7 kΩ + the 1 kΩ trimmer · `R_FB2` 82 kΩ** → 12,0 V, set by the trimmer · **`R_TC` 130 kΩ**, Preferred |
 | **the current limit** | `R_SNS` sets the *switch* peak; the **output**-current regulation point is `IREG/SS`, one resistor to ground: `R_IREG/SS = 2,5 MΩ · I_OUT · R_SNS / N_PS`, set at 120–150 % of the maximum load. **`G-300-U-40`: 75 kΩ → 4,14 A**, 124 % of 3,33 A. **`G-300-U-6`: 15,0 kΩ → 0,65 A** at 130 mΩ and 14:1, 129 % of 0,5 A. The part is constant-current as well as constant-voltage: a short is regulated, not survived. The sheet puts the loop within 5 %, the winding's capacitance being the error |
 | the rectifier | **`G-300-U-40`**: `PIV` = 12 + 300/8 = **50 V** at **3,7 A** average → **`V10P10-M3`**, 100 V / 10 A, 37 % loaded. **`G-300-U-6`**: `PIV` = 12 + 300/14 = **33 V** at 0,5 A, 4,6 A peak → **`V10P10-M3`**, 100 V / 10 A |
 | **no low rails** | the 12 V is the only output — a unit on the connector, the remote Argus's bus on the terminal |

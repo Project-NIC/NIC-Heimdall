@@ -134,13 +134,16 @@ divider sits across the ladder's output, so the whole ladder is inside the loop*
 flyback mix, the diodes' leakage and the battery's droop are all corrected. The He³ tube's gas gain
 is ∝ e^V and does not tolerate the sag a primary-side-sensed supply leaves.
 
-- **`FBX` divider: `R_top` 625 MΩ / `R_bottom` 500 kΩ** — ratio 1251, 1,600 V × 1251 = **2 kV**;
+- **`FBX` divider: `R_top` 625 MΩ / `R_bottom` 470 kΩ + a 50 kΩ trimmer** — 500 kΩ at mid-travel,
+  ratio 1251, 1,600 V × 1251 = **2 kV**; Basic `C23178` and Bourns `3314J-1-503E` (`C50895`), sealed cermet;
   standing current **3,2 µA**, 6 mW at 2 kV; τ of the bleed with 47 nF ≈ 30 s. The string is
   built from 47 MΩ elements and the ratio is a tap on it, one per ladder length.
 - **The `FBX` pin's own current is ±10 nA at most** (`LT8331` sheet: `FBX` pin current at 1,6 V,
   −10 … +10 nA over temperature), so across 625 MΩ it is **≤ 6,25 V, 0,3 % of 2 kV**, and the
-  reference's own tolerance is 2 %. Both are a static offset: **`R_top` is trimmed on the bench to
-  the target**, and what drifts afterwards — the string's tempco on the gain, ∝ e^V on the tube and
+  reference's own tolerance is 2 %. Both are a static offset: **the trimmer in the bottom leg sets
+  the target on the bench**, at the 1,6 V end — 2,13–1,92 kV across its travel, the kV never under
+  the screwdriver, a drop of lacquer after; its ±100 ppm/°C on a tenth of the leg is ~10 ppm/°C of
+  the output, and a lifted wiper lowers it. What drifts afterwards — the string's tempco on the gain, ∝ e^V on the tube and
   V^5,5 on the photomultiplier — is absorbed by the floating thresholds and the ladder like every
   other slow drift. The full 1250 MΩ string would double the offset and the bleed time for 1,6 µA
   saved; not taken (`WHY.md`).

@@ -705,3 +705,11 @@ further above the switches' 0,5 A), `R_CLK` 7,5 k (~1,32 MHz, further above the 
 value was tried the same day and dropped: a second part is not worth it where the value need not
 hold. The 2512 clamps and the 1206 `VBUS` and leak-watch legs have no Basic part at their values
 and stay.
+
+## A fixed `R_FB` to set a primary-sensed output — superseded by a trimmer on the ground end
+
+The sheet's ±5 % board-to-board was to be taken as it fell, or corrected by re-picking `R_FB` after
+a first build. A sealed cermet trimmer in the loop's ground leg — `R_REF` on the `LT3748`, `R_FB1`
+on the `LT8316` — sets every board to its target on the bench and is locked with lacquer (the owner,
+10 Nov 2026). Not in `R_FB`: it hangs on the switch node, and a lifted wiper there would drive the
+output up.

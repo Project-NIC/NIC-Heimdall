@@ -96,8 +96,8 @@ measures it, and holds the source end of the ladder.
 | R_GATE | **10 Ω 0603** | class | |
 | R_C, C_C | **24 kΩ + 4,7 nF X7R ∥ 100 pF C0G, 0603** | class | the sheet's compensation |
 | C_SS | **100 nF 50 V X7R 0603** | class | 0,05 V/ms at `V_C` |
-| R_REF | **6,04 kΩ 1 %** | value | the part is trimmed at this value |
-| R_FB | **56 kΩ 1 %**, Basic | value | `R_REF · N_PS · [(V_OUT + V_F) + V_TC] / V_BG` at `N_PS` 1/4,42, `V_F` 0,7 V → **48,9 V**; 200 µA through it |
+| R_REF | **5,6 kΩ 1 % + a 1 kΩ trimmer `3314J-1-102E`** (`C23189` · `C124640`) | value | 5,6–6,6 kΩ, set on the bench to the output's target (`HARDWARE.md`, *Setting the output*); the part is trimmed at 6,04 kΩ |
+| R_FB | **56 kΩ 1 %**, Basic | value | `R_REF · N_PS · [(V_OUT + V_F) + V_TC] / V_BG` at `N_PS` 1/4,42, `V_F` 0,7 V → **48 V**, set by the trimmer; ~200 µA through it |
 | R_TC | **240 kΩ 1 %**, Preferred | value | `R_FB / N_PS` |
 | R_CL | **2× 2,43 kΩ, 2512, 2 W class, in series** | value | the leakage clamp: 50 V, 0,52 W rated, 0,68 W at the corner |
 | C_CL | **2,2 µF 100 V X7R 1210** | class | |
@@ -148,7 +148,7 @@ three, because the ripple is 3,9 A rms. The tap is 4,6 A at the 11 V floor.
 | T1 | **`750310349`** | code | 1:10 · `L_PRI` 5 µH ±10 % · `I_SAT` 25 A typ, `I_R` 18 A thermal · EE35/18/10, wire leads. **1000 V AC insulation, under the family's 1,5 kV floor — accepted for the concept; a production run orders a custom-insulated winding** |
 | R_SENSE | **2× 11 mΩ in parallel — 5,5 mΩ — 2512, 2 W** | value | the largest the winding rule allows: 4,41 µH needed against 4,5 µH at −10 %. `I_pk` 16,4 A at 90 mV; the 110 mV corner 20,0 A, 80 % of the 25 A saturation. 0,77 W peak at the declared ~47 W, 1,1 W in each part at the corner |
 | R_GATE · R_C, C_C · C_SS · C_VIN, C_VCC | as `G-48-S` | class | |
-| R_REF · R_FB · R_TC | **6,04 kΩ · 150 kΩ · 1,5 MΩ**, 1 % | value | at `N_PS` 1/10, `V_F` 1,0 V |
+| R_REF · R_FB · R_TC | **5,6 kΩ + 1 kΩ trimmer · 150 kΩ · 1,5 MΩ**, 1 % | value | at `N_PS` 1/10, `V_F` 1,0 V → **300 V**, set by the trimmer |
 | R_CL | **2× 2,67 kΩ, 2512, 2 W class** | value | 90 V, 1,5 W rated, 2,35 W at the corner |
 | C_CL | **100 nF 1 kV X7R 1812** | class | |
 | D_CL | **`V5N22-M3`** | code | |
@@ -206,7 +206,7 @@ and nothing lower, hands it out on its two terminals, passes the feed on to the 
 | U1 · Q1 | **`LT3748`** · **`ISC165N15NM6`** | code | 82 V on the plateau, 133 V at the clamp's corner, 151 V with a surge residue on the bulk — 1 V into the rated avalanche, `E_AS` 123 mJ |
 | T1 | **`750311607`** | code | 2,5:1 · `L_PRI` 14 µH · `I_SAT` 9,5 A · 1500 V AC · 29,1 × 23,1 × 11,4 mm |
 | R_SENSE | **15 mΩ, 2512, 1 W** | value | the largest the winding rule allows: 12,5 µH needed against 12,6 µH at −10 %. `I_pk` 6,0 A at 90 mV, 3,00 A at the declared ~25 W; the corner 7,33 A, 77 % of saturation, 0,81 W peak |
-| R_REF · R_FB · R_TC | **6,04 kΩ · 160 kΩ · 62 kΩ**, 1 %, Preferred | value | at `N_PS` 2,5, `V_F` 0,75 V → **11,7 V**; 194 µA through `R_FB` against the sheet's ~200 |
+| R_REF · R_FB · R_TC | **5,6 kΩ + 1 kΩ trimmer · 160 kΩ · 62 kΩ**, 1 %, Preferred | value | at `N_PS` 2,5, `V_F` 0,75 V → **12 V**, set by the trimmer; 194 µA through `R_FB` against the sheet's ~200 |
 | R_C, C_C · C_SS · R_GATE | as `G-48-S` | class | |
 | C_VIN · C_VCC | **2,2 µF 100 V X7R 1210 · 4,7 µF 50 V X7R 1206** | class | the gate drive comes off 48 V through the part's LDO, ~0,64 W at the light-load clamp |
 | R_CL | **2× 845 Ω, 2512, 2 W class** | value | 60 V, 2,1 W rated, 4,1 W at the corner — a fault, until the `INA238` trips the source |
@@ -256,8 +256,8 @@ the rectifier, the bank and `R_ID` differ.
 | T1, `G-300-U-6` | **`11338-T195`** | code | Sumida CEEH178, 14:1:1,7, 1000 µH ±10 %, 0,9 A, leakage 34 µH max, basic 3 kV, 19 × 17,4 × 8,6 mm, SMD |
 | R_SNS | **58 mΩ** on `-40` · **130 mΩ** on `-6`, 1210 | value | `-40`: `I_pk` 1,55 A at 90 mV · `-6`: the largest the sampling floor allows, 0,33 A at full load |
 | R_IREG | **75 kΩ** on `-40` (4,14 A) · **15 kΩ** on `-6` (0,65 A), 1 % | value | the output-current regulation point, `2,5 MΩ · I_OUT · R_SNS / N_PS` |
-| R_FB1 · R_FB2 · R_TC, `G-300-U-40` | **10 kΩ · 91 kΩ · 240 kΩ**, 1 % | value | `N_TS` 1, `V_F` 0,3 V, the diode's TC −1,5 mV/°C; `R_TC` from TC to FB |
-| R_FB1 · R_FB2 · R_TC, `G-300-U-6` | **10 kΩ · 160 kΩ · 270 kΩ**, 1 % | value | `N_TS` 1,7 — 11,90 V out; `BIAS` 20,7 V |
+| R_FB1 · R_FB2 · R_TC, `G-300-U-40` | **4,7 kΩ + 1 kΩ trimmer · 47 kΩ · 130 kΩ**, 1 % | value | `N_TS` 1, `V_F` 0,3 V, the diode's TC −1,5 mV/°C; `R_TC` from TC to FB |
+| R_FB1 · R_FB2 · R_TC, `G-300-U-6` | **4,7 kΩ + 1 kΩ trimmer · 82 kΩ · 130 kΩ**, 1 % | value | `N_TS` 1,7 — 12,0 V out, set by the trimmer; `BIAS` 20,9 V |
 | D_BIAS · C_BIAS | **`PMEG10020ELR` · 4,7 µF 50 V X7R 1206** | code / class | `BIAS` off the tertiary, 12,3 V, inside the 10–30 V window |
 | C_INTVCC | **4,7 µF 50 V X7R 1206** | class | |
 | R_GATE | **10 Ω 0603** | class | |
@@ -341,7 +341,7 @@ As `G-48-S`: **`DGPS2.5R-5.0`** ×2, `TVS_IN` **`5.0SMDJ14A`**, `L_IN` 1,5 µH, 
 | U1 · Q1 | **`LT3748`** · **`ISC165N15NM6`** | code | `EN/UVLO` from `ENABLE` through `R_EN` — the switch |
 | T1 | **`750311592`** | code | 1:1:0,44 — the third winding open · `L_PRI` 8 µH ±10 % · `I_SAT` 18 A typ · leakage 0,4 µH max · 1500 V AC · SMD 32,3 × 27,0 × 13,7 mm |
 | R_SENSE | **10 mΩ, 2512, 1 W** | value | `I_pk` 9,0 A at 90 mV, ~33 W at 24 V, 112 kHz at full load |
-| R_REF · R_FB · R_TC | **6,04 kΩ · 120 kΩ · 120 kΩ**, 1 %, Basic | value | at `N_PS` 1, `V_F` 0,5 V → **23,3 V** |
+| R_REF · R_FB · R_TC | **5,6 kΩ + 1 kΩ trimmer · 120 kΩ · 120 kΩ**, 1 %, Basic | value | at `N_PS` 1, `V_F` 0,5 V → **24 V**, set by the trimmer |
 | R_GATE · R_C, C_C · C_SS · C_VIN, C_VCC | as `G-48-S` | class | |
 | R_CL | **2× 2,05 kΩ, 2512, 2 W class, in series** | value | 100 V, 2,4 W rated, 2,9 W at the corner — the winding's 0,4 µH of leakage |
 | C_CL · D_CL | **100 nF 1 kV X7R 1812** · **`V5N22-M3`** | class / code | |
