@@ -43,7 +43,7 @@ the sag is the module's ~20 µF reservoir's: the ring's one-particle salvo of th
 
 | Part | Sets | Value | Note |
 |---|---|---|---|
-| **`R_iso`**, ×13 | one tube's discharge kept off the others | **1 MΩ** — 3 × 332 kΩ 0805 in series | on the bus side of each tube's string |
+| **`R_iso`**, ×13 | one tube's discharge kept off the others | **1 MΩ** — 3 × 330 kΩ 0805 in series | on the bus side of each tube's string |
 | **`C_iso`**, ×13 | the tube's own reservoir | **100 nF, 630 V polypropylene film** | to ground, between `R_iso` and `Ra` — never between `Ra` and the anode; a film part, because an HV ceramic loses its value under bias |
 | **`Ra`**, ×13 | current limit + self-quench | tube-specified (SI-22G ≈ 10 MΩ) | at the anode, §3 |
 
@@ -77,7 +77,7 @@ Cathode readout straight into a GPIO — the pin's own protection diode clips th
 **`Ra`, `Rk` and the plateau are the tube's.** Every GM tube has its own anode resistor and its own
 plateau; the values here are `SI-22G`'s, and a build on another tube sets the three from that
 tube's sheet — the plateau at the module, `Ra` and `Rk` here. **Every resistor that stands at
-the 400 V is three 0805 parts in series** — `R_iso` as 3 × 332 kΩ, `Ra` as above — because one
+the 400 V is three 0805 parts in series** — `R_iso` as 3 × 330 kΩ, `Ra` as above — because one
 0805 is rated 150 V working.
 
 **No capacitor on the pulse line** — a capacitor with `Rs` rounds the edge and swallows counts.
@@ -128,7 +128,7 @@ service — on a scope, per tube type.
 
 | Ref | Part | Note |
 |---|---|---|
-| R_iso/C_iso | per-tube bus RC ×13 | `R_iso` 3 × 332 kΩ 0805, `C_iso` 100 nF 630 V film |
+| R_iso/C_iso | per-tube bus RC ×13 | `R_iso` 3 × 330 kΩ 0805, `C_iso` 100 nF 630 V film |
 | Ra/Rk/Rs | per-tube front end ×13 | `Ra` 3 × 3,3 MΩ 0805, `Rk` 100 kΩ, `Rs` 100 kΩ |
 | J* | 13× tube terminals, the 13 lines to Quark-Tubes, the 400 V bus in | — |
 

@@ -855,7 +855,7 @@ wants watts is a feed at 48 V or 300 V, never this board at a lower one.
 
 ```
  12 V off the wire, two terminals ─▶ EMI choke ─▶ SN6507 push-pull ─▶ 750319691 ─▶ 2× PMEG10020ELR ─┐
-                                   1,26 MHz, R_LIM 34,8 kΩ → ~0,7 A   N = 1,13          │ THE BARRIER
+                                   1,26 MHz, R_LIM 33 + 1,8 kΩ → ~0,7 A   N = 1,13          │ THE BARRIER
                                    ENABLE drives its EN                                 ▼
                                                                         2× 5.0SMDJ18A ─▶ chokes ─▶ 2036-07-SM ─▶ ⏚ common earthing point
                                                                                                     ══▶ ± ~12 V, unregulated, on eight poles
@@ -863,7 +863,7 @@ wants watts is a feed at 48 V or 300 V, never this board at a lower one.
 ```
 
 - **in:** 12 V off the wire on two terminals; `ENABLE` and 3,3 V off the power connector · **out:** ~12 V on eight poles, `DGPS2.5R-5.0` × 4 — four positions, 4× + and 4× −, beside `G-I-M-005`'s four positions of the pair
-- **rating:** **0,4 A**, about 5 W. `R_LIM` 34,8 kΩ → ~0,7 A (0,5–0,9 A over the part's spread): 0,4 A out is ~0,45 A through the switches, and a 0,5 A limit would droop the rated load on a low part. **The overload is the `INA238`'s, not the OCP's** — the part's OCP shortens pulses rather than switching off and would hold an overload until thermal shutdown, so `ALERT` past 0,4 A takes `ENABLE` away; the OCP is left the start into a sensor's input capacitors and a short
+- **rating:** **0,4 A**, about 5 W. `R_LIM` 33 + 1,8 kΩ → ~0,7 A (0,5–0,9 A over the part's spread): 0,4 A out is ~0,45 A through the switches, and a 0,5 A limit would droop the rated load on a low part. **The overload is the `INA238`'s, not the OCP's** — the part's OCP shortens pulses rather than switching off and would hold an overload until thermal shutdown, so `ALERT` past 0,4 A takes `ENABLE` away; the OCP is left the start into a sensor's input capacitors and a short
 - **parts:** `5.0SMDJ14A` across the 12 V input · `SN6507` · `750319691` · 2× `PMEG10020ELR` · `INA238` · `ISO1642` · the island `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ18A` · `2036-07-SM` · the chokes, the EMI choke and the bulk
 - **`ID`:** 56 kΩ, 0,85
 

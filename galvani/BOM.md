@@ -9,6 +9,8 @@
 
 ## How to read a table
 
+**A value written `a + b` is two JLCPCB Basic or Preferred resistors in series**, 1 % 0603, standing for the E96 value the computation beside it asks — within 0,4 % of it, the sum's tolerance no worse than one part's (10 Nov 2026).
+
 Every row carries a **how** column, and it says what a builder is allowed to change.
 
 | how | meaning |
@@ -94,11 +96,11 @@ measures it, and holds the source end of the ladder.
 | T1 | **`750310988`** | code | 1:4,42 · `L_PRI` 14 µH ±10 % · `I_SAT` 15 A min · leakage 200 nH · 1500 V AC · SMD 32,3 × 27,0 × 13,7 mm |
 | R_SENSE | **9,1 mΩ, 2512, 1 W** | value | 0,9 W peak dissipation. `I_pk` 9,90 A at the guaranteed 90 mV, the 110 mV corner 12,1 A — 81 % of the winding's saturation |
 | R_GATE | **10 Ω 0603** | class | |
-| R_C, C_C | **24,9 kΩ + 4,7 nF X7R ∥ 100 pF C0G, 0603** | class | the sheet's compensation |
+| R_C, C_C | **24 kΩ + 4,7 nF X7R ∥ 100 pF C0G, 0603** | class | the sheet's compensation |
 | C_SS | **100 nF 50 V X7R 0603** | class | 0,05 V/ms at `V_C` |
 | R_REF | **6,04 kΩ 1 %** | value | the part is trimmed at this value |
-| R_FB | **54,9 kΩ 1 %** | value | `R_REF · N_PS · [(V_OUT + V_F) + V_TC] / V_BG` at `N_PS` 1/4,42, `V_F` 0,7 V |
-| R_TC | **243 kΩ 1 %** | value | `R_FB / N_PS` |
+| R_FB | **51 + 3,9 kΩ 1 %** | value | `R_REF · N_PS · [(V_OUT + V_F) + V_TC] / V_BG` at `N_PS` 1/4,42, `V_F` 0,7 V |
+| R_TC | **240 + 3 kΩ 1 %** | value | `R_FB / N_PS` |
 | R_CL | **2× 2,43 kΩ, 2512, 2 W class, in series** | value | the leakage clamp: 50 V, 0,52 W rated, 0,68 W at the corner |
 | C_CL | **2,2 µF 100 V X7R 1210** | class | |
 | D_CL | **`V5N22-M3`** | code | the clamp's Schottky, the drain to `C_CL` |
@@ -206,7 +208,7 @@ and nothing lower, hands it out on its two terminals, passes the feed on to the 
 | U1 · Q1 | **`LT3748`** · **`ISC165N15NM6`** | code | 82 V on the plateau, 133 V at the clamp's corner, 151 V with a surge residue on the bulk — 1 V into the rated avalanche, `E_AS` 123 mJ |
 | T1 | **`750311607`** | code | 2,5:1 · `L_PRI` 14 µH · `I_SAT` 9,5 A · 1500 V AC · 29,1 × 23,1 × 11,4 mm |
 | R_SENSE | **15 mΩ, 2512, 1 W** | value | the largest the winding rule allows: 12,5 µH needed against 12,6 µH at −10 %. `I_pk` 6,0 A at 90 mV, 3,00 A at the declared ~25 W; the corner 7,33 A, 77 % of saturation, 0,81 W peak |
-| R_REF · R_FB · R_TC | **6,04 kΩ · 165 kΩ · 66,5 kΩ**, 1 % | value | at `N_PS` 2,5, `V_F` 0,75 V; 194 µA through `R_FB` against the sheet's ~200 |
+| R_REF · R_FB · R_TC | **6,04 kΩ · 150 + 15 kΩ · 62 + 4,7 kΩ**, 1 % | value | at `N_PS` 2,5, `V_F` 0,75 V; 194 µA through `R_FB` against the sheet's ~200 |
 | R_C, C_C · C_SS · R_GATE | as `G-48-S` | class | |
 | C_VIN · C_VCC | **2,2 µF 100 V X7R 1210 · 4,7 µF 50 V X7R 1206** | class | the gate drive comes off 48 V through the part's LDO, ~0,64 W at the light-load clamp |
 | R_CL | **2× 845 Ω, 2512, 2 W class** | value | 60 V, 2,1 W rated, 4,1 W at the corner — a fault, until the `INA238` trips the source |
@@ -255,9 +257,9 @@ the rectifier, the bank and `R_ID` differ.
 | T1, `G-300-U-40` | **`11328-T078`** | code | Sumida PQ2620, 8:1:1, `N_TS` 1, 670 µH, 3,0 A, reinforced 3 kV, 31 × 28,5 × 23,5 mm, pins |
 | T1, `G-300-U-6` | **`11338-T195`** | code | Sumida CEEH178, 14:1:1,7, 1000 µH ±10 %, 0,9 A, leakage 34 µH max, basic 3 kV, 19 × 17,4 × 8,6 mm, SMD |
 | R_SNS | **58 mΩ** on `-40` · **130 mΩ** on `-6`, 1210 | value | `-40`: `I_pk` 1,55 A at 90 mV · `-6`: the largest the sampling floor allows, 0,33 A at full load |
-| R_IREG | **76,8 kΩ** on `-40` (4,24 A) · **15,0 kΩ** on `-6` (0,65 A), 1 % | value | the output-current regulation point, `2,5 MΩ · I_OUT · R_SNS / N_PS` |
-| R_FB1 · R_FB2 · R_TC, `G-300-U-40` | **10,0 kΩ · 90,9 kΩ · 249 kΩ**, 1 % | value | `N_TS` 1, `V_F` 0,3 V, the diode's TC −1,5 mV/°C; `R_TC` from TC to FB |
-| R_FB1 · R_FB2 · R_TC, `G-300-U-6` | **10,0 kΩ · 162 kΩ · 261 kΩ**, 1 % | value | `N_TS` 1,7 — 12,04 V out; `BIAS` 20,9 V |
+| R_IREG | **75 + 1,8 kΩ** on `-40` (4,24 A) · **15 kΩ** on `-6` (0,65 A), 1 % | value | the output-current regulation point, `2,5 MΩ · I_OUT · R_SNS / N_PS` |
+| R_FB1 · R_FB2 · R_TC, `G-300-U-40` | **10 kΩ · 91 kΩ · 220 + 30 kΩ**, 1 % | value | `N_TS` 1, `V_F` 0,3 V, the diode's TC −1,5 mV/°C; `R_TC` from TC to FB |
+| R_FB1 · R_FB2 · R_TC, `G-300-U-6` | **10 kΩ · 150 + 12 kΩ · 240 + 20 kΩ**, 1 % | value | `N_TS` 1,7 — 12,04 V out; `BIAS` 20,9 V |
 | D_BIAS · C_BIAS | **`PMEG10020ELR` · 4,7 µF 50 V X7R 1206** | code / class | `BIAS` off the tertiary, 12,3 V, inside the 10–30 V window |
 | C_INTVCC | **4,7 µF 50 V X7R 1206** | class | |
 | R_GATE | **10 Ω 0603** | class | |
@@ -302,8 +304,8 @@ pack, 0,4 A. No unit-end partner.
 | ref | part / value | how | note |
 |---|---|---|---|
 | U1 | **`SN6507`** | code | push-pull, 3–36 V in, 0,5 A; `ENABLE` on its `EN` |
-| R_LIM | **34,8 kΩ 1 %** | value | ~0,7 A — above the switches' 0,5 A on purpose; the overload is block T's, not the OCP's |
-| R_CLK | **7,87 kΩ 1 %** | value | ~1,26 MHz typical, ≥ 1,07 MHz — the winding's 7,5 Vµs asks ≥ 1,0 MHz at the lowest rate at 15 V |
+| R_LIM | **33 + 1,8 kΩ 1 %** | value | ~0,7 A — above the switches' 0,5 A on purpose; the overload is block T's, not the OCP's |
+| R_CLK | **6,8 + 1,1 kΩ 1 %** | value | ~1,26 MHz typical, ≥ 1,07 MHz — the winding's 7,5 Vµs asks ≥ 1,0 MHz at the lowest rate at 15 V |
 | T1 | **`750319691`** | code | Würth, N 1,13, 7,5 Vµs, 2,5 kV, 8,5 × 12,9 × 5,2 mm |
 | D1, D2 | **`PMEG10020ELR`** ×2 | code | `V_R` 51 V needed, 100 V fitted |
 | C_OUT | **2× 10 µF 50 V X5R 1206 + 100 nF** | class | on the ~12 V |
@@ -341,7 +343,7 @@ As `G-48-S`: **`DGPS2.5R-5.0`** ×2, `TVS_IN` **`5.0SMDJ14A`**, `L_IN` 1,5 µH, 
 | U1 · Q1 | **`LT3748`** · **`ISC165N15NM6`** | code | `EN/UVLO` from `ENABLE` through `R_EN` — the switch |
 | T1 | **`750311592`** | code | 1:1:0,44 — the third winding open · `L_PRI` 8 µH ±10 % · `I_SAT` 18 A typ · leakage 0,4 µH max · 1500 V AC · SMD 32,3 × 27,0 × 13,7 mm |
 | R_SENSE | **10 mΩ, 2512, 1 W** | value | `I_pk` 9,0 A at 90 mV, ~33 W at 24 V, 112 kHz at full load |
-| R_REF · R_FB · R_TC | **6,04 kΩ · 124 kΩ · 124 kΩ**, 1 % | value | at `N_PS` 1, `V_F` 0,5 V |
+| R_REF · R_FB · R_TC | **6,04 kΩ · 100 + 24 kΩ · 100 + 24 kΩ**, 1 % | value | at `N_PS` 1, `V_F` 0,5 V |
 | R_GATE · R_C, C_C · C_SS · C_VIN, C_VCC | as `G-48-S` | class | |
 | R_CL | **2× 2,05 kΩ, 2512, 2 W class, in series** | value | 100 V, 2,4 W rated, 2,9 W at the corner — the winding's 0,4 µH of leakage |
 | C_CL · D_CL | **100 nF 1 kV X7R 1812** · **`V5N22-M3`** | class / code | |
