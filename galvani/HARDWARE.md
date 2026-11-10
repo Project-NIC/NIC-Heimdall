@@ -564,7 +564,7 @@ on 24 V for the same reason it does on 48.*
 
 **`G-I-N-025` at a source end** *(`G-I-M-005` is the same ladder on its one pair)*
 ```
-  ISO1452 ×2 + ISO1450 ▶ SM712 ──▶ 10 Ω ─────────────────────▶ ═══ TX / RX / clock
+  ISO1450 ×3 ▶ SM712 ────────────▶ 10 Ω ─────────────────────▶ ═══ TX / RX / clock
                                             across the pair
                                             2036-07-SM ────────────▶ ⏚ earth point
                                             through the common earthing point
@@ -599,7 +599,7 @@ part. What a unit end holds is the differential residue, on the transil.
 
 **`G-I-N-025` — one board, both ends, and the tube is the source end's population**
 ```
-  ═══ A / B ────────────────────────▶ 10 Ω ──▶ SM712 ──▶ 2× ISO1452 + ISO1450
+  ═══ A / B ────────────────────────▶ 10 Ω ──▶ SM712 ──▶ 3× ISO1450
                 across the pair                              to the unit's own floating ground
                 2036-07-SM ───────────▶ ⏚ earth point — fitted and strapped at the source end,
                                           left off at a unit end; the footprint is on every board
@@ -2068,10 +2068,10 @@ that could not tell them apart would ask a 6 W pod for 40 W.
      │                                                 THE BARRIER
      │
      └── on the line side:
-             ISO1452 ── data, both directions kept — full duplex
-             ISO1452 ── THE ECHO-CHECK RECEIVER, paralleled onto the units' TX pair.
-                        Its DRIVER IS HARD DISABLED — tied off, not host-gated, so it
-                        can never babble — and its UART's own TX stays unconnected
+             ISO1450 ── on the units' TX pair: D on TXD, DE on DE, RE# to ground —
+                        it drives, and its receiver stays on: THE ECHO, on RXD_ECHO
+             ISO1450 ── on the other pair, receive only: R on RXD; its DRIVER IS HARD
+                        DISABLED — DE to ground, not host-gated, so it can never babble
              ISO1450 ── the clock channel, or PPS inward on the reversed build.
                         Its direction is B_DIR's, set in the socket — no enable pair on the cable.
                         D and R both on the CLK/PPS pin; DE and RE# on B_DIR, tied in the socket —
@@ -2139,7 +2139,7 @@ barrier, the same isolated supply, the same ladder on the one pair.
 | | |
 |---|---|
 | the transceiver | **`ISO1450`** — the shared-pair part; `DE` from the host gates the driver around the poll |
-| what it drops against `G-I-N-025` | two `ISO1452`, two pairs of ladder, two termination resistors; ~$7 of parts and half the board |
+| what it drops against `G-I-N-025` | two `ISO1450`, two pairs of ladder, two termination resistors; ~$7 of parts and half the board |
 
 ### `G-O-10-10` · `G-O-2-100` — communication, glass · two boards, one front
 

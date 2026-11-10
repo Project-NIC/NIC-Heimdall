@@ -388,9 +388,9 @@ channel B. No terminal for 12 V, no buck: 3,3 V from the host over the data conn
 
 | ref | part / value | how | note |
 |---|---|---|---|
-| U2, U3 | **`ISO1452`** ×2 | code | data, both directions; and the echo-check receiver, its driver tied off, its UART TX unconnected |
+| U2, U3 | **`ISO1450`** ×2 | code | U2 on the units' TX pair: `D` on `TXD`, `DE` on `DE`, `RE#` to ground — its receiver reads the pair back while it drives, the echo on `RXD_ECHO`; U3 on the other pair, receive only: `R` on `RXD`, `RE#` to ground, `DE` to ground, its driver hard disabled |
 | U4 | **`ISO1450`** | code | channel B, either way: `D` and `R` both on the `CLK/PPS` pin, `DE` and `RE#` both on `B_DIR` — `R` is at high impedance while the driver is on |
-| C_D | **100 nF 50 V X7R 0603** ×4 | class | at each isolator's `VCC1` and `VCC2` |
+| C_D | **100 nF 50 V X7R 0603** ×6 | class | at each isolator's `VCC1` and `VCC2` |
 | R_S1 … R_S6 | **6× 10 Ω, pulse-withstanding, 2512 anti-surge or MELF** | value | two per pair, on every board, always |
 | TVS_P1 … TVS_P3 | **`SM712`** ×3 | code | across each pair |
 | R_T1 … R_T3 · JP1 … JP3 | **3× 80,6 Ω 1 % 1206 · 3× 2-pin 2,54 mm header with a jumper** | value | one per pair; **the jumper fitted on the first and the last board of a segment, on no board between** — 80,6 + 2 × 10 is the ~100 Ω the UTP wants |

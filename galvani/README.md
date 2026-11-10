@@ -225,7 +225,7 @@ and ribbon conductor *n* lands on pin *n*.
 | **4** | `RXD` | board → host | channel A back |
 | **5** | `ID` | board → host | **one resistor to ground on the plugged board**, read on an ADC pin of the host against 10 kΩ 1 % to the host's analogue rail (*`ID` — one scale*) |
 | **6** | `ID_RET` | host → the far host | **a host's own number**, the same kind of resistor, for the host across a crossed cable; unconnected on a Galvani board and on a host that never meets a crossed cable |
-| 7 | `RXD_ECHO` | board → host | the echo-check receiver's output — the second `ISO1452` on copper, the receive-only tap on glass; every unit hears its own transmission (`../core/blocks/nodbus.md`). Unconnected on a master's socket: a master never echo-checks |
+| 7 | `RXD_ECHO` | board → host | the echo-check receiver's output — on copper the TX pair's own `ISO1450`, its receiver left on while it drives; the receive-only tap on glass; every unit hears its own transmission (`../core/blocks/nodbus.md`). Unconnected on a master's socket: a master never echo-checks |
 | 8 | `DE` | host → board | the driver enable, around the unit's slot; on glass nothing to gate, the module is dark when idle |
 | 9 | `B_DIR` | socket → board | **tied in the socket, no processor pin**: to 3,3 V where this end drives channel B, to ground where it listens; the board carries no pull (*The reversed channel*) |
 | 10 | `LINE_EN` | host → board | switches the isolated line side — the `SN6505B`'s `EN` on a copper board; **not populated on glass**, nothing switches a module. Pulled down by 100 kΩ on the board. **At a source end it is the host's GPIO, one net with the port's `ENABLE`; at a unit end it is 10 kΩ to 3,3 V in the socket and no processor pin** — the line side runs whenever the unit does |
@@ -900,8 +900,8 @@ and `LINE_EN` strapped or driven there — and a source end fits the tube and it
  the host ── data connector ──▶ 3,3 V from the host ─┬─▶ SN6505B ─▶ 750313734 ─▶ PMEG10020ELR ─▶ isolated 3,3 V
               LINE_EN drives the SN6505B's EN │             420 kHz      1:1,1          THE BARRIER    │
                                               │                                                        ▼
-                                              └── the ID resistor · B_DIR strap read       ISO1452 ── data, both directions
-                                                                                           ISO1452 ── the echo-check receiver, driver tied off
+                                              └── the ID resistor · B_DIR strap read       ISO1450 ── TX + the echo, RE# on
+                                                                                           ISO1450 ── RX only, driver tied off
                                                                                            ISO1450 ── channel B: the clock out, or PPS in
                                                                                                      D and R both on the CLK/PPS pin;
                                                                                                      DE and RE# on B_DIR
@@ -914,7 +914,7 @@ and `LINE_EN` strapped or driven there — and a source end fits the tube and it
 - **in:** 3,3 V and logic from the host · **out:** three 485 pairs on the data cable
 - **draw, on the host's 3,3 V:** ~75 mA at a source end, ~18 mA at a unit end, ~130 mA mid-burst; the line side alone 57 / 5 mA
 - **at a source end:** the tube and its earth strap fitted; at a unit end left off — the same board
-- **parts:** `SN6505B` · `750313734` · `PMEG10020ELR` · 2× `ISO1452` · `ISO1450` · 3× `SM712` · 6× 10 Ω · 3× 80,6 Ω with their headers and jumpers · `2036-07-SM` · `DGPS2.5R-5.0` × 4
+- **parts:** `SN6505B` · `750313734` · `PMEG10020ELR` · 3× `ISO1450` · 3× `SM712` · 6× 10 Ω · 3× 80,6 Ω with their headers and jumpers · `2036-07-SM` · `DGPS2.5R-5.0` × 4
 - **`ID`:** 6,8 kΩ, 0,40
 
 ### `G-I-M-005` — communication, 485 on copper, ModBus

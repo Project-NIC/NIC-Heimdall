@@ -722,3 +722,12 @@ owner, 10 Nov 2026), so they are Basic 1206s, more of them where the voltage or 
 100 kΩ and 3× 1 MΩ for `VBUS`, recalibrated at commissioning as before; 9× and 8× 1 MΩ for the leak
 watch, 9 MΩ a leg against 8,84 and 72 V a part at sparkover; 5× 1 kΩ for the 0,68 W clamp. The
 other clamps take 1,5–4,1 W and would want 10–30 parts; they stay 2512.
+
+## Two `ISO1452` on `G-I-N-025` — superseded by `ISO1450`s, one to a pair
+
+One full-duplex part carried the data both ways and a second, its driver tied off, was the echo
+receiver on the TX pair. The half-duplex `ISO1450` does both jobs on one pair: on the TX pair it
+drives with `RE#` low, so its receiver reads the pair back — the echo; on the RX pair it only
+receives. The same family, the same 50 Mb/s timing (SLLSF22I), one load fewer on the shared pair,
+one part type on the board, and at JLCPCB $3,68 against $7,88 a part with 84 against 36 in stock
+(10 Nov 2026) — as NIC-Crazy_Ivan's units did with the `THVD1450` on 7 Nov.

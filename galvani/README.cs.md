@@ -224,7 +224,7 @@ plochého kabelu *n* přistane na pinu *n*.
 | **4** | `RXD` | deska → hostitel | kanál A zpět |
 | **5** | `ID` | deska → hostitel | **jeden rezistor proti zemi na zapojené desce**, čtený na pinu ADC hostitele proti 10 kΩ 1 % k analogovému napájení hostitele (*`ID` — jedna stupnice*) |
 | **6** | `ID_RET` | hostitel → vzdálený hostitel | **vlastní číslo hostitele**, rezistor téhož druhu, pro hostitele na druhé straně kříženého kabelu; nezapojený na desce Galvani a na hostiteli, který se s kříženým kabelem nikdy nesetká |
-| 7 | `RXD_ECHO` | deska → hostitel | výstup přijímače kontroly ozvěny — druhý `ISO1452` na mědi, odbočka jen pro příjem na skle; každá jednotka slyší vlastní vysílání (`../core/blocks/nodbus.md`). Nezapojený v patici mastera: master ozvěnu nikdy nekontroluje |
+| 7 | `RXD_ECHO` | deska → hostitel | výstup přijímače kontroly ozvěny — na mědi vlastní `ISO1450` vysílacího páru s přijímačem zapnutým i při vysílání; odbočka jen pro příjem na skle; každá jednotka slyší vlastní vysílání (`../core/blocks/nodbus.md`). Nezapojený v patici mastera: master ozvěnu nikdy nekontroluje |
 | 8 | `DE` | hostitel → deska | povolení budiče, kolem slotu jednotky; na skle není co spínat, modul je v klidu potemnělý |
 | 9 | `B_DIR` | patice → deska | **pevně svázaný v patici, žádný pin procesoru**: na 3,3 V tam, kde tento konec budí kanál B, na zem tam, kde poslouchá; deska nenese žádný pull rezistor (*Obrácený kanál*) |
 | 10 | `LINE_EN` | hostitel → deska | spíná galvanicky oddělenou linkovou stranu — `EN` obvodu `SN6505B` na měděné desce; **na skle neosazený**, modul nic nespíná. Na desce stažený 100 kΩ dolů. **Na zdrojovém konci je to GPIO hostitele, jedna síť s `ENABLE` portu; na konci jednotky je to 10 kΩ na 3,3 V v patici a žádný pin procesoru** — linková strana běží, kdykoli běží jednotka |
@@ -894,8 +894,8 @@ nebo buzené — a zdrojový konec osazuje výbojku a její pásek.
  the host ── data connector ──▶ 3,3 V from the host ─┬─▶ SN6505B ─▶ 750313734 ─▶ PMEG10020ELR ─▶ isolated 3,3 V
               LINE_EN drives the SN6505B's EN │             420 kHz      1:1,1          THE BARRIER    │
                                               │                                                        ▼
-                                              └── the ID resistor · B_DIR strap read       ISO1452 ── data, both directions
-                                                                                           ISO1452 ── the echo-check receiver, driver tied off
+                                              └── the ID resistor · B_DIR strap read       ISO1450 ── TX + the echo, RE# on
+                                                                                           ISO1450 ── RX only, driver tied off
                                                                                            ISO1450 ── channel B: the clock out, or PPS in
                                                                                                      D and R both on the CLK/PPS pin;
                                                                                                      DE and RE# on B_DIR
@@ -908,7 +908,7 @@ nebo buzené — a zdrojový konec osazuje výbojku a její pásek.
 - **vstup:** 3,3 V a logika od hostitele · **výstup:** tři páry 485 na datovém kabelu
 - **odběr, z 3,3 V hostitele:** ~75 mA na zdrojovém konci, ~18 mA na konci jednotky, ~130 mA uprostřed burstu; samotná linková strana 57 / 5 mA
 - **na zdrojovém konci:** výbojka a její zemnicí pásek osazené; na konci jednotky vynechané — tatáž deska
-- **součástky:** `SN6505B` · `750313734` · `PMEG10020ELR` · 2× `ISO1452` · `ISO1450` · 3× `SM712` · 6× 10 Ω · 3× 80,6 Ω s lištami a jumpery · `2036-07-SM` · `DGPS2.5R-5.0` × 4
+- **součástky:** `SN6505B` · `750313734` · `PMEG10020ELR` · 3× `ISO1450` · 3× `SM712` · 6× 10 Ω · 3× 80,6 Ω s lištami a jumpery · `2036-07-SM` · `DGPS2.5R-5.0` × 4
 - **`ID`:** 6,8 kΩ, 0,40
 
 ### `G-I-M-005` — komunikační, 485 po mědi, ModBus

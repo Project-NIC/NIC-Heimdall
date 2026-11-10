@@ -137,9 +137,10 @@ socket, never an inline connector outside.
   `DE`-gated drivers ordered by their slots; the master's pair, data RX at the unit, holds one
   driver that never turns. A node hears the master directly and its neighbours through its echo
   receiver. A glass port is point-to-point: the unit behind it shares the glass with nobody.
-- **The parts, on `G-I-N-025`**: one `ISO1452` for the data in both directions, a second
-  `ISO1452` as the **echo-check receiver** on the units' TX pair, its driver tied off and its
-  UART's TX unconnected, and an `ISO1450` on channel B, its `D` and `R` both on the `CLK/PPS` pin.
+- **The parts, on `G-I-N-025`**: three `ISO1450`, one to a pair — on the units' TX pair one that
+  drives with its receiver left on, which is the **echo-check receiver**; on the other pair one
+  that only receives, its driver tied off; on channel B one with its `D` and `R` both on the
+  `CLK/PPS` pin.
   The `ISO145x` runs at a fixed baud up to 50 Mb/s with no rate-select pin and regenerates edges,
   so the 2²² clock passes the whole run. The plugged board says its medium on its `ID` resistor,
   and the firmware never guesses.
@@ -161,7 +162,7 @@ socket, never an inline connector outside.
   the master's `RESEND`. The same receiver reads the neighbours' frames — their slot bytes against
   their timing check that the round runs in order, and a returning node takes its phase from them.
   The TX leaves on a channel the master's receiver does not sit on, so the check needs a **second
-  receiver paralleled onto the TX channel** — the board's second `ISO1452` on copper, a
+  receiver paralleled onto the TX channel** — on copper the TX pair's own `ISO1450`, its `RE#` held low, a
   receive-only tap into a second UART's RX on glass. On a point-to-point link the card's own CRC
   check covers the unit anyway, and running the echo there too keeps one code path
   (`../PROTOCOL.md` §3).

@@ -34,7 +34,7 @@ The Bifrost's port 1 is the one run, and the communication board's parts sit on 
 | ref | part / value | note |
 |---|---|---|
 | block S | `SN6505B` · `750313734` · 2× `PMEG10020ELR` · the capacitors | the isolated 3,3 V island, ~100 mA, `EN` on the port's `LINE_EN` |
-| U2, U3 | `ISO1452` ×2 | data both directions, and the echo-check receiver |
+| U2, U3 | `ISO1450` ×2 | U2 on the TX pair, `RE#` to ground — it drives and reads the echo; U3 on the other pair, receive only, its driver tied off |
 | U4 | `ISO1450` | channel B, the clock out — `B_DIR` tied to 3,3 V on the board: the source end drives |
 | C_D | 100 nF 50 V X7R 0603 ×4 | at each isolator's `VCC1` and `VCC2` |
 | R_S1 … R_S6 | 6× 10 Ω, pulse-withstanding, 2512 anti-surge or MELF | two per pair |

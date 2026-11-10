@@ -90,9 +90,9 @@ enclosure (`../galvani/README.md`, *The cable, the ground and the termination*).
   behind a buffer; Kronos's time bus to the cards is M-LVDS, non-isolated (`../kronos/HARDWARE.md`).
   A unit that shares the enclosure — Palatine, Sputnik — takes such a cable instead of its Galvani
   boards. 485 begins where a Galvani board begins.
-- **Data** — an **ISO145x** on the block, always: **ISO1452** where both directions are kept,
-  which is every class as normally built; **ISO1450** where a pair really is shared — the clock
-  channel and every ModBus leaf; 1×9 modules on glass.
+- **Data** — an **ISO1450** on the block, always, one to a pair: on the TX pair it drives with its
+  receiver on, which is the echo; on the RX pair it only receives; on the clock channel it turns
+  with `B_DIR`; one on every ModBus leaf; 1×9 modules on glass.
   **The feed travels in a 2-core cable of its own** (2× 1,5 mm² or 2,5 mm²) and on land never on the data
   cable, so the four pairs are data TX · clock · ground · data RX and copper and both glass boards
   run **full duplex**; there is no half-duplex NodBus build. Self-timed TDMA slots: **`DE` is the
