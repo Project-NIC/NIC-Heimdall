@@ -1053,13 +1053,13 @@ it is 90,9 kΩ ±2 %, one scale calibration at commissioning and 1 % parts after
 | feed | top leg | on the pin, rated · at the clamp | LSB on the feed | loss |
 |---|---|---|---|---|
 | **12 V · 24 V** | none — the pin straight; the clamps are 30 V and 45 V, under 85 | 12 · 24 V | 3 mV | — |
-| **48 V** | **90,9 kΩ**, 1206 | 24 V · 43 V | 6 mV | 13 mW |
-| **300 V** | **3× 422 kΩ in series**, 1206 — 100 V a part at the rail, 188 V at the clamp | 20 V · 38 V | 47 mV | 66 mW |
+| **48 V** | **100 kΩ**, 1206, Basic `C17900` | 23 V · 41 V | 7 mV | 12 mW |
+| **300 V** | **3× 1 MΩ in series**, 1206, Basic `C17927` — 97 V a part at the rail, 183 V at the clamp, inside a 1206's 200 V | 8,8 V · 16,7 V | 106 mV | 29 mW |
 
 **10 nF 50 V X7R from `VBUS` to `GND` at every `INA238`**: a low-pass of 0,45 ms on 48 V and ~0,85 ms
 on 300 V — the divider's Thévenin resistance into the 10 nF — so a strike's front — hundreds of nanoseconds at the tube's sparkover — arrives at the pin
 as millivolts. Above 85 V the pin's own protection conducts, and the sheet's limit is then 5 mA into
-any pin: behind 90,9 kΩ that is 540 V, behind 1,27 MΩ 6,4 kV, both above what the transil lets
+any pin: behind 100 kΩ that is 585 V, behind 3 MΩ 15 kV, both above what the transil lets
 stand — so an overvoltage stops the measurement for its duration and does not take the part.
 
 **Conversion 4,12 ms, averaging 128 — 527 ms a sample, noise-free 16 bits on the 40 mV range** (the
@@ -1132,7 +1132,7 @@ insulation break to earth draws no current and trips nothing, and the second bre
 **On `G-300-S`: one more `INA238`, two legs, nothing else.**
 
 ```
-   + ──[R_A 8,84 MΩ]──┬──[R_B 7,84 MΩ]── VBUS ──(ZVBUS ~1 MΩ)── −   (the second INA238's ground)
+   + ──[R_A 9 MΩ]─────┬──[R_B 8 MΩ]───── VBUS ──(ZVBUS ~1 MΩ)── −   (the second INA238's ground)
                       │
                       the tube's centre ── the strap ── the common earthing point
 ```
@@ -1141,30 +1141,30 @@ insulation break to earth draws no current and trips nothing, and the second bre
   the first one's 0x40 / 0x41 on the same crossing. **`VBUS` only**; its shunt inputs are tied.
   **Its `ALERT` is not wired** — `APOL` = 1 makes two open-drain alarms on one line mask each
   other, and a leak is slow: the host polls it.
-- **The legs:** `R_A` **4× 2,21 MΩ in series**, `R_B` **4× 1,96 MΩ in series** — ordinary 1206
-  thick film, 1 %, E96, 37 V a part at the rail and 163 V at a gap's 650 V sparkover, inside a
-  1206's 200 V. **Both legs total 8,84 MΩ**, so the tube's centre sits at half the feed when the
+- **The legs:** `R_A` **9× 1 MΩ in series**, `R_B` **8× 1 MΩ in series** — ordinary 1206
+  thick film, 1 %, JLCPCB Basic `C17927`, 16 V a part at the rail and 72 V at a gap's 650 V
+  sparkover, inside a 1206's 200 V. **Both legs total 9 MΩ**, so the tube's centre sits at half the feed when the
   insulation is sound. **The legs sit across the tube's own gaps and never see more than a gap's
   sparkover** — `R_A` across the upper gap, `R_B` and the pin across the lower — and the tube is
   the spark gap: whatever the run does against earth, a leg sees one gap's sparkover at most.
-  **10 nF from `VBUS` to `GND`**, τ ≈ 9 ms with the 7,84 MΩ ‖ 1 MΩ, so the sparkover's front
-  never reaches the pin; the pin sits at 74 V at 650 V, under its 85 V, and above that its
+  **10 nF from `VBUS` to `GND`**, τ ≈ 9 ms with the 8 MΩ ‖ 1 MΩ, so the sparkover's front
+  never reaches the pin; the pin sits at 72 V at 650 V, under its 85 V, and above that its
   protection clamps at 83 µA against the sheet's 5 mA. The value is not halved for range: at
   4,42 MΩ the sparkover would land 147 V on the pin and want a clamp whose leakage is percent of
-  the 34 µA measuring current; 28 mV an LSB at the centre against 5 V per 10 MΩ of leak is 180
+  the 33 µA measuring current; 28 mV an LSB at the centre against 5 V per 10 MΩ of leak is 180
   steps and enough.
 - **What it reads, at 300 V:**
 
 | | `VBUS` |
 |---|---|
-| sound insulation — the centre at 150 V | **17 V** |
+| sound insulation — the centre at 150 V | **16,7 V** |
 | a 100 MΩ leak on + | +0,7 V |
-| a 10 MΩ leak on + | 22 V |
-| + shorted to earth | 34 V |
+| a 10 MΩ leak on + | 21,6 V |
+| + shorted to earth | 33 V |
 | a leak on − | the mirror, towards 0 |
-| a gap striking at ~650 V | ~74 V — inside the pin's 85 V, no clamp |
+| a gap striking at ~650 V | ~72 V — inside the pin's 85 V, no clamp |
 
-  **The measuring current is 34 µA at most**, into a dead short.
+  **The measuring current is 33 µA at most**, into a dead short.
 - **Calibrated by a baseline, not by an accuracy**: `ZVBUS` is 0,8–1,2 MΩ, so the healthy ratio
   of the second part's `VBUS` to the first part's is written at commissioning and the alarm is a
   drift from it. **The leakage itself** is Kirchhoff at the centre — what arrives through `R_A`
@@ -1369,9 +1369,9 @@ leakage energy is a fixed share of the input — `L_LK/L_PRI`, 1,4 % · 2 % · 3
 | | `G-48-S` | `G-300-S` | `G-48-U` | `G-24-S` |
 |---|---|---|---|---|
 | `V_OR`, the reflected voltage | 11 V | 30 V | 31 V | 24,7 V |
-| `V_CL` rated · at the 110 mV corner | 50 · 58 V | 90 · 112 V | 60 · 83 V | 100 · 109 V |
-| drain, worst | **78 V** at 20 V in | **132 V** at 20 V in | **133 V** at 50 V in, **151 V** with the surge residue on the bulk | **129 V** at 20 V in |
-| `R_CL`, 2× 2512 in series, 2 W class | 2× 2,43 kΩ | 2× 2,67 kΩ | 2× 845 Ω | 2× 2,05 kΩ |
+| `V_CL` rated · at the 110 mV corner | 51 · 59 V | 90 · 112 V | 60 · 83 V | 100 · 109 V |
+| drain, worst | **79 V** at 20 V in | **132 V** at 20 V in | **133 V** at 50 V in, **151 V** with the surge residue on the bulk | **129 V** at 20 V in |
+| `R_CL`, in series | **5× 1 kΩ 1206**, Basic `C4410`, ≤ 0,14 W a part · 2× 2512, 2 W class, on the rest: | 2× 2,67 kΩ | 2× 845 Ω | 2× 2,05 kΩ |
 | loss in `R_CL`, rated · corner | 0,52 · 0,68 W | 1,5 · 2,35 W | 2,1 · 4,1 W | 2,4 · 2,9 W |
 | taken from the output | 0,12 W | 0,5 W | 1,1 W | 0,6 W |
 | **`C_CL`** | **2,2 µF 100 V X7R 1210** | **100 nF 1 kV X7R 1812** | **2,2 µF 100 V X7R 1210** | **100 nF 1 kV X7R 1812** |

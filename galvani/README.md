@@ -424,10 +424,10 @@ communication board's line-side supply and the same 5 kV winding, always on and 
 one supply, the host's 3,3 V, and makes its own isolated copy of it where it needs one.
 **The shunt is a 1210 metal-element sense resistor on the ±40,96 mV range** — 50 mΩ on 48 V and
 12 V, 200 mΩ on 300 V, 20 mΩ on 24 V — and **`VBUS` is a divider with a 100 kΩ bottom leg on 48 V
-(90,9 kΩ top) and 300 V (3× 422 kΩ), the pin straight on 12 V and 24 V**, 10 nF on the pin
+(100 kΩ top) and 300 V (3× 1 MΩ), the pin straight on 12 V and 24 V**, 10 nF on the pin
 everywhere; conversion 4,12 ms × 128, 16 bits without noise, `ALERT` within 4 ms. **`G-300-S`
-alone carries a second `INA238`, the leak watch**, reading the tube's centre through 8,84 MΩ and
-7,84 MΩ of ordinary 1206 resistors — the source end of a 300 V run is the one place it can be
+alone carries a second `INA238`, the leak watch**, reading the tube's centre through 9 MΩ and
+8 MΩ of ordinary 1206 resistors — the source end of a 300 V run is the one place it can be
 measured, and the one place it must be.
 
 | board | the shunt sits | what it reports |

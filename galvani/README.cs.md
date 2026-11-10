@@ -419,9 +419,9 @@ takže potemnělý port se čte jako 0 V, a ne jako ticho. Každá deska rodiny 
 3,3 V hostitele, a tam, kde ji potřebuje, si z něj dělá vlastní galvanicky oddělenou kopii.
 **Bočník je snímací rezistor 1210 s kovovým odporovým prvkem na rozsahu ±40,96 mV** — 50 mΩ na 48 V
 a 12 V, 200 mΩ na 300 V, 20 mΩ na 24 V — a **`VBUS` je dělič se spodní větví 100 kΩ na 48 V (horní
-90,9 kΩ) a 300 V (3× 422 kΩ), na 12 V a 24 V pin přímo**, všude 10 nF na pinu; převod 4,12 ms ×
+100 kΩ) a 300 V (3× 1 MΩ), na 12 V a 24 V pin přímo**, všude 10 nF na pinu; převod 4,12 ms ×
 128, 16 bitů bez šumu, `ALERT` do 4 ms. **Jen `G-300-S` nese druhý `INA238`, hlídač svodu**, který
-čte střed výbojky přes 8,84 MΩ a 7,84 MΩ obyčejných rezistorů 1206 — zdrojový konec trasy 300 V je
+čte střed výbojky přes 9 MΩ a 8 MΩ obyčejných rezistorů 1206 — zdrojový konec trasy 300 V je
 jediné místo, kde se to dá měřit, a jediné místo, kde se to měřit musí.
 
 | deska | kde sedí bočník | co hlásí |

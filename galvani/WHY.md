@@ -713,3 +713,12 @@ a first build. A sealed cermet trimmer in the loop's ground leg — `R_REF` on t
 on the `LT8316` — sets every board to its target on the bench and is locked with lacquer (the owner,
 10 Nov 2026). Not in `R_FB`: it hangs on the switch node, and a lifted wiper there would drive the
 output up.
+
+## E96 1206 for the high-voltage legs — superseded by Basic 1206 in more parts
+
+The `VBUS` top legs (90,9 kΩ; 3× 422 kΩ), the leak watch's legs (4× 2,21 MΩ; 4× 1,96 MΩ) and
+`G-48-S`'s clamp (2× 2,43 kΩ 2512) were Extended parts. Size is no concern on a Heimdall board (the
+owner, 10 Nov 2026), so they are Basic 1206s, more of them where the voltage or the power asks:
+100 kΩ and 3× 1 MΩ for `VBUS`, recalibrated at commissioning as before; 9× and 8× 1 MΩ for the leak
+watch, 9 MΩ a leg against 8,84 and 72 V a part at sparkover; 5× 1 kΩ for the 0,68 W clamp. The
+other clamps take 1,5–4,1 W and would want 10–30 parts; they stay 2512.

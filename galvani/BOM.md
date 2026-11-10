@@ -38,7 +38,7 @@ own table names them by their block name.
 | U_I | **`ISO1642`**, DW-16 | code | the I²C both ways, `A_SEL` down on channel A, `ALERT` up on channel B; side 1 on the host's 3,3 V, side 2 on block S |
 | R_SHUNT | **1210 metal-element sense resistor, 1 %, ≤ 75 ppm/°C, 0,5 W** — the value is the board's | value | Kelvin-connected to `IN+`/`IN−`; low-side, in the − pole |
 | R_F1, R_F2 · C_F | **2× 82 Ω 0603 · 100 nF 50 V X7R 0603** | class | the shunt input filter, the sheet's figure 7-1 — a 10 µs corner; 0,18 % gain error, calibrated out |
-| R_VT · R_VB | **the `VBUS` divider — top leg the board's, bottom 100 kΩ 1 % 0603**; none on 12 V and 24 V | value | 90,9 kΩ 1206 on 48 V; 3× 422 kΩ 1206 in series on 300 V. The pin's own 1 MΩ in parallel makes the bottom 90,9 kΩ ±2 %, one calibration at commissioning |
+| R_VT · R_VB | **the `VBUS` divider — top leg the board's, bottom 100 kΩ 1 % 0603**; none on 12 V and 24 V | value | 100 kΩ 1206 (Basic `C17900`) on 48 V; 3× 1 MΩ 1206 (Basic `C17927`) in series on 300 V. The pin's own 1 MΩ in parallel makes the bottom 90,9 kΩ ±2 %, one calibration at commissioning |
 | C_VBUS | **10 nF 50 V X7R 0603**, `VBUS` to `GND` | class | the low-pass that keeps a strike's front off the pin — 0,45 ms on 48 V, ~0,85 ms on 300 V |
 | C_T1, C_T2 | **100 nF 50 V X7R 0603** at `VS` and at `VCC2` | class | |
 
@@ -99,7 +99,7 @@ measures it, and holds the source end of the ladder.
 | R_REF | **5,6 kΩ 1 % + a 1 kΩ trimmer `3314J-1-102E`** (`C23189` · `C124640`) | value | 5,6–6,6 kΩ, set on the bench to the output's target (`HARDWARE.md`, *Setting the output*); the part is trimmed at 6,04 kΩ |
 | R_FB | **56 kΩ 1 %**, Basic | value | `R_REF · N_PS · [(V_OUT + V_F) + V_TC] / V_BG` at `N_PS` 1/4,42, `V_F` 0,7 V → **48 V**, set by the trimmer; ~200 µA through it |
 | R_TC | **240 kΩ 1 %**, Preferred | value | `R_FB / N_PS` |
-| R_CL | **2× 2,43 kΩ, 2512, 2 W class, in series** | value | the leakage clamp: 50 V, 0,52 W rated, 0,68 W at the corner |
+| R_CL | **5× 1 kΩ 1206, 1 %, in series**, Basic `C4410` | value | the leakage clamp: 51 V, 0,52 W rated, 0,68 W at the corner, ≤ 0,14 W a part |
 | C_CL | **2,2 µF 100 V X7R 1210** | class | |
 | D_CL | **`V5N22-M3`** | code | the clamp's Schottky, the drain to `C_CL` |
 | C_VIN · C_VCC | **10 µF 50 V X5R 1206 · 4,7 µF 50 V X7R 1206** | class | at `V_IN` and `INTVCC` |
@@ -124,7 +124,7 @@ measures it, and holds the source end of the ladder.
 
 ## 5 · Telemetry, island, connector
 
-**Block T on the output**: `R_SHUNT` **50 mΩ**, `R_VT` **90,9 kΩ 1206**, `R_VB` 100 kΩ. **Block S.**
+**Block T on the output**: `R_SHUNT` **50 mΩ**, `R_VT` **100 kΩ 1206**, `R_VB` 100 kΩ. **Block S.**
 **Block J**: `R_ID` **15,0 kΩ**, 0,60; `R_EN` to ground, `ENABLE` drives `EN/UVLO`.
 
 ---
@@ -173,14 +173,14 @@ three, because the ripple is 3,9 A rms. The tap is 4,6 A at the 11 V floor.
 
 ## 5 · Telemetry, island, connector — and the leak watch
 
-**Block T on the output**: `R_SHUNT` **200 mΩ**, `R_VT` **3× 422 kΩ 1206 in series**, `R_VB` 100 kΩ.
+**Block T on the output**: `R_SHUNT` **200 mΩ**, `R_VT` **3× 1 MΩ 1206 in series**, `R_VB` 100 kΩ.
 **Block S.** **Block J**: `R_ID` **18 kΩ**, 0,65.
 
 | ref | part / value | how | note |
 |---|---|---|---|
 | U_L | **`INA238`**, the second | code | `A1` to `VS`, `A0` from `A_SEL` → 0x44 / 0x45; `VBUS` only, shunt inputs tied, `ALERT` unwired — the host polls it |
-| R_A | **4× 2,21 MΩ 1206, 1 %, in series** | value | + to the tube's centre, 8,84 MΩ; 37 V a part at the rail, 163 V at a gap's sparkover |
-| R_B | **4× 1,96 MΩ 1206, 1 %, in series** | value | the centre to `VBUS`, 7,84 MΩ; with the pin's 1 MΩ the lower leg equals `R_A` and the centre sits at half the feed |
+| R_A | **9× 1 MΩ 1206, 1 %, in series**, Basic `C17927` | value | + to the tube's centre, 9 MΩ; 16 V a part at the rail, 72 V at a gap's sparkover |
+| R_B | **8× 1 MΩ 1206, 1 %, in series**, Basic `C17927` | value | the centre to `VBUS`, 8 MΩ; with the pin's 1 MΩ the lower leg equals `R_A` and the centre sits at half the feed |
 | C_L | **10 nF 50 V X7R 0603**, `VBUS` to `GND` | class | τ ≈ 9 ms |
 | C_L2 | **100 nF 50 V X7R 0603** at `VS` | class | |
 
@@ -225,7 +225,7 @@ and nothing lower, hands it out on its two terminals, passes the feed on to the 
 
 ## 4 · Telemetry, island, connector
 
-**Block T on the input**: `R_SHUNT` **50 mΩ**, `R_VT` **90,9 kΩ 1206**, `R_VB` 100 kΩ — all ceramic
+**Block T on the input**: `R_SHUNT` **50 mΩ**, `R_VT` **100 kΩ 1206**, `R_VB` 100 kΩ — all ceramic
 and solid, so the block is pressure-fit as it stands. **Block S**, ceramic. **Block J**: `R_ID`
 **24 kΩ**, 0,70; `R_EN` to the input.
 
@@ -277,7 +277,7 @@ the rectifier, the bank and `R_ID` differ.
 
 ## 4 · Telemetry, island, connector
 
-**Block T on the input**: `R_SHUNT` **200 mΩ**, `R_VT` **3× 422 kΩ 1206**, `R_VB` 100 kΩ. **Block S**
+**Block T on the input**: `R_SHUNT` **200 mΩ**, `R_VT` **3× 1 MΩ 1206**, `R_VB` 100 kΩ. **Block S**
 (ceramic on `-6`). **Block J**: `R_ID` **30 kΩ** (0,75) on `-6`, **39 kΩ** (0,80) on `-40`; `R_EN`
 to the input.
 
