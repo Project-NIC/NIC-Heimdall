@@ -11,10 +11,10 @@
 |---|---|
 | **`STM32H523VE`**, LQFP100 | the ModBus slave; reads the bridge over SPI, answers in grams |
 | **`ADS1235`** | the 24-bit weigh-scale converter — ratiometric reference, PGA 64, AC excitation sequenced by its own GPIO |
-| **`TPS7A4701`** at 5,0 V behind an **`LMR43610`** at 5,5 V | the one LDO — the converter's `AVDD` and the bridge's excitation, one node |
+| **`LP2985-5.0`** at 5,0 V behind an **`LMR43610`** at 5,5 V, into the house π filter | the one LDO — the converter's `AVDD` and the bridge's excitation, one node |
 | **`LMR43610`** at 3,3 V | the MOD's buck, 36 V in so it outlives the transil clamp: the MCU, the `THVD1450`, the converter's `DVDD` through the shielded 2,2 µH |
 | **`THVD1450`**, 2× 10 Ω, `SM712`, 2× `5.0SMDJ18A` | the line front and the basic set of every MOD (`../core/blocks/modbus.md`) |
-| **four MOSFETs — 2× `BSS84`, 2× `BSS138`** | the bridge that reverses the excitation between conversions — the converter's own four-wire circuit (*AC bridge excitation*) |
+| **four MOSFETs — 2× `BSS84`, 2× `2N7002`** | the bridge that reverses the excitation between conversions — the converter's own four-wire circuit (*AC bridge excitation*) |
 | `TMP117`/`STS35` on I2C1, an NTC on ADC1 | `TEMP1` beside the cell, `TEMP2` in the vessel — populations |
 | 2× **`DGPS2.5R-5.0`**, four poles | the arm — `A` · `B` · `GND` · `12 V`, the board's only terminal |
 | the load cell, soldered — `CELL` | the six-wire cell tail on the board's own pads |
@@ -480,8 +480,8 @@ carries no clock — a local 2²⁴ crystal, one RS-485 pair.
        ├── 12 V ─▶ 2× 5.0SMDJ18A ─▶ LMR43610 ─▶ 3,3 V ──┬─▶ the MCU and the THVD1450 — they do not care
        │                                             └─▶ 2,2 µH + 10 µF + 100 nF ─▶ ADS1235 DVDD — a converter's digital supply, no LDO
        │
-       └── 12 V ─▶ LMR43610 ─▶ 5,5 V ─▶ TPS7A4701 ─▶ 5,0 V ─┬─▶ ADS1235 AVDD
-                                                        └─▶ the excitation bridge — EXC+ / EXC−
+       └── 12 V ─▶ LMR43610 ─▶ 5,5 V ─▶ LP2985-5.0 ─▶ π, 2,2 µH ─▶ 5,0 V ─┬─▶ ADS1235 AVDD
+                                                                          └─▶ the excitation bridge — EXC+ / EXC−
 
    the head ── nothing on this board: the switched 24 V on Palatine's EXT body, asked for in STATUS bit 1 (The switch, above)
 
@@ -501,16 +501,31 @@ carries no clock — a local 2²⁴ crystal, one RS-485 pair.
 the converter's `DVDD` is a digital supply and takes the same rail through the station's shielded 2,2 µH,
 `SWPA252012S2R2MT`, into 10 µF + 100 nF — the position for a converter's digital supply
 (`../core/POWER.md`, *The filter parts*). The one inductor part
-on the board is the shielded 2,2 µH under the MCU's `VDDA`/`VREF+` (*Analogue and reference*). The 5,0 V sits on the 5,54 V — 0,5 V of headroom against a dropout under 0,1 V at this current.
+on the board is the shielded 2,2 µH under the MCU's `VDDA`/`VREF+` (*Analogue and reference*). The 5,0 V sits on the 5,54 V — 0,5 V of headroom against the `LP2985`'s dropout, at most 148 mV at 10 mA over −40…+125 °C and 145 mV at 50 mA (SNVS018AB), ~21 mA here.
 **Both bucks are the `LMR43610`**, one order code, because the 12 V node is behind the transils
 and they clamp at ~29 V: a 17 V part there dies on the first surge it was fitted to survive. The
 5,5 V branch runs in PFM — its ~20 mA cannot fill a 2 MHz cycle with any inductor the part
-allows — and the `TPS7A4701` behind it is the filter; the 3,3 V branch at ~150 mA runs CCM on 10 µH — the house cell at 2,08 MHz with the inductor of a rail that feeds a measurement (`../galvani/HARDWARE.md`, *The buck cell*).
+allows — and the `LP2985` behind it, with the π filter behind that, is the filter; the 3,3 V branch at ~150 mA runs CCM on 10 µH — the house cell at 2,08 MHz with the inductor of a rail that feeds a measurement (`../galvani/HARDWARE.md`, *The buck cell*).
 Ranging does not apply to a MOD; the ModBus arm carries no clock.
+
+**The LDO is a 20-cent part because the reading is a ratio.** `SIG` and `SENSE` stand on the
+same excitation, and the converter's reference is the bridge's own sensed voltage, so the
+excitation's value, drift and noise divide out — the sheet's own words for this circuit
+(SBAS824, 9.2). Noise on the excitation reaches `SIG` only through the bridge's imbalance,
+~10⁻⁴ at a few percent of a 2 mV/V cell: 30 µVrms is ~3 nV against 0,33 µV a gram on the 30 kg
+cell before the ratio cancels it. `AVDD` itself is rejected ≥ 90 dB (SBAS824, 6.5) and asks
+4,75–5,25 V, which the `LP2985`'s ±1 % holds. **The LDO is weak where the buck is loud** — 70 dB
+at 1 kHz, 40 dB at 1 MHz (SNVS018AB) — **so the house π filter stands behind it**: the LDO's
+output capacitor is the π's first 10 µF + 100 nF (1–200 µF, ESR under 1 Ω, in the sheet's
+window), then the shielded 2,2 µH, then 10 µF + 100 nF, ~70 dB at 2,1 MHz
+(`../core/POWER.md`, *The filter parts*); behind it the 5,0 V is one node to `AVDD` and the
+bridge, and the inductor's 0,17 Ω drops ~4 mV inside the ratio. `ON/OFF` is tied to `VIN`,
+1 µF at `VIN`, 10 nF on `BYPASS` for the 30 µVrms. The π's ~34 kHz ring is gone long before
+the 189 µs start-conversion delay ends (*AC bridge excitation*).
 
 ### AC bridge excitation
 
-**The bridge is excited AC by a bridge of four MOSFETs on the 5,0 V — the converter's own four-wire circuit (SBAS824, *AC-Bridge Excitation Mode*), unmodified.** Two halves, each a P-channel `BSS84` from the 5,0 V over an N-channel `BSS138` to ground, the two gates of a half tied together and driven straight by one of the ADS1235's two excitation outputs — `ACX1` on `AIN0`/`GPIO0` the one half, `ACX2` on `AIN1`/`GPIO1` the other, complementary — so one mid-point stands at 5,0 V while the other stands at ground, and both swap at every conversion. The outputs are referred to `AVDD`, so a 5 V gate turns the `BSS138` fully on and a 0 V gate the `BSS84`; **100 Ω in each gate lead**, and **1 µF + 100 nF on the 5,0 V at the bridge** for the instant both transistors of a half conduct while a gate passes its thresholds. The on-resistances — up to 10 Ω on the P side, a few ohms on the N side, 14 mA through them — drop ~0,2 V that the Kelvin-sensed reference measures and cancels, their drift with temperature with it; the two phases differ a little and the combination of the pair absorbs that too. The excitation polarity
+**The bridge is excited AC by a bridge of four MOSFETs on the 5,0 V — the converter's own four-wire circuit (SBAS824, *AC-Bridge Excitation Mode*), unmodified.** Two halves, each a P-channel `BSS84` from the 5,0 V over an N-channel `2N7002` to ground, the two gates of a half tied together and driven straight by one of the ADS1235's two excitation outputs — `ACX1` on `AIN0`/`GPIO0` the one half, `ACX2` on `AIN1`/`GPIO1` the other, complementary — so one mid-point stands at 5,0 V while the other stands at ground, and both swap at every conversion. The outputs are referred to `AVDD`, so a 5 V gate turns the `2N7002` fully on and a 0 V gate the `BSS84`; **100 Ω in each gate lead**, and **1 µF + 100 nF on the 5,0 V at the bridge** for the instant both transistors of a half conduct while a gate passes its thresholds. The on-resistances — up to 10 Ω on the P side (`LBSS84LT1G` at 5 V) and 7 Ω on the N side (the CJ `2N7002` at 5 V and 50 mA), 14 mA through them — drop at most ~0,24 V that the Kelvin-sensed reference measures and cancels, their drift with temperature with it; the two phases differ a little and the combination of the pair absorbs that too. The excitation polarity
 reverses between conversions and the pair is combined, which cancels **thermocouple EMFs** across
 the cell and its wiring (µV-class, a gram on a 30 kg span, weather-dependent), **the converter's
 own offset and its 1/f drift** — exactly where a once-a-minute measurement lives — and **parasitic
@@ -528,7 +543,7 @@ not settled before the conversion would put the error back.
 
 ### ADS1235 front-end (6-wire load cell, `CELL`)
 
-- **EXC+ / EXC−** — the two mid-points of the four-transistor bridge on the `TPS7A4701`'s 5,0 V (`AVDD`): one at 5,0 V and the other at ground, both swapped every conversion (*AC bridge excitation*).
+- **EXC+ / EXC−** — the two mid-points of the four-transistor bridge on the 5,0 V behind the `LP2985` and its π filter (`AVDD`): one at 5,0 V and the other at ground, both swapped every conversion (*AC bridge excitation*).
 - **SENSE+/−** → 100 Ω → **REFP0 / REFN0** (Kelvin ratiometric ref) — **10 nF C0G across the pair,
   1 nF C0G from each leg to ground**.
 - **SIG+/−** → 100 Ω → **AIN5 / AIN4** (anti-alias) — the same: **10 nF across, 1 nF each leg to
@@ -727,45 +742,51 @@ processor sees counts over SPI.
 
 ## Parts
 
-| part | qty | where |
-|---|---|---|
-| `STM32H523VE`, LQFP100 | 1 | the processor |
-| `SWXBEABVF0-16.777216` + 2× 12 pF C0G | 1 set | HSE |
-| 2× 1 µF 50 V 0805 + 2× 100 nF 0603 | 2 sets | `VCAP` |
-| 100 nF | one a supply pin | every supply pin of the processor and of every part |
-| 100 nF · 10 kΩ | 1 each | `NRST` · `BOOT0` to ground |
-| `ADS1235` | 1 | the converter, SPI1 |
-| 4,7 nF C0G · 1 µF | 1 each | `CAPP`/`CAPN` · `BYPASS` |
-| 1 µF + 100 nF | 2 sets | the converter's `AVDD` and `DVDD` |
-| 100 Ω | 4 | the cell's `SENSE±` and `SIG±` into their RC |
-| 10 nF C0G | 2 | across `REFP0`/`REFN0` and across `AIN5`/`AIN4` |
-| 1 nF C0G | 4 | each cell leg to ground |
-| `BSS84` · `BSS138` | 2 each | the excitation bridge |
-| 100 Ω | 4 | the bridge's gate leads |
-| 1 µF + 100 nF | 1 set | the 5,0 V at the bridge |
-| 33 Ω | 8 | `SCLK` · `DIN` · `DOUT` · `CS_ADC` · `START` · `RESET` · `PWDN` · `DRDY` |
-| `TPS7A4701` — `3P2V` and `0P4V` to ground for 5,0 V · 10 µF in · 10 µF + 100 nF out, at the pin · 10 nF `NR/SS` · 10 nF `FF` | 1 set | the 5,0 V |
-| `LMR43610R3RPER` | 2 | the 3,3 V and the 5,5 V |
-| `R_FBT` 28,0 k · 54,9 k, `R_FBB` 12,1 k, `C_FF` 22 pF C0G | 1 set each | the two dividers — 3,31 V and 5,54 V (`../galvani/HARDWARE.md`, *The buck cell*) |
-| 10 µH shielded, `I_SAT` ≥ 2,1 A · 4,7 µH shielded, `I_SAT` ≥ 3,5 A | 1 each | the 3,3 V's inductor · the 5,5 V's |
-| 3× 10 µF 50 V 1206 + 100 nF · 4,7 µF 50 V + 100 nF · 1 µF · 100 nF | 2 sets | each buck's `C_OUT` · `C_IN` · `VCC` · `BOOT` |
-| 100 kΩ | 1 | the 3,3 V buck's `PG` up, to PD14 |
-| `5.0SMDJ18A` | 2 | the 12 V input |
-| `THVD1450` · 2× 10 Ω · `SM712` | 1 set | the line front |
-| `TMP117` or `STS35` + 2× 4,7 kΩ | 1 | `TEMP1`, I2C1, by population |
-| NTC 10 kΩ + 10 kΩ | 1 | `TEMP2`, the divider switched from PE3 |
-| 2,2 µH `SWPA252012S2R2MT` | 2 | `VDDA`/`VREF+` · the converter's `DVDD` |
-| 10 µF + 100 nF | 4 sets | before and behind each inductor, π |
-| 4,7 kΩ | 1 | `PULSE` up |
-| 510 Ω | 2 | the `RUN` and `DIR` coupler LEDs |
-| 1 kΩ + LED | 1 | the status LED on PD4 |
-| `DGPS2.5R-5.0`, two-pole | 2 | `MB IN` |
-| 2,54 mm headers, 5 · 2 · 6 pins | 1 each | `PUMP` · the NTC · `SWD` |
-| six pads | 1 | `CELL` |
+**JLCPCB's Basic first** (the owner, 10 Nov 2026): a Basic or Preferred part wherever one does
+the job, with its order code; Basic and Preferred carry no loading fee. What stays Extended is the
+processor, the converter, the regulators, the line parts, the house inductors and buck divider,
+and the converter's C0G, which its sheet asks for on the inputs and across `CAPP`/`CAPN`
+(SBAS824, 11.1) — JLCPCB has no Basic C0G at these values.
+
+| part | qty | where | JLCPCB |
+|---|---|---|---|
+| `STM32H523VE`, LQFP100 | 1 | the processor | `STM32H523VET6` `C27338462` |
+| `SWXBEABVF0-16.777216` + 2× 12 pF C0G | 1 set | HSE | `C29780561` · 12 pF `C38523` Basic |
+| 2× 1 µF 50 V 0805 + 2× 100 nF 0603 | 2 sets | `VCAP` | `C28323` · `C14663` Basic |
+| 100 nF 50 V X7R 0603 | one a supply pin | every supply pin of the processor and of every part | `C14663` Basic |
+| 100 nF · 10 kΩ | 1 each | `NRST` · `BOOT0` to ground | `C14663` · `C25804` Basic |
+| `ADS1235` | 1 | the converter, SPI1 | `ADS1235IRHBR` `C2669975` |
+| 4,7 nF C0G · 1 µF | 1 each | `CAPP`/`CAPN` · `BYPASS` | `GRM1885C1H472JA01D` `C85980` · `C28323` Basic |
+| 1 µF + 100 nF | 2 sets | the converter's `AVDD` and `DVDD` | `C28323` · `C14663` Basic |
+| 100 Ω | 4 | the cell's `SENSE±` and `SIG±` into their RC | `C22775` Basic |
+| 10 nF C0G | 2 | across `REFP0`/`REFN0` and across `AIN5`/`AIN4` | `GRM1885C1H103JA01D` `C85973` |
+| 1 nF C0G | 4 | each cell leg to ground | `CC0603JRNPO9BN102` `C106246` |
+| `BSS84` · `2N7002` | 2 each | the excitation bridge | `LBSS84LT1G` `C8492` Preferred · `2N7002` `C8545` Basic |
+| 100 Ω | 4 | the bridge's gate leads | `C22775` Basic |
+| 1 µF + 100 nF | 1 set | the 5,0 V at the bridge | `C28323` · `C14663` Basic |
+| 33 Ω | 8 | `SCLK` · `DIN` · `DOUT` · `CS_ADC` · `START` · `RESET` · `PWDN` · `DRDY` | `C23140` Basic |
+| `LP2985IM5X-5.0` — `ON/OFF` to `VIN` · 1 µF at `VIN` · 10 nF `BYPASS`; its output capacitor is the π's first 10 µF + 100 nF | 1 set | the 5,0 V | `C5380652` · `C28323` · `C57112` Basic |
+| `LMR43610R3RPER` | 2 | the 3,3 V and the 5,5 V | `C20345531` |
+| `R_FBT` 28,0 k · 54,9 k, `R_FBB` 12,1 k, `C_FF` 22 pF C0G | 1 set each | the two dividers — 3,31 V and 5,54 V (`../galvani/HARDWARE.md`, *The buck cell*) | the house divider · 22 pF `C1653` Basic |
+| 10 µH shielded, `I_SAT` ≥ 2,1 A · 4,7 µH shielded, `I_SAT` ≥ 3,5 A | 1 each | the 3,3 V's inductor · the 5,5 V's | the house parts — no power inductor is Basic |
+| 3× 10 µF 50 V 1206 + 100 nF · 4,7 µF 50 V + 100 nF · 1 µF · 100 nF | 2 sets | each buck's `C_OUT` · `C_IN` · `VCC` · `BOOT` | `C13585` · `C29823` · `C28323` · `C14663` Basic |
+| 100 kΩ | 1 | the 3,3 V buck's `PG` up, to PD14 | `C25803` Basic |
+| `5.0SMDJ18A` | 2 | the 12 V input | `C284071` |
+| `THVD1450` · 2× 10 Ω · `SM712` | 1 set | the line front | `THVD1450` · `C22859` Basic · `PSM712-LF-T7` `C32677` Basic |
+| `TMP117` or `STS35` + 2× 4,7 kΩ | 1 | `TEMP1`, I2C1, by population | the sensor · `C23162` Basic |
+| NTC 10 kΩ + 10 kΩ | 1 | `TEMP2`, the divider switched from PE3 | the NTC on its lead · `C25804` Basic |
+| 2,2 µH `SWPA252012S2R2MT` | 3 | `VDDA`/`VREF+` · the converter's `DVDD` · the 5,0 V's π | `C23894` |
+| 10 µF 50 V X5R 1206 + 100 nF | 6 sets | before and behind each inductor, π | `C13585` · `C14663` Basic |
+| 4,7 kΩ | 1 | `PULSE` up | `C23162` Basic |
+| 510 Ω | 2 | the `RUN` and `DIR` coupler LEDs | `C23193` Basic |
+| 1 kΩ + LED | 1 | the status LED on PD4 | `C21190` · `C2286` Basic |
+| `DGPS2.5R-5.0`, two-pole | 2 | `MB IN` | the house terminal |
+| 2,54 mm headers, 5 · 2 · 6 pins | 1 each | `PUMP` · the NTC · `SWD` | fitted at build |
+| six pads | 1 | `CELL` | — |
 
 **The head's tail board**: 2× `DGPS2.5R-5.0` · 2× `5.0SMDJ28A` · 100 nF film ·
 `TPS7A1650` `DGN` with 10 µF 100 V 1210 and 10 µF 50 V 1206 · 2× `TLP2745` · `TLP2361` · 3× 100 nF ·
-1,2 kΩ · 2,54 mm headers, 3 and 5 pins. **A head with two wires**: 2× `5KP28A` and a 100 nF film
+1,2 kΩ (`C22765` Basic) · 2,54 mm headers, 3 and 5 pins. **A head with two wires**: 2× `5KP28A` and a 100 nF film
 capacitor on its lugs, and the glued magnet with the `55100-3H` where a count is wanted.
 
 ## Layout / EMC
@@ -774,7 +795,7 @@ capacitor on its lugs, and the glued magnet with the `55100-3H` where a count is
   **Star ground.** The two rail bucks, the transceiver and the basic set sit at the far edge from
   the bridge input, with the arm's terminal.
 - **Ratiometric routing:** tight EXC/SENSE pairs, guard SIG±.
-- **The TPS7A4701** is the bridge's reference — keep it out of dropout.
+- **The `LP2985`, its π filter and the bridge** sit together on the quiet island; the 5,0 V is one node from the π's last capacitor to `AVDD` and to the bridge.
 - **Clock pin** (HSE) short, away from switching nodes.
 - **Conformal coat** for the humid box — class SR or AR to IPC-CC-830 / IEC 61086, neutral cure
   (nothing acid released against the copper and the cell's wiring), the arm's terminal and the

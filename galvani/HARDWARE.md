@@ -972,7 +972,7 @@ regulators, so it takes the buck's rail through an inductor and no LDO.
 
 **The 12 V is the island's own output** — regulated on a fed run, the battery itself inside the
 enclosure (10–20 V, off the wire) — and a board that wants a true analogue 5 V makes it
-on its own board from the 12 V: an `LMR43610` to 5,5 V, then its `TPS7A4701` (*The buck cell*).
+on its own board from the 12 V: an `LMR43610` to 5,5 V, then its 5 V LDO (*The buck cell*).
 Digital rides a buck and never an LDO on purpose: an LDO straight from 12 V would burn (12 −
 3,3) × 0,3 A ≈ 2,6 W against a node total of ~1,1 W; the buck costs ~0,06 W.
 
@@ -1243,7 +1243,7 @@ unit whose whole board fits it — Quake — and both rails of every H7A3 board*
 is inside the 16,2 V corner; at a unit, on the unit power board's regulated 12 V, whose one
 `5.0SMDJ12A` breaks down at 13,3–14,7 V when the load falls below the cell's floor. **It stands on no MOD**: a MOD's 12 V is behind the basic set's
 transils, which clamp at ~29 V, so every buck there is the `LMR43610` — Ceres, Sakura and Babel to
-3,3 V, Pluvius twice, 3,3 V and the 5,5 V that feeds its `TPS7A4701`.
+3,3 V, Pluvius twice, 3,3 V and the 5,5 V that feeds its `LP2985`.
 3–17 V in (the 10–15 V rail with margin), **`V_OUT` 0,6–5,5 V** by external divider against 0,6 V,
 2,5 or 1 MHz and FPWM or auto by one resistor on `MODE/S-CONF`, **40 ns minimum on-time**,
 **1,1–1,7 A high-side current limit**, 4 µA quiescent, `PG`, SOT-5X3 (SLVSGE2 and the `TPS629206`

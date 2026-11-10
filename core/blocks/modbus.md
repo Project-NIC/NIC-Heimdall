@@ -81,16 +81,15 @@ THE LEAF, AND WHO IS ALLOWED TO CARRY ONE
 station or the unit board's 12 V terminal on a fed run, on four wires: `A`, `B`, 12 V, GND — and makes
 its own rails on board.**
 **Every MOD carries the basic set, and only the basic set:** on the pair its own `THVD1450`,
-2× 10 Ω and an `SM712`; on the 12 V input **2× `5.0SMDJ18A`** and a buck that outlives their
+2× 10 Ω and an `SM712` (JLCPCB Basic: ProTek's `PSM712-LF-T7`, `C32677`); on the 12 V input **2× `5.0SMDJ18A`** and a buck that outlives their
 clamp — **the `LMR43610`, 36 V in**, so a transil firing on the input does not take the rail with
 it. No tube and no choke on a MOD: the barrier and the ladder stay on the arm's `G-12-S`, and a
 MOD on a 48 V or 300 V unit board keeps the two transils anyway — they cost nothing and the
 input is the same input. An all-digital MOD's input stage is therefore **that buck at 3,3 V** —
 Babel is that board, and so are Ceres and Sakura, whose front takes the same 3,3 V behind
 its own inductors (`../../ceres/HARDWARE.md`). A MOD with a clean analog rail adds a second buck and the LDOs it
-needs — Pluvius: a second `LMR43610` to 5,5 V and a `TPS7A4701` at 5,0 V behind it for the converter's
-analog side — two of the family's three LDOs, the same parts on every board that wants a 5 V or a
-clean 3,3 V.
+needs — Pluvius: a second `LMR43610` to 5,5 V and an `LP2985-5.0` at 5,0 V behind it, into the house π
+filter, for the converter's analog side.
 **The feed is the arm's isolated 12 V** — `G-12-S`'s at the station, the unit power board's
 terminal on a fed run — and it follows the battery through the barrier's ratio (10–20 V on the
 pin): a sensor is chosen for that window, and a COTS part that cannot run there is not the part —

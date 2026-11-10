@@ -1766,14 +1766,14 @@ read whenever the processor runs.
 | U10 | **`REF6041IDGKR`** — the converter's 4,096 V reference, VSSOP-8, on the `AVDD1` LDO; 1 µF on `FILT`, 22 µF on the output, 100 nF at `VIN` (§4) | Extended | 1 |
 | U14 | **STM32H7A3IIT6** — the node MCU, same PCB | Extended | 1 |
 | U15 | **`APS25608N-OBR-BD`** — the OCTOSPI PSRAM, a position: fitted for the learned classifier, open for the rule set alone; `NCS` 10 kΩ to the 1,8 V, 33 Ω at `CLK`, 1 µF + 10 µF (§8) | Extended | 0–1 |
-| U11..U13 | **TPS7A4701** — 5,0 V: `AVDD1` (max-speed mode needs 4,5–5,5 V) and the front-end rails, fed from the 5,3 V (§6) | Basic/Extended | 3 |
+| U11..U13 | **TPS7A4701** — 5,0 V: `AVDD1` (max-speed mode needs 4,5–5,5 V) and the front-end rails, fed from the 5,3 V (§6) | Extended `C90084` | 3 |
 | U23 | **`TPS629206`** — 12 V → 5,3 V for the three 5 V LDOs, forced PWM at 2,5 MHz (§6) | | 1 |
 | U22 | **`TPS629206`** — 12 V → 1,8 V for the MCU, never switched, forced PWM at 1 MHz (§6) | | 1 |
 | U24 | **`TPS629206`** — 12 V → 3,3 V, the interface rail, forced PWM at 2,5 MHz (§6) | | 1 |
-| D1..D3 | **BAV199** — the coil clamp, two diodes anti-parallel across each rod's pair, on the amplifier side of `Rs1` (§0.2) | Basic | 3 |
+| D1..D3 | **BAV199** — the coil clamp, two diodes anti-parallel across each rod's pair, on the amplifier side of `Rs1` (§0.2) | Extended — `LBAV199LT1G` `C12740` | 3 |
 | R/C | Rf/Cf (with the 10 Ω in each `Cf1` leg)/`R1`/`R2`/`C1`/`C2`/Rg/Cin/Rs/decoupling per §0.2, §2, §4 | Basic (jellybean) | — |
-| L1 | **`SWPA252012S2R2MT`** — shielded 2,2 µH, the station's buck-noise inductor: the MCU's `VDDA`/`VREF+` off the 1,8 V, into 10 µF + 100 nF (§6, §7) | Basic `C23894` | 1 |
-| L2..L5 | **`SWPA252012S2R2MT`** — the station's shielded 2,2 µH: the converter's `IOVDD` and `AVDD2`, and the channel split behind the two 5,0 V front-end LDOs (§6) | Basic `C23894` | 4 |
+| L1 | **`SWPA252012S2R2MT`** — shielded 2,2 µH, the station's buck-noise inductor: the MCU's `VDDA`/`VREF+` off the 1,8 V, into 10 µF + 100 nF (§6, §7) | Extended `C23894` | 1 |
+| L2..L5 | **`SWPA252012S2R2MT`** — the station's shielded 2,2 µH: the converter's `IOVDD` and `AVDD2`, and the channel split behind the two 5,0 V front-end LDOs (§6) | Extended `C23894` | 4 |
 | FB | **`GZ2012D301TF`** — the 0805 bead, 300 Ω at 100 MHz, behind the inductors of `IOVDD` and `AVDD2`, for what reaches past the inductor's 69 MHz (§6) | | 2 |
 | U25, U26 | **`SN74AXC8T245`** — the direction-set translators, 1,8 V ↔ 3,3 V, `OE#` to ground: `U25` inbound, `DIR` to ground; `U26` outbound, `DIR` to the 1,8 V (§8, *The Galvani sockets*) | Extended | 2 |
 | U27 | **`PCA9306`** — the I²C to `PWR IN`, `VREF1` on the 1,8 V, `VREF2` and `EN` on 200 kΩ to the 3,3 V (§8) | Extended | 1 |

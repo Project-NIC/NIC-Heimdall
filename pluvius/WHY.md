@@ -179,3 +179,19 @@ The block was `RATE` alone, 4 B, while Palatine's `PWR EXT` rule read `STATUS` b
 that rides the poll must be in the poll**, and the house map makes the run contiguous: `RATE` at
 `0x0000`, `HOUR` at `0x0001`, `STATUS` at `0x0002`, read as one block of 8 B, the shape Ceres's
 already has. The archive gains the hour and the status word — `FROZEN`, the faults — for 4 B.
+
+## The `TPS7A4701` at 5,0 V — superseded by an `LP2985-5.0` and the house π filter
+
+A 1 A, 4 µVrms regulator fed ~21 mA, under a reading that is a ratio to its own output: the
+converter's reference is the bridge's sensed excitation, so the regulator's value, drift and
+noise divide out (SBAS824, 9.2), and the board's own text already said the front need not be a
+precision purchase. JLCPCB on 10 Nov 2026: `TPS7A4701RGWR` `C90084` $11,56 a piece, $9,00 at the
+top tier; `LP2985IM5X-5.0` `C5380652` $0,18 and $0,09 — the part NIC-Crazy_Ivan's modules took
+for the same reason on 31 Oct 2026. The LDO's weak megahertz is the house π filter's, behind it,
+for the price of one 2,2 µH and one 10 µF + 100 nF more.
+
+## `BSS138` in the excitation bridge — superseded by the Basic `2N7002`
+
+The N side's on-resistance is inside the Kelvin-sensed reference and cancels; the CJ `2N7002`
+(JLCPCB Basic `C8545`) states 7 Ω at most at 5 V and 50 mA, 0,1 V at the bridge's 14 mA. No
+`BSS138` is Basic; the `BSS84` is taken as `LBSS84LT1G`, Preferred (`C8492`), 10 Ω at 5 V.
