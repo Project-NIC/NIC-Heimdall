@@ -69,7 +69,7 @@ in-box cable instead — the NodBus socket to a card's port, the time port to Kr
 | 3 | `TXD` | PB6, `USART1_TX` / `TIM4_CH1` |
 | 4 | `RXD` | PB7, `USART1_RX` / `TIM4_CH2`, and PB3, `TIM2_CH2` capture, on the same net |
 | 5 | `ID` | PC0 `ID_D`, ADC, **10 kΩ 1 % to `VREF+`** |
-| 6 | `ID_RET` | **3,32 kΩ to ground** — Sputnik, 0,25, landing on the card's `ID` across a crossed cable |
+| 6 | `ID_RET` | **3,3 kΩ to ground** — Sputnik, 0,25, landing on the card's `ID` across a crossed cable |
 | 7 | `RXD_ECHO` | PD9, `USART3_RX` — the echo check |
 | 8 | `DE` | PE2, GPIO |
 | 9 | `B_DIR` | **tied to ground** — this end listens on channel B |
@@ -100,7 +100,7 @@ and Kronos the source end:
 | 3 | `TXD` | PC6 `TXD_T`, `USART6_TX` / `TIM3_CH1` — the lean `RMC`/`GGA` stream and the ranging return |
 | 4 | `RXD` | PC7 `RXD_T`, `USART6_RX` / `TIM3_CH2` — Kronos's heartbeat and its ranging edge |
 | 5 | `ID` | PC2 `ID_T`, ADC, **10 kΩ 1 % to `VREF+`**; reads Kronos's `GNSS`, 0,35, across a crossed cable |
-| 6 | `ID_RET` | **5,36 kΩ to ground** — `GNSS`, 0,35, the interface this port presents |
+| 6 | `ID_RET` | **5,6 kΩ to ground** — `GNSS`, 0,35, the interface this port presents |
 | 7 | `RXD_ECHO` | not connected — the time stream is point-to-point and not echo-checked |
 | 8 | `DE` | PE5 `DE_T`, GPIO — held low until Kronos's heartbeat arrives |
 | 9 | `B_DIR` | **tied to 3,3 V** — this end drives channel B |

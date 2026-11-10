@@ -77,7 +77,7 @@ Galvani board, which host across an in-box cable, and an empty socket are all di
 with nothing energised (`../galvani/README.md`, *The connectors*). What follows the run is which
 boards are fitted: the **485** communication board on copper, **10 km** or **2 Mb/s** on glass,
 a **power board** beside it, or the **crossed cable** and no boards at all. The card's own
-`ID_RET` on its up port carries its code, **0,15 — 1,78 kΩ**, for the host across such a cable;
+`ID_RET` on its up port carries its code, **0,15 — 1,8 kΩ**, for the host across such a cable;
 its down ports carry none.
 
 ## The GPIO budget — LQFP100 holds it
@@ -379,7 +379,7 @@ once however many sockets share it; every `ALERT` **100 kΩ to ground, high = al
 | 3 | `TXD` | PA0, `UART4_TX` / `TIM5_CH1` |
 | 4 | `RXD` | PA1, `UART4_RX` / `TIM5_CH2` |
 | 5 | `ID` | PB0, `ADC12_INP9`, 10 kΩ 1 % to `VREF+` |
-| 6 | `ID_RET` | **1,78 kΩ 1 % to ground — 0,15, a card** |
+| 6 | `ID_RET` | **1,8 kΩ 1 % to ground — 0,15, a card** |
 | 7 | `RXD_ECHO` | PD9, `USART3_RX` |
 | 8 | `DE` | PE15, GPIO |
 | 9 | `B_DIR` | **tied to ground** — this end listens on channel B |
@@ -753,7 +753,7 @@ microsecond.
 | 10 Ω, 1 % | 4 | the time bus line block, 2 per pair |
 | 80,6 Ω, 1 % + jumper | 2 | the termination, fitted on the last node of the ribbon |
 | 33 Ω | 4 | `CLK/PPS` in series, the down ports |
-| 1,78 kΩ, 1 % | 1 | `ID_RET` on the up port — 0,15, a card |
+| 1,8 kΩ, 1 % | 1 | `ID_RET` on the up port — 0,15, a card |
 | 10 kΩ, 1 % | 10 | the `ID` pull-ups to `VREF+` |
 | 10 kΩ | 2 | the up port's `LINE_EN` to 3,3 V · `BOOT0` to ground |
 | 4,7 kΩ | 6 | I3C1, I2C3, I3C2 — one pair each |

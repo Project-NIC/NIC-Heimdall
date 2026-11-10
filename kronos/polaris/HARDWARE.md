@@ -84,7 +84,7 @@ fitted.
 |---|---|
 | connector | `BX2.54-2xNA`, 12-pin 2×6 box header; `FC-12P` on the ribbon |
 | module row | 5-pin 2,54 mm socket or pads: `VCC · GND · TX · RX · PPS`, in the order of the bought board |
-| `R_ID` | **5,36 kΩ**, 1 %, 0603, pin 5 to ground |
+| `R_ID` | **5,6 kΩ**, 1 %, 0603, pin 5 to ground |
 | `R_PPS` | **33 Ω**, 1 %, 0603, the module's `PPS` pin to pin 1 — the channel's series resistor at its source |
 
 **The ribbon** is a 12-way with plugs at both ends, conductors 1–5 and 12 wired and the rest cut
@@ -103,7 +103,7 @@ back; Kronos's end sits in its `TIME IN 1` socket.
 | **2** | `GND` | the return; the module's `GND` |
 | **3** | `TXD` | host → module: onto the module's `RX` — Kronos's configuration dialogue, 3,3 V logic |
 | **4** | `RXD` | module → host: from the module's `TX` — the NMEA stream, 3,3 V logic |
-| **5** | `ID` | **`GNSS`, `R_ID` 5,36 kΩ to ground — 0,35**, the same code Kronos presents on `ID_RET` at the other end. It names the **interface**, not this carrier, so Sputnik's clock run and a Pip's `TIME OUT` carry it too. Presence is still proven by the NMEA arriving; the resistor only says what kind of port this is |
+| **5** | `ID` | **`GNSS`, `R_ID` 5,6 kΩ to ground — 0,35**, the same code Kronos presents on `ID_RET` at the other end. It names the **interface**, not this carrier, so Sputnik's clock run and a Pip's `TIME OUT` carry it too. Presence is still proven by the NMEA arriving; the resistor only says what kind of port this is |
 | 6 | `ID_RET` | unpopulated — a host's pin, and this carrier is not a host |
 | 7 | `RXD_ECHO` | unpopulated — no barrier, no echo receiver |
 | 8 | `DE` | unpopulated — no driver to gate |

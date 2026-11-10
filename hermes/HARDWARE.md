@@ -51,7 +51,7 @@ assigned or listed free — nothing is left to guess.*
 | clock | **CSI** or **HSI ÷ 8** | none | 4 or 8 MHz, no crystal, no PLL | |
 | debug | **SWD** | PA13 · PA14 | | no JTAG, no trace |
 
-The `ID` resistor, **90,9 kΩ to ground**, sits on the body's `ID` pin and no processor pin reads it; the Mayak does, against its 10 kΩ, as 0,90.
+The `ID` resistor, **91 kΩ to ground**, sits on the body's `ID` pin and no processor pin reads it; the Mayak does, against its 10 kΩ, as 0,90.
 
 ### Pins
 
@@ -238,7 +238,7 @@ not a power board: `ENABLE` and `A_SEL` land on nothing, and its I²C address is
 |---|---|---|
 | 1 | `ENABLE` | not connected — the link is never gated |
 | 2 | `GND` | ground |
-| 3 | `ID` | **90,9 kΩ to ground** — 0,90 against the Mayak's 10 kΩ 1 % |
+| 3 | `ID` | **91 kΩ to ground** — 0,90 against the Mayak's 10 kΩ 1 % |
 | 4 | `SDA` | PB9, `I2C1_SDA` slave — no pull-up on this board, the Mayak's 4,7 kΩ holds the bus |
 | 5 | `A_SEL` | not connected — the Mayak straps it to ground; nothing here reads it |
 | 6 | `SCL` | PB8, `I2C1_SCL` slave |
@@ -265,7 +265,7 @@ not a power board: `ENABLE` and `A_SEL` land on nothing, and its I²C address is
 | `THVD1450` · 2× 10 Ω · `SM712` | 1 set | the 485 face |
 | `TCAN334` · 2× 10 Ω · `PESD2CAN` · 100 Ω + a 2-pin jumper | 1 set | the CAN face and its termination |
 | `PCA9306` + 2× 4,7 kΩ | 1 | the I²C out, the pull-ups on the low side |
-| 90,9 kΩ | 1 | `ID`, 0,90 |
+| 91 kΩ | 1 | `ID`, 0,90 |
 | 1 kΩ + LED | 1 | the status LED on PD4 |
 | `DGPS2.5R-5.0`, two-pole | 4 | the 485 and the CAN terminals |
 | 2,54 mm pin headers, 1×3 · 1×4 | 1 each | the UART · the I²C out |

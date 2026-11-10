@@ -363,35 +363,37 @@ crossed cable runs from `… OUT` straight into `… IN`, no board between.
 
 **A board says what it is before it is powered.** One resistor from `ID` to ground on the board,
 read once at bring-up on an ADC pin of the host against 10 kΩ (1 %) to the host's analogue rail —
-3,3 V or 1,8 V, the table is in ratios. Twenty windows of 0,05 with margins of ±0,025; the E96 grid
-lands every ratio within 0,006 of nominal and 1 % parts move it by ±0,005 at most. It is the one
+3,3 V or 1,8 V, the table is in ratios. Twenty windows of 0,05 with margins of ±0,025; JLCPCB's Basic
+and Preferred values land every ratio within 0,009 of nominal and 1 % parts move it by ±0,005 at most. It is the one
 analogue read in the contract, and it is passive on purpose: a driven pin would need the far board
 alive, and then a dead board and an empty socket read the same.
 
-| reads | resistor, E96 | what is on the other end | channel B | ranging |
+| reads | resistor, JLCPCB Basic or Preferred | what is on the other end | channel B | ranging |
 |---|---|---|---|---|
 | **0,00** | a short | **a fault** — no board and no host takes this code | — | — |
-| 0,05 | 523 Ω | **free, kept free** — margin beside the short | — | — |
-| **0,10** | 1,10 kΩ | **the Mayak** — across an in-box cable | the wire | — |
-| **0,15** | 1,78 kΩ | **a card**, Bifrost or Argus — one code for both; the card says which it is in the announce that follows | the wire | yes |
-| **0,20** | 2,49 kΩ | **Palatine** — across an in-box cable | the wire | yes |
-| **0,25** | 3,32 kΩ | **Sputnik** — across an in-box cable | the wire | yes |
-| **0,30** | 4,32 kΩ | **`G-24-S`** — the switched 24 V | — | — |
-| **0,35** | 5,36 kΩ | **`GNSS` — the interface, on BOTH ends of a time link**: every port that carries the NMEA time stream presents it, Kronos on `ID_RET` at its receiver sockets, and whatever hangs there on its own `ID` | PPS, inward | yes |
-| **0,40** | 6,65 kΩ | **`G-I-N-025`** — 485, two pairs, full duplex | 2²² | yes |
-| **0,45** | 8,25 kΩ | **`G-I-M-005`** — 485, one pair, half duplex | — | none — a polled arm is not ranged |
+| 0,05 | 510 Ω | **free, kept free** — margin beside the short | — | — |
+| **0,10** | 1,1 kΩ | **the Mayak** — across an in-box cable | the wire | — |
+| **0,15** | 1,8 kΩ | **a card**, Bifrost or Argus — one code for both; the card says which it is in the announce that follows | the wire | yes |
+| **0,20** | 2,4 kΩ | **Palatine** — across an in-box cable | the wire | yes |
+| **0,25** | 3,3 kΩ | **Sputnik** — across an in-box cable | the wire | yes |
+| **0,30** | 4,3 kΩ | **`G-24-S`** — the switched 24 V | — | — |
+| **0,35** | 5,6 kΩ | **`GNSS` — the interface, on BOTH ends of a time link**: every port that carries the NMEA time stream presents it, Kronos on `ID_RET` at its receiver sockets, and whatever hangs there on its own `ID` | PPS, inward | yes |
+| **0,40** | 6,8 kΩ | **`G-I-N-025`** — 485, two pairs, full duplex | 2²² | yes |
+| **0,45** | 8,2 kΩ | **`G-I-M-005`** — 485, one pair, half duplex | — | none — a polled arm is not ranged |
 | **0,50** | 10,0 kΩ | **`G-O-10-10`** — glass, 10 Mb/s | 2²² | yes |
-| **0,55** | 12,1 kΩ | **`G-O-2-100`** — glass, 2 Mb/s | 2¹⁹ | yes |
-| **0,60** | 15,0 kΩ | **`G-48-S`** | — | — |
-| **0,65** | 18,7 kΩ | **`G-300-S`** | — | — |
-| **0,70** | 23,2 kΩ | **`G-48-U`** | — | — |
-| **0,75** | 30,1 kΩ | **`G-300-U-6`** | — | — |
-| **0,80** | 40,2 kΩ | **`G-300-U-40`** | — | — |
-| **0,85** | 56,2 kΩ | **`G-12-S`** | — | — |
-| **0,90** | 90,9 kΩ | **Hermes** — on the Mayak's power connector | — | — |
-| 0,95 | 191 kΩ | **free, kept free** — margin beside the open | — | — |
+| **0,55** | 12 kΩ | **`G-O-2-100`** — glass, 2 Mb/s | 2¹⁹ | yes |
+| **0,60** | 15 kΩ | **`G-48-S`** | — | — |
+| **0,65** | 18 kΩ | **`G-300-S`** | — | — |
+| **0,70** | 24 kΩ | **`G-48-U`** | — | — |
+| **0,75** | 30 kΩ | **`G-300-U-6`** | — | — |
+| **0,80** | 39 kΩ | **`G-300-U-40`** | — | — |
+| **0,85** | 56 kΩ | **`G-12-S`** | — | — |
+| **0,90** | 91 kΩ | **Hermes** — on the Mayak's power connector | — | — |
+| 0,95 | 200 kΩ | **free, kept free** — margin beside the open | — | — |
 | **1,00** | open | **nothing plugged in** | — | — |
 | anything else | outside every window | **a fault**, reported as one | — | — |
+
+The order codes, 1 % 0603: 510 Ω `C23193` · 1,1 kΩ `C22764` · 1,8 kΩ `C4177` · 2,4 kΩ `C22940` · 3,3 kΩ `C22978` · 4,3 kΩ `C23159` · 5,6 kΩ `C23189` · 6,8 kΩ `C23212` · 8,2 kΩ `C25981` · 10 kΩ `C25804` · 12 kΩ `C22790` · 15 kΩ `C22809` · 18 kΩ `C25810` · 24 kΩ `C23352` · 30 kΩ `C22984` · 39 kΩ `C23153` · 56 kΩ `C23206` · 91 kΩ `C23265` · 200 kΩ `C25811`.
 
 **An `ID` names the interface, never the partner — and the host asks anyway.** Below 0,40 is a
 host across an in-box cable: no feed to gate, no board to enable. 0,40 to 0,55 is a
@@ -405,7 +407,7 @@ narrows it to one thing: a resistor says something is plugged in, only an answer
 is alive. One code serves every unit on a time link, including one somebody invents later.
 
 **`ID_RET` is a host's own number.** Every host carries the resistor of its code from `ID_RET` to
-ground — the Mayak's 1,10 kΩ like anyone else's, because 0,00 is the fault code — and the crossed
+ground — the Mayak's 1,1 kΩ like anyone else's, because 0,00 is the fault code — and the crossed
 cable lands it on the other host's `ID`. A Galvani board carries a resistor on `ID` only;
 identification off a board is one-way, outward, because a board has no processor to read with.
 A host that only ever stands behind a Galvani board carries no number and never meets the cable.
@@ -766,7 +768,7 @@ Makes the 48 V feed for one run from the 12 V it taps off the wire.
 - **in:** 12 V on its terminals; 3,3 V and `ENABLE` off the power connector · **out:** 48 V on a 2-core cable; `SDA · SCL · ALERT` back
 - **rating:** **~26 W delivered** at the pack's working corner; 28,4 W in. The ceiling is the winding's 15 A of saturation: in boundary mode the inductance cancels and only the reflected voltage moves the watts per ampere, and this is the one 12 V → 48 V winding in the catalogue. 41 kHz at full load; no burst mode, so a minimum load of 0,65 W
 - **parts:** `5.0SMDJ14A` across the 12 V input · `LT3748` · `ISC165N15NM6` · `750310988` · `V5N22-M3` · `US3M`, the blocking diode · `INA238` · `ISO1642` · the island `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ54A` · `2036-07-SM` · 2× 22 µH chokes · the EMI choke and the bulk
-- **`ID`:** 15,0 kΩ, 0,60
+- **`ID`:** 15 kΩ, 0,60
 
 ### `G-300-S` — power, source, 300 V
 
@@ -786,7 +788,7 @@ are a different drawing.
 - **in:** 12 V on its terminals — 4,2 A at 12 V, 4,6 A at the 11 V floor; 3,3 V and `ENABLE` off the power connector · **out:** 300 V on a 2-core cable; `SDA · SCL · ALERT` back
 - **rating:** **~47 W delivered, one number**, 50,6 W in — the same board at the station and at a remote Argus. The shunt allows ~66 W and the `INA238` threshold holds the 47; 145 kHz at full load, no burst mode, so a minimum load of 0,63 W. The winding's 1000 V AC insulation is accepted for the concept; a production run orders a custom-insulated winding
 - **parts:** `5.0SMDJ14A` across the 12 V input · `LT3748` · `ISC165N15NM6` · `750310349` · 2× `US3M`, the rectifier and the blocking diode · 2× `INA238` · `ISO1642` · the island `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ350A` · `2036-30-SM` · 2× 22 µH chokes · the EMI choke and the bulk
-- **`ID`:** 18,7 kΩ, 0,65
+- **`ID`:** 18 kΩ, 0,65
 
 ### `G-48-U` — power, unit, 48 V
 
@@ -807,7 +809,7 @@ board's ladder, to the next unit on a chained segment.
 - **rating:** **~25 W** at 12 V; what arrives is capped by the source cell's ~26 W, not by this board, and the shunt allows ~50 W. 455 kHz at full load, clamped at 1,05 MHz below about 10 W; minimum load 0,24 W. Nothing to switch: the unit makes its own rails from the 12 V
 - **a pressure board** — ceramic and solid parts only
 - **parts:** `LT3748` · `ISC165N15NM6` · `750311607` · `V10P10-M3` · `INA238` · `ISO1642` · the island `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ54A` · `5.0SMDJ12A` on the 12 V output · the ceramic bulk
-- **`ID`:** 23,2 kΩ, 0,70
+- **`ID`:** 24 kΩ, 0,70
 
 ### `G-300-U-6` · `G-300-U-40` — power, unit, 300 V
 
@@ -835,7 +837,7 @@ differ in the winding, in `R_SNS` and in the rectifier.
 | `f` at full load | 140 kHz, the part's clamp — discontinuous | 91 kHz |
 | on the FET's drain | 472 V of its 650; **550 V on its RCD clamp** — `US3M`, 100 nF 1 kV, 2× 38,3 kΩ — fitted, for the winding's 34 µH of leakage | 402 V of its 650 |
 | **the bulk bank** | **5× 1 µF 500 V X7R 2220** — ceramic, **a pressure board** | **4× 1 µF 630 V polypropylene film + 100 nF 1 kV X7R 1812** — **land only**; a pressure build takes `G-300-U-6`'s bank and recalculates |
-| **`ID`** | **30,1 kΩ**, 0,75 | **40,2 kΩ**, 0,80 — the one place the two boards differ outside the power train, and they must, because a host may not ask a 6 W board for 40 W |
+| **`ID`** | **30 kΩ**, 0,75 | **39 kΩ**, 0,80 — the one place the two boards differ outside the power train, and they must, because a host may not ask a 6 W board for 40 W |
 
 - **in:** 300 V through the gland · **out:** 12 V on the two terminals; `SDA · SCL · ALERT` on the connector
 - **standing loss:** none worth the name — `LT8316` draws 12 µA on `V_IN` off and 75 µA on `BIAS` in burst, milliwatts at 300 V, and the island its 1,5 mA on the host's 3,3 V; it bursts down to 3,5 kHz, so the minimum load is ~1 % of the rating
@@ -863,7 +865,7 @@ wants watts is a feed at 48 V or 300 V, never this board at a lower one.
 - **in:** 12 V off the wire on two terminals; `ENABLE` and 3,3 V off the power connector · **out:** ~12 V on eight poles, `DGPS2.5R-5.0` × 4 — four positions, 4× + and 4× −, beside `G-I-M-005`'s four positions of the pair
 - **rating:** **0,4 A**, about 5 W. `R_LIM` 34,8 kΩ → ~0,7 A (0,5–0,9 A over the part's spread): 0,4 A out is ~0,45 A through the switches, and a 0,5 A limit would droop the rated load on a low part. **The overload is the `INA238`'s, not the OCP's** — the part's OCP shortens pulses rather than switching off and would hold an overload until thermal shutdown, so `ALERT` past 0,4 A takes `ENABLE` away; the OCP is left the start into a sensor's input capacitors and a short
 - **parts:** `5.0SMDJ14A` across the 12 V input · `SN6507` · `750319691` · 2× `PMEG10020ELR` · `INA238` · `ISO1642` · the island `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ18A` · `2036-07-SM` · the chokes, the EMI choke and the bulk
-- **`ID`:** 56,2 kΩ, 0,85
+- **`ID`:** 56 kΩ, 0,85
 
 ### `G-24-S` — power, source, 24 V, switched
 
@@ -886,7 +888,7 @@ cell stands off with the `LT3748`'s `EN/UVLO` held low and the board draws nothi
 - **rating:** **~33 W delivered** at the pack's working corner — `I_pk` 9,0 A at 10 mΩ, 112 kHz at full load. What the port declares is the load's, a programmed `INA238` threshold: **over** the limit is a stalled load, **under** the minimum a load running dry or a cut cable — two thresholds the host programs. The current limit is the cell's own `R_SENSE`; a stalled motor is delivered into at the limit and never fused
 - **the ladder:** the source end's, like `G-12-S` — the three-electrode tube, the 22 µH chokes and 2× `5.0SMDJ28A` on the 24 V. What stands at the load's end is the load's own affair: a bare motor takes two leaded transils on its lugs, a controlled one a small board of its own
 - **parts:** `5.0SMDJ14A` across the 12 V input · `LT3748` · `ISC165N15NM6` · `750311592` · `V10P10-M3` · `US3M`, the blocking diode · `INA238` · `ISO1642` · the island `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ28A` · `2036-07-SM` · 2× 22 µH chokes · the bulk
-- **`ID`:** 4,32 kΩ, 0,30
+- **`ID`:** 4,3 kΩ, 0,30
 
 ### `G-I-N-025` — communication, 485 on copper, NodBus
 
@@ -913,7 +915,7 @@ and `LINE_EN` strapped or driven there — and a source end fits the tube and it
 - **draw, on the host's 3,3 V:** ~75 mA at a source end, ~18 mA at a unit end, ~130 mA mid-burst; the line side alone 57 / 5 mA
 - **at a source end:** the tube and its earth strap fitted; at a unit end left off — the same board
 - **parts:** `SN6505B` · `750313734` · `PMEG10020ELR` · 2× `ISO1452` · `ISO1450` · 3× `SM712` · 6× 10 Ω · 3× 80,6 Ω with their headers and jumpers · `2036-07-SM` · `DGPS2.5R-5.0` × 4
-- **`ID`:** 6,65 kΩ, 0,40
+- **`ID`:** 6,8 kΩ, 0,40
 
 ### `G-I-M-005` — communication, 485 on copper, ModBus
 
@@ -935,7 +937,7 @@ of an arm there is no board at all: a bought sensor and a MOD bring their own 48
 - **in:** 3,3 V and logic from the host · **out:** the arm's pair on eight poles, `DGPS2.5R-5.0` × 4 — four positions, 4× `A` and 4× `B`
 - **draw, on the host's 3,3 V:** ~9 mA listening, ~60 mA asking
 - **parts:** `SN6505B` · `750313734` · `PMEG10020ELR` · `ISO1450` · `SM712` · 2× 10 Ω · 80,6 Ω with its header and jumper · `2036-07-SM` · `DGPS2.5R-5.0` × 4
-- **`ID`:** 8,25 kΩ, 0,45
+- **`ID`:** 8,2 kΩ, 0,45
 
 ### `G-O-10-10` — communication, glass, 10 Mb/s
 
@@ -971,7 +973,7 @@ ceiling with no fibre in front of it, so on a short run a fixed optical attenuat
 - **module:** `OPT2-55A03STR` duplex, 1550 nm, or the BiDi pair `OTB2-35A03STR` / `OTB2-53A03STR`
 - **parts:** as `G-O-10-10`, with this module
 - **the pressure build** is the same part obtained from the maker in a pressure-tolerant form against the same specification; the catalogue modules are land parts
-- **`ID`:** 12,1 kΩ, 0,55
+- **`ID`:** 12 kΩ, 0,55
 
 ## Converters and measuring boards — distance, not frequency
 

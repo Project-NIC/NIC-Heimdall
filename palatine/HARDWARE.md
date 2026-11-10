@@ -171,7 +171,7 @@ to its card instead of a communication board.
 | 3 | `TXD` | PB6, `USART1_TX` / `TIM4_CH1` |
 | 4 | `RXD` | PB7, `USART1_RX` / `TIM4_CH2`, and PB3, `TIM2_CH2` capture, on the same net |
 | 5 | `ID` | PC0 `ID_D`, ADC, **10 kΩ 1 % to `VREF+`** |
-| 6 | `ID_RET` | **2,49 kΩ to ground** — Palatine, 0,20, landing on the card's `ID` across a crossed cable |
+| 6 | `ID_RET` | **2,4 kΩ to ground** — Palatine, 0,20, landing on the card's `ID` across a crossed cable |
 | 7 | `RXD_ECHO` | PD9, `USART3_RX` — the echo check |
 | 8 | `DE` | PE2, GPIO |
 | 9 | `B_DIR` | **tied to ground** — this end listens on channel B |

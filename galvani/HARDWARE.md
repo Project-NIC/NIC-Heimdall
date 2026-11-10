@@ -1834,30 +1834,30 @@ pin. A station feed cell taps the 12 V wire on its own terminals (2,6 A on `G-48
 to 1,8 V on an H7A3 host; the reading is a ratio and does not care. **ONE scale serves both
 bodies**: the two sockets are two ADC pins and could not confuse a host, but a number that means
 two things confuses a person, so no value is ever issued twice. **The windows are ±0,025 of full
-scale.** The E96 grid lands every ratio within 0,006 of its nominal and 1 % parts on both sides
-move it by at most ±0,005, so the margin is four to one; a 12-bit ADC resolves 0,00024 and is
+scale.** JLCPCB's Basic and Preferred values land every ratio within 0,009 of its nominal and 1 % parts
+on both sides move it by at most ±0,005, so the worst is 0,014 inside the 0,025; a 12-bit ADC resolves 0,00024 and is
 not in the argument.
 
-| body | board or host | resistor, E96 | reads |
+| body | board or host | resistor, JLCPCB Basic or Preferred | reads |
 |---|---|---|---|
-| data, on `ID_RET` | **the Mayak** | **1,10 kΩ** | 0,10 |
-| data, on `ID_RET` | **a card** — Bifrost or Argus, one code for both | **1,78 kΩ** | 0,15 |
-| data, on `ID_RET` | **Palatine** | **2,49 kΩ** | 0,20 |
-| data, on `ID_RET` | **Sputnik** | **3,32 kΩ** | 0,25 |
-| data, **on `ID` AND on `ID_RET`** | **`GNSS`** — every port carrying the NMEA time stream, at both ends: Kronos's two RX/TX + PPS sockets, and Polaris, a Sputnik's clock run or a Pip's `TIME OUT` facing them | **5,36 kΩ** | 0,35 |
-| data | `G-I-N-025`, two pairs | **6,65 kΩ** | 0,40 |
-| data | **`G-I-M-005`** | **8,25 kΩ** | 0,45 |
+| data, on `ID_RET` | **the Mayak** | **1,1 kΩ** | 0,10 |
+| data, on `ID_RET` | **a card** — Bifrost or Argus, one code for both | **1,8 kΩ** | 0,15 |
+| data, on `ID_RET` | **Palatine** | **2,4 kΩ** | 0,20 |
+| data, on `ID_RET` | **Sputnik** | **3,3 kΩ** | 0,25 |
+| data, **on `ID` AND on `ID_RET`** | **`GNSS`** — every port carrying the NMEA time stream, at both ends: Kronos's two RX/TX + PPS sockets, and Polaris, a Sputnik's clock run or a Pip's `TIME OUT` facing them | **5,6 kΩ** | 0,35 |
+| data | `G-I-N-025`, two pairs | **6,8 kΩ** | 0,40 |
+| data | **`G-I-M-005`** | **8,2 kΩ** | 0,45 |
 | data | `G-O-10-10` | **10,0 kΩ** | 0,50 |
-| data | `G-O-2-100` | **12,1 kΩ** | 0,55 |
-| power | `G-48-S` | **15,0 kΩ** | 0,60 |
-| power | `G-300-S` | **18,7 kΩ** | 0,65 |
-| power | `G-48-U` | **23,2 kΩ** | 0,70 |
-| power | `G-300-U-6` | **30,1 kΩ** | 0,75 |
-| power | `G-300-U-40` | **40,2 kΩ** | 0,80 |
-| power | **`G-12-S`** | **56,2 kΩ** | 0,85 |
-| power connector | **Hermes** — the one board on that body that is not a power board | **90,9 kΩ** | 0,90 |
-| power | **`G-24-S`** | **4,32 kΩ** | 0,30 |
-| — | **0,05 (523 Ω) and 0,95 (191 kΩ) are held as margin at the ends of the scale, not issued** | | |
+| data | `G-O-2-100` | **12 kΩ** | 0,55 |
+| power | `G-48-S` | **15 kΩ** | 0,60 |
+| power | `G-300-S` | **18 kΩ** | 0,65 |
+| power | `G-48-U` | **24 kΩ** | 0,70 |
+| power | `G-300-U-6` | **30 kΩ** | 0,75 |
+| power | `G-300-U-40` | **39 kΩ** | 0,80 |
+| power | **`G-12-S`** | **56 kΩ** | 0,85 |
+| power connector | **Hermes** — the one board on that body that is not a power board | **91 kΩ** | 0,90 |
+| power | **`G-24-S`** | **4,3 kΩ** | 0,30 |
+| — | **0,05 (510 Ω) and 0,95 (200 kΩ) are held as margin at the ends of the scale, not issued** | | |
 | either | nothing plugged in | **open** | 1,00 |
 | either | a short | **0 Ω** | 0,00 — **a fault; no board takes this code** |
 
@@ -1894,7 +1894,7 @@ merging them into one board with two populations saved nothing (`WHY.md`).
      └── INA238 + ISO1642 on the output; the host side on the port's 3,3 V
 
   to the host:  the POWER body — 3,3 V in, ENABLE in, SDA · SCL · ALERT out,
-                ID out: 15,0 kΩ on G-48-S · 18,7 kΩ on G-300-S
+                ID out: 15 kΩ on G-48-S · 18 kΩ on G-300-S
                 the 12 V comes in on the two terminals, not on a connector
   telemetry:    INA238 fitted, both ends
 ```
@@ -1970,7 +1970,7 @@ cable, at watts × distance, and the module count only moves the load along that
 
   The feed in and out on two terminal pairs, straight through, so units chain on one segment.
 
-  to the unit:  the POWER body — ID out: 23,2 kΩ · SDA · SCL · ALERT out · ENABLE strapped · 3,3 V in for the
+  to the unit:  the POWER body — ID out: 24 kΩ · SDA · SCL · ALERT out · ENABLE strapped · 3,3 V in for the
                 12 V out on the two terminals, not on a connector; and for the
                 isolator's host side (README.md, The connectors)
   telemetry:    INA238 fitted — this end is often the unreachable one
@@ -1996,7 +1996,7 @@ cable, at watts × distance, and the module count only moves the load along that
 enclosure, not the watts**: `G-300-U-6` goes where a 40 mm pipe is the whole of the available volume,
 `G-300-U-40` where a remote Argus's 12 V bus, or any load of that size, is the load — a heated unit or a camera are examples, not units of the station. **The controller, the
 FET, the ladder, the telemetry and the connector are identical**; the winding, `R_SNS`, the
-rectifier and the `ID` resistor are not — **30,1 kΩ on `G-300-U-6`, 40,2 kΩ on `G-300-U-40`**, because a host
+rectifier and the `ID` resistor are not — **30 kΩ on `G-300-U-6`, 39 kΩ on `G-300-U-40`**, because a host
 that could not tell them apart would ask a 6 W pod for 40 W.
 
 ```
@@ -2113,7 +2113,7 @@ barrier, the same isolated supply, the same ladder on the one pair.
      │                                                                SM712 ─▶ 10 Ω ──────────────▶ ═══ the pair
      │                                                                                  2036-07-SM ──▶ ⏚ earth point
      │
-     └── the ID resistor: 8,25 kΩ, the one-pair value;
+     └── the ID resistor: 8,2 kΩ, the one-pair value;
          B_DIR lands on nothing, there is no channel B
 
   four two-pole DGPS2.5R-5.0, four positions of the pair; the 80,6 Ω behind a jumper on a 2-pin
@@ -2183,7 +2183,7 @@ barrier, the same isolated supply, the same ladder on the one pair.
   NO unit-end partner.  What stands at the far end is the bought device itself, and
   its own supply window is what this board is sized against.
 
-  to the host:  the POWER body — 3,3 V in, ENABLE in, ID out: 56,2 kΩ, SDA · SCL · ALERT out;
+  to the host:  the POWER body — 3,3 V in, ENABLE in, ID out: 56 kΩ, SDA · SCL · ALERT out;
                 the 12 V in on the two terminals
   telemetry:    INA238 + ISO1642 ON THE OUTPUT, the same front as every other
                 power board.  The arm is on the far side of the transformer, so the shunt is
@@ -2228,7 +2228,7 @@ rectifier and the transil code are its own, and the tube is fitted like every so
      │
      └── INA238 + ISO1642 on the output, on the board's own island; the host side on the port's 3,3 V
 
-  to the host:  the POWER connector — 3,3 V in, ENABLE in, SDA · SCL · ALERT out, ID out: 4,32 kΩ
+  to the host:  the POWER connector — 3,3 V in, ENABLE in, SDA · SCL · ALERT out, ID out: 4,3 kΩ
 ```
 
 | | |

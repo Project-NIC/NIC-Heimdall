@@ -203,7 +203,7 @@ both sockets, so channel B carries the far end's PPS in; no processor pin reads 
 cannot be plugged into a clock port and work the wrong way round, and the state where both ends
 drive the channel does not exist.
 
-**Both sockets present `GNSS`, 0,35: 5,36 kΩ from `ID_RET` to ground** — the interface, on both
+**Both sockets present `GNSS`, 0,35: 5,6 kΩ from `ID_RET` to ground** — the interface, on both
 ends of the link. Polaris, a Sputnik's clock run and a Pip's `TIME OUT` put the same code on their own
 `ID`. Which receiver is out there is typed into `0x5C SRC_TYPE` and confirmed by the NMEA that
 arrives.
@@ -217,7 +217,7 @@ arrives.
 | 3 | `TXD` | UART out → `$PNIC,HELLO` every second, `$PNIC,RANGE`; the ranging fire |
 | 4 | `RXD` | NMEA in; the ranging return |
 | 5 | `ID` | the plugged board's resistor, to an ADC pin with 10 kΩ 1 % to 3,3 V |
-| 6 | `ID_RET` | 5,36 kΩ to ground — `GNSS` |
+| 6 | `ID_RET` | 5,6 kΩ to ground — `GNSS` |
 | 7 | `RXD_ECHO` | not connected — the echo check is the far end's |
 | 8 | `DE` | GPIO, the communication board's driver enable |
 | 9 | `B_DIR` | **tied to ground** — inward |
@@ -432,7 +432,7 @@ tolerance drops out.
 | `5.0SMDJ14A` | 1 | across the 12 V input |
 | 10 Ω, 1 % | 4 | the line block, 2 per pair |
 | 80,6 Ω, 1 % | 2 | the termination, fitted — Kronos is always an end |
-| 5,36 kΩ, 1 % | 2 | `ID_RET`, `GNSS`, one per socket |
+| 5,6 kΩ, 1 % | 2 | `ID_RET`, `GNSS`, one per socket |
 | 10 kΩ, 1 % | 2 | the `ID` pull-ups |
 | 100 kΩ | 2 | `SD_1`, `SD_2` to ground |
 | 4,7 kΩ | 4 | I2C1 (the label bus), I2C3 — a pair each |

@@ -360,33 +360,33 @@ z `… OUT` rovnou do `… IN`, bez desky mezi nimi.
 
 **Deska řekne, co je, dřív, než je napájena.** Jeden rezistor z `ID` proti zemi na desce, přečtený
 jednou při oživení na pinu ADC hostitele proti 10 kΩ (1 %) k analogovému napájení hostitele —
-3,3 V nebo 1,8 V, tabulka je v poměrech. Dvacet oken po 0,05 s rezervami ±0,025; řada E96 umístí
-každý poměr do 0,006 od jmenovité hodnoty a součástky 1 % ho posunou nejvýše o ±0,005. Je to jediné
+3,3 V nebo 1,8 V, tabulka je v poměrech. Dvacet oken po 0,05 s rezervami ±0,025; hodnoty Basic a
+Preferred z JLCPCB umístí každý poměr do 0,009 od jmenovité hodnoty a součástky 1 % ho posunou nejvýše o ±0,005. Je to jediné
 analogové čtení v celém kontraktu a je záměrně pasivní: buzený pin by potřeboval živou vzdálenou
 desku, a pak by se mrtvá deska a prázdná patice četly stejně.
 
-| čtení | rezistor, E96 | co je na druhém konci | kanál B | měření zpoždění |
+| čtení | rezistor, Basic nebo Preferred z JLCPCB | co je na druhém konci | kanál B | měření zpoždění |
 |---|---|---|---|---|
 | **0,00** | zkrat | **porucha** — tento kód nedostane žádná deska ani žádný hostitel | — | — |
-| 0,05 | 523 Ω | **volné, drží se volné** — rezerva vedle zkratu | — | — |
-| **0,10** | 1,10 kΩ | **Mayak** — přes kabel uvnitř skříně | drát | — |
-| **0,15** | 1,78 kΩ | **karta**, Bifrost nebo Argus — jeden kód pro obě; karta řekne, která je, v ohlášení, které následuje | drát | ano |
-| **0,20** | 2,49 kΩ | **Palatine** — přes kabel uvnitř skříně | drát | ano |
-| **0,25** | 3,32 kΩ | **Sputnik** — přes kabel uvnitř skříně | drát | ano |
-| **0,30** | 4,32 kΩ | **`G-24-S`** — spínaných 24 V | — | — |
-| **0,35** | 5,36 kΩ | **`GNSS` — rozhraní, na OBOU koncích časového spoje**: každý port, který nese časový proud NMEA, ho předkládá, Kronos na `ID_RET` u svých patic přijímače, a cokoli tam visí, na svém vlastním `ID` | PPS, dovnitř | ano |
-| **0,40** | 6,65 kΩ | **`G-I-N-025`** — 485, dva páry, plný duplex | 2²² | ano |
-| **0,45** | 8,25 kΩ | **`G-I-M-005`** — 485, jeden pár, poloviční duplex | — | žádné — u dotazované větve se zpoždění neměří |
+| 0,05 | 510 Ω | **volné, drží se volné** — rezerva vedle zkratu | — | — |
+| **0,10** | 1,1 kΩ | **Mayak** — přes kabel uvnitř skříně | drát | — |
+| **0,15** | 1,8 kΩ | **karta**, Bifrost nebo Argus — jeden kód pro obě; karta řekne, která je, v ohlášení, které následuje | drát | ano |
+| **0,20** | 2,4 kΩ | **Palatine** — přes kabel uvnitř skříně | drát | ano |
+| **0,25** | 3,3 kΩ | **Sputnik** — přes kabel uvnitř skříně | drát | ano |
+| **0,30** | 4,3 kΩ | **`G-24-S`** — spínaných 24 V | — | — |
+| **0,35** | 5,6 kΩ | **`GNSS` — rozhraní, na OBOU koncích časového spoje**: každý port, který nese časový proud NMEA, ho předkládá, Kronos na `ID_RET` u svých patic přijímače, a cokoli tam visí, na svém vlastním `ID` | PPS, dovnitř | ano |
+| **0,40** | 6,8 kΩ | **`G-I-N-025`** — 485, dva páry, plný duplex | 2²² | ano |
+| **0,45** | 8,2 kΩ | **`G-I-M-005`** — 485, jeden pár, poloviční duplex | — | žádné — u dotazované větve se zpoždění neměří |
 | **0,50** | 10,0 kΩ | **`G-O-10-10`** — sklo, 10 Mb/s | 2²² | ano |
-| **0,55** | 12,1 kΩ | **`G-O-2-100`** — sklo, 2 Mb/s | 2¹⁹ | ano |
-| **0,60** | 15,0 kΩ | **`G-48-S`** | — | — |
-| **0,65** | 18,7 kΩ | **`G-300-S`** | — | — |
-| **0,70** | 23,2 kΩ | **`G-48-U`** | — | — |
-| **0,75** | 30,1 kΩ | **`G-300-U-6`** | — | — |
-| **0,80** | 40,2 kΩ | **`G-300-U-40`** | — | — |
-| **0,85** | 56,2 kΩ | **`G-12-S`** | — | — |
-| **0,90** | 90,9 kΩ | **Hermes** — na napájecím konektoru Mayaku | — | — |
-| 0,95 | 191 kΩ | **volné, drží se volné** — rezerva vedle rozpojení | — | — |
+| **0,55** | 12 kΩ | **`G-O-2-100`** — sklo, 2 Mb/s | 2¹⁹ | ano |
+| **0,60** | 15 kΩ | **`G-48-S`** | — | — |
+| **0,65** | 18 kΩ | **`G-300-S`** | — | — |
+| **0,70** | 24 kΩ | **`G-48-U`** | — | — |
+| **0,75** | 30 kΩ | **`G-300-U-6`** | — | — |
+| **0,80** | 39 kΩ | **`G-300-U-40`** | — | — |
+| **0,85** | 56 kΩ | **`G-12-S`** | — | — |
+| **0,90** | 91 kΩ | **Hermes** — na napájecím konektoru Mayaku | — | — |
+| 0,95 | 200 kΩ | **volné, drží se volné** — rezerva vedle rozpojení | — | — |
 | **1,00** | rozpojeno | **nic není zapojeno** | — | — |
 | cokoli jiného | mimo všechna okna | **porucha**, hlášená jako porucha | — | — |
 
@@ -402,7 +402,7 @@ zapojeno, jen odpověď říká, že je něco živé. Jeden kód slouží každ�
 včetně té, kterou někdo vymyslí později.
 
 **`ID_RET` je vlastní číslo hostitele.** Každý hostitel nese rezistor svého kódu z `ID_RET` proti
-zemi — Mayak svých 1,10 kΩ jako kdokoli jiný, protože 0,00 je kód poruchy — a křížený kabel ho
+zemi — Mayak svých 1,1 kΩ jako kdokoli jiný, protože 0,00 je kód poruchy — a křížený kabel ho
 přivede na `ID` druhého hostitele. Deska Galvani nese rezistor jen na `ID`; identifikace z desky je
 jednosměrná, ven, protože deska nemá procesor, kterým by četla. Hostitel, který vždy stojí jen za
 deskou Galvani, nenese žádné číslo a s kabelem se nikdy nesetká.
@@ -763,7 +763,7 @@ Vyrábí napájení 48 V pro jednu trasu z 12 V, které odebírá z vodiče.
 - **vstup:** 12 V na svých svorkách; 3,3 V a `ENABLE` z napájecího konektoru · **výstup:** 48 V na dvoužilový kabel; `SDA · SCL · ALERT` zpět
 - **dimenzace:** **~26 W dodaných** v pracovním bodě akumulátoru; 28,4 W příkon. Stropem je 15 A saturace vinutí: v hraničním režimu se indukčnost vykrátí a watty na ampér posouvá jen odražené napětí, a toto je jediné vinutí 12 V → 48 V v katalogu. 41 kHz při plné zátěži; žádný burst režim, takže minimální zátěž 0,65 W
 - **součástky:** `5.0SMDJ14A` na vstupu 12 V · `LT3748` · `ISC165N15NM6` · `750310988` · `V5N22-M3` · `US3M`, blokovací dioda · `INA238` · `ISO1642` · ostrovní `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ54A` · `2036-07-SM` · 2× tlumivka 22 µH · odrušovací tlumivka a vyhlazovací kondenzátory
-- **`ID`:** 15,0 kΩ, 0,60
+- **`ID`:** 15 kΩ, 0,60
 
 ### `G-300-S` — napájecí, zdrojový konec, 300 V
 
@@ -783,7 +783,7 @@ jsou jiný výkres.
 - **vstup:** 12 V na svých svorkách — 4,2 A při 12 V, 4,6 A na spodní hranici 11 V; 3,3 V a `ENABLE` z napájecího konektoru · **výstup:** 300 V na dvoužilový kabel; `SDA · SCL · ALERT` zpět
 - **dimenzace:** **~47 W dodaných, jedno číslo**, 50,6 W příkon — tatáž deska na stanici i u vzdáleného Argusu. Bočník dovolí ~66 W a práh `INA238` drží těch 47; 145 kHz při plné zátěži, žádný burst režim, takže minimální zátěž 0,63 W. Izolace vinutí 1000 V AC je pro koncept přijata; sériová výroba objedná vinutí se zakázkovou izolací
 - **součástky:** `5.0SMDJ14A` na vstupu 12 V · `LT3748` · `ISC165N15NM6` · `750310349` · 2× `US3M`, usměrňovač a blokovací dioda · 2× `INA238` · `ISO1642` · ostrovní `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ350A` · `2036-30-SM` · 2× tlumivka 22 µH · odrušovací tlumivka a vyhlazovací kondenzátory
-- **`ID`:** 18,7 kΩ, 0,65
+- **`ID`:** 18 kΩ, 0,65
 
 ### `G-48-U` — napájecí, konec jednotky, 48 V
 
@@ -804,7 +804,7 @@ k další jednotce na řetězeném segmentu.
 - **dimenzace:** **~25 W** na 12 V; to, co dorazí, omezuje ~26 W zdrojového měniče, ne tato deska, a bočník dovolí ~50 W. 455 kHz při plné zátěži, omezeno na 1,05 MHz pod asi 10 W; minimální zátěž 0,24 W. Nic ke spínání: jednotka si z 12 V vyrábí vlastní napájení
 - **tlaková deska** — jen keramika a plné součástky
 - **součástky:** `LT3748` · `ISC165N15NM6` · `750311607` · `V10P10-M3` · `INA238` · `ISO1642` · ostrovní `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ54A` · `5.0SMDJ12A` na výstupu 12 V · keramické vyhlazovací kondenzátory
-- **`ID`:** 23,2 kΩ, 0,70
+- **`ID`:** 24 kΩ, 0,70
 
 ### `G-300-U-6` · `G-300-U-40` — napájecí, konec jednotky, 300 V
 
@@ -831,7 +831,7 @@ kaskáda pro 300 V, tytéž konektory, tatáž telemetrie. Liší se vinutím, `
 | `f` při plné zátěži | 140 kHz, omezení součástky — přerušovaný režim | 91 kHz |
 | na drainu FET | 472 V z jeho 650; **550 V na jeho omezovači RCD** — `US3M`, 100 nF 1 kV, 2× 38,3 kΩ — osazeném kvůli 34 µH rozptylové indukčnosti vinutí | 402 V z jeho 650 |
 | **vyhlazovací banka** | **5× 1 µF 500 V X7R 2220** — keramika, **tlaková deska** | **4× 1 µF 630 V polypropylenový film + 100 nF 1 kV X7R 1812** — **jen pozemní**; tlakové provedení převezme banku `G-300-U-6` a přepočítá se |
-| **`ID`** | **30,1 kΩ**, 0,75 | **40,2 kΩ**, 0,80 — jediné místo, kde se obě desky liší mimo výkonovou část, a musí, protože hostitel nesmí chtít po desce na 6 W 40 W |
+| **`ID`** | **30 kΩ**, 0,75 | **39 kΩ**, 0,80 — jediné místo, kde se obě desky liší mimo výkonovou část, a musí, protože hostitel nesmí chtít po desce na 6 W 40 W |
 
 - **vstup:** 300 V průchodkou · **výstup:** 12 V na dvě svorky; `SDA · SCL · ALERT` na konektoru
 - **klidová ztráta:** žádná, která by stála za řeč — `LT8316` odebírá 12 µA na `V_IN` ve vypnutém stavu a 75 µA na `BIAS` v burst režimu, miliwatty při 300 V, a ostrov svých 1,5 mA z 3,3 V hostitele; v burst režimu jde dolů až na 3,5 kHz, takže minimální zátěž je ~1 % jmenovité
@@ -859,7 +859,7 @@ Zátěž, která chce watty, je napájení na 48 V nebo 300 V, nikdy tato deska 
 - **vstup:** 12 V z vodiče na dvou svorkách; `ENABLE` a 3,3 V z napájecího konektoru · **výstup:** ~12 V na osmi pólech, `DGPS2.5R-5.0` × 4 — čtyři pozice, 4× + a 4× −, vedle čtyř pozic páru na `G-I-M-005`
 - **dimenzace:** **0,4 A**, asi 5 W. `R_LIM` 34,8 kΩ → ~0,7 A (0,5–0,9 A přes rozptyl součástky): 0,4 A ven je ~0,45 A přes spínače a limit 0,5 A by u slabšího kusu nechal jmenovitou zátěž poklesnout. **Přetížení řeší `INA238`, ne OCP** — OCP součástky zkracuje impulzy, místo aby vypnula, a přetížení by držela až do tepelného vypnutí, takže `ALERT` nad 0,4 A odebere `ENABLE`; OCP zbývá start do vstupních kondenzátorů senzoru a zkrat
 - **součástky:** `5.0SMDJ14A` na vstupu 12 V · `SN6507` · `750319691` · 2× `PMEG10020ELR` · `INA238` · `ISO1642` · ostrovní `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ18A` · `2036-07-SM` · tlumivky, odrušovací tlumivka a vyhlazovací kondenzátory
-- **`ID`:** 56,2 kΩ, 0,85
+- **`ID`:** 56 kΩ, 0,85
 
 ### `G-24-S` — napájecí, zdrojový konec, 24 V, spínané
 
@@ -882,7 +882,7 @@ drženým v L a deska neodebírá nic.
 - **dimenzace:** **~33 W dodaných** v pracovním bodě akumulátoru — `I_pk` 9,0 A při 10 mΩ, 112 kHz při plné zátěži. To, co port deklaruje, patří zátěži, naprogramovaný práh `INA238`: **nad** limitem je zablokovaná zátěž, **pod** minimem zátěž běžící nasucho nebo přeříznutý kabel — dva prahy, které hostitel programuje. Proudový limit je vlastní `R_SENSE` měniče; do zablokovaného motoru se dodává na limitu a nikdy se nejistí pojistkou
 - **kaskáda:** zdrojového konce, jako u `G-12-S` — tříelektrodová výbojka, tlumivky 22 µH a 2× `5.0SMDJ28A` na 24 V. Co stojí na konci zátěže, je věcí zátěže samotné: holý motor dostane dva vývodové transily na svá oka, řízený vlastní malou desku
 - **součástky:** `5.0SMDJ14A` na vstupu 12 V · `LT3748` · `ISC165N15NM6` · `750311592` · `V10P10-M3` · `US3M`, blokovací dioda · `INA238` · `ISO1642` · ostrovní `SN6505B` · `750313734` · 2× `PMEG10020ELR` · 2× `5.0SMDJ28A` · `2036-07-SM` · 2× tlumivka 22 µH · vyhlazovací kondenzátory
-- **`ID`:** 4,32 kΩ, 0,30
+- **`ID`:** 4,3 kΩ, 0,30
 
 ### `G-I-N-025` — komunikační, 485 po mědi, NodBus
 
@@ -909,7 +909,7 @@ nebo buzené — a zdrojový konec osazuje výbojku a její pásek.
 - **odběr, z 3,3 V hostitele:** ~75 mA na zdrojovém konci, ~18 mA na konci jednotky, ~130 mA uprostřed burstu; samotná linková strana 57 / 5 mA
 - **na zdrojovém konci:** výbojka a její zemnicí pásek osazené; na konci jednotky vynechané — tatáž deska
 - **součástky:** `SN6505B` · `750313734` · `PMEG10020ELR` · 2× `ISO1452` · `ISO1450` · 3× `SM712` · 6× 10 Ω · 3× 80,6 Ω s lištami a jumpery · `2036-07-SM` · `DGPS2.5R-5.0` × 4
-- **`ID`:** 6,65 kΩ, 0,40
+- **`ID`:** 6,8 kΩ, 0,40
 
 ### `G-I-M-005` — komunikační, 485 po mědi, ModBus
 
@@ -931,7 +931,7 @@ vzdáleném konci větve není deska vůbec: kupovaný senzor i MOD si přináš
 - **vstup:** 3,3 V a logika od hostitele · **výstup:** pár větve na osmi pólech, `DGPS2.5R-5.0` × 4 — čtyři pozice, 4× `A` a 4× `B`
 - **odběr, z 3,3 V hostitele:** ~9 mA při poslechu, ~60 mA při dotazu
 - **součástky:** `SN6505B` · `750313734` · `PMEG10020ELR` · `ISO1450` · `SM712` · 2× 10 Ω · 80,6 Ω s lištou a jumperem · `2036-07-SM` · `DGPS2.5R-5.0` × 4
-- **`ID`:** 8,25 kΩ, 0,45
+- **`ID`:** 8,2 kΩ, 0,45
 
 ### `G-O-10-10` — komunikační, sklo, 10 Mb/s
 
@@ -966,7 +966,7 @@ svém stropu přebuzení, takže na krátké trase se osazuje pevný optický ú
 - **modul:** `OPT2-55A03STR` duplex, 1550 nm, nebo pár BiDi `OTB2-35A03STR` / `OTB2-53A03STR`
 - **součástky:** jako `G-O-10-10`, s tímto modulem
 - **tlakové provedení** je tatáž součástka, získaná od výrobce ve tlakově odolné podobě podle téže specifikace; katalogové moduly jsou pozemní součástky
-- **`ID`:** 12,1 kΩ, 0,55
+- **`ID`:** 12 kΩ, 0,55
 
 ## Měniče a měřicí desky — vzdálenost, ne frekvence
 

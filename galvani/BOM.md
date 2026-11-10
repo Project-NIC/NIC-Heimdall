@@ -174,7 +174,7 @@ three, because the ripple is 3,9 A rms. The tap is 4,6 A at the 11 V floor.
 ## 5 · Telemetry, island, connector — and the leak watch
 
 **Block T on the output**: `R_SHUNT` **200 mΩ**, `R_VT` **3× 422 kΩ 1206 in series**, `R_VB` 100 kΩ.
-**Block S.** **Block J**: `R_ID` **18,7 kΩ**, 0,65.
+**Block S.** **Block J**: `R_ID` **18 kΩ**, 0,65.
 
 | ref | part / value | how | note |
 |---|---|---|---|
@@ -227,7 +227,7 @@ and nothing lower, hands it out on its two terminals, passes the feed on to the 
 
 **Block T on the input**: `R_SHUNT` **50 mΩ**, `R_VT` **90,9 kΩ 1206**, `R_VB` 100 kΩ — all ceramic
 and solid, so the block is pressure-fit as it stands. **Block S**, ceramic. **Block J**: `R_ID`
-**23,2 kΩ**, 0,70; `R_EN` to the input.
+**24 kΩ**, 0,70; `R_EN` to the input.
 
 ---
 
@@ -278,7 +278,7 @@ the rectifier, the bank and `R_ID` differ.
 ## 4 · Telemetry, island, connector
 
 **Block T on the input**: `R_SHUNT` **200 mΩ**, `R_VT` **3× 422 kΩ 1206**, `R_VB` 100 kΩ. **Block S**
-(ceramic on `-6`). **Block J**: `R_ID` **30,1 kΩ** (0,75) on `-6`, **40,2 kΩ** (0,80) on `-40`; `R_EN`
+(ceramic on `-6`). **Block J**: `R_ID` **30 kΩ** (0,75) on `-6`, **39 kΩ** (0,80) on `-40`; `R_EN`
 to the input.
 
 ---
@@ -320,7 +320,7 @@ pack, 0,4 A. No unit-end partner.
 ## 4 · Telemetry, island, connector
 
 **Block T on the isolated output**: `R_SHUNT` **50 mΩ**, `VBUS` straight to the pin, no divider.
-**Block S.** **Block J**: `R_ID` **56,2 kΩ**, 0,85; `R_EN` to ground.
+**Block S.** **Block J**: `R_ID` **56 kΩ**, 0,85; `R_EN` to ground.
 
 ---
 
@@ -366,7 +366,7 @@ As `G-48-S`: **`DGPS2.5R-5.0`** ×2, `TVS_IN` **`5.0SMDJ14A`**, `L_IN` 1,5 µH, 
 ## 5 · Telemetry, island, connector
 
 **Block T on the output**: `R_SHUNT` **20 mΩ**, `VBUS` straight to the pin. **Block S.** **Block J**:
-`R_ID` **4,32 kΩ**, 0,30; `R_EN` to ground — the switch.
+`R_ID` **4,3 kΩ**, 0,30; `R_EN` to ground — the switch.
 
 ---
 
@@ -380,7 +380,7 @@ channel B. No terminal for 12 V, no buck: 3,3 V from the host over the data conn
 | ref | part / value | how | note |
 |---|---|---|---|
 | `DATA` | **`BX2.54-2x6NA`** | code | the data connector, 12 pins; cable end `FC-12P` |
-| R_ID | **6,65 kΩ 1 %** | value | 0,40 |
+| R_ID | **6,8 kΩ 1 %** | value | 0,40 |
 | R_LE | **100 kΩ 0603** | value | `LINE_EN` pull-down at the `SN6505B`'s `EN`; at a unit end pulled to run |
 | block S | `SN6505B` · `750313734` · 2× `PMEG10020ELR` · the capacitors | — | `EN` = `LINE_EN`; ~100 mA of isolated 3,3 V at a source end |
 
@@ -406,7 +406,7 @@ beside it.
 
 | ref | part / value | how | note |
 |---|---|---|---|
-| `DATA` · R_ID · R_LE | **`BX2.54-2x6NA`** · **8,25 kΩ** (0,45) · 100 kΩ | code / value | `B_DIR` lands on nothing |
+| `DATA` · R_ID · R_LE | **`BX2.54-2x6NA`** · **8,2 kΩ** (0,45) · 100 kΩ | code / value | `B_DIR` lands on nothing |
 | block S | as `G-I-N-025` | — | |
 | U2 | **`ISO1450`** | code | `A`/`B`, `DE` from the host frame by frame |
 | C_D | **100 nF** ×2 | class | |
@@ -442,7 +442,7 @@ in a pressure-tolerant form.
 
 | ref | part / value | how | note |
 |---|---|---|---|
-| `DATA` · R_ID | **`BX2.54-2x6NA`** · **12,1 kΩ** (0,55) | code / value | |
+| `DATA` · R_ID | **`BX2.54-2x6NA`** · **12 kΩ** (0,55) | code / value | |
 | M1, M2 | **`OPT2-55A03STR`** ×2, or the BiDi pair **`OTB2-35A03STR` + `OTB2-53A03STR`** | code | 1550 nm DFB, 33 dB budget; the BiDi pair is matched and its ends are not interchangeable |
 | L1 … L4 · C_π · U2 … U5 · R_TD · R_RD | as `G-O-10-10` | code / class | |
 | — | a fixed optical attenuator in the connector on a run much shorter than the module's rating | — | a stocking note, not a board part: every 2 Mb/s module sits on its overload ceiling with no fibre in front of it |

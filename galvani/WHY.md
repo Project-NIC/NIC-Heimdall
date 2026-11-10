@@ -685,3 +685,10 @@ Extended values, a loading fee each on an assembly order. Basic pairs inside the
 hold the rails: 30/13 k 3,31 V, 39/13 k 4,00 V, 20/8,2 k 3,44 V, 56/12 k 5,67 V (10 Nov 2026). The
 one bottom resistor is gone; no rail moved by more than its tolerance except Pluvius's feed, whose
 `LP2985` takes 16 V.
+
+## The `ID` scale on E96 values — superseded by JLCPCB Basic and Preferred values
+
+The E96 grid landed every ratio within 0,006 of its code, every value an Extended part. The
+Basic and Preferred values land within 0,009 — the worst 0,35's 5,6 kΩ — and with 1 % parts the
+worst is 0,014 inside the ±0,025 window, so no code moves and every board's `ID` resistor costs
+no loading fee (10 Nov 2026). The 10 kΩ reference, the scale itself, did not change.

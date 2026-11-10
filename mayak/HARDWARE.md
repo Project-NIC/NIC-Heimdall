@@ -17,7 +17,7 @@ and no other — the S3 has too few UARTs. The clock is Kronos's, a board of its
 | 12 V in | **two two-pole terminals**, input and tap — `DGPS2.5R-5.0` blocks, two 2-pole — through its own fuse in the enclosure's fuse field, sized by the construction (`../daedalus/CONSTRUCTION.md`), one **`5.0SMDJ14A`** across the terminals, then a **`PMEG10020ELR`** Schottky | the battery rail as it stands, 10–20 V on the pin. A reversed pack drives the transil forward and the fuse clears; the diode stops the backup cell feeding the 12 V wire back through the buck |
 | 3,3 V | **one `LMR43610`** set to **3,44 V**, bulk capacitor at the module — **the `LMR43620` on the same footprint where the modem is LTE-M** | sized for the 0,6 A the module sheet asks of its source, and with an LTE-M modem for its ~0,5 A bursts beside it; no 5 V, no LDO. 3,44 V is the backup cell's float; every part on the rail stands 3,6 V. **The rail's bulk is 3× 47 µF 50 V hybrid polymer** beside the buck's own output capacitors — the reserve that carries the rail through the backup cell's takeover |
 | backup cell | **one wide-temperature cell, ~3 Ah** — a low-temperature LiFePO4 or a sodium-ion cell, an 18650, a 21700 or a thin prismatic cell (*Power*) — on the 3,3 V rail through one `TPS259474LRPW` eFuse — the hold, the takeover, a 1 A breaker and the undervoltage cut — charged through a `TPS22917` and 10 Ω | carries the head, Hermes and the modem when the 12 V goes: the flush, the BMS read, the modem's report, then the head lets go and the board goes dark (*Power*) |
-| ports to the cards | **four 12-pin data bodies**, wired `TXD` · `RXD` · `ID` · `GND` only; the 1,10 kΩ `ID_RET` resistor. **`TXD` is push-pull and carries no resistor; the pad for a 330 Ω pull-up is on `RXD`, unfitted**, which is the wire the cards' outputs share — the hardware that lets more than one card hang on a trunk port, which the firmware does not implement (*The trunk is a spur*, below) | in-box crossed cables to the Bifrosts; no Galvani board ever hangs here |
+| ports to the cards | **four 12-pin data bodies**, wired `TXD` · `RXD` · `ID` · `GND` only; the 1,1 kΩ `ID_RET` resistor. **`TXD` is push-pull and carries no resistor; the pad for a 330 Ω pull-up is on `RXD`, unfitted**, which is the wire the cards' outputs share — the hardware that lets more than one card hang on a trunk port, which the firmware does not implement (*The trunk is a spur*, below) | in-box crossed cables to the Bifrosts; no Galvani board ever hangs here |
 | time bus tap | **one 10-pin 2×5 IDC** on Kronos's ribbon, **two `THVD1450` receivers, one a pair** (`RE#`, `DE`, `D` tied low), the line block (2× 10 Ω per pair, jumpered 80,6 Ω) | the head takes PPS-K and the I²C label; **the clock is received and routed to `GPIO38`, and the firmware does not use it** — it is there for a build that wants it |
 | Hermes | **one 8-pin power body**, a 0,15 A polyfuse in its 3,3 V | the LP I²C, `ALERT`, `ID` |
 | enclosure climate | **one `SHT45`** on the board, on the same LP I²C (address 0x44) | temperature and humidity of the box once a minute into SOH — a humidity trend is the one early warning of a seal letting go, and the dew point against board temperature says condensation before corrosion does. Read by the LP core too |
@@ -253,7 +253,7 @@ the modem and its antenna connector on the board.
 
 | connector | pins wired to the S31 | pins on the socket that land on nothing at the head |
 |---|---|---|
-| **card data body ×4** | `TXD` **push-pull, no resistor** · `RXD` (UART0–3) **with an unfitted pad for the 330 Ω pull-up** · `ID` (ADC) — **3 per port, 12 in all**; `ID_RET` is the 1,10 kΩ resistor; `GND` (*The card data body*, below) | `CLK/PPS` · `RXD_ECHO` · `DE` · `B_DIR` · `LINE_EN` · `SD` · `3,3 V` — the socket takes only a crossed cable |
+| **card data body ×4** | `TXD` **push-pull, no resistor** · `RXD` (UART0–3) **with an unfitted pad for the 330 Ω pull-up** · `ID` (ADC) — **3 per port, 12 in all**; `ID_RET` is the 1,1 kΩ resistor; `GND` (*The card data body*, below) | `CLK/PPS` · `RXD_ECHO` · `DE` · `B_DIR` · `LINE_EN` · `SD` · `3,3 V` — the socket takes only a crossed cable |
 | **Kronos time bus tap** | `SDA` · `SCL` (HP I²C 0, multi-master) · `PPS_K` (timer capture, behind its `THVD1450` receiver) · `CLK` (`GPIO38`, behind its own `THVD1450`, unused by the firmware) · `ATTN` (GPIO in) — **5** | — |
 | **Hermes, power body** | `SDA` · `SCL` (**LP I²C**, `GPIO7` · `GPIO6`) · `ALERT` (`GPIO1`, an LP GPIO — Hermes's attention, the LP core's wake) · `ID` (ADC, reads 0,90) — **4** (*The Hermes power body*, below) | `ENABLE` — the link is never gated |
 | **microSD ×2 — a mirror, both 1-bit** | slot 0: `D0` · `CLK` · `CMD` on three of the module's **dedicated `SD_*` pins** (`SD_D0` · `SD_CLK` · `SD_CMD`, outside the 48) — **0 of the 48**. **Slot 1, the mirror**, on its own IOMUX pins `GPIO35` · `39` · `40` (`SD2_CDATA0` · `SD2_CCLK` · `SD2_CCMD`) — **3**. One mode for both, so either card can be primary. Every record is written to both; a card that fails is reported and the other carries on (`FIRMWARE.md` §6) | `SD_D1`–`D3` (`GPIO21`–`23`) — free |
@@ -277,7 +277,7 @@ cable does not carry, or that only a Galvani board would drive, lands on nothing
 | 3 | `TXD` | the port's UART TX (`GPIO54` · `14` · `16` · `56`), **push-pull, no resistor** — the one talker on its line |
 | 4 | `RXD` | the port's UART RX (`GPIO55` · `36` · `17` · `57`), **an unfitted pad for 330 Ω to 3,3 V** — the wire the cards' outputs share |
 | 5 | `ID` | ADC (`GPIO42` · `43` · `44` · `45`), **10 kΩ 1 % to the 3,3 V rail**; reads the card's `ID_RET`, 0,15 |
-| 6 | `ID_RET` | **1,10 kΩ to ground** — the Mayak, 0,10, landing on the card's `ID` |
+| 6 | `ID_RET` | **1,1 kΩ to ground** — the Mayak, 0,10, landing on the card's `ID` |
 | 7 | `RXD_ECHO` | not connected — a master never echo-checks |
 | 8 | `DE` | not connected — no Galvani board on a head port, nothing to gate |
 | 9 | `B_DIR` | not connected — a crossed cable carries no channel B |
@@ -347,10 +347,10 @@ the ADC block for the five `ID` reads, and the straps left alone.
 | `GPIO47` | **`PPS_K` capture** — MCPWM capture through the matrix, behind the head's `THVD1450` receiver | the matrix adds a fixed few ns, and the head's PPS-K is a second mark, not a ranging edge |
 | `GPIO48` | **the status LED** | one 50 ms blink a minute in normal running, two on a fault; lit through the button-gated service window |
 | `GPIO49` | **`VBUS` sense** — a divider off the USB header | ADC; tells the firmware it is on USB power: service mode, radios off |
-| `GPIO50` | **backup hold** — the `TPS259474LRPW`'s `EN/UVLO` through 90,9 kΩ, 56,2 kΩ to ground | high after boot, released after the last report; the 56,2 kΩ keeps the part off while the head is in reset |
+| `GPIO50` | **backup hold** — the `TPS259474LRPW`'s `EN/UVLO` through 91 kΩ, 56 kΩ to ground | high after boot, released after the last report; the 56 kΩ keeps the part off while the head is in reset |
 | `GPIO51` | **backup charge** — the `TPS22917` on the cell's path in | off below −20 °C on the `SHT45` and while on the cell |
 | `GPIO52` | **on the cell** — the `TPS259474LRPW`'s `PG`, 100 kΩ up | high when the cell carries the rail; an interrupt |
-| `GPIO53` | **the cell's current** — the `TPS259474LRPW`'s `ILM` | ADC; 0,604 V/A across the 3,32 kΩ, ~0 while the buck runs |
+| `GPIO53` | **the cell's current** — the `TPS259474LRPW`'s `ILM` | ADC; 0,601 V/A across the 3,3 kΩ, ~0 while the buck runs |
 | `GPIO54` · `GPIO55` | **port 1 `TXD` · `RXD`** — UART0 through the matrix | the pad JTAG, not brought out: the board debugs over USB |
 | `GPIO56` · `GPIO57` | **port 4 `TXD` · `RXD`** — UART3 | the other two JTAG pads |
 | `GPIO58` · `GPIO59` (`TX0` · `RX0`) | **modem `SCK` · `MISO`** through the matrix | the ROM console's pins; the ROM prints there at reset into an SPI module whose `NSS` is high, which ignores it |
@@ -445,15 +445,15 @@ nothing.**
   - **The path out: cell → `TPS259474LRPW` → the 3,3 V rail — one eFuse is the hold, the
     takeover and the breaker.** `IN` on the cell, `OUT` on the rail. Its two FETs stand back to
     back, so no current flows from the rail into the cell in any state, on or off.
-  - **The hold, and the undervoltage cut — `EN/UVLO` from `GPIO50` through 90,9 kΩ, 56,2 kΩ to
-    ground.** The head raises `GPIO50` after boot; while the head is in reset the 56,2 kΩ holds
+  - **The hold, and the undervoltage cut — `EN/UVLO` from `GPIO50` through 91 kΩ, 56 kΩ to
+    ground.** The head raises `GPIO50` after boot; while the head is in reset the 56 kΩ holds
     `EN` low and the part is off, drawing **4,4 µA** from the cell (28,7 max). The divider is also
-    the cut that needs no processor: `GPIO50` sits at the rail, so `EN` follows the rail at 0,382
-    of it, and the part turns off when the rail falls to **2,82–2,92 V** (its 1,076–1,116 V
-    falling threshold) and on from **3,10–3,20 V** (1,183–1,223 V rising) — below the 3,44 V the
+    the cut that needs no processor: `GPIO50` sits at the rail, so `EN` follows the rail at 0,381
+    of it, and the part turns off when the rail falls to **2,82–2,93 V** (its 1,076–1,116 V
+    falling threshold) and on from **3,11–3,21 V** (1,183–1,223 V rising) — below the 3,44 V the
     rail stands at when the head raises the hold. A LiFePO4 cell is nearly empty at the cut, and
     every chemistry here is far above its damage floor. A head that browns out first lets `GPIO50` go high-impedance and the
-    56,2 kΩ turns the part off just the same, so a hung or dying head cannot drain the cell.
+    56 kΩ turns the part off just the same, so a hung or dying head cannot drain the cell.
   - **The takeover — the part's own ideal diode.** While the buck runs the rail stands above the
     cell and the part blocks: it enters reverse blocking when the rail rises **22–36 mV** above
     the cell, within 1 µs, and leaves it only when the cell stands **83–125 mV** above the rail,
@@ -463,7 +463,7 @@ nothing.**
     beside it are what prevent it. When the buck loses its input the rail sags, and 83–125 mV
     under the cell the part takes it; the takeover follows the rail itself, not the 12 V wire,
     so how slowly the wire decays does not matter.
-  - **The breaker — `ILM` 3,32 kΩ: 1,0 A, 0,85–1,15 A.** Above it the part passes the current for
+  - **The breaker — `ILM` 3,3 kΩ: 1,0 A, 0,86–1,16 A.** Above it the part passes the current for
     the `ITIMER` blanking — **100 nF, 51–145 ms, 84 typical** — and above twice it trips in
     500 ns; either way it turns off and, being the `L` variant, **stays off** until `GPIO50` takes
     `EN` below 0,45 V. A short on the rail while it runs on the cell costs the part its conduction,
@@ -476,7 +476,7 @@ nothing.**
   - **`PG` on `GPIO52`, 100 kΩ up to the rail — high when the cell carries the rail.** The part
     holds `PG` low while it blocks and while it is off. An interrupt: the head knows it runs on
     the cell.
-  - **`ILM` on `GPIO53`, the ADC — the cell's current, 0,604 V/A** across the 3,32 kΩ
+  - **`ILM` on `GPIO53`, the ADC — the cell's current, 0,601 V/A** across the 3,3 kΩ
     (182 µA/A); ~0 while the buck runs. The head integrates it through an event and reports the
     charge the cell gave: the one measure of the cell's capacity in the cold. **No capacitor on
     the pin** — its load stays under 50 pF.
@@ -501,7 +501,7 @@ nothing.**
     page and is asked of the maker with the full sheet; the float asks ≤ 0,03 C. Off, the
     `TPS22917` blocks the reverse current, so the cell never leaks into a dead rail.
   - **The off is real.** When the head releases `GPIO50`, `EN` falls, the part turns off, the rail
-    goes, and the 56,2 kΩ keeps it off; the board stays dark until the 12 V returns and boots it.
+    goes, and the 56 kΩ keeps it off; the board stays dark until the 12 V returns and boots it.
     A discharged buck input takes nothing from the cell — the `PMEG10020ELR` stops the 12 V wire
     behind it.
 - **Service supply off USB:** `VBUS` from the USB header through a **`PMEG10020ELR`** Schottky
@@ -529,8 +529,8 @@ nothing.**
 | 1 µF 50 V 0805 · 100 nF 50 V | 1 · 1 | `VCC` · `BOOT` |
 | **47 µF 50 V hybrid polymer** | **3** | the rail's bulk at the module |
 | `TPS259474LRPW` | 1 | the backup cell's path out — hold, takeover, breaker, cut |
-| 3,32 kΩ 1 % | 1 | its `ILM`: 1,0 A, and the current read on `GPIO53` |
-| 90,9 kΩ 1 % · 56,2 kΩ 1 % | 1 · 1 | its `EN/UVLO` divider from `GPIO50` |
+| 3,3 kΩ 1 % | 1 | its `ILM`: 1,0 A, and the current read on `GPIO53`; JLCPCB Basic `C22978` |
+| 91 kΩ 1 % · 56 kΩ 1 % | 1 · 1 | its `EN/UVLO` divider from `GPIO50`; JLCPCB Preferred `C23265` · Basic `C23206` |
 | 100 nF 50 V | 1 | its `ITIMER`, 84 ms |
 | 100 kΩ | 1 | its `PG` up to the rail, into `GPIO52` |
 | `TPS22917` | 1 | the backup cell's path in, `EN` on `GPIO51` |
