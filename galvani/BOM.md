@@ -9,6 +9,8 @@
 
 ## How to read a table
 
+**An order code beside a part is the cheaper of the maker's packings at JLCPCB** (10 Nov 2026): the `LT3748` in tubes, $5,44 against $10,53 on a reel; the `LT8316` on a reel, $4,92 against $7,81.
+
 Every row carries a **how** column, and it says what a builder is allowed to change.
 
 | how | meaning |
@@ -89,7 +91,7 @@ measures it, and holds the source end of the ladder.
 
 | ref | part / value | how | note |
 |---|---|---|---|
-| U1 | **`LT3748`**, MSOP-16E | code | no-opto flyback controller, boundary mode, no burst — the board carries a minimum load of 0,65 W |
+| U1 | **`LT3748`**, MSOP-16E — `LT3748EMS#PBF` (`C117158`) | code | no-opto flyback controller, boundary mode, no burst — the board carries a minimum load of 0,65 W |
 | Q1 | **`ISC165N15NM6`** | code | 150 V; 26 V on the plateau, 78 V at the leakage clamp's worst corner |
 | T1 | **`750310988`** | code | 1:4,42 · `L_PRI` 14 µH ±10 % · `I_SAT` 15 A min · leakage 200 nH · 1500 V AC · SMD 32,3 × 27,0 × 13,7 mm |
 | R_SENSE | **9,1 mΩ, 2512, 1 W** | value | 0,9 W peak dissipation. `I_pk` 9,90 A at the guaranteed 90 mV, the 110 mV corner 12,1 A — 81 % of the winding's saturation |
@@ -144,7 +146,7 @@ three, because the ripple is 3,9 A rms. The tap is 4,6 A at the 11 V floor.
 
 | ref | part / value | how | note |
 |---|---|---|---|
-| U1 · Q1 | **`LT3748`** · **`ISC165N15NM6`** | code | 45 V on the plateau, 132 V at the clamp's corner |
+| U1 · Q1 | **`LT3748`** (`LT3748EMS#PBF`, `C117158`) · **`ISC165N15NM6`** | code | 45 V on the plateau, 132 V at the clamp's corner |
 | T1 | **`750310349`** | code | 1:10 · `L_PRI` 5 µH ±10 % · `I_SAT` 25 A typ, `I_R` 18 A thermal · EE35/18/10, wire leads. **1000 V AC insulation, under the family's 1,5 kV floor — accepted for the concept; a production run orders a custom-insulated winding** |
 | R_SENSE | **2× 11 mΩ in parallel — 5,5 mΩ — 2512, 2 W** | value | the largest the winding rule allows: 4,41 µH needed against 4,5 µH at −10 %. `I_pk` 16,4 A at 90 mV; the 110 mV corner 20,0 A, 80 % of the 25 A saturation. 0,77 W peak at the declared ~47 W, 1,1 W in each part at the corner |
 | R_GATE · R_C, C_C · C_SS · C_VIN, C_VCC | as `G-48-S` | class | |
@@ -203,7 +205,7 @@ and nothing lower, hands it out on its two terminals, passes the feed on to the 
 
 | ref | part / value | how | note |
 |---|---|---|---|
-| U1 · Q1 | **`LT3748`** · **`ISC165N15NM6`** | code | 82 V on the plateau, 133 V at the clamp's corner, 151 V with a surge residue on the bulk — 1 V into the rated avalanche, `E_AS` 123 mJ |
+| U1 · Q1 | **`LT3748`** (`LT3748EMS#PBF`, `C117158`) · **`ISC165N15NM6`** | code | 82 V on the plateau, 133 V at the clamp's corner, 151 V with a surge residue on the bulk — 1 V into the rated avalanche, `E_AS` 123 mJ |
 | T1 | **`750311607`** | code | 2,5:1 · `L_PRI` 14 µH · `I_SAT` 9,5 A · 1500 V AC · 29,1 × 23,1 × 11,4 mm |
 | R_SENSE | **15 mΩ, 2512, 1 W** | value | the largest the winding rule allows: 12,5 µH needed against 12,6 µH at −10 %. `I_pk` 6,0 A at 90 mV, 3,00 A at the declared ~25 W; the corner 7,33 A, 77 % of saturation, 0,81 W peak |
 | R_REF · R_FB · R_TC | **5,6 kΩ + 1 kΩ trimmer · 160 kΩ · 62 kΩ**, 1 %, Preferred | value | at `N_PS` 2,5, `V_F` 0,75 V → **12 V**, set by the trimmer; 194 µA through `R_FB` against the sheet's ~200 |
@@ -250,7 +252,7 @@ the rectifier, the bank and `R_ID` differ.
 
 | ref | part / value | how | note |
 |---|---|---|---|
-| U1 | **`LT8316`** | code | 16–560 V in, quasi-resonant boundary mode, 140 kHz clamp, burst to 3,5 kHz |
+| U1 | **`LT8316`** — `LT8316EFE#TRPBF` (`C673737`) | code | 16–560 V in, quasi-resonant boundary mode, 140 kHz clamp, burst to 3,5 kHz |
 | Q1 | **`FCD260N65S3`**, D-PAK | code | 650 V; 402 V of it on `-40` at the steady rail; 472 V on `-6`, 550 V on its clamp |
 | T1, `G-300-U-40` | **`11328-T078`** | code | Sumida PQ2620, 8:1:1, `N_TS` 1, 670 µH, 3,0 A, reinforced 3 kV, 31 × 28,5 × 23,5 mm, pins |
 | T1, `G-300-U-6` | **`11338-T195`** | code | Sumida CEEH178, 14:1:1,7, 1000 µH ±10 %, 0,9 A, leakage 34 µH max, basic 3 kV, 19 × 17,4 × 8,6 mm, SMD |
@@ -338,7 +340,7 @@ As `G-48-S`: **`DGPS2.5R-5.0`** ×2, `TVS_IN` **`5.0SMDJ14A`**, `L_IN` 1,5 µH, 
 
 | ref | part / value | how | note |
 |---|---|---|---|
-| U1 · Q1 | **`LT3748`** · **`ISC165N15NM6`** | code | `EN/UVLO` from `ENABLE` through `R_EN` — the switch |
+| U1 · Q1 | **`LT3748`** (`LT3748EMS#PBF`, `C117158`) · **`ISC165N15NM6`** | code | `EN/UVLO` from `ENABLE` through `R_EN` — the switch |
 | T1 | **`750311592`** | code | 1:1:0,44 — the third winding open · `L_PRI` 8 µH ±10 % · `I_SAT` 18 A typ · leakage 0,4 µH max · 1500 V AC · SMD 32,3 × 27,0 × 13,7 mm |
 | R_SENSE | **10 mΩ, 2512, 1 W** | value | `I_pk` 9,0 A at 90 mV, ~33 W at 24 V, 112 kHz at full load |
 | R_REF · R_FB · R_TC | **5,6 kΩ + 1 kΩ trimmer · 120 kΩ · 120 kΩ**, 1 %, Basic | value | at `N_PS` 1, `V_F` 0,5 V → **24 V**, set by the trimmer |
