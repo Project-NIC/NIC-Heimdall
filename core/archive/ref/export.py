@@ -281,3 +281,127 @@ def write_stationxml(series_list: Sequence[Series], network: str, station: str, 
 </FDSNStationXML>
 """
     return xml.encode()
+
+
+# ---------------------------------------------------------------- IAGA-2002
+
+GAUSS_TAPS, GAUSS_SIGMA = 91, 15.8734      # INTERMAGNET's minute filter, as USGS's geomag-algorithms
+
+
+def gaussian_minute() -> List[float]:
+    """The 91 weights on 1 Hz values, symmetric about the minute, summing to 1."""
+    import math
+    w = [math.exp(-0.5 * ((n - (GAUSS_TAPS - 1) / 2) / GAUSS_SIGMA) ** 2) for n in range(GAUSS_TAPS)]
+    s = sum(w)
+    return [x / s for x in w]
+
+
+def lowpass_second(rate: int) -> List[float]:
+    """From `rate` Hz to 1 Hz: a windowed-sinc low-pass at 0,25 Hz, Blackman window, symmetric, the
+    odd number of taps nearest 123 · rate / 10 — USGS's 10 Hz → 1 Hz filter scaled to the rate —
+    summing to 1."""
+    import math
+    taps = 2 * round((123 * rate / 10 - 1) / 2) + 1
+    m, fc = (taps - 1) / 2, 2 * 0.25 / rate
+    h = []
+    for n in range(taps):
+        x = n - m
+        sinc = 1.0 if x == 0 else math.sin(math.pi * fc * x) / (math.pi * fc * x)
+        win = 0.42 - 0.5 * math.cos(2 * math.pi * n / (taps - 1)) + 0.08 * math.cos(4 * math.pi * n / (taps - 1))
+        h.append(fc * sinc * win)
+    s = sum(h)
+    return [v / s for v in h]
+
+
+def _filter(values: Dict[int, float], weights: Sequence[float], step: int, outputs: Sequence[int],
+            need: float = 0.9) -> Dict[int, Optional[float]]:
+    """Each output index i from the inputs at i·step − m … i·step + m: the weights over the
+    samples present, renormalised; None when fewer than `need` of them are."""
+    m = (len(weights) - 1) // 2
+    out = {}
+    for i in outputs:
+        acc = wsum = 0.0
+        have = 0
+        for j, w in enumerate(weights):
+            v = values.get(i * step + j - m)
+            if v is not None:
+                acc += w * v
+                wsum += w
+                have += 1
+        out[i] = acc / wsum if have >= need * len(weights) and wsum else None
+    return out
+
+
+def physical(series: Series) -> Dict[Fraction, float]:
+    """The series in its unit, flagged samples left out: (raw + add) · mantissa · 10^exp10."""
+    f = series.fields[0]
+    scale = (f.mantissa or 1) * 10.0 ** f.exp10
+    return {s.t: (s.raw + f.add) * scale for s in series.samples if s.status not in (CLIPPED, DISTURBED)}
+
+
+def seconds_of(series: Series, day: int) -> Tuple[Dict[int, Optional[float]], str]:
+    """A day's 1 Hz values, the day the UTC day number, with 45 s either side for the minute
+    filter: the series as it is at 1 Hz, else through `lowpass_second`."""
+    rate = series.rate
+    if rate.denominator != 1 or rate < 1:
+        raise ValueError("export: IAGA-2002 takes a whole number of samples a second")
+    rate = int(rate)
+    vals = {int(t * rate): v for t, v in physical(series).items() if (t * rate).denominator == 1}
+    secs = range(day * 86400 - 45, (day + 1) * 86400 + 46)
+    if rate == 1:
+        return {s: vals.get(s) for s in secs}, "1 second"
+    return _filter(vals, lowpass_second(rate), rate, secs), f"{1 / rate:g} second"
+
+
+def write_iaga2002(series_list: Sequence[Series], day: int, iaga: str, source: str,
+                   interval: str = "minute") -> bytes:
+    """One station's day: up to four components, minute values by INTERMAGNET's Gaussian or second
+    values, in nT to 0,01; a value that cannot be filled 99999.00, a column with no component
+    88888.00."""
+    import datetime
+    cols, names, sampling = [], [], ""
+    for s in series_list[:4]:
+        secs, sampling = seconds_of(s, day)
+        if interval == "minute":
+            vals = _filter({k: v for k, v in secs.items() if v is not None}, gaussian_minute(), 60,
+                           range(day * 1440, (day + 1) * 1440))
+            cols.append({i * 60: v for i, v in vals.items()})
+        else:
+            cols.append({k: secs.get(k) for k in range(day * 86400, (day + 1) * 86400)})
+        names.append((s.fields[0].name.decode("ascii", "replace").strip()[-1:] or "?").upper())
+    letters = "".join(names)
+    while len(names) < 4:
+        names.append("F" if "F" not in names else "G")
+        cols.append({})
+    st = series_list[0].station or (b"", 0, 0, -0x8000)
+    d0 = datetime.date(1970, 1, 1) + datetime.timedelta(days=day)
+
+    def head(label, value):
+        return f" {label:<23}{value:<45}|"
+    lines = [head("Format", "IAGA-2002"), head("Source of Data", source),
+             head("Station Name", st[0].decode("utf-8", "replace")), head("IAGA Code", iaga),
+             head("Geodetic Latitude", f"{st[1] / 1e7:.3f}"),
+             head("Geodetic Longitude", f"{(st[2] / 1e7) % 360:07.3f}"),
+             head("Elevation", "" if st[3] == -0x8000 else str(st[3])),
+             head("Reported", "".join(names)), head("Sensor Orientation", letters),
+             head("Digital Sampling", sampling),
+             head("Data Interval Type", "Filtered 1-minute (00:15-01:45)" if interval == "minute"
+                  else ("1-second" if sampling == "1 second" else "Filtered 1-second")),
+             head("Data Type", "variation")]
+    if interval == "minute":
+        lines.append(head("# Minute values", "Gaussian, 91 taps, sigma 15.8734 s, centred"))
+    if sampling != "1 second":
+        n = len(lowpass_second(int(series_list[0].rate)))
+        lines.append(head("# Second values", f"low-pass 0.25 Hz, {n} taps, Blackman"))
+    lines.append("DATE       TIME         DOY     " + "".join(f"{iaga + c:<10}" for c in names[:3])
+                 + f"{iaga + names[3]:<7}|")
+    step = 60 if interval == "minute" else 1
+    for k in range(day * 86400, (day + 1) * 86400, step):
+        d = datetime.datetime(1970, 1, 1) + datetime.timedelta(seconds=k)
+        vals = []
+        for c in cols:
+            v = c.get(k, 88888.0) if c else 88888.0
+            vals.append(99999.0 if v is None else v)
+        lines.append(f"{d:%Y-%m-%d %H:%M:%S}.000 {d.timetuple().tm_yday:03d}   "
+                     + "".join(f"{v:10.2f}" for v in vals))
+    return ("\n".join(lines) + "\n").encode("ascii", "replace")
