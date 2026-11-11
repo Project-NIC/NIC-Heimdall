@@ -692,7 +692,7 @@ int hcc_encode(const hcc_record *recs, size_t n, const hcc_field *layout, size_t
 {
     hcc_field sorted[HCC_MAX_LAYOUT];
     chan_t ch[HCC_MAX_LAYOUT];
-    size_t nch, nd = 0, no = 0, nb = 0, ng = 0;
+    size_t nch, nd = 0, nb = 0, ng = 0;
     uint16_t groups[HCC_MAX_GROUPS];
     uint32_t *col = NULL, *done_xs[256] = {0};
     size_t done_n[256] = {0};
@@ -712,7 +712,8 @@ int hcc_encode(const hcc_record *recs, size_t n, const hcc_field *layout, size_t
         if (r->form == 0) {
             if (r->length != HCC_PAYLOAD)
                 return HCC_EINVAL;
-            if (r->kind == 0) nd++; else no++;
+            if (r->kind == 0)
+                nd++;
         } else if (r->form == 1) {
             if (r->length < 2 || r->length != 2u + r->data[1])
                 return HCC_EINVAL;

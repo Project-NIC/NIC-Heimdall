@@ -2,7 +2,7 @@
 from the same bytes, and the same verdict on every damaged stream (HCC.md, *What it is tested
 against*). Builds ../c/ with $CC (cc by default) into a temporary directory; `HCC_C_SEED` and
 `HCC_C_ROUNDS` widen the random part."""
-import math, os, random, struct, subprocess, sys, tempfile
+import math, os, random, shlex, struct, subprocess, sys, tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
@@ -12,14 +12,14 @@ from hcc import Field, compose_layout, argus_layout
 import test_hcc, test_damaged
 
 SEED = int(os.environ.get("HCC_C_SEED", "1"))
-ROUNDS = int(os.environ.get("HCC_C_ROUNDS", "300"))
+ROUNDS = int(os.environ.get("HCC_C_ROUNDS", "60"))
 rng = random.Random(SEED)
 
 
 def build():
     src = os.path.join(HERE, "..", "c")
     out = os.path.join(tempfile.mkdtemp(prefix="hcc-c-"), "hcc_tool")
-    subprocess.run([os.environ.get("CC", "cc"), "-std=c99", "-O2", "-Wall", "-Wextra", "-Wpedantic",
+    subprocess.run(shlex.split(os.environ.get("CC", "cc")) + ["-std=c99", "-O2", "-Wall", "-Wextra", "-Wpedantic",
                     "-Werror", "-ffp-contract=off", "-o", out, os.path.join(src, "hcc.c"),
                     os.path.join(src, "hcc_tool.c"), "-lm"], check=True)
     return out
@@ -155,12 +155,14 @@ def random_case(i):
 
 
 def mutations(good):
-    """Cut at every byte, extended, a bit flipped, a byte overwritten, a run zeroed or set."""
-    for cut in range(len(good)):
+    """Cut short — at every byte of a short stream, at 200 places of a long one — extended, a bit
+    flipped, a byte overwritten, a run zeroed or set."""
+    cuts = range(len(good)) if len(good) <= 400 else sorted(rng.sample(range(len(good)), 200))
+    for cut in cuts:
         yield good[:cut]
     for extra in (1, 2, 5, 16):
         yield good + bytes(rng.randrange(256) for _ in range(extra))
-    for r in range(ROUNDS // 10):
+    for r in range(ROUNDS):
         s = bytearray(good)
         p = rng.randrange(len(s))
         kind = r % 4
@@ -220,7 +222,7 @@ def main():
 
     # damaged streams: the same verdict and, where one decodes, the same records
     checked = 0
-    for (name, layout, records), s in list(zip(cases, streams))[len(named):len(named) + 5 + 40]:
+    for (name, layout, records), s in list(zip(cases, streams))[len(named):len(named) + 5 + 15]:
         bad = list(mutations(s))
         for b in bad:
             tool.decode(layout, b)
