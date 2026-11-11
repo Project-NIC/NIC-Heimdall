@@ -35,5 +35,15 @@ python3 measure.py recording.mseed --seconds 1,2,4,8,16,32
 python3 measure.py obs.min --seconds 60,300,900,3600      # IAGA-2002, nT × 100
 ```
 
+**The recorded series `HCC.md` was measured on** are open data, fetched as they are:
+
+```
+curl -o morc_quiet.mseed "https://geofon.gfz.de/fdsnws/dataselect/1/query?net=GE&sta=MORC&cha=HH?&starttime=2024-01-10T00:00:00&endtime=2024-01-10T00:20:00"
+curl -o morc_noto.mseed "https://geofon.gfz.de/fdsnws/dataselect/1/query?net=GE&sta=MORC&cha=HH?&starttime=2024-01-01T07:20:00&endtime=2024-01-01T07:40:00"
+curl -o bdv_20240110.sec "https://imag-data.bgs.ac.uk/GIN_V1/GINServices?Request=GetData&format=IAGA2002&testObsys=0&observatoryIagaCode=BDV&samplesPerDay=second&dataStartDate=2024-01-10&dataDuration=1&publicationState=adj-or-rep&orientation=native"
+python3 measure.py morc_quiet.mseed morc_noto.mseed --seconds 1,2,4,8,16,32
+python3 measure.py bdv_20240110.sec --seconds 8,64,512,4096
+```
+
 `measure.py` reads miniSEED through obspy and IAGA-2002 itself; a trace is one integer series
 and the field width is the smallest whole-byte width its values fit.

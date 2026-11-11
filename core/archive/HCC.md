@@ -189,6 +189,23 @@ the raw size and never more.
 millions of recorded segments — the way NIC-Arduino's DMD was settled; a handful of synthetic
 cases decides nothing. The Python reference and `ref/measure.py` are where that starts.
 
+**The first recorded series bear the assumption out** (`ref/measure.py`, bits a sample, the series
+alone; `ref/README.md` says how to fetch them):
+
+| series | segment | Steim-2 | HCC |
+|---|---|---|---|
+| GE.MORC HH?, 100 Hz, 20 min quiet (2024-01-10 00:00) | 8 s · 32 s | 5,97–6,04 · 5,72–5,76 | 4,98–5,03 · 4,83–4,91 |
+| GE.MORC HH?, 100 Hz, the Noto earthquake's surface waves (2024-01-01 07:20, 20 min) | 8 s · 32 s | 8,39–8,62 · 8,06–8,30 | 5,79–6,36 · 5,68–6,09 |
+| BDV, Budkov, 1 Hz, X Y Z F, a day (2024-01-10) | 8 s · 64 s | 64 · 8,00–9,65 | 6,41–8,47 · 3,36–5,72 |
+| BDV, 1 min, a day | 1 h · a day | 8,53–16,71 · 6,04–8,18 | 5,46–7,49 · 5,12–7,07 |
+
+**LPC carries a series near zero, not one far from it**: on the quiet seismometer's counts it
+takes 0,15–0,3 bit a sample off ORDER 2 at 32 s, under the earthquake ORDER 2 is the better on the
+whole and LPC on some segments; on the magnetometer's tens of thousands of nT it loses to ORDER 1
+every time — it has no mean term, and a coefficient quantised to 2⁻¹⁴ against a
+value of 2 · 10⁶ leaves an error of ~100. ORDER 1 and 2 carry such a series, and the coder takes
+the cheaper one.
+
 ## What it is tested against
 
 On a PC, against recorded traffic and against synthetic segments: a Quake under `ALL`, a Palatine

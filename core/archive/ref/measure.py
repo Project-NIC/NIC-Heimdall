@@ -81,6 +81,18 @@ def series_bits(xs, w, mode=None, order=None, signed=True, ref=None):
     return None
 
 
+def mode_table(xs, w, signed=True, ref=None):
+    """Every mode's bits for one series in one pass: {1: …, 2: …, (3, p): …}."""
+    mask = (1 << w) - 1
+    vals = [x & mask for x in xs]
+    if ref is not None:
+        vals = [(x - (y & mask)) & mask for x, y in zip(vals, ref)]
+    out = {}
+    for bits, m, payload in hcc._mode_bits(vals, w, signed):
+        out[(m, payload[0]) if m == 3 else m] = bits + (1 if ref is not None else 0)
+    return out
+
+
 def width_for(xs):
     m = max(abs(x) for x in xs) if xs else 0
     return max(8, 8 * math.ceil((m.bit_length() + 1) / 8))
@@ -111,15 +123,15 @@ def measure(name, xs, rate, seconds, ref=None):
             rseg = ref[k * L:(k + 1) * L] if ref is not None else None
             n += L
             tot["steim"] += 8 * steim2.byte_length(seg)
-            tot[1] += series_bits(seg, w, 1, ref=rseg)
-            tot[2] += series_bits(seg, w, 2, ref=rseg)
+            t = mode_table(seg, w, ref=rseg)
+            tot[1] += t[1]
+            tot[2] += t.get(2, t[1])
             tot["hcc"] += series_bits(seg, w, None, ref=rseg)
             for p in range(1, 9):
-                b = series_bits(seg, w, 3, p, ref=rseg)
-                if b is None:
+                if (3, p) not in t:
                     lpc_ok[p] = False
                 else:
-                    lpc[p] += b
+                    lpc[p] += t[(3, p)]
         row = f"{sec:6g} s {tot['steim']/n:8.2f} {tot[1]/n:8.2f} {tot[2]/n:8.2f}"
         for p in range(1, 9):
             row += f" {lpc[p]/n:7.2f}" if lpc_ok[p] else f" {'—':>7s}"
