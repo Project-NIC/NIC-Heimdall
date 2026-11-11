@@ -507,7 +507,7 @@ and a source power board takes the host side of its isolator from the same pins.
 
 | position | value |
 |---|---|
-| `L` | **2,2 µH**, shielded — the sheet's Coilcraft `XGL3530-222` |
+| `L` | **2,2 µH**, Murata `DFE252012F-2R2M` — the house cell's (`../galvani/HARDWARE.md`, *The buck cell*) |
 | `C_IN` | **4,7 µF 50 V X7R 1206 + 100 nF 50 V** at `VIN` |
 | `C_OUT` | **3× 10 µF 50 V X5R 1206** — ~21 µF effective at 3,3 V, the sheet's 22 |
 | the divider | **`R1` 680 kΩ / `R2` 150 kΩ, 1 %** → 3,320 V against the 0,6 V reference |
@@ -744,7 +744,7 @@ microsecond.
 | `LMR43620` | 1 | the down ports' 3,3 V |
 | `TPS629206` | 2 | the processor's and the up port's 3,3 V |
 | 4,7 µH shielded, `I_SAT` ≥ 3,5 A | 1 | the `LMR43620` |
-| 2,2 µH shielded, `XGL3530-222` | 2 | the `TPS629206`s |
+| 2,2 µH, Murata `DFE252012F-2R2M` (`C576403`) | 2 | the `TPS629206`s |
 | `BX2.54-2xNA`, 2×6 | 5 | the data bodies — the up port and four down |
 | `BX2.54-2xNA`, 2×4 | 5 | the power bodies |
 | `BX2.54-2xNA`, 2×5 | 1 | the time bus tap |

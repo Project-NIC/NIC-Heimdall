@@ -1261,7 +1261,7 @@ sheet; the family is pin-to-pin, 300 mA / 600 mA / 1 A).
 |---|---|
 | `MODE/S-CONF`, 1 % to ground | **9,1 kΩ** — external feedback, forced PWM, 2,5 MHz · **22 kΩ** — external feedback, forced PWM, 1 MHz · **18 kΩ** — external feedback, auto, 1 MHz (the card, where nothing listens). No output discharge on any — the sheet's E96 9,31 · 22,1 · 17,8 kΩ (SLVSGE1, Table 8-1) taken as the JLCPCB Basic 9,1 kΩ `C23260` · 22 kΩ `C31850` · 18 kΩ `C25810`, within 2,3 % of them against levels ~24 % apart |
 | the divider, `R1` / `R2`, 1 %, JLCPCB Basic or Preferred | **300 k / 150 k → 1,800 V** · **680 k / 150 k → 3,320 V** · **390 k / 68 k → 4,041 V** · **120 k / 15 k → 5,400 V** — 300 k `C23024`, 150 k `C22807`, 680 k `C25822`, 390 k `C23150`, 68 k `C23231`, 120 k `C25808`, 15 k `C22809`; `V_OUT` = 0,6 V × (1 + `R1`/`R2`), `R2` under the sheet's 300 kΩ (SLVSGE1, 9.2.2.2) |
-| the inductor | **2,2 µH, shielded, `XGL3530-222`** — the sheet's value |
+| the inductor | **2,2 µH, Murata `DFE252012F-2R2M`** (`C576403`), metal composite, 82 mΩ, `I_SAT` 3,6 A — the `DFE252012` family the sheet lists (SLVSGE1, Table 9-4); `I_SAT` clears the 1,7 A high-side limit with its overshoot, and the ripple at 1 MHz from 14,7 V to 1,8 V is 0,72 A p-p against the sheet's 1,6 A |
 | `C_OUT` · `C_IN` · `VCC` · `BOOT` | 3× 10 µF 50 V 1206 + 100 nF · 4,7 µF 50 V 1206 + 100 nF · 1 µF · 100 nF |
 | `PG` | to the processor through 100 kΩ, where the board reads it |
 

@@ -744,3 +744,11 @@ and `ZVBUS` (0,8–1,2 MΩ) — wherever a builder wants the precision. What the
 leak to ~200 MΩ instead of ~400 MΩ (a 100 MΩ leak moves it 4,2 %); the 48 V comparison of the two
 ends' currents drifts ±3,3 mA at 0,55 A against ±1,7 mA, the 300 V fallback ±1 mA against ±0,5 mA.
 Both are orders past an insulation monitor's usual 100 Ω/V (11 Nov 2026).
+
+## Coilcraft `XGL3530-222` on the `TPS629206` — superseded by Murata's `DFE252012F-2R2M`
+
+The sheet lists both (SLVSGE1, Table 9-4); the Coilcraft part is not stocked at JLCPCB and would
+come in on consignment. Murata's `DFE252012` family, in its F grade, is: $0,15 (`C576403`), 82 mΩ
+against 20 — some 15 mW at the cell's ceiling — and `I_SAT` 3,6 A, clear of the 1,7 A high-side
+limit and its overshoot. The house filter inductor, `SWPA252012S2R2MT`, was weighed and not taken:
+its ~2 A saturation sits on that limit (11 Nov 2026).
