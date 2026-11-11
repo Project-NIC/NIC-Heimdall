@@ -144,7 +144,9 @@ makes exactly these, so the C and the Python write the same bytes and a test com
 
 - **Per partition**: the `k` from 0 to min(30, `w`) that writes the fewest bits, the smaller `k`
   on a tie; the escape where it writes no more than that.
-- **The predictor**: the autocorrelation of the series for lags 0 … 8 summed in 64-bit integers;
+- **The predictor**: the autocorrelation of the series for lags 0 … 8 summed exactly — a 32-bit
+  field's products reach 2^64 and a segment's sums 2^80, so 64 bits overflow and 128 do not — and
+  rounded to the nearest double, ties to even;
   the Levinson–Durbin recursion on it in IEEE-754 double, in the order the recursion is written,
   without fused multiply-add, giving the coefficients for every order 1 … 8 it reaches; each set
   quantised with the largest `s` ≤ 15 that keeps every |`aⱼ`| · 2^s below 2^14, rounded half away

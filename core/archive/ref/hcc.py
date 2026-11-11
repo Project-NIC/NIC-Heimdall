@@ -473,6 +473,8 @@ def encode(records: Sequence[Record], layout: Sequence[Field]) -> bytes:
         g = (bl[0], bl[1])
         if g not in groups:
             groups.append(g)
+    if len(groups) > 256:
+        raise ValueError("a segment holds at most 256 block groups — the index is one byte")
     bw.gamma(len(groups) + 1)
     for module, length in groups:
         bw.write(module, 8)

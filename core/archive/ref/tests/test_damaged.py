@@ -91,53 +91,58 @@ def expect(name, how, stream, layout, must_be_damaged):
     return verdict
 
 
-tally = {"ok": 0, "damaged": 0, "fault": 0}
-for name, layout, records in cases():
-    good = hcc.encode(records, layout)
-    assert hcc.decode(good, layout) == records, name
-    # cut short — at every byte boundary: always damaged, the last byte always carries data
-    for cut in range(len(good)):
-        tally[expect(name, f"cut to {cut} B", good[:cut], layout, True)] += 1
-    # extended by one to sixteen bytes: always damaged, bits left over
-    for extra in range(1, 17):
-        tally[expect(name, f"{extra} B appended", good + bytes(rng.randrange(256) for _ in range(extra)),
-                     layout, True)] += 1
-    # one bit flipped, a byte overwritten, a run zeroed or set
+def main():
+    tally = {"ok": 0, "damaged": 0, "fault": 0}
+    for name, layout, records in cases():
+        good = hcc.encode(records, layout)
+        assert hcc.decode(good, layout) == records, name
+        # cut short — at every byte boundary: always damaged, the last byte always carries data
+        for cut in range(len(good)):
+            tally[expect(name, f"cut to {cut} B", good[:cut], layout, True)] += 1
+        # extended by one to sixteen bytes: always damaged, bits left over
+        for extra in range(1, 17):
+            tally[expect(name, f"{extra} B appended", good + bytes(rng.randrange(256) for _ in range(extra)),
+                         layout, True)] += 1
+        # one bit flipped, a byte overwritten, a run zeroed or set
+        for r in range(ROUNDS):
+            s = bytearray(good)
+            kind = r % 4
+            p = rng.randrange(len(s))
+            if kind == 0:
+                s[p] ^= 1 << rng.randrange(8); how = f"bit {rng.randrange(8)} of byte {p} flipped"
+            elif kind == 1:
+                s[p] = rng.randrange(256); how = f"byte {p} overwritten"
+            elif kind == 2:
+                n = rng.randint(1, 8); s[p:p + n] = bytes(len(s[p:p + n])); how = f"{n} B zeroed at {p}"
+            else:
+                n = rng.randint(1, 8); s[p:p + n] = b"\xff" * len(s[p:p + n]); how = f"{n} B set at {p}"
+            tally[expect(name, how + f" (seed {SEED}, round {r})", bytes(s), layout, False)] += 1
+    # streams that were never HCC
+    layout = cases()[0][1]
     for r in range(ROUNDS):
-        s = bytearray(good)
-        kind = r % 4
-        p = rng.randrange(len(s))
-        if kind == 0:
-            s[p] ^= 1 << rng.randrange(8); how = f"bit {rng.randrange(8)} of byte {p} flipped"
-        elif kind == 1:
-            s[p] = rng.randrange(256); how = f"byte {p} overwritten"
-        elif kind == 2:
-            n = rng.randint(1, 8); s[p:p + n] = bytes(len(s[p:p + n])); how = f"{n} B zeroed at {p}"
-        else:
-            n = rng.randint(1, 8); s[p:p + n] = b"\xff" * len(s[p:p + n]); how = f"{n} B set at {p}"
-        tally[expect(name, how + f" (seed {SEED}, round {r})", bytes(s), layout, False)] += 1
-# streams that were never HCC
-layout = cases()[0][1]
-for r in range(ROUNDS):
-    junk = bytes(rng.randrange(256) for _ in range(rng.randint(0, 64)))
-    tally[expect("junk", f"{len(junk)} random B (seed {SEED}, round {r})", junk, layout, False)] += 1
-# a count no coder writes: 70 B that once claimed a million records and took the decoder
-# seconds and hundreds of MB to refuse — CONST headers and CONST data cost no bits per record
-for n in (65_537, 1 << 20, 1 << 32):          # HCC.md: a count above 65 536 is damaged
-    bw = hcc.BitWriter()
-    bw.gamma(n)
-    bw.write(0, 3); bw.write(1_700_000_000, 32)
-    for _ in range(4):
-        bw.write(0, 3); bw.write(0, 8)
-    for _ in range(40):
-        bw.write(0, 3); bw.write(0, 8)
-    tally[expect("count", f"γ({n}) over CONST series", bw.bytes(), compose_layout([]), True)] += 1
-for fill in (b"", b"\x00", b"\x00" * 64, b"\xff" * 64, b"\x80" + b"\x00" * 7):
-    tally[expect("junk", f"{fill[:4].hex()}… × {len(fill)} B", fill, layout, False)] += 1
+        junk = bytes(rng.randrange(256) for _ in range(rng.randint(0, 64)))
+        tally[expect("junk", f"{len(junk)} random B (seed {SEED}, round {r})", junk, layout, False)] += 1
+    # a count no coder writes: 70 B that once claimed a million records and took the decoder
+    # seconds and hundreds of MB to refuse — CONST headers and CONST data cost no bits per record
+    for n in (65_537, 1 << 20, 1 << 32):          # HCC.md: a count above 65 536 is damaged
+        bw = hcc.BitWriter()
+        bw.gamma(n)
+        bw.write(0, 3); bw.write(1_700_000_000, 32)
+        for _ in range(4):
+            bw.write(0, 3); bw.write(0, 8)
+        for _ in range(40):
+            bw.write(0, 3); bw.write(0, 8)
+        tally[expect("count", f"γ({n}) over CONST series", bw.bytes(), compose_layout([]), True)] += 1
+    for fill in (b"", b"\x00", b"\x00" * 64, b"\xff" * 64, b"\x80" + b"\x00" * 7):
+        tally[expect("junk", f"{fill[:4].hex()}… × {len(fill)} B", fill, layout, False)] += 1
 
-print(f"{sum(tally.values())} damaged streams: {tally['damaged']} read as damaged, "
-      f"{tally['ok']} decoded to other records, {tally['fault']} faults")
-if faults:
-    print("\n".join(faults[:20]) + (f"\n… and {len(faults) - 20} more" if len(faults) > 20 else ""))
-    sys.exit(1)
-print("every damaged stream failed cleanly")
+    print(f"{sum(tally.values())} damaged streams: {tally['damaged']} read as damaged, "
+          f"{tally['ok']} decoded to other records, {tally['fault']} faults")
+    if faults:
+        print("\n".join(faults[:20]) + (f"\n… and {len(faults) - 20} more" if len(faults) > 20 else ""))
+        sys.exit(1)
+    print("every damaged stream failed cleanly")
+
+
+if __name__ == "__main__":
+    main()
