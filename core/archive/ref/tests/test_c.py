@@ -7,9 +7,9 @@ import math, os, random, shlex, struct, subprocess, sys, tempfile
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
 sys.path.insert(0, HERE)
-import hcc
+import hcc, hmc
 from hcc import Field, compose_layout, argus_layout
-import test_hcc, test_damaged
+import test_hcc, test_damaged, test_hmc
 
 SEED = int(os.environ.get("HCC_C_SEED", "1"))
 ROUNDS = int(os.environ.get("HCC_C_ROUNDS", "60"))
@@ -21,7 +21,7 @@ def build():
     out = os.path.join(tempfile.mkdtemp(prefix="hcc-c-"), "hcc_tool")
     subprocess.run(shlex.split(os.environ.get("CC", "cc")) + ["-std=c99", "-O2", "-Wall", "-Wextra", "-Wpedantic",
                     "-Werror", "-ffp-contract=off", "-o", out, os.path.join(src, "hcc.c"),
-                    os.path.join(src, "hcc_tool.c"), "-lm"], check=True)
+                    os.path.join(src, "hmc.c"), os.path.join(src, "hcc_tool.c"), "-lm"], check=True)
     return out
 
 
@@ -44,6 +44,7 @@ def ser_records(rs):
 class Tool:
     def __init__(self, path):
         self.path, self.req, self.what = path, [], []
+        self.events = False
 
     def encode(self, layout, records):
         self.req.append(b"E" + ser_fields(layout) + ser_records(records)); self.what.append("E")
@@ -58,6 +59,27 @@ class Tool:
     def argus(self, positions):
         self.req.append(b"A" + bytes([len(positions)]) + b"".join(ser_fields(p or []) for p in positions))
         self.what.append("L")
+
+    def write_file(self, header, ops):
+        b = bytearray(b"W" + struct.pack("<BHIIB", header.address, header.sequence, header.first_second,
+                                          header.station, header.size))
+        sb = hmc.sections_bytes(header.sections)
+        b += struct.pack("<I", len(sb)) + sb
+        for op in ops:
+            if op[0] == "seg":
+                b += b"S" + ser_records(op[1])
+            elif op[0] == "ev":
+                b += b"V" + struct.pack("<I", len(op[1])) + b"".join(struct.pack("<IBBHI", *ln) for ln in op[1])
+            else:
+                sb = hmc.sections_bytes(op[2])
+                b += b"C" + struct.pack("<II", op[1], len(sb)) + sb
+        self.req.append(bytes(b) + b"Z"); self.what.append("W")
+
+    def read_file(self, image):
+        self.req.append(b"R" + struct.pack("<I", len(image)) + bytes(image)); self.what.append("R")
+
+    def hmc_path(self, address, second):
+        self.req.append(b"P" + struct.pack("<BI", address, second)); self.what.append("P")
 
     def run(self):
         out = subprocess.run([self.path], input=b"".join(self.req), capture_output=True, check=True).stdout
@@ -78,6 +100,40 @@ class Tool:
                     sec, fr, kind, s, form, ln = struct.unpack_from("<IBBBBH", out, at); at += 10
                     recs.append((sec, fr, kind, s, form, out[at:at + ln])); at += ln
                 answers.append((0, recs))
+            elif w == "W":
+                st, kept, n = out[at], *struct.unpack_from("<II", out, at + 1)
+                answers.append((st, kept, out[at + 9:at + 9 + n])); at += 9 + n
+            elif w == "P":
+                n = out[at]; answers.append(out[at + 1:at + 1 + n].decode()); at += 1 + n
+            elif w == "R":
+                st = out[at]; at += 1
+                if st:
+                    answers.append((st, None)); continue
+                ne = struct.unpack_from("<I", out, at)[0]; at += 4
+                objs = []
+                for _ in range(ne):
+                    k = out[at]; at += 1
+                    if k == 0:
+                        objs.append(("damaged",))
+                    elif k == 2:
+                        fr, ln = struct.unpack_from("<II", out, at); at += 8
+                        objs.append(("cfg", fr, out[at:at + ln])); at += ln
+                    else:
+                        first, last, codec, rs = struct.unpack_from("<IIBB", out, at); at += 10
+                        if rs == 5:
+                            objs.append(("seg", first, last, codec, None)); continue
+                        if rs != 0:
+                            objs.append(("seg", first, last, codec, "damaged")); continue
+                        n = struct.unpack_from("<I", out, at)[0]; at += 4
+                        recs = []
+                        for _ in range(n):
+                            if self.events:
+                                recs.append(struct.unpack_from("<IBBHI", out, at)); at += 12
+                            else:
+                                sec, fr_, kind, s_, form, ln = struct.unpack_from("<IBBBBH", out, at); at += 10
+                                recs.append((sec, fr_, kind, s_, form, out[at:at + ln])); at += ln
+                        objs.append(("seg", first, last, codec, recs))
+                answers.append((0, objs))
             else:
                 n = out[at]; at += 1
                 fs = []
@@ -176,6 +232,24 @@ def mutations(good):
         yield bytes(s)
 
 
+def py_read(image):
+    """The Python reader's view of a file, in the C tool's terms."""
+    try:
+        r = hmc.Reader(image)
+    except ValueError:
+        return 1, None
+    out = []
+    for t, obj, recs in r.objects():
+        if t == 0:
+            out.append(("damaged",))
+        elif t == hmc.CFG:
+            out.append(("cfg", obj["from"], hmc.sections_bytes(obj["sections"])))
+        else:
+            out.append(("seg", obj["first"], obj["last"], obj["codec"],
+                        [tuple(x) for x in recs] if isinstance(recs, list) else recs))
+    return 0, out
+
+
 def py_decode(stream, layout):
     try:
         return 0, hcc.decode(stream, layout)
@@ -242,6 +316,46 @@ def main():
         checked += 1
         if cst != pst or crecs != precs:
             fails.append(f"junk {b.hex()}: the C says {cst}, the Python {pst}")
+
+    # HMC: the same file from the same writes, the same reading of every file and its damage
+    files = test_hmc.scenarios(SEED)
+    images = []
+    for name, header, ops in files:
+        w, kept = test_hmc.write(header, ops)
+        images.append((name, header, w.image, len(kept)))
+        tool.write_file(header, ops)
+    for (name, header, image, kept), (st, ckept, cimage) in zip(images, tool.run()):
+        if st != 0 or ckept != kept or cimage != image:
+            where = next((i for i, (a, b) in enumerate(zip(cimage, image)) if a != b), None)
+            fails.append(f"HMC {name}: the C writes {ckept} objects (status {st}), the Python {kept}; "
+                         f"first difference at byte {where}")
+    hmc_checked = 0
+    for name, header, image, kept in images:
+        variants = [image]
+        r = hmc.Reader(image)
+        for k in range(ROUNDS // 3):
+            img = bytearray(image)
+            e = rng.choice([x for x in r.entries if x])
+            where = rng.choice([e[1] + rng.randrange(e[2] + 1), len(img) - 16 * rng.randrange(1, len(r.entries) + 2),
+                                rng.randrange(r.header.length)])
+            img[where] ^= 1 << rng.randrange(8)
+            variants.append(bytes(img))
+        tool.events = header.address == 0
+        for v in variants:
+            tool.read_file(v)
+        for v, got in zip(variants, tool.run()):
+            want = py_read(v)
+            hmc_checked += 1
+            if got != want:
+                fails.append(f"HMC {name}: the C reads a file {'as written' if v is image else 'with a bit flipped'} "
+                             f"differently from the Python")
+    for sec in (0, test_hmc.T0, 951_782_400, 4_107_542_400, (1 << 32) - 1):
+        tool.hmc_path(0x52, sec)
+    for sec, got in zip((0, test_hmc.T0, 951_782_400, 4_107_542_400, (1 << 32) - 1), tool.run()):
+        if got != hmc.path(0x52, sec):
+            fails.append(f"HMC path of {sec}: the C {got}, the Python {hmc.path(0x52, sec)}")
+    print(f"{len(files)} HMC files written by both and compared byte for byte; {hmc_checked} files, "
+          f"whole and damaged, read by both")
 
     print(f"{len(cases)} segments, {raw} B raw -> {coded} B HCC ({coded / raw * 100:.1f} %): "
           f"the C and the Python streams compared byte for byte")

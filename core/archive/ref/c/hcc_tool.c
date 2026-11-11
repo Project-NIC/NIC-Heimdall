@@ -5,8 +5,15 @@
  *   'L' fields           → 'L' layout            (hcc_compose_layout)
  *   'A' u8-positions, each fields → 'L' layout   (hcc_argus_layout; 0 fields an empty position)
  * fields and layout: u8 count, then offset · width · signed · big_endian · channel · ref;
- * records: u32 count, then u32 second · frame · kind · status · form · u16 length · the bytes. */
+ * records: u32 count, then u32 second · frame · kind · status · form · u16 length · the bytes.
+ *   'W' address u8 · sequence u16 · first u32 · station u32 · size u8 · u32-length sections,
+ *       then ops to 'Z': 'S' records · 'C' from u32 · u32-length sections · 'V' u32 count,
+ *       12 B lines → 'W' status · kept u32 · u32-length image          (hmc_writer)
+ *   'R' u32-length image → 'R' status · entries u32 · per object: 0 damaged · 1 segment first ·
+ *       last · codec · status · records or lines · 2 config from · u32-length sections
+ *   'P' address · second u32 → 'P' u8-length path */
 #include "hcc.h"
+#include "hmc.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,6 +36,152 @@ static uint32_t u32(void)
 static void put8(uint8_t v) { fputc(v, stdout); }
 static void put16(uint16_t v) { put8((uint8_t)v); put8((uint8_t)(v >> 8)); }
 static void put32(uint32_t v) { put16((uint16_t)v); put16((uint16_t)(v >> 16)); }
+
+static hcc_record *records(size_t *n)
+{
+    *n = u32();
+    hcc_record *recs = malloc(sizeof(hcc_record) * (*n ? *n : 1));
+    for (size_t i = 0; i < *n; i++) {
+        recs[i].second = u32();
+        recs[i].frame = u8();
+        recs[i].kind = u8();
+        recs[i].status = u8();
+        recs[i].form = u8();
+        recs[i].length = u16();
+        recs[i].data = in + at;
+        at += recs[i].length;
+    }
+    return recs;
+}
+
+static void put_records(const hcc_record *r, size_t n)
+{
+    put32((uint32_t)n);
+    for (size_t i = 0; i < n; i++) {
+        put32(r[i].second); put8(r[i].frame); put8(r[i].kind);
+        put8(r[i].status); put8(r[i].form); put16(r[i].length);
+        fwrite(r[i].data, 1, r[i].length, stdout);
+    }
+}
+
+static hmc_event *lines(size_t *n)
+{
+    *n = u32();
+    hmc_event *l = malloc(sizeof(hmc_event) * (*n ? *n : 1));
+    for (size_t i = 0; i < *n; i++) {
+        l[i].second = u32();
+        l[i].source = u8();
+        l[i].code = u8();
+        l[i].detail = u16();
+        l[i].value = u32();
+    }
+    return l;
+}
+
+static void write_file(void)
+{
+    hmc_header h;
+    hmc_writer w;
+    h.address = u8();
+    h.sequence = u16();
+    h.first_second = u32();
+    h.station = u32();
+    h.size = u8();
+    h.sections_len = u32();
+    h.sections = in + at;
+    at += h.sections_len;
+    int st = hmc_writer_open(&w, &h);
+    uint32_t kept = 0;
+    for (uint8_t op; (op = u8()) != 'Z';) {
+        size_t n;
+        int e = HMC_OK;
+        if (op == 'S') {
+            hcc_record *r = records(&n);
+            if (!st) e = hmc_writer_segment(&w, r, n);
+            free(r);
+        } else if (op == 'V') {
+            hmc_event *l = lines(&n);
+            if (!st) e = hmc_writer_events(&w, l, n);
+            free(l);
+        } else {
+            uint32_t from = u32();
+            size_t slen = u32();
+            if (!st) e = hmc_writer_config(&w, from, in + at, slen);
+            at += slen;
+        }
+        if (!st && e)
+            st = e == HMC_FULL ? -1 : e;
+        else if (!st)
+            kept++;
+    }
+    put8('W'); put8((uint8_t)(st < 0 ? 0 : st)); put32(kept);
+    put32((uint32_t)(st > 0 ? 0 : w.size));
+    if (st <= 0)
+        fwrite(w.image, 1, w.size, stdout);
+    if (st <= 0)
+        hmc_writer_close(&w);
+}
+
+static void read_file(void)
+{
+    size_t len = u32();
+    hmc_reader r;
+    int st = hmc_reader_open(&r, in + at, len);
+    at += len;
+    put8('R'); put8((uint8_t)st);
+    if (st)
+        return;
+    put32((uint32_t)r.entries);
+    hmc_sections force = {0}, hs;
+    hmc_sections_parse(r.h.sections, r.h.sections_len, &hs);
+    hmc_sections_apply(&force, &hs);
+    for (size_t i = 0; i < r.entries; i++) {
+        uint8_t *buf;
+        hmc_object o;
+        if (hmc_reader_object(&r, i, &buf, &o)) {
+            put8(0);
+            free(buf);
+            continue;
+        }
+        if (o.type == HMC_CFG) {
+            hmc_sections cs;
+            hmc_sections_parse(o.body, o.body_len, &cs);
+            hmc_sections_apply(&force, &cs);
+            put8(2); put32(o.from); put32((uint32_t)o.body_len);
+            fwrite(o.body, 1, o.body_len, stdout);
+            free(buf);
+            continue;
+        }
+        put8(1); put32(o.first); put32(o.last); put8(o.codec);
+        if (r.h.address == 0) {
+            hmc_event *l;
+            size_t n;
+            int e = hmc_events_parse(&o, &l, &n);
+            put8((uint8_t)e);
+            if (!e) {
+                put32((uint32_t)n);
+                for (size_t k = 0; k < n; k++) {
+                    put32(l[k].second); put8(l[k].source); put8(l[k].code);
+                    put16(l[k].detail); put32(l[k].value);
+                }
+            }
+            free(l);
+        } else {
+            hcc_field lay[HCC_MAX_LAYOUT];
+            size_t nl, n = 0;
+            hcc_record *recs = NULL;
+            int e = hmc_hcc_layout(&force, lay, &nl);
+            if (!e)
+                e = hmc_segment_records(&o, lay, nl, &recs, &n);
+            put8((uint8_t)e);
+            if (!e)
+                put_records(recs, n);
+            hcc_free(recs);
+        }
+        free(buf);
+    }
+    hmc_sections_free(&force);
+}
 
 static size_t fields(hcc_field *f)
 {
@@ -115,6 +268,16 @@ int main(void)
             }
             put8('L');
             put_fields(lay, hcc_argus_layout(ptr, counts, np, lay));
+        } else if (cmd == 'W') {
+            write_file();
+        } else if (cmd == 'R') {
+            read_file();
+        } else if (cmd == 'P') {
+            uint8_t a = u8();
+            char path[32];
+            hmc_path(a, u32(), path);
+            put8('P'); put8((uint8_t)strlen(path));
+            fwrite(path, 1, strlen(path), stdout);
         } else {
             fprintf(stderr, "hcc_tool: unknown request %d at %zu\n", cmd, at - 1);
             return 2;

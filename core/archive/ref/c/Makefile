@@ -4,8 +4,8 @@ CC      ?= cc
 CFLAGS  ?= -std=c99 -O2 -Wall -Wextra -Wpedantic
 CFLAGS  += -ffp-contract=off
 
-hcc_tool: hcc.c hcc_tool.c hcc.h
-	$(CC) $(CFLAGS) -o $@ hcc.c hcc_tool.c -lm
+hcc_tool: hcc.c hmc.c hcc_tool.c hcc.h hmc.h
+	$(CC) $(CFLAGS) -o $@ hcc.c hmc.c hcc_tool.c -lm
 
 clean:
 	rm -f hcc_tool

@@ -65,14 +65,16 @@ offset 0                                                             1 MB × 2^s
   recorded under `ALL`** and **1 MB for every other** — a Quake fills 64 MB in hours, a Palatine
   under `CHANGE` takes months over one.
 - **Data grows up from the header, the description grows down from the end.** The file is full
-  when the next segment and its entry would meet; the next file opens. **A file closes on nothing
+  when the next object's framed bytes and its entry would cross; the next file opens. **A file closes on nothing
   else** — a Palatine's file runs for months, a Quake's for hours.
 - **The path is the address and the day the file opened**, on the station's scale:
-  `52/20261001/120000.hmc` — the address in hex, then the date, then the file's first second. The
-  head's event log is the series of address `00`.
+  `52/20261001/120000.hmc` — the address in two upper-case hex digits, then the date, then the
+  file's first second, the second read as a calendar without leap seconds. The head's event log is
+  the series of address `00`.
 - **The two cards carry the same bytes.** The second card is the mirror.
 - **Everything is little-endian.** Segments and configs carry CRC-32 (IEEE 802.3, the one zlib
-  computes) — a segment reaches ~16 kB; a description entry carries the station's CRC-16-CCITT.
+  computes) — a segment reaches ~16 kB; a description entry carries the station's CRC-16-CCITT,
+  polynomial 0x1021 from 0xFFFF, unreflected, no final XOR, so a free entry's zeros fail it.
 
 ## The header
 
@@ -83,7 +85,7 @@ offset 0                                                             1 MB × 2^s
 [6]   sequence     2 B   the file's number in its address's series
 [8]   length       4 B   the whole header, magic to CRC
 [12]  first second 4 B   the second the file opened
-[16]  station      3 B   the station identity
+[16]  station      3 B   the station identity, little-endian
 [19]  size         1 B   the file is 1 MB × 2^size, 0…7
 [20]  sections     …     until length − 4
 [end] CRC-32       4 B
@@ -93,13 +95,13 @@ offset 0                                                             1 MB × 2^s
 leap-blind, as Kronos labels it (`../PROTOCOL.md` §4): the header, the records, the configs and the
 entries alike. UTC is derived at export, from the `TIME` section in force.
 
-**A section** is `id 1 B · reserved 3 B · length 4 B · body`; a reader skips an id it does not
-know.
+**A section** is `id 1 B · reserved 3 B · length 4 B · body`, the length the body's; a reader
+skips an id it does not know. The header's CRC-32 covers every byte before it.
 
 | id | section | |
 |---|---|---|
 | 1 | `STATION` | `name 32 B` UTF-8 · `latitude 4 B` · `longitude 4 B` (int32, 10⁻⁷ degree) · `elevation 2 B` (int16, metres, `0x8000` unknown) — the position the head writes to Kronos's `POSITION` |
-| 2 | `UNIT` | `space 1 B` (1 NodBus) · `type 1 B` · `card 1 B` · `port 1 B` · `slot 1 B` · `rows 2 B` (frames a second, 128 or 256) · `positions 4 B` (an Argus NUMBER: the mini address at positions 0..3, 0 empty) |
+| 2 | `UNIT` | `space 1 B` (1 NodBus) · `type 1 B` · `card 1 B` · `port 1 B` · `slot 1 B` · `rows 2 B` (frames a second, 128 or 256) · `positions 4 B` (an Argus NUMBER: the mini address at positions 0..3, position 0 the first byte, 0 empty) |
 | 3 | `LAYOUT` | the payload layout of the unit's TYPE — and on an Argus NUMBER one per mini TYPE seated |
 | 4 | `PROFILE` | one per ModBus type a Palatine reads |
 | 5 | `SETTINGS` | the unit's registers, and its sondes' |
@@ -161,14 +163,21 @@ registers 1 B` and per register `flags 1 B` (bit 0 signed · bit 1 low half of a
 **A record** is one kept frame, or on a block payload one kept block, with its time:
 `second 4 B · frame 1 B · kind 1 B · status 1 B · form 1 B` (0 frame, 1 block) `· length 1 B ·
 bytes` — 32 B of payload for a frame, the block as it rode (`module · length · data`) for a block.
-Codec 0 is the records back to back; **codec 1 is HCC** (`HCC.md`). **The codecs are a set**: the
-head codes a segment with every codec it has and writes the shortest, and a codec added later takes
-the next number — a reader skips a segment whose codec it does not know.
+A block's data is at most 253 B, so its record's length fits its byte. Codec 0 is the records back
+to back; **codec 1 is HCC** (`HCC.md`). **The codecs are a set**: the head codes a segment with
+every codec it has and writes the shortest body, the lower codec on a tie, and a codec added later
+takes the next number — a reader skips a segment whose codec it does not know. **A segment's
+`length` is the whole segment, its CRC included, as the header's; the CRC-32 covers every byte
+before it** — a config's the same.
 
 **The data stream is COBS-framed.** Every segment and every config is written COBS-encoded — no
-zero byte inside it — and followed by one 0x00; the cost is at most one byte in 254. A reader
-dropped anywhere in the data — a damaged entry, a file whose description is lost, a packet cut
-short — skips to the next zero and reads on. The entries point at the framed bytes.
+zero byte inside it — and followed by one 0x00; the cost is at most one byte in 254. The encoding
+is Cheshire and Baker's: each run of up to 254 non-zero bytes behind a code byte one more than its
+length, 0xFF a run with no zero after it, and an object that ends on a full run closed by an empty
+one (0x01). A reader dropped anywhere in the data — a damaged entry, a file whose description is
+lost, a packet cut short — skips to the next zero and reads on. **An entry points at the framed
+bytes**: its offset the first COBS byte, its length the COBS bytes without the zero, so the next
+object starts one byte past them.
 
 **A late frame is just a record.** A frame repaired after its second was written arrives as a
 record with an older second; the reader places every record by its second and frame, and of two
@@ -181,9 +190,20 @@ seat on an Argus — and holds from the second it names:
 "HCFG" 4 B · length 4 B · from second 4 B · reserved 4 B · sections as in the header · CRC-32 4 B
 ```
 
+**A config carries only the sections that changed, and every id it carries replaces all the
+sections of that id in force** — an Argus whose one mini layout changed carries all its `LAYOUT`s.
 **A setting change does not close the file**: the unit's `CHANGED` state code marks the frame, the
 head writes a config from that second, and a reader applies the last config at or before each
 record's second over the header.
+
+**HCC codes a segment with the layout in force where the segment lies**: the header's sections as
+changed by every config written before it in the file — so the head writes its buffer out as a
+segment before it writes a config that changes the layout. The layout is read from the sections:
+an Argus NUMBER — a `UNIT` with a position seated — takes at each position the mini `LAYOUT` (space
+2) of the seated TYPE, `TYPE` being the address's high four bits; any other unit the `LAYOUT` of its
+`UNIT`'s space and type; a TYPE with no `LAYOUT` — or a file with no `UNIT` — one channel a byte.
+The first `UNIT` and the first `LAYOUT` of a space and type count. A field gives HCC its offset,
+width, the two flags and its channel and `ref`; the scale and the names are the reader's.
 
 ## The description — 16 B entries from the end
 
@@ -198,7 +218,9 @@ record's second over the header.
 
 **Entries are fixed-stride and their seconds never go back**, so a second is a binary search over
 the description of a live file or a full one alike. A free entry reads all zeros and fails its
-CRC.
+CRC. Entry *i* lies at the file's end less 16 × (*i* + 1); the reader's binary search for the last
+good entry is the head's, and an entry inside that range that fails its CRC is a damaged object,
+its second taken as the last good one's before it.
 
 **Writing order: the data first, then its entry.** An entry never points at bytes not yet
 written. At boot the head finds each series' last file, binary-searches its description for the
