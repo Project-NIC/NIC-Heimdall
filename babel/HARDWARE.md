@@ -15,7 +15,7 @@ set; `../core/POWER.md`, the capacitor and filter rules).
 | `STM32H523VE`, LQFP100 | the Modbus slaves, the sensor drivers |
 | `LMR43610R3RPER` | 12 V → 3,3 V, the one rail; 36 V input, so it outlives the transils' ~29 V clamp |
 | `THVD1450` + 2× 10 Ω + `SM712` on the pair · 2× `5.0SMDJ18A` on the 12 V input | the basic set every MOD carries |
-| 2× `SWPA252012S2R2MT`, 2,2 µH | the sensor rail's filter and the `VDDA`/`VREF+` filter, π each |
+| 2× `WPN252012H2R2MT`, 2,2 µH | the sensor rail's filter and the `VDDA`/`VREF+` filter, π each |
 | `TPD4E05U06` | one ESD channel per header signal line, with 33 Ω at the processor — the house rule for a line that leaves the board (`../core/HARDWARE.md`) |
 | `SWXBEABVF0-16.777216` | the house crystal, 2²⁴ |
 
@@ -124,7 +124,7 @@ the basic set takes.
 | 18 | PC3 | — | | | free (ADC) |
 | 19 | VSSA | | | | |
 | 20 | VREF− | | | | |
-| 21 | VREF+ | 3,3 V through the shielded 2,2 µH `SWPA252012S2R2MT`, 10 µF + 100 nF both sides | | | the house filter on every `VDDA`/`VREF+`, used or not |
+| 21 | VREF+ | 3,3 V through the shielded 2,2 µH `WPN252012H2R2MT`, 10 µF + 100 nF both sides | | | the house filter on every `VDDA`/`VREF+`, used or not |
 | 22 | VDDA | the same node | | | |
 | 23 | PA0 | — | | | free (ADC) |
 | 24 | PA1 | — | | | free (ADC) |
@@ -236,7 +236,7 @@ SWD, NRST and BOOT0 populated; the LED fitted; nothing is DNP (`../core/HARDWARE
 | 2× 1 µF 50 V 0805 + 2× 100 nF 50 V 0603 | 2 sets | `VCAP` |
 | 100 nF 50 V | one a supply pin | every `VDD` |
 | 10 µF 50 V | 1 | the processor's bulk |
-| 2,2 µH `SWPA252012S2R2MT` + 2× (10 µF + 100 nF) | 1 set | `VDDA` / `VREF+`, π |
+| 2,2 µH `WPN252012H2R2MT` + 2× (10 µF + 100 nF) | 1 set | `VDDA` / `VREF+`, π |
 | 100 nF · 10 kΩ | 1 each | `NRST` · `BOOT0` to ground |
 | `LMR43610R3RPER` | 1 | the 3,3 V |
 | 4,7 µH shielded, `I_SAT` ≥ 3,5 A | 1 | the buck's inductor |
@@ -248,7 +248,7 @@ SWD, NRST and BOOT0 populated; the LED fitted; nothing is DNP (`../core/HARDWARE
 | `5.0SMDJ18A` | 2 | the 12 V input |
 | `THVD1450` · 2× 10 Ω · `SM712` | 1 set | the line front |
 | 100 nF + 10 µF | 1 set | the transceiver's supply |
-| 2,2 µH `SWPA252012S2R2MT` + 2× (10 µF + 100 nF) | 1 set | the sensor rail at the header, π |
+| 2,2 µH `WPN252012H2R2MT` + 2× (10 µF + 100 nF) | 1 set | the sensor rail at the header, π |
 | 4,7 kΩ | 3 | I2C3's two pull-ups, the 1-Wire pull-up |
 | 33 Ω | one a header signal line | at the processor pin, twelve lines |
 | `TPD4E05U06` | one channel a header signal line | at the header |

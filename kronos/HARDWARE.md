@@ -411,7 +411,7 @@ comes up and nothing is chained.
 **Every filter inductor on this board is a π filter: 10 µF 1206 + 100 nF 0603 before it on the rail and
 the same pair at the pins behind it** — the house rule (`../core/POWER.md`, *The filter parts*).
 
-`VDDA` and `VREF+` off the 3,3 V through the shielded 2,2 µH `SWPA252012S2R2MT` each, 10 µF + 100 nF at the pins; `VREF−`
+`VDDA` and `VREF+` off the 3,3 V through the shielded 2,2 µH `WPN252012H2R2MT` each, 10 µF + 100 nF at the pins; `VREF−`
 and `VSSA` to the ground plane at one point. The two `ID` inputs are read single-ended against
 `VREF+`, and each 10 kΩ pull-up hangs on the same 3,3 V, so the reading is a ratio and the rail's
 tolerance drops out.
@@ -441,7 +441,7 @@ tolerance drops out.
 | 7,50 kΩ · 30 kΩ · 13 kΩ, 1 % | 1 each | the buck's `RT` and divider |
 | 100 kΩ | 1 | `PGOOD` pull-up |
 | 22 pF C0G | 1 | `C_FF` |
-| 2,2 µH shielded, `SWPA252012S2R2MT` | 3 | `VDDA`, `VREF+`, the TCXO |
+| 2,2 µH shielded, `WPN252012H2R2MT` | 3 | `VDDA`, `VREF+`, the TCXO |
 | 47 µF 50 V hybrid polymer | 1 | the 12 V node |
 | 10 µF 50 V 1206 | 1 | the 12 V node |
 | 4,7 µF 50 V | 1 | the buck's `C_IN` |

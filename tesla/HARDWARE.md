@@ -1070,8 +1070,8 @@ nothing on it wants feedstock.
 |---|---|---|---|---|
 | **5,4 V** | **`TPS629206`**, forced PWM at 2,5 MHz, `MODE/S-CONF` 9,1 kΩ, `R1` 120 kΩ / `R2` 15 kΩ → 5,400 V | 12 V | the three 5 V LDOs | never |
 | **5,0 V analog** ×3 | **`LP2985-5.0`** ×3, each into the house π filter | 5,4 V | ADC `AVDD1` and the `REF6041` (their own regulator) · S1+S2 of the channels (two regulators, channels split behind shielded 2,2 µH inductors) | never |
-| **1,8 V digital** | **`TPS629206`**, forced PWM at 1 MHz, `MODE/S-CONF` 22 kΩ, `R1` 300 kΩ / `R2` 150 kΩ → 1,800 V | 12 V | **the whole MCU — `VDD` and `VDDA` alike**, `VREF+` strapped to it (§7), and **`VDDA`/`VREF+` through the station's shielded 2,2 µH `SWPA252012S2R2MT` into 10 µF + 100 nF** — the buck's own 1 MHz on an ADC reference is the inductor's position — and **ADC `IOVDD` through a second shielded 2,2 µH into 10 µF + 100 nF, then the bead `GZ2012D601TF` into 100 nF at the pin** — a digital supply whose 33 MHz clock is under the inductor's 69 MHz self-resonance and whose edges' harmonics are above it (`../core/POWER.md`, *The filter parts*); ≤ 5 mA, digital interface and core, no regulator of its own | **never** |
-| **`AVDD2`** | no regulator — the 1,8 V through the shielded 2,2 µH into 2× 10 µF + 100 nF (~24 kHz, Q ~2), then the bead `GZ2012D601TF` into 100 nF at the pin | the 1,8 V | ADC `AVDD2`, ≤ 21 mA | never |
+| **1,8 V digital** | **`TPS629206`**, forced PWM at 1 MHz, `MODE/S-CONF` 22 kΩ, `R1` 300 kΩ / `R2` 150 kΩ → 1,800 V | 12 V | **the whole MCU — `VDD` and `VDDA` alike**, `VREF+` strapped to it (§7), and **`VDDA`/`VREF+` through the station's shielded 2,2 µH `WPN252012H2R2MT` into 10 µF + 100 nF** — the buck's own 1 MHz on an ADC reference is the inductor's position — and **ADC `IOVDD` through a second shielded 2,2 µH into 10 µF + 100 nF, then the bead `GZ2012D601TF` into 100 nF at the pin** — a digital supply whose 33 MHz clock is about the inductor's self-resonance, 32 MHz at the least, and whose edges' harmonics are above it (`../core/POWER.md`, *The filter parts*); ≤ 5 mA, digital interface and core, no regulator of its own | **never** |
+| **`AVDD2`** | no regulator — the 1,8 V through the shielded 2,2 µH into 2× 10 µF + 100 nF (~24 kHz, Q ~3), then the bead `GZ2012D601TF` into 100 nF at the pin | the 1,8 V | ADC `AVDD2`, ≤ 21 mA | never |
 | **3,3 V interface** | **`TPS629206`**, forced PWM at 2,5 MHz, `MODE/S-CONF` 9,1 kΩ, `R1` 680 kΩ / `R2` 150 kΩ → 3,320 V | 12 V | the 3,3 V side of the two `SN74AXC8T245` · the `PCA9306` · the communication boards on `NB IN` and `TIME OUT` · the power body's pin 8 (**18 mA copper** — its line side is 5 mA, the island ~50 % at that load and three transceivers add their `ICC1`, `../galvani/HARDWARE.md` — ~55 mA on glass at a far end, 125 mA at most). **Nothing on the MCU touches it** | never |
 
 **Ranging:** the return is this board's timer — `RXD` and `TXD` on two channels of one timer,
@@ -1586,7 +1586,7 @@ clock pins, so `DCLK` and `FSYNC` are two nets on four pins, and the fourth bloc
 | 36 | VDD | 1,8 V | | | |
 | 37 | VSSA | | | | |
 | 38 | VREF+ | the `VDDA` node — the ADC reference, strapped to `VDDA` | | | |
-| 39 | VDDA | 1,8 V through the shielded 2,2 µH `SWPA252012S2R2MT`, 10 µF + 100 nF at the pins, `VREF+` on the same node | | | |
+| 39 | VDDA | 1,8 V through the shielded 2,2 µH `WPN252012H2R2MT`, 10 µF + 100 nF at the pins, `VREF+` on the same node | | | |
 | 40 | PA0 | — | | | free (ADC) |
 | 41 | PA1 | — | | | free (ADC) |
 | 42 | PA2 | `TXD_PIP` | `USART2_TX` / `TIM15_CH1` | out | `TIME OUT`, the second data body — Pip's NMEA to Kronos, through `U26`; 100 kΩ to 1,8 V |
@@ -1761,7 +1761,7 @@ converter's own dividers and nothing on this board divides by anything but a pow
 **Every filter inductor on this board is a π filter: 10 µF 1206 + 100 nF 0603 before it on the rail and
 the same pair at the pins behind it** — the house rule (`../core/POWER.md`, *The filter parts*).
 
-`VDDA` and `VREF+` are one node on the **1,8 V** through one shielded 2,2 µH `SWPA252012S2R2MT`, 10 µF + 100 nF at the pins — the rail is a buck's own, so the filter is the buck-noise inductor of `../core/POWER.md` and not a ferrite; `VSSA` to
+`VDDA` and `VREF+` are one node on the **1,8 V** through one shielded 2,2 µH `WPN252012H2R2MT`, 10 µF + 100 nF at the pins — the rail is a buck's own, so the filter is the buck-noise inductor of `../core/POWER.md` and not a ferrite; `VSSA` to
 the ground plane at one point — the LQFP176 bonds `VREF−` to `VSSA` inside. The three `ID` inputs are read
 single-ended against `VREF+`, and their 10 kΩ 1 % pull-ups hang on the same 1,8 V, so the reading is a
 ratio and the rail's tolerance drops out; the bodies' 3,3 V is not used for the `ID` on this
@@ -1783,10 +1783,10 @@ read whenever the processor runs.
 | U24 | **`TPS629206`** — 12 V → 3,3 V, the interface rail, forced PWM at 2,5 MHz (§6) | | 1 |
 | D1..D3 | **BAV199** — the coil clamp, two diodes anti-parallel across each rod's pair, on the amplifier side of `Rs1` (§0.2) | Extended — `LBAV199LT1G` `C12740` | 3 |
 | R/C | Rf/Cf (with the 10 Ω in each `Cf1` leg)/`R1`/`R2`/`C1`/`C2`/Rg/Cin/Rs/decoupling per §0.2, §2, §4 | Basic (jellybean) | — |
-| L1 | **`SWPA252012S2R2MT`** — shielded 2,2 µH, the station's buck-noise inductor: the MCU's `VDDA`/`VREF+` off the 1,8 V, into 10 µF + 100 nF (§6, §7) | Extended `C23894` | 1 |
-| L2..L5 | **`SWPA252012S2R2MT`** — the station's shielded 2,2 µH: the converter's `IOVDD` and `AVDD2`, and the channel split behind the two 5,0 V front-end LDOs (§6) | Extended `C23894` | 4 |
-| L6 | **`SWPA252012S2R2MT`** — the π behind the `AVDD1` and `REF6041` LDO, 10 µF + 100 nF on each side (§6) | Extended `C23894` | 1 |
-| FB | **`GZ2012D601TF`** — the 0805 bead, 600 Ω at 100 MHz, behind the inductors of `IOVDD` and `AVDD2`, for what reaches past the inductor's 69 MHz (§6) | Basic `C1017` | 2 |
+| L1 | **`WPN252012H2R2MT`** — shielded 2,2 µH, the station's buck-noise inductor: the MCU's `VDDA`/`VREF+` off the 1,8 V, into 10 µF + 100 nF (§6, §7) | Extended `C98350` | 1 |
+| L2..L5 | **`WPN252012H2R2MT`** — the station's shielded 2,2 µH: the converter's `IOVDD` and `AVDD2`, and the channel split behind the two 5,0 V front-end LDOs (§6) | Extended `C98350` | 4 |
+| L6 | **`WPN252012H2R2MT`** — the π behind the `AVDD1` and `REF6041` LDO, 10 µF + 100 nF on each side (§6) | Extended `C98350` | 1 |
+| FB | **`GZ2012D601TF`** — the 0805 bead, 600 Ω at 100 MHz, behind the inductors of `IOVDD` and `AVDD2`, for what reaches past the inductor's self-resonance, 32 MHz at the least (§6) | Basic `C1017` | 2 |
 | U25, U26 | **`SN74AXC8T245`** — the direction-set translators, 1,8 V ↔ 3,3 V, `OE#` to ground: `U25` inbound, `DIR` to ground; `U26` outbound, `DIR` to the 1,8 V (§8, *The Galvani sockets*) | Extended | 2 |
 | U27 | **`PCA9306`** — the I²C to `PWR IN`, `VREF1` on the 1,8 V, `VREF2` and `EN` on 200 kΩ to the 3,3 V (§8) | Extended | 1 |
 | R (sockets) | `ID_D`, `ID_P`, `ID_PIP` 10 kΩ 1 % to `VREF+` ×3 · `NB IN` and `TIME OUT` `LINE_EN` 10 kΩ to 3,3 V ×2 · the inbound lines 100 kΩ to ground ×7 · the outbound lines 100 kΩ ×5 · the I²C 4,7 kΩ ×4 · `U27`'s 200 kΩ · 33 Ω on `TIME OUT` pin 1 (§8) | Basic | — |

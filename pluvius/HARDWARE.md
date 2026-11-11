@@ -500,13 +500,14 @@ carries no clock — a local 2²⁴ crystal, one RS-485 pair.
 
 **One LDO, and it is the analogue one.** The MCU takes the raw 3,3 V because it does not care;
 the converter's `DVDD` is a digital supply and takes the same rail through the station's shielded 2,2 µH,
-`SWPA252012S2R2MT`, into 10 µF + 100 nF — the position for a converter's digital supply
+`WPN252012H2R2MT`, into 10 µF + 100 nF — the position for a converter's digital supply
 (`../core/POWER.md`, *The filter parts*). The one inductor part
 on the board is the shielded 2,2 µH under the MCU's `VDDA`/`VREF+` (*Analogue and reference*). The 5,0 V sits on the 5,67 V — 0,67 V of headroom against the `LP2985`'s dropout, at most 148 mV at 10 mA over −40…+125 °C and 145 mV at 50 mA (SNVS018AB), ~21 mA here.
 **Both bucks are the `LMR43610`**, one order code, because the 12 V node is behind the transils
 and they clamp at ~29 V: a 17 V part there dies on the first surge it was fitted to survive. The
 5,5 V branch runs in PFM — its ~20 mA cannot fill a 2 MHz cycle with any inductor the part
-allows — and the `LP2985` behind it, with the π filter behind that, is the filter; the 3,3 V branch at ~150 mA runs CCM on 10 µH — the house cell at 2,08 MHz with the inductor of a rail that feeds a measurement (`../galvani/HARDWARE.md`, *The buck cell*).
+allows — and the `LP2985` behind it, with the π filter behind that, is the filter, so it takes the 3,3 V's 10 µH
+(a ripple of 0,12–0,18 A, one inductor part on the board); the 3,3 V branch at ~150 mA runs CCM on 10 µH — the house cell at 2,08 MHz with the inductor of a rail that feeds a measurement (`../galvani/HARDWARE.md`, *The buck cell*).
 Ranging does not apply to a MOD; the ModBus arm carries no clock.
 
 **The LDO is a 20-cent part because the reading is a ratio.** `SIG` and `SENSE` stand on the
@@ -520,7 +521,7 @@ at 1 kHz, 40 dB at 1 MHz (SNVS018AB) — **so the house π filter stands behind 
 output capacitor is the π's first 10 µF + 100 nF (1–200 µF, ESR under 1 Ω, in the sheet's
 window), then the shielded 2,2 µH, then 10 µF + 100 nF, ~70 dB at 2,1 MHz
 (`../core/POWER.md`, *The filter parts*); behind it the 5,0 V is one node to `AVDD` and the
-bridge, and the inductor's 0,17 Ω drops ~4 mV inside the ratio. `ON/OFF` is tied to `VIN`,
+bridge, and the inductor's 0,12 Ω drops ~2,5 mV inside the ratio. `ON/OFF` is tied to `VIN`,
 1 µF at `VIN`, 10 nF on `BYPASS` for the 30 µVrms. The π's ~34 kHz ring is gone long before
 the 189 µs start-conversion delay ends (*AC bridge excitation*).
 
@@ -628,7 +629,7 @@ converts.
 | 18 | PC3 | — | | | free (ADC) |
 | 19 | VSSA | | | | |
 | 20 | VREF− | | | | |
-| 21 | VREF+ | 3,3 V through an inductor, `SWPA252012S2R2MT` — the ADC reference | | | |
+| 21 | VREF+ | 3,3 V through an inductor, `WPN252012H2R2MT` — the ADC reference | | | |
 | 22 | VDDA | 3,3 V through the same inductor | | | |
 | 23 | PA0 | — | | | free (ADC) |
 | 24 | PA1 | — | | | free (ADC) |
@@ -735,7 +736,7 @@ and the baud tolerance is what the crystal's grade is bought for.
 **Every filter inductor on this board is a π filter: 10 µF 1206 + 100 nF 0603 before it on the rail and
 the same pair at the pins behind it** — the house rule (`../core/POWER.md`, *The filter parts*).
 
-`VDDA` and `VREF+` on the 3,3 V through the shielded 2,2 µH, `SWPA252012S2R2MT`, into 10 µF + 100 nF —
+`VDDA` and `VREF+` on the 3,3 V through the shielded 2,2 µH, `WPN252012H2R2MT`, into 10 µF + 100 nF —
 the house filter for an ADC reference on a buck's output (`../core/POWER.md`, *The filter parts*). The processor's ADC reads
 one thing, the vessel's NTC — ratiometric against `VREF+`, so the reference's value cancels; the
 measurement is the ADS1235's, ratiometric to the excitation it shares its reference with, and the
@@ -769,14 +770,14 @@ and the converter's C0G, which its sheet asks for on the inputs and across `CAPP
 | `LP2985IM5X-5.0` — `ON/OFF` to `VIN` · 1 µF at `VIN` · 10 nF `BYPASS`; its output capacitor is the π's first 10 µF + 100 nF | 1 set | the 5,0 V | `C5380652` · `C28323` · `C57112` Basic |
 | `LMR43610R3RPER` | 2 | the 3,3 V and the 5,5 V | `C20345531` |
 | `R_FBT` / `R_FBB` 30 k / 13 k · 56 k / 12 k, `C_FF` 22 pF C0G | 1 set each | the two dividers — 3,31 V and 5,67 V (`../galvani/HARDWARE.md`, *The buck cell*) | `C22984` · `C22797` · `C23206` · `C22790` · 22 pF `C1653` Basic |
-| 10 µH shielded, `I_SAT` ≥ 2,1 A · 4,7 µH shielded, `I_SAT` ≥ 3,5 A | 1 each | the 3,3 V's inductor · the 5,5 V's | the house parts — no power inductor is Basic |
+| 10 µH shielded, `I_SAT` ≥ 2,1 A | 2 | the 3,3 V's and the 5,5 V's inductor | the house part — no power inductor is Basic |
 | 3× 10 µF 50 V 1206 + 100 nF · 4,7 µF 50 V + 100 nF · 1 µF · 100 nF | 2 sets | each buck's `C_OUT` · `C_IN` · `VCC` · `BOOT` | `C13585` · `C29823` · `C28323` · `C14663` Basic |
 | 100 kΩ | 1 | the 3,3 V buck's `PG` up, to PD14 | `C25803` Basic |
 | `5.0SMDJ18A` | 2 | the 12 V input | `C284071` |
 | `THVD1450` · 2× 10 Ω · `SM712` | 1 set | the line front | `THVD1450` · `C22859` Basic · `PSM712-LF-T7` `C32677` Basic |
 | `TMP117` or `STS35` + 2× 4,7 kΩ | 1 | `TEMP1`, I2C1, by population | the sensor · `C23162` Basic |
 | NTC 10 kΩ + 10 kΩ | 1 | `TEMP2`, the divider switched from PE3 | the NTC on its lead · `C25804` Basic |
-| 2,2 µH `SWPA252012S2R2MT` | 3 | `VDDA`/`VREF+` · the converter's `DVDD` · the 5,0 V's π | `C23894` |
+| 2,2 µH `WPN252012H2R2MT` | 3 | `VDDA`/`VREF+` · the converter's `DVDD` · the 5,0 V's π | `C98350` |
 | 10 µF 50 V X5R 1206 + 100 nF | 6 sets | before and behind each inductor, π | `C13585` · `C14663` Basic |
 | 4,7 kΩ | 1 | `PULSE` up | `C23162` Basic |
 | 510 Ω | 2 | the `RUN` and `DIR` coupler LEDs | `C23193` Basic |

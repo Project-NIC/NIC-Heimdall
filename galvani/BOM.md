@@ -296,7 +296,7 @@ pack, 0,4 A. No unit-end partner.
 |---|---|---|---|
 | `12V` | **`DGPS2.5R-5.0`** ×2 | `10060008518` | input and tap; 0,5 A in |
 | TVS_IN | **`5.0SMDJ14A`** | code | across `12V`, ahead of `L_IN` — stands off 14 V, conducts from 15,6–17,2 V; with the board's fuse in the enclosure's fuse field it clears a reversed pack or a held overvoltage |
-| L_IN | **`SWPA252012S2R2MT`**, 2,2 µH | code | the house filter inductor, into `C_IN` |
+| L_IN | **`WPN252012H2R2MT`**, 2,2 µH | code | the house filter inductor, into `C_IN` |
 | C_IN | **2× 10 µF 50 V X5R 1206 + 100 nF 50 V X7R 0603** at `VCC` | class | |
 
 ## 2 · The converter
@@ -427,7 +427,7 @@ No barrier, no ladder, no island, no buck — the fibre isolates by construction
 |---|---|---|---|
 | `DATA` · R_ID | **`BX2.54-2x6NA`** · **10,0 kΩ** (0,50) | code / value | `LINE_EN` not populated |
 | M1, M2 | **`OPT10-31103STR`** (duplex SC) or **`-PTR`** (FC pigtail) ×2 | code | 1310 nm, 10 km, 0–10 Mb/s, TTL, 3,3 V, industrial — **the grade letter `T`**; soldered, not socketed |
-| L1 … L4 · C_π | **`SWPA252012S2R2MT`** ×4, the station's shielded 2,2 µH · **100 nF** on the host side and **10 µF 50 V X5R 1206 + 100 nF** at the pin, per `Vcc` | code / class | the module sheet's π filter on each `VccT` and `VccR` — the sheets ask a coil of ~1 µH, not a bead, where the supply is not quiet, and every host rail here is a buck at 2–2,7 MHz; the 10 µF is the local bulk for the keyed laser's step |
+| L1 … L4 · C_π | **`WPN252012H2R2MT`** ×4, the station's shielded 2,2 µH · **100 nF** on the host side and **10 µF 50 V X5R 1206 + 100 nF** at the pin, per `Vcc` | code / class | the module sheet's π filter on each `VccT` and `VccR` — the sheets ask a coil of ~1 µH, not a bead, where the supply is not quiet, and every host rail here is a buck at 2–2,7 MHz; the 10 µF is the local bulk for the keyed laser's step |
 | U2 | **`74AUP1G126`** | code | from the `CLK/PPS` pin to channel B's `TD`, `OE` on `B_DIR` — active high |
 | U5 | **`74AUP1G125`** | code | from channel B's `RD` to the pin, `OE` on `B_DIR` — active low |
 | U3 · U4 | **`TPS22917`** on `VccT` · **`TPS22917L`** on `VccR` | code | both `ON` from `B_DIR` — a static select, not a switch |

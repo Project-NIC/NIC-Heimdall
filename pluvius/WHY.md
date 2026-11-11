@@ -202,3 +202,9 @@ The 60 V part stood at $4,92 with 38 in stock at JLCPCB (10 Nov 2026). The `TPS7
 `C111739`, 50 V in, $1,08 with ~7 800 in stock, takes the same ~10 mA in the same MSOP-8 PowerPAD
 and keeps 4,6 V over the ~45 V clamp — the 2 V an LDO's input keeps over the highest voltage it
 sees (the owner, 10 Nov 2026). It is adjustable: two Basic resistors set the 5 V.
+
+## 4,7 µH on the 5,5 V buck — superseded by the 3,3 V's 10 µH
+
+The branch runs in PFM at its ~20 mA with any inductor, the `LP2985` and the π filter behind it,
+so it takes the 3,3 V's 10 µH: a ripple of 0,12–0,18 A at 2,08 MHz, under the part's ~12 µH
+ceiling, and one inductor kind on the board, one Extended fee less (11 Nov 2026).

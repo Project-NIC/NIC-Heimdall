@@ -168,10 +168,10 @@ is ∝ e^V and does not tolerate the sag a primary-side-sensed supply leaves.
 board's own two two-pole Degson **`DGPS2.5R-5.0`** terminals, an input and a tap, the same node; the
 counting board beside it does not carry the 12 V across itself for this one.
 
-**The input filter**: the house inductor `SWPA252012S2R2MT` on the 12 V input into 2× 10 µF 50 V
+**The input filter**: the house inductor `WPN252012H2R2MT` on the 12 V input into 2× 10 µF 50 V
 1206 + 100 nF (`../../../core/POWER.md`, *The filter parts*) — what does not leave on the
 wire does not radiate, and this is the noisiest board in the unit. The input draws tens of
-milliamps against the part's 1,15 A.
+milliamps against the part's 1,9 A.
 
 ### Layout — its own board, potted
 

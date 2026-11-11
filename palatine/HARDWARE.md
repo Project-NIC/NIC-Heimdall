@@ -274,7 +274,7 @@ same tick and a conversion to the 2²³ timebase is a shift of four bits.
 **Every filter inductor on this board is a π filter: 10 µF 1206 + 100 nF 0603 before it on the rail and
 the same pair at the pins behind it** — the house rule (`../core/POWER.md`, *The filter parts*).
 
-`VDDA` and `VREF+` are one node off the 3,3 V through the shielded 2,2 µH (`SWPA252012S2R2MT`) into
+`VDDA` and `VREF+` are one node off the 3,3 V through the shielded 2,2 µH (`WPN252012H2R2MT`) into
 10 µF + 100 nF at the pins, the house filter for an ADC reference on a buck's output
 (`../core/POWER.md`, *The filter parts*); `VREF−` and `VSSA` to the ground plane at one point. The eleven `ID` inputs are read single-ended against
 `VREF+`, and the 10 kΩ 1 % pull-up of each `ID` resistor hangs on the same `VREF+` node, so the reading is a

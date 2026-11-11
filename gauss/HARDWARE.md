@@ -147,7 +147,7 @@ inductor — no LDO.** The 12 V is the unit power board's island output on the b
 |---|---|
 | 12 V input | **5× 10 µF 50 V 1206 + 100 nF, ceramic only** — a pressure-balanced body takes no hybrid polymer and no electrolytic (`../galvani/README.md`, *Pressure boards and land boards*); the pod draws tens of milliamperes and the unit power board's regulated 12 V has no transil clamp to reserve against |
 | the buck | the house cell: `RT` 7,50 kΩ → 2,08 MHz, auto mode; 4,7 µH shielded, `I_SAT` ≥ 3,5 A; `C_IN` 4,7 µF 50 V + 100 nF; `C_OUT` 3× 10 µF 50 V 1206 + 100 nF; `VCC` 1 µF; `BOOT` 100 nF; `R_FBT` 30 kΩ / `R_FBB` 13 kΩ → 3,31 V; `C_FF` 22 pF C0G; `PGOOD` to PD14 |
-| `L1`…`L4` | **`SWPA252012S2R2MT`** — 2,2 µH shielded, `DCR` 0,17 Ω, 2,5 × 2,0 × 1,2 mm |
+| `L1`…`L4` | **`WPN252012H2R2MT`** — 2,2 µH shielded, `DCR` 0,12 Ω max, 2,5 × 2,0 × 1,2 mm |
 | behind `L1` | 10 µF + 100 nF |
 | behind `L2` | 10 µF + 100 nF, then `VDDA` and `VREF+` with 1 µF + 100 nF at the pins |
 | behind `L3`, at the cable end | 10 µF + 100 nF |
@@ -164,11 +164,11 @@ from the board.
 a ~34 kHz corner, ~70 dB down at the buck's 2,08 MHz, with a Q of ~2,8.
 
 **`AVDD` and `DVDD` stay within the sheet's 0,1 V.** The coil drive peaks at no more than
-3,3 V / (120 + 30 + 120 Ω) ≈ 12 mA on `AVDD`, 0,17 Ω × 12 mA = 2 mV; the average is 70–260 µA;
-`DVDD` draws under 1 mA. The difference is ~2 mV.
+3,3 V / (120 + 30 + 120 Ω) ≈ 12 mA on `AVDD`, 0,12 Ω × 12 mA = 1,4 mV; the average is 70–260 µA;
+`DVDD` draws under 1 mA. The difference is ~1,5 mV.
 
 **The sensor's input pins are rated to `DVDD` and not above**, so the SPI from the H523 must not
-stand higher than the sensor's rail. Both are the same 3,3 V node behind an inductor of 0,17 Ω,
+stand higher than the sensor's rail. Both are the same 3,3 V node behind an inductor of 0,12 Ω,
 and the difference is fractions of a millivolt — which is why the branches are inductors and not
 resistors.
 
@@ -513,7 +513,7 @@ that averaging cannot touch. **The pod ships the deviation and does no analysis*
 | 3× 10 µF 50 V 1206 + 100 nF | 1 set | the 3,3 V node |
 | 100 kΩ | 1 | `PG` up, to PD14 |
 | 5× 10 µF 50 V 1206 + 100 nF, ceramic | 1 set | the 12 V input |
-| 2,2 µH `SWPA252012S2R2MT` | 4 | L1 · L2 · L3 · L4 |
+| 2,2 µH `WPN252012H2R2MT` | 4 | L1 · L2 · L3 · L4 |
 | 10 µF + 100 nF | 8 sets | before and behind each inductor, π |
 | 1 µF + 100 nF | 1 set | `VDDA` / `VREF+` at the pins |
 | 10 kΩ 1 % | 2 | the `ID` pull-ups to `VREF+` |

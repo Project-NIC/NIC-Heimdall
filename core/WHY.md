@@ -526,3 +526,13 @@ out-only, a resend request their one downlink.
 The same Sunlord 0805 line, 500 mA, JLCPCB Basic (`C1017`) where the 300 Ω was Extended. Its
 0,30 Ω instead of 0,20 Ω drops at most 39 mV, at Marconi's 131 mA, inside every converter's supply
 window, and it doubles the impedance past the inductor's 69 MHz (10 Nov 2026).
+
+## The filter inductor `SWPA252012S2R2MT` — superseded by Sunlord's `WPN252012H2R2MT`
+
+One 2,2 µH for the whole station (the owner, 11 Nov 2026). The `TPS629206` wants `I_SAT` over
+its 1,7 A limit and the ~2,2 A it overshoots to, which the `SWPA`'s 1,85 A is not, so every board
+with that buck carried two inductor kinds, each an Extended fee; no power inductor is Basic at
+JLCPCB. The `WPN` part has the same size and price, $0,04 (`C98350`), and `I_SAT` 2,6 A. In the
+π its lower `DCR`, 0,12 Ω against 0,20, lifts the corner's Q from ~3 to ~4–5, where nothing
+switches; its self-resonance, 32 MHz against 69, falls under the fast converters' 34–44 MHz
+lines, which the bead behind it takes with their harmonics.

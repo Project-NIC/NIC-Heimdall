@@ -184,7 +184,7 @@ all sit under the CSI's tolerance, and the board has no time role.
 **Every filter inductor on this board is a π filter: 10 µF 1206 + 100 nF 0603 before it on the rail and
 the same pair at the pins behind it** — the house rule (`../core/POWER.md`, *The filter parts*).
 
-`VDDA` and `VREF+` on the 3,3 V through the shielded 2,2 µH `SWPA252012S2R2MT`, 10 µF + 100 nF; nothing is measured on this
+`VDDA` and `VREF+` on the 3,3 V through the shielded 2,2 µH `WPN252012H2R2MT`, 10 µF + 100 nF; nothing is measured on this
 board and no ADC channel is used.
 
 ## Transceivers
@@ -261,7 +261,7 @@ not a power board: `ENABLE` and `A_SEL` land on nothing, and its I²C address is
 | 100 nF 50 V | one a supply pin | every `VDD`, the three transceivers |
 | 10 µF 50 V | 1 | the processor's bulk |
 | 100 nF · 10 kΩ | 1 each | `NRST` · `BOOT0` to ground |
-| 2,2 µH `SWPA252012S2R2MT` + 2× (10 µF + 100 nF) | 1 set | `VDDA` / `VREF+`, π |
+| 2,2 µH `WPN252012H2R2MT` + 2× (10 µF + 100 nF) | 1 set | `VDDA` / `VREF+`, π |
 | `THVD1450` · 2× 10 Ω · `SM712` | 1 set | the 485 face |
 | `TCAN334` · 2× 10 Ω · `PESD2CAN` · 100 Ω + a 2-pin jumper | 1 set | the CAN face and its termination |
 | `PCA9306` + 2× 4,7 kΩ | 1 | the I²C out, the pull-ups on the low side |

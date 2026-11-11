@@ -151,10 +151,10 @@ rejects there.
 | the buck | **`TPS629206`**, 600 mA, SOT-5X3, 3–17 V in: its 12 V is the unit power board's regulated output, whose `5.0SMDJ12A` breaks down at 13,3–14,7 V |
 | the divider | `R1` 680 kΩ / `R2` 150 kΩ, 1 % → 3,320 V against the 0,6 V reference |
 | `MODE/S-CONF` | **9,1 kΩ 1 % to ground** — external feedback, **forced PWM, 2,5 MHz**, no output discharge (the sheet's Smart-CONFIG setting 4; ~2,7 MHz at 12 V in) — the sensors listen, and forced PWM keeps a fixed frequency at any load. The on-time at 14,7 V in is 90 ns against the part's 40 ns minimum |
-| the inductor | 2,2 µH, Murata `DFE252012F-2R2M` — the house cell's |
+| the inductor | 2,2 µH, Sunlord `WPN252012H2R2MT` — the house cell's, the branches' part |
 | around it | `C_OUT` 3× 10 µF 1206 + 100 nF — the node every branch draws its steps from; `VCC` 1 µF; `BOOT` 100 nF; `PG` to PD14, 100 kΩ to the 3,3 V |
 
-**The branches**, each the station's shielded 2,2 µH `SWPA252012S2R2MT` from the buck's node into
+**The branches**, each the station's shielded 2,2 µH `WPN252012H2R2MT` from the buck's node into
 10 µF + 100 nF, with 100 nF more at every pin:
 
 | branch | what sits on it |
@@ -173,7 +173,7 @@ steady milliamps, which their own regulators reject.
 
 **The RM3100 is fed as on Gauss.** Its datasheet asks 2,0–3,6 V on `AVDD` and `DVDD` with at most
 50 mV peak to peak of ripple and the two within 0,1 V; the coil drive peaks at ~12 mA on `AVDD`,
-2 mV across 0,17 Ω. **Both inductors stand at the buck, never beside the coils**; beside the
+1,4 mV across 0,12 Ω. **Both inductors stand at the buck, never beside the coils**; beside the
 chipset only 10 µF + 100 nF ceramic on each supply. `DVDD` rises with `AVDD` and never after,
 because both start from one node through one inductor type and `L_RM_D` carries no more
 capacitance.
@@ -433,10 +433,9 @@ power board's island output lands on the input, and nothing on this board carrie
 | NTC + switched divider | 1 | between the coils, with the RM3100 |
 | TMP117 or STS35 | 1 | the wall thermometer, by population |
 | `TPS629206` | 1 | the 3,3 V |
-| 2,2 µH, Murata `DFE252012F-2R2M` (`C576403`) | 1 | the buck's inductor |
 | 680 kΩ · 150 kΩ, 1 % | 1 each | the buck's divider |
 | 100 kΩ | 1 | `PG` up |
-| 2,2 µH `SWPA252012S2R2MT` | 6 | `L_MCU` · `L_VDDA` · `L_ANA` · `L_IO` · `L_RM_A` · `L_RM_D` |
+| 2,2 µH `WPN252012H2R2MT` (`C98350`) | 7 | the buck's inductor · `L_MCU` · `L_VDDA` · `L_ANA` · `L_IO` · `L_RM_A` · `L_RM_D` |
 | 10 µF + 100 nF | 8 sets | behind each branch, and at the RM3100 chipset's `AVDD` and `DVDD` |
 | 100 nF | one a supply pin | every sensor and processor supply pin |
 | 3× 10 µF 1206 + 100 nF · 1 µF · 100 nF | 1 set | the buck's `C_OUT` · `VCC` · `BOOT` |

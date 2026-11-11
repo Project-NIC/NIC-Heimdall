@@ -350,7 +350,7 @@ firmware idles in `WFI` between interrupts anyway, and one clock tree is one clo
 **Every filter inductor on this board is a π filter: 10 µF 1206 + 100 nF 0603 before it on the rail and
 the same pair at the pins behind it** — the house rule (`../core/POWER.md`, *The filter parts*).
 
-`VDDA` and `VREF+` off the 3,3 V through the shielded 2,2 µH `SWPA252012S2R2MT` each, 10 µF + 100 nF at the pins; `VREF−`
+`VDDA` and `VREF+` off the 3,3 V through the shielded 2,2 µH `WPN252012H2R2MT` each, 10 µF + 100 nF at the pins; `VREF−`
 and `VSSA` to the ground plane at one point. The ten `ID` inputs are read single-ended against
 `VREF+`, and the 10 kΩ pull-up of every `ID` resistor hangs on the same 3,3 V, so the reading is
 a ratio and the rail's tolerance drops out.
@@ -507,7 +507,7 @@ and a source power board takes the host side of its isolator from the same pins.
 
 | position | value |
 |---|---|
-| `L` | **2,2 µH**, Murata `DFE252012F-2R2M` — the house cell's (`../galvani/HARDWARE.md`, *The buck cell*) |
+| `L` | **2,2 µH**, Sunlord `WPN252012H2R2MT` — the house cell's (`../galvani/HARDWARE.md`, *The buck cell*) |
 | `C_IN` | **4,7 µF 50 V X7R 1206 + 100 nF 50 V** at `VIN` |
 | `C_OUT` | **3× 10 µF 50 V X5R 1206** — ~21 µF effective at 3,3 V, the sheet's 22 |
 | the divider | **`R1` 680 kΩ / `R2` 150 kΩ, 1 %** → 3,320 V against the 0,6 V reference |
@@ -744,7 +744,7 @@ microsecond.
 | `LMR43620` | 1 | the down ports' 3,3 V |
 | `TPS629206` | 2 | the processor's and the up port's 3,3 V |
 | 4,7 µH shielded, `I_SAT` ≥ 3,5 A | 1 | the `LMR43620` |
-| 2,2 µH, Murata `DFE252012F-2R2M` (`C576403`) | 2 | the `TPS629206`s |
+| 2,2 µH shielded, `WPN252012H2R2MT` (`C98350`) | 4 | the `TPS629206`s · `VDDA`, `VREF+` |
 | `BX2.54-2xNA`, 2×6 | 5 | the data bodies — the up port and four down |
 | `BX2.54-2xNA`, 2×4 | 5 | the power bodies |
 | `BX2.54-2xNA`, 2×5 | 1 | the time bus tap |
@@ -760,7 +760,6 @@ microsecond.
 | 100 kΩ | 20 | `EN_1`–`EN_4` · `OE_1`–`OE_4` · `SD_UP`, `SD_1`–`SD_4` · `ALERT_0`–`ALERT_4` to ground · `ATTN` to ground · `PGOOD` up |
 | 7,50 kΩ · 30 kΩ · 13 kΩ, 1 % · 22 pF C0G | 1 each | the `LMR43620`'s `RT`, divider and `C_FF` |
 | 680 kΩ · 150 kΩ, 1 % · 18 kΩ | 2 each | the `TPS629206`s' divider and `MODE/S-CONF` |
-| 2,2 µH shielded, `SWPA252012S2R2MT` | 2 | `VDDA`, `VREF+` |
 | 47 µF 50 V hybrid polymer | 1 | the 12 V node |
 | 10 µF 50 V 1206 | 1 | the 12 V node |
 | 4,7 µF 50 V 1206 | 3 | the three bucks' `C_IN` |

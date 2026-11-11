@@ -158,11 +158,11 @@ so neither the reference's absolute value nor its drift reaches the result.
 ripple of 0,12 A at 3,3 V out, so a read's ~145 mA keeps the valley above the zero-cross limit, in
 CCM at 2,08 MHz rather than at the edge of PFM.
 
-**L1–L4 are `SWPA252012S2R2MT`** (Sunlord, LCSC/JLCPCB stock) — 2,2 µH, shielded wire-wound,
-2,5 × 2,0 × 1,2 mm, `DCR` 0,166 typ / 0,199 max Ω, `SRF` 69 MHz min, `I_SAT` 1,85 A, `I_RMS`
-1,15 A. Into 4,7–10 µF it is a 20–50 kHz corner, ~50–60 dB at the 1,05 MHz read and ~70 dB at the
-buck's 2,08 MHz, its self-resonance four times the 16,8 MHz read; the `DCR` is the damping — Q 2,6
-into 10 µF, ~4 into 4,7 µF, a peak of ~+12 dB at ~50 kHz where nothing on the board runs. **No
+**L1–L4 are `WPN252012H2R2MT`** (Sunlord, JLCPCB `C98350`) — 2,2 µH, shielded, metal-alloy core,
+2,5 × 2,0 × 1,2 mm, `DCR` 0,100 typ / 0,120 max Ω, `SRF` 32 MHz min, `I_SAT` 2,6 A, `I_RMS`
+1,9 A. Into 4,7–10 µF it is a 20–50 kHz corner, ~50–60 dB at the 1,05 MHz read and ~70 dB at the
+buck's 2,08 MHz, its self-resonance twice the 16,8 MHz read; the `DCR` is the damping — Q ~4
+into 10 µF, ~6 into 4,7 µF, a peak of ~+16 dB at ~50 kHz where nothing on the board runs. **No
 ferrite bead on this board**: every filter stands against the buck's 2,08 MHz, where a bead is a
 few ohms (`../core/POWER.md`, *The filter parts*).
 
@@ -423,7 +423,7 @@ read is a zero code.
 | `5.0SMDJ18A` | 2 | the 12 V input |
 | `THVD1450` · 2× 10 Ω · `SM712` | 1 set | the line front |
 | 100 nF + 10 µF | 1 set | the transceiver's supply |
-| 2,2 µH `SWPA252012S2R2MT` | 4 | L1 · L2 · L3 · L4 |
+| 2,2 µH `WPN252012H2R2MT` | 4 | L1 · L2 · L3 · L4 |
 | 10 µF + 100 nF | 8 sets | before and behind each of L1–L4, π |
 | `TMP117` or `STS35` + 2× 4,7 kΩ + 4,7 µF + 100 nF | 1 | the thermometer, I2C1, by population |
 | 1 kΩ + LED | 1 | the status LED on PD4 |

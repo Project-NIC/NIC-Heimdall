@@ -247,7 +247,7 @@ second, and the counter is cleared on every second, long before it wraps.
 **Every filter inductor on this board is a π filter: 10 µF 1206 + 100 nF 0603 before it on the rail and
 the same pair at the pins behind it** — the house rule (`../../core/POWER.md`, *The filter parts*).
 
-`VDDA` and `VREF+` off the 3,3 V through the shielded 2,2 µH `SWPA252012S2R2MT` each, 10 µF + 100 nF at the pins; `VREF−`
+`VDDA` and `VREF+` off the 3,3 V through the shielded 2,2 µH `WPN252012H2R2MT` each, 10 µF + 100 nF at the pins; `VREF−`
 and `VSSA` to the ground plane at one point. The two `ID` inputs are read single-ended against
 `VREF+`, and the 10 kΩ 1 % pull-up of each `ID` resistor hangs on `VREF+` itself, so the reading is a
 ratio and the rail's tolerance drops out. The arrived 12 V and the input current are the power

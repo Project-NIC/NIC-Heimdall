@@ -109,7 +109,7 @@ sensor read must never wait behind a telemetry read.
 | 19 | VSSA | | | | |
 | 20 | VREF− | | | | |
 | 21 | VREF+ | the `VDDA` node — the ADC reference, strapped to `VDDA` | | | |
-| 22 | VDDA | 3,3 V through the shielded 2,2 µH `SWPA252012S2R2MT`, 10 µF + 100 nF at the pins — a buck's own output feeding an ADC that reads the holdover's temperature covariate, so the filter is the buck-noise inductor of `../core/POWER.md` (*The filter parts*), not a ferrite | | | |
+| 22 | VDDA | 3,3 V through the shielded 2,2 µH `WPN252012H2R2MT`, 10 µF + 100 nF at the pins — a buck's own output feeding an ADC that reads the holdover's temperature covariate, so the filter is the buck-noise inductor of `../core/POWER.md` (*The filter parts*), not a ferrite | | | |
 | 23 | PA0 | — | | | free (ADC) |
 | 24 | PA1 | — | | | free (ADC) |
 | 25 | PA2 | — | | | free (ADC) |
@@ -314,7 +314,7 @@ baud is inside tolerance and waits for nothing else.
 **Every filter inductor on this board is a π filter: 10 µF 1206 + 100 nF 0603 before it on the rail and
 the same pair at the pins behind it** — the house rule (`../core/POWER.md`, *The filter parts*).
 
-`VDDA` and `VREF+` are one node off the 3,3 V through one shielded 2,2 µH `SWPA252012S2R2MT`,
+`VDDA` and `VREF+` are one node off the 3,3 V through one shielded 2,2 µH `WPN252012H2R2MT`,
 10 µF + 100 nF at the pins — the rail is the buck's, and the ADC on it reads `VSENSE` for the
 holdover table, so the filter is the buck-noise inductor of `../core/POWER.md` and not a
 ferrite; `VREF−` and `VSSA` to the ground plane at one point. The two `ID` inputs are read single-ended against
@@ -396,7 +396,7 @@ body.
 | 3× 10 µF 50 V 1206 + 100 nF | 1 set | the 3,3 V node |
 | 100 kΩ | 1 | `PG` up, to PD14 |
 | 5× 10 µF 50 V 1206 + 100 nF, ceramic | 1 set | the 12 V input |
-| 2,2 µH `SWPA252012S2R2MT` + 2× (10 µF + 100 nF) | 1 set | `VDDA` / `VREF+`, π |
+| 2,2 µH `WPN252012H2R2MT` + 2× (10 µF + 100 nF) | 1 set | `VDDA` / `VREF+`, π |
 | 10 kΩ 1 % | 2 | the `ID` pull-ups to `VREF+` |
 | 4,7 kΩ | 2 | I2C1, the power body |
 | 100 kΩ | 2 | `SD` and `ALERT` to ground |

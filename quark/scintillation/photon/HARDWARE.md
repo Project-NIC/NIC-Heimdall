@@ -261,7 +261,7 @@ that sleep sleep by their own pins — the converter's `PDWN`, the amplifiers' `
 | 36 | VDD | 1,8 V | | | |
 | 37 | VSSA | | | | |
 | 38 | VREF+ | the `VDDA` node — the ADC reference, strapped to `VDDA` | | | |
-| 39 | VDDA | 1,8 V through the shielded 2,2 µH `SWPA252012S2R2MT`, 10 µF + 100 nF at the pins, `VREF+` on the same node — the rail is a buck's own, so the filter is the buck-noise inductor of `../../../core/POWER.md`, not a ferrite | | | |
+| 39 | VDDA | 1,8 V through the shielded 2,2 µH `WPN252012H2R2MT`, 10 µF + 100 nF at the pins, `VREF+` on the same node — the rail is a buck's own, so the filter is the buck-noise inductor of `../../../core/POWER.md`, not a ferrite | | | |
 | 40 | PA0 | `NTC_X` | ADC | in | the crystal's NTC, on its divider, 3 kΩ + 100 nF at the pin |
 | 41 | PA1 | `NTC_S` | ADC | in | the SiPM's NTC, on its divider, RC at the pin |
 | 42 | PA2 | `NTC_P` | ADC | in | the PIN's NTC, on its divider, RC at the pin |
@@ -511,7 +511,7 @@ a smaller one would not be cheaper. The figures are the sheet's (AP Memory rev. 
 **Every filter inductor on this board is a π filter: 10 µF 1206 + 100 nF 0603 before it on the rail and
 the same pair at the pins behind it** — the house rule (`../../../core/POWER.md`, *The filter parts*).
 
-`VDDA` and `VREF+` on the **1,8 V** through the shielded 2,2 µH `SWPA252012S2R2MT` into 10 µF + 100 nF; `VSSA` to
+`VDDA` and `VREF+` on the **1,8 V** through the shielded 2,2 µH `WPN252012H2R2MT` into 10 µF + 100 nF; `VSSA` to
 the ground plane at one point — the LQFP176 bonds `VREF−` to `VSSA` inside. The two `ID` inputs are read
 single-ended against `VREF+`, and their 10 kΩ 1 % pull-ups hang on `VREF+` itself, so the reading is a
 ratio and the rail's tolerance drops out; the data body's 3,3 V is not used for the `ID` on this
@@ -529,8 +529,8 @@ hands the board 12 V and nothing lower**, so every rail below that is made here.
 | **4,0 V** | **`TPS629206`**, forced PWM at 2,5 MHz, `MODE/S-CONF` 9,1 kΩ, `R1` 390 kΩ / `R2` 68 kΩ → 4,047 V; never switched | the 12 V | the two 3,3 V LDOs and the `LT3571` — ~200 mA at the ceiling, 33 % of the part |
 | **clean 3,3 V** | **`TPS7A2033`** | the 4,0 V | the `THS4551`s, the `LTC6268` where it is fitted, and the converter's analogue side — its ~50 mA through the `TPS7A2018` the largest share. **Each amplifier takes it through the bead `GZ2012D601TF`, 100 nF on either side of it — the first beside the LDO's output capacitor, the second at its supply pin**: the LDO rejects 45 dB at 1 MHz and less above, and the bead holds what the LDO passes in the tens of MHz where the front works |
 | **3,3 V, ordinary** | a second **`TPS7A2033`** | the 4,0 V | the station interface and the plugged communication board |
-| **1,8 V** | **`TPS629206`**, forced PWM at 1 MHz, `MODE/S-CONF` 22 kΩ, `R1` 300 kΩ / `R2` 150 kΩ → 1,800 V — ~205 mA at the ceiling, 34 % of the part | the 12 V | **the H7A3 entire** — `VDDA`/`VREF+` behind the shielded 2,2 µH `SWPA252012S2R2MT` into 10 µF + 100 nF, the buck-noise inductor of `../../../core/POWER.md`; 12 → 1,8 V at 1 MHz is 150 ns of on-time against the part's 40 ns |
-| the converter's `DRVDD` · `IOVDD` | **no regulator** — the 1,8 V through **the shielded 2,2 µH into 10 µF + 100 nF, then the bead `GZ2012D601TF` into 100 nF at the pin** — the bead for the harmonics of the output edges, above the inductor's 69 MHz self-resonance: words at 88 MHz put a data line's fundamental at 44 MHz at most | the 1,8 V | |
+| **1,8 V** | **`TPS629206`**, forced PWM at 1 MHz, `MODE/S-CONF` 22 kΩ, `R1` 300 kΩ / `R2` 150 kΩ → 1,800 V — ~205 mA at the ceiling, 34 % of the part | the 12 V | **the H7A3 entire** — `VDDA`/`VREF+` behind the shielded 2,2 µH `WPN252012H2R2MT` into 10 µF + 100 nF, the buck-noise inductor of `../../../core/POWER.md`; 12 → 1,8 V at 1 MHz is 150 ns of on-time against the part's 40 ns |
+| the converter's `DRVDD` · `IOVDD` | **no regulator** — the 1,8 V through **the shielded 2,2 µH into 10 µF + 100 nF, then the bead `GZ2012D601TF` into 100 nF at the pin** — the bead for what lies above the inductor's self-resonance, 32 MHz at the least: words at 88 MHz put a data line's fundamental at 44 MHz at most, and the output edges' harmonics above it | the 1,8 V | |
 | the PSRAM | **no regulator** — the 1,8 V on its two `VDD` balls, 1 µF at the balls and 10 µF beside the part | the 1,8 V | ≤ 20 mA while a record is written, ≤ 680 µA standing (*The PSRAM*) |
 | the converter's analogue `VDD` | **`TPS7A2018`** | the clean 3,3 V | a quiet 1,8 V of its own — the `AD9251`'s `AVDD`, 1,7–1,9 V: **~50 mA** for the two channels at 44 MSPS — the sheet gives 49,5 / 52,8 mA typical / maximum for the -40 grade at 40 MSPS and 80,5 / 85,5 for the -80 at 80, and the analogue core's power scales with the clock — so ≤ 57 mA at the ceiling: 19 % of the part, (3,3 − 1,8) V × 57 mA = 86 mW in the LDO. The sheet asks separate supplies for `AVDD` and `DRVDD`, which this board has. The analogue side is the converter's hungry supply and it stands on its regulator: the `TPS7A2018`'s output capacitor, then **the bead `GZ2012D601TF` into 100 nF at every `AVDD` pin** — 57 mA through 0,30 Ω is 17 mV, inside `AVDD`'s 1,7–1,9 V; `DRVDD` behind the bead carries ≤ 11 mA |
 

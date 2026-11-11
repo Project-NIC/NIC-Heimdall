@@ -243,7 +243,7 @@ same tick and a conversion to the 2²³ timebase is a shift of four bits.
 **Every filter inductor on this board is a π filter: 10 µF 1206 + 100 nF 0603 before it on the rail and
 the same pair at the pins behind it** — the house rule (`../core/POWER.md`, *The filter parts*).
 
-`VDDA` and `VREF+` off the 3,3 V through the shielded 2,2 µH `SWPA252012S2R2MT` each, 10 µF + 100 nF at the pins; `VREF−`
+`VDDA` and `VREF+` off the 3,3 V through the shielded 2,2 µH `WPN252012H2R2MT` each, 10 µF + 100 nF at the pins; `VREF−`
 and `VSSA` to the ground plane at one point. The three `ID` inputs are read single-ended against
 `VREF+`, and the 10 kΩ 1 % pull-up of each `ID` resistor hangs on `VREF+`, so the reading is a
 ratio and the rail's tolerance drops out. The arrived 12 V and the input current are the power
@@ -312,7 +312,7 @@ backup pin is tied to the rail. I²C, SPI and CAN are reserved and not supported
 
 **The antenna feed — the sheet's figure 3-2, on the board's own bias rail.** The antenna's LNA takes its
 supply over the coax from **`ANT_BIAS`, a branch of the 3,3 V behind its own shielded 2,2 µH
-`SWPA252012S2R2MT` with the house π pair and a 100 mA polyfuse** — its own rail, so that what the coax
+`WPN252012H2R2MT` with the house π pair and a 100 mA polyfuse** — its own rail, so that what the coax
 brings in lands on this branch and not on the module's `VCC`. From there: **`L_FEED` 68 nH 0603 RF
 inductor** onto the antenna node; **100 nF ∥ 100 pF** at the bias side of the inductor; **`C_BLK` 100 pF**
 from the antenna node into `ANT_IN`; on the antenna node an ESD part rated for the GHz line, **`TPD1E05U06`**

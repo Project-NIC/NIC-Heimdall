@@ -752,3 +752,10 @@ come in on consignment. Murata's `DFE252012` family, in its F grade, is: $0,15 (
 against 20 — some 15 mW at the cell's ceiling — and `I_SAT` 3,6 A, clear of the 1,7 A high-side
 limit and its overshoot. The house filter inductor, `SWPA252012S2R2MT`, was weighed and not taken:
 its ~2 A saturation sits on that limit (11 Nov 2026).
+
+## Murata's `DFE252012F-2R2M` on the `TPS629206` — superseded by the house `WPN252012H2R2MT`
+
+One 2,2 µH serves the filters and the cell, so the six boards with this buck — Tesla, Marconi,
+the two scintillation Quarks, the card and Quake — carry one inductor kind, not two. `I_SAT`
+2,6 A against 3,3, still over the ~2,2 A the limit overshoots to; `DCR` 0,12 Ω against 0,082,
+~14 mW more at the cell's 0,6 A ceiling; $0,04 against $0,15 (11 Nov 2026).

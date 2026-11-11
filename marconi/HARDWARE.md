@@ -695,7 +695,7 @@ it. The `DCO` phase and polarity are a converter register, written at boot (`FIR
 | 36 | VDD | 1,8 V | | | |
 | 37 | VSSA | | | | |
 | 38 | VREF+ | the `VDDA` node — the ADC reference, strapped to `VDDA` | | | |
-| 39 | VDDA | 1,8 V through the shielded 2,2 µH `SWPA252012S2R2MT`, 10 µF + 100 nF at the pins, `VREF+` on the same node — the rail is a buck's own, so the filter is the buck-noise inductor of `../core/POWER.md`, not a ferrite | | | |
+| 39 | VDDA | 1,8 V through the shielded 2,2 µH `WPN252012H2R2MT`, 10 µF + 100 nF at the pins, `VREF+` on the same node — the rail is a buck's own, so the filter is the buck-noise inductor of `../core/POWER.md`, not a ferrite | | | |
 | 40 | PA0 | `NTC` | ADC | in | the board's NTC, on its divider, 3 kΩ + 100 nF at the pin |
 | 41 | PA1 | — | | | free (ADC) |
 | 42 | PA2 | — | | | free (ADC) |
@@ -954,7 +954,7 @@ The figures are AP Memory's rev. 1.2 sheet.
 **Every filter inductor on this board is a π filter: 10 µF 1206 + 100 nF 0603 before it on the rail and
 the same pair at the pins behind it** — the house rule (`../core/POWER.md`, *The filter parts*).
 
-**The converter's `DRVDD` takes the 1,8 V through the shielded 2,2 µH into 10 µF + 100 nF, then the bead `GZ2012D601TF` into 100 nF at the pin** — the `AD9265`'s words at 67 MHz put a data line's fundamental at 34 MHz at most, under the inductor's 69 MHz self-resonance, and the edges' harmonics above it, where the bead absorbs them. `VDDA` and `VREF+` are one node on the **1,8 V** through one shielded 2,2 µH `SWPA252012S2R2MT`, 10 µF + 100 nF at the pins — the rail is a buck's own, so the filter is the buck-noise inductor of `../core/POWER.md` and not a ferrite; `VSSA` to
+**The converter's `DRVDD` takes the 1,8 V through the shielded 2,2 µH into 10 µF + 100 nF, then the bead `GZ2012D601TF` into 100 nF at the pin** — the `AD9265`'s words at 67 MHz put a data line's fundamental at 34 MHz at most, about the inductor's self-resonance (32 MHz at the least), and the edges' harmonics above it, where the inductor is a capacitor and the bead absorbs them. `VDDA` and `VREF+` are one node on the **1,8 V** through one shielded 2,2 µH `WPN252012H2R2MT`, 10 µF + 100 nF at the pins — the rail is a buck's own, so the filter is the buck-noise inductor of `../core/POWER.md` and not a ferrite; `VSSA` to
 the ground plane at one point — the LQFP176 bonds `VREF−` to `VSSA` inside. The two `ID` inputs are read
 single-ended against `VREF+`, and their 10 kΩ 1 % pull-ups hang on the same 1,8 V, so the reading is a
 ratio and the rail's tolerance drops out; the bodies' 3,3 V is not used for the `ID` on this
