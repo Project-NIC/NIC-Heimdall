@@ -738,3 +738,9 @@ The same registers, pins and 85 V, 16 bits on the same ranges; the `INA238`'s ±
 a precision no threshold, baseline or reading in the family uses — trip points are measured and set
 with margin, the feed and the leak watch are calibrated at commissioning. $23,36 against $1,83 a part
 at JLCPCB (10 Nov 2026), eight parts in a full family.
+**It is the cheaper substitute, and the `INA238` drops back in unchanged** — the same pins, registers
+and `ZVBUS` (0,8–1,2 MΩ) — wherever a builder wants the precision. What the `INA237` gives up, over
+60 °C from commissioning: the 300 V leak watch's ratio drifts ±0,7 % against ±0,35 %, so it sees a
+leak to ~200 MΩ instead of ~400 MΩ (a 100 MΩ leak moves it 4,2 %); the 48 V comparison of the two
+ends' currents drifts ±3,3 mA at 0,55 A against ±1,7 mA, the 300 V fallback ±1 mA against ±0,5 mA.
+Both are orders past an insulation monitor's usual 100 Ω/V (11 Nov 2026).
