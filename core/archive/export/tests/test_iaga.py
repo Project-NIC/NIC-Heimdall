@@ -3,11 +3,13 @@ and a synthetic 32 Hz magnetometer's files exported, read back by an independent
 parser and checked against the filters run on its raw series. Needs SciPy (with ObsPy).
 
 The observatory check runs where `BDV_SEC` and `BDV_MIN` name a day of Budkov's second and minute
-values (`../README.md` says how to fetch them)."""
+values (`../../ref/README.md` says how to fetch them)."""
 import math, os, random, sys
 from fractions import Fraction
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-sys.path.insert(0, os.path.dirname(__file__))
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(HERE, ".."))
+sys.path.insert(0, os.path.join(HERE, "..", "..", "ref"))
+sys.path.insert(0, os.path.join(HERE, "..", "..", "ref", "tests"))
 import hmc, export, measure
 from hmc import Header, LayoutField
 from scipy import signal as sps

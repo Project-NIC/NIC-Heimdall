@@ -7,13 +7,16 @@ An export is a function of the files and the request: the same bytes in, the sam
 
 from __future__ import annotations
 
+import os
 import struct
+import sys
 from dataclasses import dataclass
 from fractions import Fraction
 from typing import Dict, List, Optional, Sequence, Tuple
 
-import hmc
-from hmc import LayoutField
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "ref"))
+import hmc  # noqa: E402
+from hmc import LayoutField  # noqa: E402
 
 CLIPPED, DISTURBED = 6, 7
 US = 10 ** 6

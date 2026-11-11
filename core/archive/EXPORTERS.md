@@ -191,14 +191,18 @@ will; the catalogue of *On the server* (`HMC.md`) is the same schema without the
 ```
 stations (station, name, latitude, longitude, elevation)
 units    (station, address, type, rows, first_second)
-configs  (station, address, from_second, rule, layout_revision, sections)
-fields   (station, address, from_second, channel, name, unit, exp10, mantissa, add)
-values   (station, address, second, frame, kind, status, channel, raw, value)
-segments (station, address, file, offset, length, first_second, last_second, codec)
+configs  (station, address, from_second, rule, layout_revision, sections, file, file_offset)
+fields   (station, address, from_second, channel, sample, field_offset, name, unit, exp10, mantissa, add_raw)
+samples  (station, address, second, frame, kind, status, channel, sample, raw, value, utc)
+events   (station, second, line, source, code, detail, value, utc)
+segments (station, address, file, file_offset, length, first_second, last_second, codec)
 ```
 
-`values` is keyed by station, address, second, frame and channel; a record kept twice — a late
-frame repaired — keeps the later written, as the reader does.
+`samples` is keyed by station, address, second, frame, channel and `sample` — the field's place
+among its channel's fields in a payload, 0 where a channel has one; a record kept twice — a late
+frame repaired — keeps the later written, as the reader does. The names are SQL's own words
+avoided: `values`, `offset` and `add` are keywords. The event log, address `00`, fills `events`.
+`utc` is ISO 8601 text in SQLite and a `timestamptz` in PostgreSQL.
 
 ## The viewer
 
@@ -208,6 +212,8 @@ a flagged one drawn as flagged. It writes nothing.
 
 ## Owed
 
-The reference library, C and Python, that reads HMC, and on it each exporter as entered here.
-**No exporter is written before the library reads a real station's files**, and none is registered
-anywhere before the hardware is validated (`../INTEROP.md`, the gate).
+**Written** (`export/`, Python, on the reference library): miniSEED + StationXML, IAGA-2002,
+CSV and SQL — checked as their entries say, on synthetic files and on open recordings. **Owed**:
+RINEX, BUFR, CWOP, IOC sea level, air quality and Blitzortung, each on its unit's own decoding —
+Sputnik's records, Palatine's profiles — and the viewer. None is registered anywhere before the
+hardware is validated (`../INTEROP.md`, the gate).

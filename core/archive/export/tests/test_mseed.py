@@ -4,8 +4,10 @@ quality bits of CLIPPED and DISTURBED frames, the Steim-2 frames against `steim2
 StationXML against the FDSN schema. Needs ObsPy."""
 import io, os, struct, sys
 from fractions import Fraction
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-sys.path.insert(0, os.path.dirname(__file__))
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(HERE, ".."))
+sys.path.insert(0, os.path.join(HERE, "..", "..", "ref"))
+sys.path.insert(0, os.path.join(HERE, "..", "..", "ref", "tests"))
 import hmc, export, steim2
 import test_hmc
 from obspy import read, read_inventory, UTCDateTime
