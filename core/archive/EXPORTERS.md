@@ -69,9 +69,9 @@ values, the metadata, the gaps and flags, and what it is checked with.
 | | |
 |---|---|
 | **takes** | one channel's series of an address recorded under `ALL` — a Quake axis, a Gauss component, Pascal's pressure |
-| **writes** | miniSEED 2.4, Steim-2, 512 B records (miniSEED 3 where the data centre takes it); one StationXML document a station |
-| **time** | a record's start is its first sample's instant; the rate is the `UNIT`'s rows, or the layout's samples a payload times the rows |
-| **values** | the counts as recorded; the codes from the layout — the SEED band by the rate, the instrument by the quantity, the orientation by the channel |
+| **writes** | miniSEED 2.4, Steim-2, 512 B records (miniSEED 3 where the data centre takes it) — blockette 1000 and blockette 1001 with the start's microsecond, the first difference of a run 0 and of every later record from the sample before it; one StationXML document a station, FDSN 1.2 |
+| **time** | a record's start is its first sample's instant; the rate is the `UNIT`'s rows, or the layout's samples a payload times the rows — the *k*-th of a channel's *n* fields in a payload at (frame · *n* + *k*) / (*n* · rows) past the second |
+| **values** | the counts as recorded; the codes from the layout — the SEED band by the rate (F ≥ 1000 Hz, C ≥ 250, H ≥ 80, B ≥ 10, M above 1, L, V, U, R), the instrument by the field's unit (`m/s2` N, `m/s` H, `nT` F, a pressure D, a temperature K, any other Y), the orientation by the last letter of its name (Z, N, E; X 1, Y 2), else the channel's number |
 | **metadata** | StationXML from `STATION`, `UNIT` and `LAYOUT`: a flat `InstrumentSensitivity` from the layout's scale, poles and zeros only from a `RESPONSE` section |
 | **gaps and flags** | a gap ends a record and the next begins after it; a record holding a CLIPPED frame carries the *digitizer clipping* quality bit, one holding a DISTURBED frame the *glitches* bit |
 | **checked with** | libmseed and ObsPy read the series back sample for sample; the Steim-2 frames against `ref/steim2.py`; StationXML against the FDSN schema |
