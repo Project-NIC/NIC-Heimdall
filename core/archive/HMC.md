@@ -27,14 +27,24 @@ cuts payloads along the layout's widths.
 | `DECIMATE n` | every `n`-th frame of the second, from frame 0 |
 | `INTERVAL s` | the first frame of every `s` seconds, aligned to seconds divisible by `s`; on a block payload, the first block of each module in each interval |
 | `NONZERO` | a frame whose payload is not all zeros |
-| `NONE` | nothing |
+| `NONE` | nothing — not even what the paragraph below keeps; it is the off switch |
 
 `CHANGE` and `NONZERO` take an optional **`at least every s`**: a frame is kept anyway when `s`
-seconds have passed since the last, so a quiet unit is seen to be alive.
+seconds have passed since the last kept — under `CHANGE` the last of the same block, under
+`NONZERO` the last of any — so a quiet unit is seen to be alive. `DECIMATE` with `n` of 0 or 1 and
+`INTERVAL` with `s` of 0 keep every frame; `INTERVAL` keeps a record when nothing of its kind — the
+frame, or a block of its module — was kept in its interval, the second divided by `s`.
 
-**Whatever the rule, these are always kept**: a frame whose `kind` or `status` differs from the
-last one kept — so every state edge, every ALARM, SUPPLY and FAULT edge, the first filler and the
-first frame after it reach the card — and every frame of `kind` 5–8, the reports and answers.
+**Whatever the rule but `NONE`, these are always kept**: the first record an address offers, a
+record whose `kind` or `status` differs from the last one kept — so every state edge, every ALARM,
+SUPPLY and FAULT edge, the first filler and the first frame after it reach the card — and every
+frame of `kind` 5–8, the reports and answers.
+
+**A ModBus payload is cut into its blocks** — `address · length · data`, whole, up to a zero
+address (`../../palatine/FIRMWARE.md` §7) — and a frame of `kind` 0 offers each block to the rule as
+a record of its own; a payload with no block, or with a block that runs past the 32 B, is offered
+as a frame, and so is a frame of any other kind. The head compares against at most 256 blocks of
+different module and length; a block past them is kept.
 
 **A rule is set per address and has a default per TYPE**, held in the head's configuration mirror,
 changed from the handset or by the server over the authenticated channel:
@@ -46,8 +56,9 @@ changed from the handset or by the server over the authenticated channel:
 | every other | `ALL` |
 
 **The send rule** uses the same vocabulary over what was recorded — it cannot send what the
-recording rule dropped — and on a block payload may name the modules it takes. It is set per
-address and per link (*The uplink*).
+recording rule dropped — and on a block payload may name the modules it takes: a block of another
+module is not sent, and a frame goes to the rule. It is set per address and per link (*The
+uplink*).
 
 ## The files
 

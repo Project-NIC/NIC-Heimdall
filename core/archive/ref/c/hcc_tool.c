@@ -11,7 +11,9 @@
  *       12 B lines → 'W' status · kept u32 · u32-length image          (hmc_writer)
  *   'R' u32-length image → 'R' status · entries u32 · per object: 0 damaged · 1 segment first ·
  *       last · codec · status · records or lines · 2 config from · u32-length sections
- *   'P' address · second u32 → 'P' u8-length path */
+ *   'P' address · second u32 → 'P' u8-length path
+ *   'K' rule (mode · n · s u16 · u8-count modules) · blocks · 0 and u32-count frames (second u32 ·
+ *       frame · kind · status · 32 B) or 1 and records → 'K' the records kept */
 #include "hcc.h"
 #include "hmc.h"
 
@@ -183,6 +185,43 @@ static void read_file(void)
     hmc_sections_free(&force);
 }
 
+static void select_(void)
+{
+    hmc_rule rule;
+    hmc_selector sel;
+    rule.mode = u8();
+    rule.n = u8();
+    rule.s = u16();
+    rule.nmodules = u8();
+    for (unsigned i = 0; i < rule.nmodules; i++)
+        rule.modules[i] = u8();
+    int blocks = u8(), how = u8();
+    hmc_selector_init(&sel, &rule, blocks);
+    size_t n, m = 0;
+    hcc_record *kept;
+    if (how == 0) {
+        n = u32();
+        kept = malloc(sizeof(hcc_record) * 16 * (n ? n : 1));
+        for (size_t i = 0; i < n; i++) {
+            uint32_t sec = u32();
+            uint8_t fr = u8(), kind = u8(), st = u8();
+            m += hmc_select_frame(&sel, sec, fr, kind, st, in + at, kept + m);
+            at += HCC_PAYLOAD;
+        }
+    } else {
+        hcc_record *r = records(&n);
+        kept = malloc(sizeof(hcc_record) * (n ? n : 1));
+        for (size_t i = 0; i < n; i++)
+            if (hmc_select_record(&sel, &r[i]))
+                kept[m++] = r[i];
+        free(r);
+    }
+    put8('K');
+    put_records(kept, m);
+    free(kept);
+    hmc_selector_free(&sel);
+}
+
 static size_t fields(hcc_field *f)
 {
     size_t n = u8();
@@ -272,6 +311,8 @@ int main(void)
             write_file();
         } else if (cmd == 'R') {
             read_file();
+        } else if (cmd == 'K') {
+            select_();
         } else if (cmd == 'P') {
             uint8_t a = u8();
             char path[32];

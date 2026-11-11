@@ -497,3 +497,116 @@ def scan(image: bytes, start: int) -> Iterator[Tuple[int, dict]]:
             except ValueError:
                 pass
         i = j + 1
+
+
+# ---------------------------------------------------------------- the rules
+
+ALL, CHANGE, DECIMATE, INTERVAL, NONZERO, NONE = range(6)
+MAX_BLOCK_KEYS = 256
+
+
+@dataclass(frozen=True)
+class Rule:
+    """A recording or send rule: `n` for DECIMATE, `s` the interval of INTERVAL or the *at least
+    every* of CHANGE and NONZERO (0 none); `modules` a send rule's ModBus modules, () all."""
+    mode: int
+    n: int = 0
+    s: int = 0
+    modules: Tuple[int, ...] = ()
+
+
+def rule_bytes(r: Rule) -> bytes:
+    return struct.pack("<BBH", r.mode, r.n, r.s)
+
+
+def rules_section(recording: Rule, links: Sequence[Tuple[int, Rule]] = ()) -> Section:
+    b = rule_bytes(recording) + bytes([len(links)])
+    for link, r in links:
+        b += bytes([link]) + rule_bytes(r) + bytes([len(r.modules)]) + bytes(r.modules)
+    return Section(RULES, b)
+
+
+def parse_rules(body: bytes) -> Tuple[Rule, List[Tuple[int, Rule]]]:
+    try:
+        mode, n, s = struct.unpack_from("<BBH", body)
+        rec, links, i = Rule(mode, n, s), [], 5
+        for _ in range(body[4]):
+            link, mode, n, s, k = struct.unpack_from("<BBBHB", body, i)
+            if i + 6 + k > len(body):
+                raise ValueError
+            links.append((link, Rule(mode, n, s, tuple(body[i + 6:i + 6 + k]))))
+            i += 6 + k
+        return rec, links
+    except (struct.error, IndexError, ValueError):
+        raise ValueError("HMC: a RULES section cut short")
+
+
+def split_blocks(payload: bytes) -> Optional[List[bytes]]:
+    """A ModBus payload's whole blocks, `address · length · data` until a zero address or the
+    end; None when a block runs past the 32 B — the frame is then kept as a frame."""
+    out, i = [], 0
+    while i < len(payload) and payload[i] != 0:
+        if i + 2 > len(payload) or i + 2 + payload[i + 1] > len(payload):
+            return None
+        out.append(bytes(payload[i:i + 2 + payload[i + 1]]))
+        i += 2 + payload[i + 1]
+    return out
+
+
+class Selector:
+    """One address's rule, applied as the head walks the second's frames (`frame`) or as a link's
+    send rule walks what was recorded (`record`). Returns the records kept."""
+
+    def __init__(self, rule: Rule, blocks: bool = False):
+        self.rule, self.blocks = rule, blocks
+        self.state = None                    # (kind, status) of the last record kept
+        self.last: Dict[object, Tuple[bytes, int]] = {}
+        self.interval: Dict[object, int] = {}
+        self.nzero = None                    # the second of the last record NONZERO kept
+
+    def frame(self, second: int, frame: int, kind: int, status: int, payload: bytes) -> List[hcc.Record]:
+        if self.blocks and kind == 0:
+            bl = split_blocks(payload)
+            if bl:
+                return [r for r in ((second, frame, kind, status, 1, b) for b in bl) if self._keep(r)]
+        r = (second, frame, kind, status, 0, bytes(payload))
+        return [r] if self._keep(r) else []
+
+    def record(self, r: hcc.Record) -> List[hcc.Record]:
+        if r[4] == 1 and self.rule.modules and r[5][0] not in self.rule.modules:
+            return []
+        return [r] if self._keep(r) else []
+
+    def _keep(self, r: hcc.Record) -> bool:
+        rule = self.rule
+        if rule.mode == NONE:
+            return False
+        sec, fr, kind, st, form, data = r
+        key = (data[0], data[1]) if form == 1 else "frame"
+        ikey = data[0] if form == 1 else "frame"
+        if key not in self.last and form == 1 and \
+                sum(1 for k in self.last if k != "frame") >= MAX_BLOCK_KEYS:
+            keep, store = True, False
+        else:
+            store = True
+            if self.state is None or (kind, st) != self.state or 5 <= kind <= 8 or rule.mode == ALL:
+                keep = True
+            elif rule.mode == CHANGE:
+                prev = self.last.get(key)
+                keep = prev is None or prev[0] != data or (rule.s and sec - prev[1] >= rule.s)
+            elif rule.mode == NONZERO:
+                keep = any(data) or (rule.s and (self.nzero is None or sec - self.nzero >= rule.s))
+            elif rule.mode == DECIMATE:
+                keep = rule.n <= 1 or fr % rule.n == 0
+            elif rule.mode == INTERVAL:
+                keep = rule.s == 0 or self.interval.get(ikey) != sec // rule.s
+            else:
+                keep = False
+        if keep:
+            self.state = (kind, st)
+            self.nzero = sec
+            if store:
+                self.last[key] = (data, sec)
+            if rule.s:
+                self.interval[ikey] = sec // rule.s
+        return bool(keep)

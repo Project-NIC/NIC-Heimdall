@@ -118,6 +118,33 @@ def main():
         e = hmc.cobs_encode(b)
         assert 0 not in e and hmc.cobs_decode(e) == b and len(e) <= n + n // 254 + 1, n
     assert hmc.parse_entry(bytes(16)) is None
+    # the rules, by what HMC.md says each keeps
+    pl = bytes([3, 4, 1, 2, 3, 4, 5, 2, 9, 9, 0]) + bytes(21)
+    moved = bytes([3, 4, 1, 2, 3, 5, 5, 2, 9, 9, 0]) + bytes(21)
+    sel = hmc.Selector(hmc.Rule(hmc.CHANGE, 0, 3600), blocks=True)
+    assert len(sel.frame(T0, 0, 0, 0, pl)) == 2                 # the first of each block
+    assert sel.frame(T0 + 1, 0, 0, 0, pl) == []                 # nothing changed
+    assert [r[5][0] for r in sel.frame(T0 + 2, 0, 0, 0, moved)] == [3]   # module 3 changed
+    assert len(sel.frame(T0 + 3, 0, 0, 2, moved)) == 1          # a status edge: the first record
+    assert [r[5][0] for r in sel.frame(T0 + 3602, 0, 0, 2, moved)] == [5]   # its hour is up
+    assert len(sel.frame(T0 + 3603, 0, 0, 2, bytes(32))) == 1   # no block: kept as a frame
+    sel = hmc.Selector(hmc.Rule(hmc.NONZERO, 0, 60))
+    z = bytes(32)
+    kept = [len(sel.frame(T0 + i, 0, 0, 0, z)) for i in range(0, 200, 10)]
+    assert kept == [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0], kept
+    assert len(sel.frame(T0 + 200, 0, 6, 0, z)) == 1            # a report frame, always
+    sel = hmc.Selector(hmc.Rule(hmc.DECIMATE, 32))
+    assert sum(len(sel.frame(T0, f, 0, 0, pl)) for f in range(128)) == 4
+    sel = hmc.Selector(hmc.Rule(hmc.INTERVAL, 0, 60))
+    assert sum(len(sel.frame(T0 + i, 0, 0, 0, pl)) for i in range(0, 600, 7)) == 10
+    sel = hmc.Selector(hmc.Rule(hmc.NONE))
+    assert sel.frame(T0, 0, 6, 1, pl) == []                      # NONE keeps nothing at all
+    send = hmc.Selector(hmc.Rule(hmc.ALL, modules=(5,)), blocks=True)
+    assert [r[5][0] for k in hmc.Selector(hmc.Rule(hmc.ALL), True).frame(T0, 0, 0, 0, pl)
+            for r in send.record(k)] == [5]
+    rec, links = hmc.parse_rules(hmc.rules_section(hmc.Rule(hmc.CHANGE, 0, 3600),
+                                                   [(2, hmc.Rule(hmc.NONE)), (3, hmc.Rule(hmc.CHANGE, 0, 60, (3, 5)))]).body)
+    assert rec == hmc.Rule(hmc.CHANGE, 0, 3600) and links[1] == (3, hmc.Rule(hmc.CHANGE, 0, 60, (3, 5)))
     for name, header, ops in scenarios():
         w, kept = write(header, ops)
         r = hmc.Reader(w.image)

@@ -655,3 +655,143 @@ void hmc_path(uint8_t address, uint32_t first_second, char out[32])
     snprintf(out, 32, "%02X/%04d%02d%02d/%02d%02d%02d.hmc", address, (int)y, (int)m, (int)d,
              (int)(s / 3600), (int)(s / 60 % 60), (int)(s % 60));
 }
+
+/* ------------------------------------------------------------------ the rules */
+
+void hmc_selector_init(hmc_selector *s, const hmc_rule *r, int blocks)
+{
+    memset(s, 0, sizeof *s);
+    s->rule = *r;
+    s->blocks = blocks;
+}
+
+void hmc_selector_free(hmc_selector *s)
+{
+    free(s->keys);
+    s->keys = NULL;
+    s->nkeys = 0;
+}
+
+int hmc_split_blocks(const uint8_t *payload, uint8_t offsets[16])
+{
+    unsigned i = 0;
+    int n = 0;
+    while (i < HCC_PAYLOAD && payload[i] != 0) {
+        if (i + 2 > HCC_PAYLOAD || i + 2 + payload[i + 1] > HCC_PAYLOAD)
+            return -1;
+        offsets[n++] = (uint8_t)i;
+        i += 2u + payload[i + 1];
+    }
+    return n;
+}
+
+static int keep(hmc_selector *s, const hcc_record *r)
+{
+    const hmc_rule *rule = &s->rule;
+    if (rule->mode == HMC_NONE)
+        return 0;
+    int block = r->form == 1, k, store = 1;
+    hmc_block_key *key = NULL;
+    if (block) {
+        for (size_t i = 0; i < s->nkeys; i++)
+            if (s->keys[i].bytes[0] == r->data[0] && s->keys[i].bytes[1] == r->data[1])
+                key = &s->keys[i];
+        if (!key && s->nkeys >= HMC_MAX_BLOCK_KEYS)
+            store = 0;
+    }
+    if (!store) {
+        k = 1;
+    } else if (!s->have_state || r->kind != s->kind || r->status != s->status
+               || (r->kind >= 5 && r->kind <= 8) || rule->mode == HMC_ALL) {
+        k = 1;
+    } else if (rule->mode == HMC_CHANGE) {
+        int have = block ? key != NULL : s->have_frame;
+        const uint8_t *prev = block ? (key ? key->bytes : NULL) : s->frame;
+        uint32_t prev_sec = block ? (key ? key->second : 0) : s->frame_second;
+        k = !have || memcmp(prev, r->data, r->length)
+            || (rule->s && (int64_t)r->second - prev_sec >= rule->s);
+    } else if (rule->mode == HMC_NONZERO) {
+        int nz = 0;
+        for (unsigned i = 0; i < r->length; i++)
+            nz |= r->data[i];
+        k = nz || (rule->s && (!s->have_nzero || (int64_t)r->second - s->nzero >= rule->s));
+    } else if (rule->mode == HMC_DECIMATE) {
+        k = rule->n <= 1 || r->frame % rule->n == 0;
+    } else if (rule->mode == HMC_INTERVAL) {
+        uint32_t iv = rule->s ? r->second / rule->s : 0;
+        k = rule->s == 0 || (block ? !s->have_mod_iv[r->data[0]] || s->mod_iv[r->data[0]] != iv
+                                   : !s->have_frame_iv || s->frame_iv != iv);
+    } else {
+        k = 0;
+    }
+    if (!k)
+        return 0;
+    s->have_state = 1;
+    s->kind = r->kind;
+    s->status = r->status;
+    s->have_nzero = 1;
+    s->nzero = r->second;
+    if (store) {
+        if (block) {
+            if (!key) {
+                if (!s->keys)
+                    s->keys = malloc(sizeof(hmc_block_key) * HMC_MAX_BLOCK_KEYS);
+                if (s->keys)
+                    key = &s->keys[s->nkeys++];
+            }
+            if (key) {
+                memcpy(key->bytes, r->data, r->length);
+                key->second = r->second;
+            }
+        } else {
+            s->have_frame = 1;
+            memcpy(s->frame, r->data, HCC_PAYLOAD);
+            s->frame_second = r->second;
+        }
+    }
+    if (rule->s) {
+        if (block) {
+            s->have_mod_iv[r->data[0]] = 1;
+            s->mod_iv[r->data[0]] = r->second / rule->s;
+        } else {
+            s->have_frame_iv = 1;
+            s->frame_iv = r->second / rule->s;
+        }
+    }
+    return 1;
+}
+
+size_t hmc_select_frame(hmc_selector *s, uint32_t second, uint8_t frame, uint8_t kind,
+                        uint8_t status, const uint8_t *payload, hcc_record out[16])
+{
+    hcc_record r = {second, frame, kind, status, 0, HCC_PAYLOAD, payload};
+    size_t m = 0;
+    if (s->blocks && kind == 0) {
+        uint8_t off[16];
+        int n = hmc_split_blocks(payload, off);
+        if (n > 0) {
+            for (int i = 0; i < n; i++) {
+                hcc_record b = {second, frame, kind, status, 1,
+                                (uint16_t)(2u + payload[off[i] + 1]), payload + off[i]};
+                if (keep(s, &b))
+                    out[m++] = b;
+            }
+            return m;
+        }
+    }
+    if (keep(s, &r))
+        out[m++] = r;
+    return m;
+}
+
+int hmc_select_record(hmc_selector *s, const hcc_record *r)
+{
+    if (r->form == 1 && s->rule.nmodules) {
+        int named = 0;
+        for (unsigned i = 0; i < s->rule.nmodules; i++)
+            named |= s->rule.modules[i] == r->data[0];
+        if (!named)
+            return 0;
+    }
+    return keep(s, r);
+}

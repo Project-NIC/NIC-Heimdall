@@ -141,6 +141,47 @@ size_t hmc_reader_find(const hmc_reader *r, uint32_t second);
 /* The object entry i points at; *buf the decoded bytes it lies in, malloc'd. */
 int hmc_reader_object(const hmc_reader *r, size_t i, uint8_t **buf, hmc_object *o);
 
+/* ------------------------------------------------------------------ the rules */
+
+enum { HMC_ALL = 0, HMC_CHANGE, HMC_DECIMATE, HMC_INTERVAL, HMC_NONZERO, HMC_NONE };
+#define HMC_MAX_BLOCK_KEYS 256u
+
+typedef struct {
+    uint8_t mode, n;
+    uint16_t s;            /* INTERVAL's seconds · CHANGE's and NONZERO's at least every, 0 none */
+    uint8_t nmodules;      /* a send rule's ModBus modules, 0 all */
+    uint8_t modules[255];
+} hmc_rule;
+
+typedef struct {
+    uint8_t bytes[2 + HMC_MAX_BLOCK];   /* the block as it rode */
+    uint32_t second;
+} hmc_block_key;
+
+/* One address's rule, as the head walks the second's frames or a link's send rule walks what
+ * was recorded. `blocks` for a ModBus payload, kept per block. */
+typedef struct {
+    hmc_rule rule;
+    int blocks;
+    int have_state, have_frame, have_frame_iv, have_nzero;
+    uint8_t kind, status, frame[HCC_PAYLOAD];
+    uint32_t frame_second, frame_iv, nzero;
+    hmc_block_key *keys;
+    size_t nkeys;
+    uint8_t have_mod_iv[256];
+    uint32_t mod_iv[256];
+} hmc_selector;
+
+void hmc_selector_init(hmc_selector *s, const hmc_rule *r, int blocks);
+void hmc_selector_free(hmc_selector *s);
+/* A frame's kept records into out (16 at most); their data point into `payload`. */
+size_t hmc_select_frame(hmc_selector *s, uint32_t second, uint8_t frame, uint8_t kind,
+                        uint8_t status, const uint8_t *payload, hcc_record out[16]);
+/* A recorded record under a send rule: 1 kept, 0 not. */
+int hmc_select_record(hmc_selector *s, const hcc_record *r);
+/* A ModBus payload's whole blocks up to a zero address: their count, -1 when one runs past. */
+int hmc_split_blocks(const uint8_t *payload, uint8_t offsets[16]);
+
 /* `52/20261001/120000.hmc`; out holds 32 bytes. */
 void hmc_path(uint8_t address, uint32_t first_second, char out[32]);
 

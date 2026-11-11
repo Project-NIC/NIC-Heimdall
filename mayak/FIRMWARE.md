@@ -171,8 +171,8 @@ head-made filler with reason *no data arrived* where the card sent nothing at al
 **The selection.** At the close the bucket is walked by address, and each address's frames go
 through its **recording rule** — `ALL`, `CHANGE` (on Palatine per ModBus block), `DECIMATE n`,
 `INTERVAL s`, `NONZERO` or `NONE`, `CHANGE` and `NONZERO` with an optional *at least every s* —
-by comparing bytes, never values. Whatever the rule, a frame whose `kind` or `status` differs from
-the last one kept is kept, and so is every report frame. The defaults are per TYPE — `CHANGE` at
+by comparing bytes, never values. Whatever the rule but `NONE`, a frame whose `kind` or `status`
+differs from the last one kept is kept, and so is every report frame. The defaults are per TYPE — `CHANGE` at
 least hourly on Palatine, `NONZERO` at least every minute on Tesla, `ALL` on the rest — and the
 mirror holds the rule per address, set from the handset or by the server; a change is written into
 the unit's file as a config from that second (`../core/archive/HMC.md`). The report frames are the

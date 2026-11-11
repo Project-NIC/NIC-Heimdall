@@ -78,6 +78,17 @@ class Tool:
     def read_file(self, image):
         self.req.append(b"R" + struct.pack("<I", len(image)) + bytes(image)); self.what.append("R")
 
+    def select(self, rule, blocks, frames=None, records=None):
+        b = bytearray(b"K" + struct.pack("<BBHB", rule.mode, rule.n, rule.s, len(rule.modules))
+                      + bytes(rule.modules) + bytes([int(blocks)]))
+        if frames is not None:
+            b += b"\x00" + struct.pack("<I", len(frames))
+            for sec, fr, kind, st, pl in frames:
+                b += struct.pack("<IBBB", sec, fr, kind, st) + pl
+        else:
+            b += b"\x01" + ser_records(records)
+        self.req.append(bytes(b)); self.what.append("K")
+
     def hmc_path(self, address, second):
         self.req.append(b"P" + struct.pack("<BI", address, second)); self.what.append("P")
 
@@ -103,6 +114,13 @@ class Tool:
             elif w == "W":
                 st, kept, n = out[at], *struct.unpack_from("<II", out, at + 1)
                 answers.append((st, kept, out[at + 9:at + 9 + n])); at += 9 + n
+            elif w == "K":
+                n = struct.unpack_from("<I", out, at)[0]; at += 4
+                recs = []
+                for _ in range(n):
+                    sec, fr, kind, s_, form, ln = struct.unpack_from("<IBBBBH", out, at); at += 10
+                    recs.append((sec, fr, kind, s_, form, out[at:at + ln])); at += ln
+                answers.append(recs)
             elif w == "P":
                 n = out[at]; answers.append(out[at + 1:at + 1 + n].decode()); at += 1 + n
             elif w == "R":
@@ -232,6 +250,58 @@ def mutations(good):
         yield bytes(s)
 
 
+def frame_stream(n):
+    """A unit's frames as the head sees them: payloads held, changing, zero, or a ModBus ring of
+    blocks — some changing, one now and then running past the payload; kinds and states with
+    edges; a second of 128 frames or a few, and a late frame now and then."""
+    style = rng.choice(["held", "change", "zero", "blocks"])
+    sec, fr, kind, st = rng.randrange(1 << 31), 0, 0, 0
+    mods = [(rng.randrange(1, 40), rng.randrange(1, 9)) for _ in range(rng.randint(1, 6))]
+    vals = {(m, ln): bytes(rng.randrange(256) for _ in range(ln)) for m, ln in mods}
+    pl = bytes(rng.randrange(256) for _ in range(32))
+    out = []
+    for i in range(n):
+        if rng.random() < 0.3:
+            sec += rng.choice([1, 1, 2, 7, 61, 3600])
+            fr = 0
+        else:
+            fr = (fr + 1) & 0x7F
+        if rng.random() < 0.05:
+            kind = rng.choice([0, 0, 0, 1, 2, 5, 6, 8, 9])
+        if rng.random() < 0.05:
+            st = rng.randrange(4)
+        if style == "held":
+            p = pl
+        elif style == "change":
+            if rng.random() < 0.2:
+                pl = bytes(rng.randrange(256) for _ in range(32))
+            p = pl
+        elif style == "zero":
+            p = bytes(32) if rng.random() < 0.7 else bytes(rng.randrange(256) for _ in range(32))
+        else:
+            for m, ln in mods:
+                if rng.random() < 0.15:
+                    vals[(m, ln)] = bytes(rng.randrange(256) for _ in range(ln))
+            b = bytearray()
+            for m, ln in rng.sample(mods, len(mods)):
+                if len(b) + 2 + ln <= 32:
+                    b += bytes([m, ln]) + vals[(m, ln)]
+            if rng.random() < 0.03 and len(b) < 30:
+                b += bytes([7, 40])
+            p = bytes(b) + bytes(32 - len(b)) if len(b) < 32 else bytes(b[:32])
+        s_ = sec - rng.randrange(1, 5) if rng.random() < 0.02 and sec > 5 else sec
+        out.append((s_, fr, kind, st, p))
+    return style == "blocks", out
+
+
+def random_rule(send=False):
+    mode = rng.choice([hmc.ALL, hmc.CHANGE, hmc.DECIMATE, hmc.INTERVAL, hmc.NONZERO, hmc.NONE])
+    n = rng.choice([0, 1, 2, 4, 32]) if mode == hmc.DECIMATE else 0
+    s = rng.choice([0, 1, 7, 60, 3600]) if mode in (hmc.CHANGE, hmc.NONZERO, hmc.INTERVAL) else 0
+    mods = tuple(rng.sample(range(1, 40), rng.randint(1, 4))) if send and rng.random() < 0.5 else ()
+    return hmc.Rule(mode, n, s, mods)
+
+
 def py_read(image):
     """The Python reader's view of a file, in the C tool's terms."""
     try:
@@ -349,6 +419,28 @@ def main():
             if got != want:
                 fails.append(f"HMC {name}: the C reads a file {'as written' if v is image else 'with a bit flipped'} "
                              f"differently from the Python")
+    # the rules: the same records kept from the same frames, and the same sent from the same kept
+    sel = []
+    for _ in range(ROUNDS * 2):
+        blocks, frames = frame_stream(rng.choice([1, 5, 50, 400]))
+        rule = random_rule()
+        kept = []
+        py = hmc.Selector(rule, blocks)
+        for f in frames:
+            kept += py.frame(*f)
+        send = random_rule(send=True)
+        sp = hmc.Selector(send, blocks)
+        sent = [r for k in kept for r in sp.record(k)]
+        sel.append((rule, send, kept, sent))
+        tool.select(rule, blocks, frames=frames)
+        tool.select(send, blocks, records=kept)
+    answers = tool.run()
+    for (rule, send, kept, sent), ck, cs in zip(sel, answers[0::2], answers[1::2]):
+        if ck != kept or cs != sent:
+            fails.append(f"rules {rule} / {send}: the C keeps {len(ck)} and sends {len(cs)}, "
+                         f"the Python {len(kept)} and {len(sent)}")
+    print(f"{len(sel)} frame streams through a recording rule and a send rule by both")
+
     for sec in (0, test_hmc.T0, 951_782_400, 4_107_542_400, (1 << 32) - 1):
         tool.hmc_path(0x52, sec)
     for sec, got in zip((0, test_hmc.T0, 951_782_400, 4_107_542_400, (1 << 32) - 1), tool.run()):
