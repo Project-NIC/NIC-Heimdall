@@ -59,7 +59,7 @@ own start-bit edge, so any frame the card sends in the gap phases a returning un
 says (§3), and an `ERROR` or `EVENT` from a unit carries its instant without an age field.
 
 - **`unix.0`** — the second, mod 256, the node's own count from `SYNC` (§4); the card supplies
-  `unix.1..3`. **`frame`** — the sample within the second, 0..255, which covers 256 samples/s.
+  `unix.1..3` — those of the second nearest its own whose low byte is the frame's. **`frame`** — the sample within the second, 0..255, which covers 256 samples/s.
 - **`TYPE|NUM`** — `TYPE«4 | NUMBER`, the identity, and it never changes meaning (§2). The card
   checks it against the slot the frame arrived in; the head keys the roster and the archive by
   it. In a frame going down it is the addressee, 0xFF the broadcast.
@@ -127,7 +127,9 @@ says (§3), and an `ERROR` or `EVENT` from a unit carries its instant without an
   trunk and recomputes. **Appending corrections instead would be worse, not safer:** a frame
   carrying an original plus two corrections carries three answers, and the reader has to decide
   which is true. One value that is overwritten is coherent.
-- **CRC-16-CCITT on both** — one polynomial, so the H523's hardware CRC unit is configured once.
+- **CRC-16-CCITT on both** — one polynomial, so the H523's hardware CRC unit is configured once:
+  0x1021 from 0xFFFF, unreflected, no final XOR, the station's one CRC-16 (`archive/HMC.md`),
+  little-endian, over every byte before it — the trunk frame's over its 46.
 - **Payload = 32 B, a power of two:** it tiles a 512 B SD sector exactly (16/sector, no
   straddle) and keeps DMA/ring arithmetic clean. The `DISCOVER` reply reports the length the
   master decodes by, TYPE says what it means.
@@ -984,8 +986,9 @@ A NIC **Station** = one head + the trunks + whatever fronts are plugged in; a "p
 node configuration. Removing a node frees a TDMA slot, and a freed slot is an **open extension
 point** — anyone can build a node for it, and an unknown TYPE is logged raw and flagged, never
 a crash. The platform is to be small portable-C libraries reaching hardware only through callbacks,
-glued by the one MCU-specific layer, every library compiling and unit-testing on a host — none is
-written yet; the one code that exists is the archive's Python reference (`archive/ref/`). Fronts
+glued by the one MCU-specific layer, every library compiling and unit-testing on a host — the first
+are written: **the protocol's core** (`proto/`, the frames, the addresses, the
+CONTROL plane and the roster) and the archive's reference library (`archive/ref/`, Python and C). Fronts
 share the base platform and differ by their front delta — base-identical, never bit-for-bit.
 
 ## 9. The opcode index
