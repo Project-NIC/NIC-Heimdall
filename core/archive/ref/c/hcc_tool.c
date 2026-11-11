@@ -16,6 +16,7 @@
  *       frame · kind · status · 32 B) or 1 and records → 'K' the records kept */
 #include "hcc.h"
 #include "hmc.h"
+#include "session.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -222,6 +223,172 @@ static void select_(void)
     hmc_selector_free(&sel);
 }
 
+static void put_bytes(const uint8_t *b, size_t n) { put32((uint32_t)n); fwrite(b, 1, n, stdout); }
+
+static void chain_in(ses_chain *c)
+{
+    memcpy(c->key, in + at, 16);
+    memcpy(c->nonce, in + at + 16, 8);
+    memcpy(c->last, in + at + 24, 8);
+    at += 32;
+    c->packet = u32();
+}
+
+static void session_req(uint8_t cmd)
+{
+    uint8_t *msg = NULL, key[16];
+    size_t len = 0;
+    if (cmd == 'I') {
+        size_t kl = u8();
+        const uint8_t *k = in + at;
+        at += kl;
+        size_t n = u32();
+        uint8_t out[32];
+        ses_hmac_sha256(k, kl, in + at, n, out);
+        at += n;
+        put8('I');
+        fwrite(out, 1, 32, stdout);
+        return;
+    }
+    if (cmd == 'H') {
+        uint8_t tag[8];
+        memcpy(key, in + at, 16); at += 16;
+        uint32_t st = u32(), ctr = u32();
+        const uint8_t *nonce = in + at; at += 8;
+        int board = u8();
+        ses_hello(key, st, ctr, nonce, board, tag, &msg, &len);
+        put8('H'); fwrite(tag, 1, 8, stdout); put_bytes(msg, len);
+    } else if (cmd == 'h') {
+        ses_hello_t h;
+        memcpy(key, in + at, 16); at += 16;
+        size_t n = u32();
+        int e = ses_hello_parse(key, in + at, n, &h);
+        at += n;
+        put8('h'); put8((uint8_t)e);
+        if (!e) {
+            put32(h.station); put32(h.counter); fwrite(h.nonce, 1, 8, stdout);
+            put8(h.board); fwrite(h.tag, 1, 8, stdout);
+        }
+    } else if (cmd == 'M') {
+        int type = u8();
+        size_t n = u16();
+        ses_mark *m = malloc(sizeof(ses_mark) * (n ? n : 1));
+        for (size_t i = 0; i < n; i++) {
+            m[i].address = u8();
+            m[i].sequence = u16();
+            m[i].entry = u32();
+        }
+        ses_marks(type, m, n, &msg, &len);
+        free(m);
+        put8('M'); put_bytes(msg, len);
+    } else if (cmd == 'X') {
+        ses_chain c;
+        chain_in(&c);
+        uint8_t a = u8();
+        uint16_t sq = u16();
+        size_t hl = u32();
+        const uint8_t *h = in + at;
+        at += hl;
+        size_t n = u16();
+        ses_object *o = malloc(sizeof(ses_object) * (n ? n : 1));
+        for (size_t i = 0; i < n; i++) {
+            o[i].index = u32();
+            o[i].entry = in + at; at += 16;
+            o[i].cobs_len = u32();
+            o[i].cobs = in + at; at += o[i].cobs_len;
+        }
+        ses_archive(&c, a, sq, h, hl, o, n, &msg, &len);
+        free(o);
+        put8('X'); put_bytes(msg, len); fwrite(c.last, 1, 8, stdout);
+    } else if (cmd == 'Y') {
+        ses_chain c;
+        ses_archive_t ar;
+        chain_in(&c);
+        size_t n = u32();
+        int e = ses_archive_verify(&c, in + at, n, &ar);
+        at += n;
+        put8('Y'); put8((uint8_t)e);
+        if (!e) {
+            put8(ar.address); put16(ar.sequence); put32(ar.packet);
+            put_bytes(ar.header, ar.header_len); put32((uint32_t)ar.count);
+            for (size_t i = 0; i < ar.count; i++) {
+                put32(ar.objects[i].index); fwrite(ar.objects[i].entry, 1, 16, stdout);
+                put_bytes(ar.objects[i].cobs, ar.objects[i].cobs_len);
+            }
+            fwrite(c.last, 1, 8, stdout); put32(c.packet);
+            free(ar.objects);
+        }
+    } else if (cmd == 'G') {
+        uint32_t sec = u32();
+        size_t n = u8();
+        ses_seg *sg = malloc(sizeof(ses_seg) * (n ? n : 1));
+        for (size_t i = 0; i < n; i++) {
+            sg[i].address = u8();
+            sg[i].len = u32();
+            sg[i].segment = in + at; at += sg[i].len;
+        }
+        ses_live(sec, sg, n, &msg, &len);
+        free(sg);
+        put8('G'); put_bytes(msg, len);
+    } else if (cmd == 'g') {
+        size_t n = u32(), cnt;
+        uint32_t sec;
+        ses_seg *sg;
+        int e = ses_live_parse(in + at, n, &sec, &sg, &cnt);
+        at += n;
+        put8('g'); put8((uint8_t)e);
+        if (!e) {
+            put32(sec); put32((uint32_t)cnt);
+            for (size_t i = 0; i < cnt; i++) {
+                put8(sg[i].address); put_bytes(sg[i].segment, sg[i].len);
+            }
+            free(sg);
+        }
+    } else if (cmd == 'N') {
+        memcpy(key, in + at, 16); at += 16;
+        uint32_t st = u32(), ctr = u32();
+        uint8_t a = u8();
+        uint32_t sec = u32(), span = u32();
+        ses_window(key, st, ctr, a, sec, span, &msg, &len);
+        put8('N'); put_bytes(msg, len);
+    } else if (cmd == 'n') {
+        ses_window_t w;
+        memcpy(key, in + at, 16); at += 16;
+        uint32_t st = u32(), stored = u32();
+        size_t n = u32();
+        int e = ses_window_parse(key, st, stored, in + at, n, &w);
+        at += n;
+        put8('n'); put8((uint8_t)e);
+        if (!e) {
+            put32(w.counter); put8(w.address); put32(w.second); put32(w.window);
+        }
+    } else if (cmd == 'B') {
+        uint32_t st = u32();
+        size_t n = u32();
+        ses_board(st, in + at, n, &msg, &len);
+        at += n;
+        put8('B'); put_bytes(msg, len);
+    } else if (cmd == 'F' || cmd == 'C') {
+        size_t n = u32();
+        hmc_reader r;
+        int e = hmc_reader_open(&r, in + at, n);
+        at += n;
+        uint32_t a1 = u32(), a2 = u32();
+        uint32_t *idx = malloc(sizeof(uint32_t) * (r.entries + 1)),
+                 *pk = malloc(sizeof(uint32_t) * (r.entries + 1));
+        size_t m = e ? 0 : cmd == 'F' ? ses_forward(&r, a1, a2, idx, pk) : ses_window_cut(&r, a1, a2, idx);
+        put8(cmd); put32((uint32_t)m);
+        for (size_t i = 0; i < m; i++) {
+            put32(idx[i]);
+            if (cmd == 'F')
+                put32(pk[i]);
+        }
+        free(idx);
+        free(pk);
+    }
+    free(msg);
+}
+
 static size_t fields(hcc_field *f)
 {
     size_t n = u8();
@@ -311,6 +478,8 @@ int main(void)
             write_file();
         } else if (cmd == 'R') {
             read_file();
+        } else if (strchr("IHhMXYGgNnBFC", cmd)) {
+            session_req(cmd);
         } else if (cmd == 'K') {
             select_();
         } else if (cmd == 'P') {

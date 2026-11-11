@@ -12,20 +12,24 @@ recorded series. Nothing here runs on the head yet; the head will write with the
 |---|---|
 | `hcc.py` | HCC coder and decoder: the bit stream, the five modes, Rice partitions, the reference channel, a layout composed from fields and the bytes none covers, an Argus NUMBER's layout from its positions |
 | `hmc.py` | HMC in memory: the header and its sections, `LAYOUT` and `UNIT` read into the layout HCC codes with, segments coded raw and by HCC and the shorter kept, configs, the COBS framing, the description's entries and their binary search, the event log, the path, the recording and send rules over frames and ModBus blocks; a reader that recovers a file's objects from the zeros when its description is lost |
+| `session.py` | the uplink session's messages as `../../PROTOCOL.md` §6 fixes them — HELLO, CURSOR, ARCHIVE with its chained tag, ACK, LIVE, WINDOW, BOARD — the head's cut of a file forward from a cursor and for a window, and the server's file rebuilt from the packets |
 | `steim2.py` | a Steim-2 packer and unpacker — the miniSEED codec HCC is measured against, checked against libmseed's frame count |
 | `measure.py` | bits per sample of Steim-2 and of every HCC mode on recorded traces, per segment length; `--ref` codes paired channels against each other |
 | `tests/test_hcc.py` | the cases `HCC.md` lists, on synthetic records; every one round-trips byte for byte |
 | `tests/test_damaged.py` | streams cut, extended, bit-flipped, overwritten and invented: every one is refused with `ValueError` or decodes, never crashes or hangs; a cut or extended one always reads as damaged. `HCC_FUZZ_SEED` and `HCC_FUZZ_ROUNDS` widen it |
 | `tests/test_hmc.py` | HMC on synthetic files: a Quake whose layout changes mid-file, a Palatine's blocks, an Argus NUMBER, the event log, a file filled to its end — each read back record for record; a damaged object read past; a lost description recovered; what each rule keeps |
+| `tests/test_session.py` | every test file sent forward and from a cursor, rebuilt to the card's bytes; a packet forged, dropped, reordered or replayed refused; a window's cut; every message parsed back |
 | `c/hcc.h` · `c/hcc.c` | the same coder and decoder in C99, malloc and free its only dependencies; built with `-ffp-contract=off`, so the predictor rounds every double operation as the Python does, and with exact 128-bit autocorrelation sums |
 | `c/hmc.h` · `c/hmc.c` | the same container in C99, on `hcc.c`: the builders, a writer holding the file in memory as the head appends to it, a reader, the rules |
+| `c/session.h` · `c/session.c` | the same session in C99, with SHA-256 and HMAC of its own |
 | `c/hcc_tool.c` · `c/Makefile` | the C driven over stdin and stdout, for `tests/test_c.py` |
-| `tests/test_c.py` | the C against the Python: frame streams through a recording and a send rule; HMC's files written by both and compared byte for byte, and read by both whole and with bits flipped; every HCC case above and random segments — every field width, both byte orders, reference channels, extreme and wrapping values, seconds anywhere in 32 bits — coded by both and compared byte for byte, each stream read back by the C, and every damaged stream given the same verdict and the same records by both. `HCC_C_SEED` and `HCC_C_ROUNDS` widen it |
+| `tests/test_c.py` | the C against the Python: the session's messages, HMAC against RFC 4231, ARCHIVE packets verified by both, the cuts; frame streams through a recording and a send rule; HMC's files written by both and compared byte for byte, and read by both whole and with bits flipped; every HCC case above and random segments — every field width, both byte orders, reference channels, extreme and wrapping values, seconds anywhere in 32 bits — coded by both and compared byte for byte, each stream read back by the C, and every damaged stream given the same verdict and the same records by both. `HCC_C_SEED` and `HCC_C_ROUNDS` widen it |
 
 ```
 python3 tests/test_hcc.py
 python3 tests/test_damaged.py
 python3 tests/test_hmc.py
+python3 tests/test_session.py
 python3 tests/test_c.py                 # builds c/ with $CC, which may carry flags
 python3 measure.py recording.mseed --seconds 1,2,4,8,16,32
 python3 measure.py obs.min --seconds 60,300,900,3600      # IAGA-2002, nT × 100

@@ -7,7 +7,7 @@ import math, os, random, shlex, struct, subprocess, sys, tempfile
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
 sys.path.insert(0, HERE)
-import hcc, hmc
+import hcc, hmc, session
 from hcc import Field, compose_layout, argus_layout
 import test_hcc, test_damaged, test_hmc
 
@@ -21,7 +21,8 @@ def build():
     out = os.path.join(tempfile.mkdtemp(prefix="hcc-c-"), "hcc_tool")
     subprocess.run(shlex.split(os.environ.get("CC", "cc")) + ["-std=c99", "-O2", "-Wall", "-Wextra", "-Wpedantic",
                     "-Werror", "-ffp-contract=off", "-o", out, os.path.join(src, "hcc.c"),
-                    os.path.join(src, "hmc.c"), os.path.join(src, "hcc_tool.c"), "-lm"], check=True)
+                    os.path.join(src, "hmc.c"), os.path.join(src, "session.c"),
+                    os.path.join(src, "hcc_tool.c"), "-lm"], check=True)
     return out
 
 
@@ -89,6 +90,9 @@ class Tool:
             b += b"\x01" + ser_records(records)
         self.req.append(bytes(b)); self.what.append("K")
 
+    def raw(self, req, parse):
+        self.req.append(req); self.what.append(parse)
+
     def hmc_path(self, address, second):
         self.req.append(b"P" + struct.pack("<BI", address, second)); self.what.append("P")
 
@@ -96,6 +100,10 @@ class Tool:
         out = subprocess.run([self.path], input=b"".join(self.req), capture_output=True, check=True).stdout
         at, answers = 0, []
         for w in self.what:
+            if callable(w):
+                ans, at = w(out, at)
+                answers.append(ans)
+                continue
             assert out[at:at + 1] == w.encode(), "the tool answered out of step"
             at += 1
             if w == "E":
@@ -302,6 +310,159 @@ def random_rule(send=False):
     return hmc.Rule(mode, n, s, mods)
 
 
+def _bytes(out, at):
+    n = struct.unpack_from("<I", out, at)[0]
+    return out[at + 4:at + 4 + n], at + 4 + n
+
+
+def answer(cmd, then=None):
+    """A parser for a session answer: the command byte, then `then(out, at)`."""
+    def parse(out, at):
+        assert out[at] == ord(cmd), "the tool answered out of step"
+        return then(out, at + 1)
+    return parse
+
+
+def status_then(fn):
+    def parse(out, at):
+        if out[at]:
+            return ("refused",), at + 1
+        return fn(out, at + 1)
+    return parse
+
+
+def ser_objects(objs):
+    return struct.pack("<H", len(objs)) + b"".join(struct.pack("<I", i) + e + struct.pack("<I", len(c)) + c
+                                                   for i, e, c in objs)
+
+
+def chain_bytes(c):
+    return c.key + c.nonce + c.last + struct.pack("<I", c.packet)
+
+
+def check_session(tool, fails):
+    """HMAC against RFC 4231; every message built alike, every packet verified alike."""
+    import hashlib, hmac as hm
+    vectors = [(b"\x0b" * 20, b"Hi There"), (b"Jefe", b"what do ya want for nothing?"),
+               (b"\xaa" * 131, b"Test Using Larger Than Block-Size Key - Hash Key First"),
+               (bytes(16), b""), (bytes(range(64)), bytes(1000))]
+    for k, d in vectors:
+        tool.raw(b"I" + bytes([len(k)]) + k + struct.pack("<I", len(d)) + d, answer("I", lambda o, a: (o[a:a + 32], a + 32)))
+    for (k, d), got in zip(vectors, tool.run()):
+        if got != hm.new(k, d, hashlib.sha256).digest():
+            fails.append(f"HMAC-SHA-256 of {len(d)} B under a {len(k)} B key: the C differs")
+    want = []
+    for _ in range(ROUNDS):
+        key = bytes(rng.randrange(256) for _ in range(16))
+        st, ctr, nonce = rng.randrange(1 << 24), rng.randrange(1 << 32), bytes(rng.randrange(256) for _ in range(8))
+        bd = rng.random() < 0.5
+        msg, tg = session.hello(key, st, ctr, nonce, bd)
+        tool.raw(b"H" + key + struct.pack("<II", st, ctr) + nonce + bytes([bd]),
+                 answer("H", lambda o, a: ((o[a:a + 8],) + (_bytes(o, a + 8)[0],), _bytes(o, a + 8)[1])))
+        want.append(("hello", (tg, msg)))
+        body = session.unframe(msg[:-1])[1]
+        bad = body[:5] + bytes([body[5] ^ 1]) + body[6:]
+        for b, ok in ((body, True), (bad, False)):
+            tool.raw(b"h" + key + struct.pack("<I", len(b)) + b, answer("h", status_then(
+                lambda o, a: ((struct.unpack_from("<II", o, a) + (o[a + 8:a + 16], o[a + 16], o[a + 17:a + 25])), a + 25))))
+            want.append(("hello parse", (st, ctr, nonce, int(bd), tg) if ok else ("refused",)))
+        marks = [(rng.randrange(256), rng.randrange(1 << 16), rng.choice([0, 7, session.NONE_ENTRY, rng.randrange(1 << 32)]))
+                 for _ in range(rng.randrange(5))]
+        t = rng.choice([session.CURSOR, session.ACK])
+        tool.raw(b"M" + bytes([t]) + struct.pack("<H", len(marks)) + b"".join(struct.pack("<BHI", *m) for m in marks),
+                 answer("M", _bytes))
+        want.append(("marks", session.marks(t, marks)))
+        segs = [(rng.randrange(256), bytes(rng.randrange(256) for _ in range(rng.randrange(40)))) for _ in range(rng.randrange(4))]
+        sec = rng.randrange(1 << 32)
+        tool.raw(b"G" + struct.pack("<IB", sec, len(segs)) + b"".join(struct.pack("<BI", a, len(x)) + x for a, x in segs),
+                 answer("G", _bytes))
+        lv = session.live(sec, segs)
+        want.append(("live", lv))
+        lb = session.unframe(lv[:-1])[1]
+        tool.raw(b"g" + struct.pack("<I", len(lb)) + lb, answer("g", status_then(live_echo)))
+        want.append(("live parse", session.parse_live(lb)))
+        span, addr = rng.randrange(1 << 16), rng.randrange(256)
+        tool.raw(b"N" + key + struct.pack("<IIBII", st, ctr, addr, sec, span), answer("N", _bytes))
+        wm = session.window(key, st, ctr, addr, sec, span)
+        want.append(("window", wm))
+        wb = session.unframe(wm[:-1])[1]
+        for stored in (ctr - 1 if ctr else None, ctr):
+            if stored is None:
+                continue
+            tool.raw(b"n" + key + struct.pack("<III", st, stored, len(wb)) + wb, answer("n", status_then(
+                lambda o, a: (struct.unpack_from("<IBII", o, a), a + 13))))
+            want.append(("window parse", (ctr, addr, sec, span) if stored < ctr else ("refused",)))
+        tool.raw(b"B" + struct.pack("<II", st, len(lb)) + lb, answer("B", _bytes))
+        want.append(("board", session.board(st, lb)))
+    for (what, w), got in zip(want, tool.run()):
+        if what.endswith("skipped"):
+            continue
+        if what == "hello":
+            got = (got[0], got[1])
+        if got != w:
+            fails.append(f"session {what}: the C differs from the Python")
+    # ARCHIVE packets, the forward cut and the window cut on every test file
+    for name, header, ops in test_hmc.scenarios(SEED):
+        w, _ = test_hmc.write(header, ops)
+        image = bytes(w.image)
+        key, nonce, htag = bytes(range(16)), bytes(range(8, 16)), bytes(8)
+        r = hmc.Reader(image)
+        held = rng.choice([session.NONE_ENTRY, len(r.entries) // 3])
+        packets = session.forward(image, held, rng.choice([600, 16384]))
+        py, cstate, want = session.Chain(key, nonce, htag), [], []
+        hb = bytes(image[:r.header.length])
+        for k, objs in enumerate(packets):
+            before = session.Chain(key, nonce, py.last); before.packet = py.packet
+            msg = py.archive(r.header.address, r.header.sequence, hb if k == 0 else b"", objs)
+            tool.raw(b"X" + chain_bytes(before) + struct.pack("<BHI", r.header.address, r.header.sequence,
+                                                               len(hb) if k == 0 else 0)
+                     + (hb if k == 0 else b"") + ser_objects(objs),
+                     answer("X", lambda o, a: ((_bytes(o, a)[0], o[_bytes(o, a)[1]:_bytes(o, a)[1] + 8]), _bytes(o, a)[1] + 8)))
+            want.append(("archive", (msg, py.last)))
+            body = session.unframe(msg[:-1])[1]
+            for b, ok in ((body, True), (body[:-9] + bytes([body[-9] ^ 4]) + body[-8:], False)):
+                tool.raw(b"Y" + chain_bytes(before) + struct.pack("<I", len(b)) + b, answer("Y", lambda o, a: (
+                    ("refused",) if o[a] else ("ok", o[a + 1]), a + 1 if o[a] else skip_verify(o, a + 1))))
+                want.append(("verify", ("ok", r.header.address) if ok else ("refused",)))
+        segs = [o for t, o, _ in r.objects() if t == hmc.SEG]
+        sec = segs[len(segs) // 2]["first"] + 2
+        cut = [i for i, _, _ in session.window_cut(image, sec, 4)]
+        tool.raw(b"C" + struct.pack("<I", len(image)) + image + struct.pack("<II", sec, 4), answer("C", lambda o, a: (
+            [struct.unpack_from("<I", o, a + 4 + 4 * j)[0] for j in range(struct.unpack_from("<I", o, a)[0])],
+            a + 4 + 4 * struct.unpack_from("<I", o, a)[0])))
+        want.append(("window cut", cut))
+        for (what, wv), got in zip(want, tool.run()):
+            if got != wv:
+                fails.append(f"session {what} on {name}: the C differs from the Python")
+        fw = session.forward(image, held, 16384)
+        tool.raw(b"F" + struct.pack("<I", len(image)) + image + struct.pack("<II", held, 16384), answer("F", lambda o, a: (
+            [struct.unpack_from("<II", o, a + 4 + 8 * j) for j in range(struct.unpack_from("<I", o, a)[0])],
+            a + 4 + 8 * struct.unpack_from("<I", o, a)[0])))
+        if tool.run()[0] != [(i, k) for k, pk in enumerate(fw) for i, _, _ in pk]:
+            fails.append(f"session forward on {name}: the C cuts the packets differently")
+
+
+def live_echo(o, a):
+    sec, n = struct.unpack_from("<II", o, a); a += 8
+    segs = []
+    for _ in range(n):
+        addr = o[a]
+        seg, a = _bytes(o, a + 1)
+        segs.append((addr, seg))
+    return (sec, segs), a
+
+
+def skip_verify(o, a):
+    """Past a verified ARCHIVE's echo: address · sequence · packet · header · objects · last · packet."""
+    a += 7
+    a = _bytes(o, a)[1]
+    n = struct.unpack_from("<I", o, a)[0]; a += 4
+    for _ in range(n):
+        a += 20
+        a = _bytes(o, a)[1]
+    return a + 12
+
+
 def py_read(image):
     """The Python reader's view of a file, in the C tool's terms."""
     try:
@@ -440,6 +601,9 @@ def main():
             fails.append(f"rules {rule} / {send}: the C keeps {len(ck)} and sends {len(cs)}, "
                          f"the Python {len(kept)} and {len(sent)}")
     print(f"{len(sel)} frame streams through a recording rule and a send rule by both")
+
+    check_session(tool, fails)
+    print(f"the session's messages built by both, HMAC against RFC 4231, ARCHIVE packets verified by both")
 
     for sec in (0, test_hmc.T0, 951_782_400, 4_107_542_400, (1 << 32) - 1):
         tool.hmc_path(0x52, sec)

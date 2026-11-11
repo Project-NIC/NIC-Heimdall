@@ -803,6 +803,34 @@ reads it off the BMS; its arms' and `EXT`'s feeds are sockets 1–5 of the same 
   channel. The server's own brains (correlation, spatial QC, maps,
   targeting) are a separate project, never the station's.
 
+### The session's messages
+
+**A message is `type 1 B · body`, COBS-framed and followed by a zero, as the archive's objects
+are** (`archive/HMC.md`, *The data*), on a byte stream — TCP over Wi-Fi or an LTE-M / NB-IoT
+modem; a reader cut off mid-message skips to the next zero. Everything is little-endian. **A tag is
+HMAC-SHA-256 under K0‖K1, K0's 8 B first, truncated to its first 8 B**; it closes the message it
+signs and covers every byte before it, the type included.
+
+| type | message | way | body |
+|---|---|---|---|
+| 1 | `HELLO` | up | `version 1 B` (1) · `station 3 B` · `counter 4 B` (the command counter) · `nonce 8 B` (from the TRNG, new each session) · `board 1 B` (1 subscribes to the live board) · `tag` |
+| 2 | `CURSOR` | down | `count 2 B`, then per address `address 1 B · sequence 2 B · entry 4 B` — the last entry the server holds of that file, `0xFFFFFFFF` none |
+| 3 | `ARCHIVE` | up | `address 1 B · sequence 2 B · packet 4 B` (1, 2 … in the session) · `header 4 B` and the file's header, or 0 · `count 2 B`, then per object `index 4 B · entry 16 B · its COBS bytes as they lie on the card` · `tag` |
+| 4 | `ACK` | down | as `CURSOR` — the last entry of each file the server holds durably |
+| 5 | `LIVE` | up | `second 4 B · count 1 B`, then per address `address 1 B · length 4 B · segment` — an HMC segment, coded as in a file |
+| 6 | `WINDOW` | down | `counter 4 B · address 1 B` (`0xFF` every address) · `second 4 B · window 4 B` · `tag` |
+| 7 | `BOARD` | down | `station 3 B` · the body of another head's `LIVE` |
+
+**`ARCHIVE`'s tag is chained**: the tag of packet *i* covers the session's `nonce`, then packet
+*i* − 1's tag — `HELLO`'s for the first — then the packet, so a packet forged, dropped, reordered or
+replayed into another session fails. The server writes each object at its entry's offset and the
+entry in its place, and holds the file the card holds. **`WINDOW` is a command**: its `counter`
+above the stored one and its tag over the `station`, the counter and the message, as every command;
+the head answers with `ARCHIVE` packets carrying the file's header, its configs before the last
+segment sent, and the segments whose first to last second touches the window. `CURSOR`, `ACK`,
+`LIVE` and `BOARD` carry no tag: a forged `CURSOR` or `ACK` costs a resend at most, since the head
+forgets nothing, and a reading is open by doctrine.
+
 ## 7. The node's contract
 
 - **Anything large goes down as a stream: `LOAD`, then the frames, then `APPLY`.** A firmware
