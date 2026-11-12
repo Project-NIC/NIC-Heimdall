@@ -5,3 +5,4 @@ test/test_ingest
 test/test_cells
 test/test_sweep
 test/test_cmd
+test/test_tree

@@ -249,6 +249,14 @@ and its tag. The head, which alone sees the whole station:
 | a tag it does not know, on a non-default NUMBER | a unit from another station: renumbered as a collision would be, and the phone is told |
 | a roster row whose tag did not answer any sweep | *missing*: the row kept, the phone asked *replaced?*; a fresh unit of the same TYPE answering `yes` takes the old number and the series continues |
 
+**A box of several slots** — an Argus, a Sputnik, a split Tesla — is one tag on several rows, and
+the mirror holds as many rows under it; they are matched number by number, the rows left over
+taken as new. **A missing row is offered once**: the first fresh unit of its TYPE is put to the
+human as its replacement, the next ones as new. In the service sweep a fresh unit is numbered
+only on the human's word; a moved unit, a collision and a stranger are renumbered at once and the
+phone is told. A TYPE with no NUMBER left is put to the phone and nothing is sent. Written in
+`../core/proto/nic_tree.c`.
+
 **The mirror** is the station's configuration in one few-kB table. The roster — who is enrolled,
 TYPE + NUMBER → port and slot — is its spine, and per-unit configuration hangs off it. A change
 travels as a command to the unit and is **written to the mirror only when the unit confirms it**;
@@ -527,7 +535,8 @@ time is the card's stamp; a late handler moves nothing but the moment a block is
 **Written so far** — the buckets, the close and its fillers, the rules, the spool into HMC and a
 late repair (`../core/proto/nic_ingest.c`, `test/test_ingest.c`); the HMC/HCC library, the rules
 and the session (`../core/archive/ref/`); the command check — the counter, the tag, `SET K1` under
-K0 (`../core/proto/nic_cmd.c`, `test/test_cmd.c`).
+K0 (`../core/proto/nic_cmd.c`, `test/test_cmd.c`); the tree composed and the numbers decided
+(`../core/proto/nic_tree.c`, `test/test_tree.c`).
 
 **On a PC, with the pins replaced by callbacks:** the trunk parser against recorded traffic —
 a 48 B record cut by a stall, a 12 B `ERROR` between two records, a CRC miss and its

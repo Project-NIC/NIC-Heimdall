@@ -252,8 +252,9 @@ frames — the segment table, its `GET` answers, its `PORTS` frame — carry the
 After `FLOOR`, and on any population change, the card sends **one 32 B payload from its own
 address, `kind` 4: 8 × 4 B, one row per slot** — `unit address · port · rung code · status`, in
 slot order, zeros for an empty slot. The status byte: 0 running · 1 unranged · 2 on the ladder ·
-3 dead · 4 unknown board on the port · 5 port faulted. The tag of each unit follows on request,
-`GET` per slot — the head asks for it once, after the table, to renumber what collides.
+3 dead · 4 unknown board on the port · 5 port faulted. The tags of each unit — `TAG`, both of
+them — follow on request, `GET` per slot; the head asks for them once, after the table, to
+renumber what collides.
 
 **The card's `PORTS` frame, from its own address as well — `kind` 7, once a minute and on
 `GET PORTS`, in the card's map:** bytes 0–19 the five sockets' `VBUS` and `CURRENT` as raw
@@ -295,7 +296,8 @@ powers of two; the **data rung** is the same pair as everywhere, 2²⁰ alone an
 and the eight-sonde ceiling counted across the card.
 
 **The tiling.** Each sonde is given, at enrolment, a **position** 0..3 in one of the card's
-upstream NUMBERs — the segment table's row says which NUMBER and which position. The circular
+upstream NUMBERs — the segment table's row says which NUMBER and which position: the table goes
+up from the Argus's first NUMBER, rows 0–3 positions 0–3 under it, rows 4–7 under its second. The circular
 buffer is indexed by period: a mini frame that arrives lands, payload untouched, at its position in
 the upstream frame of the period its `unix.0 · frame` names; the upstream frame leaves at its
 index plus the Argus's 16, an absent sonde's position riding zeros. **No byte is

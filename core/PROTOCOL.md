@@ -1046,7 +1046,7 @@ frames `LOAD` announced disagree, or the body is past the slot · 19 the body's 
 header's · 20 the slot could not be erased or written · 21 `APPLY` with no whole image loaded.
 
 **What is a register and not a verb.** A unit's state answers `DISCOVER`. `VERSION`, `HEALTH`,
-`IDENT`, `CALIBRATE`, **`TAG`** (the CRC-16 of the UID, §2) and **`slots`** are registers behind
+`IDENT`, `CALIBRATE`, **`TAG`** (the CRC-16 of the UID, then the second tag, 4 B, §2) and **`slots`** are registers behind
 `GET`/`SET`. `BUSCFG` is one op with the item in `arg0`. No slot is ever granted: the round is
 clock-anchored.
 
