@@ -1,3 +1,4 @@
 test/test_proto
 test/test_load
 test/test_card
+test/test_ingest

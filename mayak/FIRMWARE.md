@@ -163,7 +163,7 @@ card whose seconds run away from the head's by more than 2 s for a minute is `FL
 4 B second — a bucket per second, two buckets open at any moment, 4 × 8 × 128 = 4096 slots of
 40 B each per bucket, 160 kB a bucket in PSRAM. A second is **closed one second after its
 end**: late frames and the answers to `RESEND` fold in until then; after it a repair is a
-record with an older second in the unit's next segment, never the live packet
+record with an older second in the unit's next segment, kept whatever the rule, never the live packet
 (`../core/PROTOCOL.md` §5). A slot no frame
 arrived for by the close is a hole, and the archive carries the card's filler for it, or a
 head-made filler with reason *no data arrived* where the card sent nothing at all.
@@ -523,6 +523,10 @@ archive itself is the two cards.
 time is the card's stamp; a late handler moves nothing but the moment a block is written.
 
 ## 16. What is tested, and where
+
+**Written so far** — the buckets, the close and its fillers, the rules, the spool into HMC and a
+late repair (`../core/proto/nic_ingest.c`, `test/test_ingest.c`); the HMC/HCC library, the rules
+and the session (`../core/archive/ref/`).
 
 **On a PC, with the pins replaced by callbacks:** the trunk parser against recorded traffic —
 a 48 B record cut by a stall, a 12 B `ERROR` between two records, a CRC miss and its
