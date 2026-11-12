@@ -22,13 +22,16 @@ test/test_cells: nic_proto.c nic_load.c nic_cells.c nic_cells.h test/test_cells.
 test/test_ingest: nic_proto.c nic_ingest.c nic_ingest.h test/test_ingest.c $(ARCH)/hcc.c $(ARCH)/hmc.c
 	$(CC) $(CFLAGS) -ffp-contract=off -I$(ARCH) -o $@ nic_proto.c nic_ingest.c $(ARCH)/hcc.c $(ARCH)/hmc.c test/test_ingest.c -lm
 
+test/test_kronos: nic_kronos.c nic_kronos.h test/test_kronos.c
+	$(CC) $(CFLAGS) -D_DEFAULT_SOURCE -o $@ nic_kronos.c test/test_kronos.c -lm
+
 test/test_tree: nic_proto.c nic_sweep.c nic_tree.c nic_tree.h test/test_tree.c
 	$(CC) $(CFLAGS) -o $@ nic_proto.c nic_sweep.c nic_tree.c test/test_tree.c
 
 test/test_cmd: nic_cmd.c nic_cmd.h test/test_cmd.c $(ARCH)/session.c
 	$(CC) $(CFLAGS) -ffp-contract=off -I$(ARCH) -o $@ nic_cmd.c $(ARCH)/session.c $(ARCH)/hmc.c $(ARCH)/hcc.c test/test_cmd.c -lm
 
-check: test/test_tree test/test_cmd test/test_proto test/test_load test/test_card test/test_ingest test/test_cells test/test_sweep
+check: test/test_kronos test/test_tree test/test_cmd test/test_proto test/test_load test/test_card test/test_ingest test/test_cells test/test_sweep
 	./test/test_proto
 	./test/test_load
 	./test/test_card
@@ -37,6 +40,7 @@ check: test/test_tree test/test_cmd test/test_proto test/test_load test/test_car
 	./test/test_sweep
 	./test/test_cmd
 	./test/test_tree
+	./test/test_kronos
 
 # the same sources for the MCUs: the H523's and H7A3's Cortex-M, the head's 32-bit RISC-V
 cross:
@@ -50,8 +54,9 @@ cross:
 	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -I$(ARCH) -c nic_ingest.c -o /dev/null
 	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -I$(ARCH) -c nic_cmd.c -o /dev/null
 	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -c nic_tree.c -o /dev/null
+	arm-none-eabi-gcc -mcpu=cortex-m33 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 $(CFLAGS) -Os -c nic_kronos.c -o /dev/null
 
 clean:
-	rm -f test/test_proto test/test_load test/test_card test/test_ingest test/test_cells test/test_sweep test/test_cmd test/test_tree
+	rm -f test/test_proto test/test_load test/test_card test/test_ingest test/test_cells test/test_sweep test/test_cmd test/test_tree test/test_kronos
 
 .PHONY: check cross clean

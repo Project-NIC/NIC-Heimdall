@@ -209,6 +209,9 @@ the steering socket, after the sentence has been paired with its edge; it is not
    what it has since the source became usable — 8 edges already resolve 0,001 ppm, 64 resolve
    **0,0001 ppm**, far past what a ±1 ppm TCXO does. A
    sample outside ±4 × the running RMS is dropped as a glitch and counted; the sum is not reset.
+   The RMS is never taken under 8 ticks, so a few edges that happen to agree cannot close the
+   gate; a dropped edge leaves the last good one in place, and the next interval spans two
+   seconds and is divided by them.
 3. **The phase.** `φ = (capture[n] − corr) mod 2²⁷`, where `corr` is the delay-table sum in
    ticks (§7): the position of the corrected source edge within TIM5's second. PPS-K is TIM2's
    update event, which falls at `K` on TIM5's count — `K` is the offset between the two
@@ -220,11 +223,13 @@ the steering socket, after the sentence has been paired with its edge; it is not
    offset from the nominal ratio: 1 tick per second is 1/134 ppm.
 5. **The slew ceiling.** The wanted offset is clipped to **±4 `FRACN` codes = ±15,3 ppm** about
    the frequency estimate. A phase error is pulled in at that rate at most: a day of holdover
-   (86 ms at 1 ppm) takes 1,6 h, during which the state stays `HOLDOVER` (§3).
+   (86 ms at 1 ppm) takes ~2 h — 1,5 h at the ceiling, then the 256 s time constant's tail from
+   3,9 ms, where the phase term leaves the ceiling, down to 1 µs, ~0,6 h — during which the state
+   stays `HOLDOVER` (§3).
    **The temperature table.** The `TMP117` beside the TCXO is read every 10 s. While `LOCKED`, the
    64 s frequency estimate of step 2 is filed against the temperature in a table of 0,5 °C bins
-   across −40…+85 °C (250 entries, int16 in 2⁻¹⁰ ppm, an entry replaced by a slow average of what
-   it sees), persisted in the cells once an hour when something changed. **An estimate is filed
+   across −40…+85 °C (250 entries, int16 in 2⁻¹⁰ ppm, filed once every 64 s, a new bin taking
+   the estimate whole and a filled one moving an eighth of the way to it), persisted in the cells once an hour when something changed. **An estimate is filed
    only if the temperature stayed inside one bin across its 64 s — 0,5 °C, which is 0,5 °C/min —
    otherwise it is read and interpolated but never written**: the sensor is on the outside of
    the can and the crystal is inside it, so on a fast ramp what would be filed is the gradient
@@ -233,7 +238,7 @@ the steering socket, after the sentence has been paired with its edge; it is not
    constant of tens of seconds the lag it still admits is ~0,25 °C, ~0,01 ppm at the residual
    slope, against a table whose own residual is tenths of a ppm. In `HOLDOVER` the
    frequency term is not frozen at the last code: it is the table's entry for the current
-   temperature, interpolated between filled bins, the last good code where the bin is empty —
+   temperature, interpolated between filled bins, the last good estimate beyond them —
    so a night's cooling does not walk the second at the raw tempco. The phase term is off, as
    before; `HOLDOVER → LOCKED` slews the residual. `0x90 TEMP` reads the temperature and the
    entry in use.
@@ -241,7 +246,10 @@ the steering socket, after the sentence has been paired with its edge; it is not
    coarser than the correction. The wanted offset is split into an integer
    code *c* and a duty *d* ∈ [0, 1): TIM6 raises an interrupt every **2 ms** and the handler
    writes `FRACN = c + 1` for the first `d × 500` interrupts of each second and `c` for the rest,
-   `PLLFRACEN` cleared and set around the write. The phase moved during one 2 ms hold at one
+   `PLLFRACEN` cleared and set around the write. **The remainder is carried**: what the split
+   leaves under a slot — up to 1,02 ticks a second — is added to the next second's wanted
+   offset, so the code's average is the wanted offset exactly; without it the 1/500 step is a
+   dead band of ±128 ticks under the 256 s time constant, the whole ±1 µs. The phase moved during one 2 ms hold at one
    code's 3,81 ppm is 7,6 ns — one tick — so the dither is invisible on the wire. The write
    itself is three register accesses, 50 ns.
 7. **Lock.** From `CLOCKED`: the step of §6 on the source's 8th usable second, then `LOCKED`
@@ -475,6 +483,12 @@ clock is a divider; the `FRACN` write may land anywhere in its 2 ms slot and mov
 one tick if it lands late.
 
 ## 13. What is tested, and where
+
+**Written so far** — the loop of §5 and the step of §6 (`../core/proto/nic_kronos.c`,
+`test/test_kronos.c`). Against a simulated TCXO, ±1 ppm with the temperature and 20 ns of pulse
+jitter, it locks 9 s after the first usable second with one step, holds |`e`| under 35 ticks for
+24 h, drops a 3 µs glitch, walks 2,4 ms in a day of holdover on the table it filed, and slews a
+TCXO that jumped by 1 ppm — 84 ms after the day — back in 2,05 h at 15,3 ppm with no step.
 
 **On a PC, with the pins replaced by callbacks:** the parser and the three checks against
 recorded NMEA — a receiver losing its fix, a date frozen for a minute, a sentence 950 ms late,
