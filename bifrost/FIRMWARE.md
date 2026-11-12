@@ -221,7 +221,9 @@ is written when it arrives, in whatever order, and read at a fixed instant, **it
 the card's delay — 96 frames on a Bifrost, 16 on an Argus**. With the unit's own 32 (or a sonde's
 16 and its Argus's 16) every record reaches the head 128 frames, one second, after it was
 measured (`../core/blocks/nodbus.md`). A repair — `RESEND` after a CRC miss, a few frames — lands
-well inside the delay. The buffer is 8 × 96 × 48 B ≈ 37 kB, in SRAM1.
+well inside the delay. The buffer is 8 × 96 × 48 B ≈ 37 kB, in SRAM1. **At every period the
+frame that leaves is read before that period's arrivals are written** — a depth equal to the
+delay puts period *p* and *p* + 96 in one place.
 
 **The filler.** A slot whose frame is not there at its instant goes up as a DATA frame under the unit's address,
 `kind` 3, the reason code in payload byte 0 — 1 *unit missing* (silent in its slot) · 2 *no data
@@ -465,7 +467,8 @@ hardware already latched.
 ## 14. What is tested, and where
 
 **The host-testable layer is everything above the pins.** The circular buffer, the stamp arithmetic, the
-`unix.0` check, the filler rules, the tiling, the sweep's state machine, the ladder, the
+`unix.0` check, the filler rules, the tiling — written, `../core/proto/nic_card.c`, its tests in
+`../core/proto/test/test_card.c` — the sweep's state machine, the ladder, the
 register map, the cells — each compiles on a PC with the pins replaced by callbacks and is
 tested there with recorded frames: a frame late by 7, a frame with a bad CRC twice, a label off
 by one, a PPS-K edge 3 µs early, eight units on one port and a ninth answering `DISCOVER`, an
