@@ -119,7 +119,8 @@ says (§3), and an `ERROR` or `EVENT` from a unit carries its instant without an
   apart on the trunk without merging them.
 - **`op · arg0 · arg1 · arg2`** — a verb and three whole-byte arguments; the table is §9. `arg2`
   is the high byte of a 16-bit value on `SET` and on a byte-wide `GET` answer, 0 elsewhere.
-  Nothing is packed into a half-byte anywhere. **The two reserve bytes are 0 and undefined.**
+  Nothing is packed into a half-byte anywhere. **The two reserve bytes are 0 and undefined** — but
+  in the sweep's `DISCOVER` reply and `ASSIGN_ADDR`, which carry the second tag in them (§2).
 - **No transaction id.** One question, one answer: the master has at most one request open per
   unit, and the next frame of the matching kind from that unit is the reply — `GET` answers
   under `GET`, a tunnel package with `TUNNEL_REPLY`. The timeout is the master's.
@@ -333,13 +334,16 @@ its segments, Palatine for its arms — runs the sweep at bring-up (`FLOOR`), in
   once** — a fresh unit on its default byte, and a unit carrying a persisted set on the name it
   holds, so that a unit moved from another station is found under the number it brought. The
   reply is CONTROL with **the tag in the two time bytes**, which carry nothing before `SYNC`:
-  `tag.0 · tag.1 · TYPE|NUM · 0 · op · 0 · 0 · 0 · 0 · 0 · CRC`. Nothing else rides it — the width is the
-  segment's and the type says the rest.
+  `tag.0 · tag.1 · TYPE|NUM · 0 · op · 0 · 0 · 0 · tag2.0 · tag2.1 · CRC` — **the second tag**,
+  CRC-16 over the UID turned left by six bytes, in the two reserve bytes, so two units whose tags
+  meet are still two. Nothing else rides it — the width is the segment's and the type says the rest.
 - **Several units answer one broadcast the way Ethernet did it**, and the echo receiver is what
   makes it work: **listen before talking** — a unit that sees an edge on its RX while it waits
   holds off until the bus is quiet and starts its wait again; **wait `tag × 10 µs`** before the
   first attempt; **a collision is a bad CRC on its own echo**, after which the unit waits a new
-  delay, CRC-16 over the UID and the attempt number, so two near tags do not meet twice. The
+  delay, **CRC-16 over the UID turned left by 1 + (attempt − 1) mod 11 bytes**, so two near tags do
+  not meet twice. A turn and not the attempt number appended: a CRC is linear, so two UIDs of one
+  tag would give one CRC with any byte behind them and collide for ever, where a turn parts them. The
   collision window is the one-way propagation plus the transceivers plus the detection, about
   3 µs on 500 m of copper against a 26 µs bit; a unit alone on a point-to-point port never has
   the case. RC's ±1 % does not matter — this is not a schedule. **The base of 10 µs is what makes
@@ -352,11 +356,12 @@ its segments, Palatine for its arms — runs the sweep at bring-up (`FLOOR`), in
   waits the same 700 ms**: a second silent window is what says the segment is complete, and a unit
   that was holding off through the first one is caught by the second. **Nothing is written until
   the round is over** — the count of a segment is the count of replies and the numbers are the
-  Mayak's, so a reply arriving mid-round is collected and not acted on. At 38 400 a reply is
-  2,08 ms, so eight units take **about 1,5 s, and a little over 5 s in the worst case** — once, at
-  bring-up.
-- **`ASSIGN_ADDR` is addressed by tag**: `tag.0 · tag.1 · TYPE|NUM · 0 · op · address · slot · 0 · 0 · 0 · CRC`, and
-  only the unit whose tag matches takes it, rewrites itself and keeps both. **In the RC dialogue the
+  Mayak's, so a reply arriving mid-round is collected and not acted on. At 38 400 a reply of
+  12 B is 3,1 ms, and a unit that hears another starts its whole wait again, so eight units take
+  **about 4 s with the two silent windows, 5 s at worst** — forty rounds simulated on a shared
+  segment (`proto/test/test_sweep.c`) — once, at bring-up.
+- **`ASSIGN_ADDR` is addressed by tag**: `tag.0 · tag.1 · TYPE|NUM · 0 · op · address · slot · 0 · tag2.0 · tag2.1 · CRC`, and
+  only the unit whose two tags match takes it, rewrites itself and keeps both. **In the RC dialogue the
   tag IS the address, because `TYPE|NUM` is not one yet**: a segment of fresh units all stand on the
   same default byte — eight thermometers all arriving as the same type and the same number — and
   nothing in that byte tells them apart. The tag does, and only because it is the whole UID hashed.
