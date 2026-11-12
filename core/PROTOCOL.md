@@ -967,11 +967,15 @@ forgets nothing, and a reading is open by doctrine.
   the detail waits in `HEALTH`; the measurement's trigger and the supply's edge are the header's
   flags the same way.
 - **Configuration lives in the MCU's own flash, in fixed append-only cells** — no memory part,
-  no filesystem. A cell = id + value + check; writes append, the reader keeps the last good
+  no filesystem. A cell = id + value + check — `id 2 B · value 12 B · CRC-16 2 B`, 16 B, the H5's
+  quad-word, one program operation; erased flash, all 0xFF, is a free cell and a torn one fails
+  its check; writes append, the reader keeps the last good
   cell per id; a full 8 KB sector (512 cells) erases and rewrites the live set. No mirror
   sector: the head holds the authority and re-seeds at boot — the flash copy makes a boot
   silent, not possible. **The persisted set — number, slot, BUSCFG — carries one check over the
-  whole set, and a set that fails it is no set**: the unit boots as fresh (§3). **The live set is
+  whole set, and a set that fails it is no set**: the unit boots as fresh (§3). The check is a cell
+  of its own, id `0xFFFE`: the set's count, then a CRC-32 over each member's id and value in order,
+  written after the members. **The live set is
   rewritten once a year on its own**, erase and write, to refresh the charge in the cells — one
   cycle a year against a ten-thousand-cycle part. A unit that loses its set twice has a failing
   flash and is replaced, not debugged.
