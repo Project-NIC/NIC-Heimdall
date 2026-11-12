@@ -3,3 +3,4 @@ test/test_load
 test/test_card
 test/test_ingest
 test/test_cells
+test/test_sweep
