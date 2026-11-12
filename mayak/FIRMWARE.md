@@ -526,7 +526,8 @@ time is the card's stamp; a late handler moves nothing but the moment a block is
 
 **Written so far** — the buckets, the close and its fillers, the rules, the spool into HMC and a
 late repair (`../core/proto/nic_ingest.c`, `test/test_ingest.c`); the HMC/HCC library, the rules
-and the session (`../core/archive/ref/`).
+and the session (`../core/archive/ref/`); the command check — the counter, the tag, `SET K1` under
+K0 (`../core/proto/nic_cmd.c`, `test/test_cmd.c`).
 
 **On a PC, with the pins replaced by callbacks:** the trunk parser against recorded traffic —
 a 48 B record cut by a stall, a 12 B `ERROR` between two records, a CRC miss and its
