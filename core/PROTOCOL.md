@@ -844,13 +844,15 @@ forgets nothing, and a reading is open by doctrine.
     2 MB), `arg2` the slot — 0 the firmware image, 1 a table. The unit answers ACK and opens its
     second flash slot.
   - **The stream**: DATA frames, `kind` 9, the master's header and 32 B of payload each, the frame's
-    own CRC-16 and nothing added. **The first frame is the image header** — the TYPE it is for, the
-    slot, the byte length (uint32), the CRC-32 of the body, the version — and the body follows,
-    **the last frame padded with zeros to 32 B**. The `frame` field counts the stream; a CRC miss or
+    own CRC-16 and nothing added. **The first frame is the image header** — `TYPE 1 B` it is for ·
+    `slot 1 B` · reserved 2 B · `length 4 B` of the body · `CRC-32 4 B` of the body (IEEE, as the
+    archive's) · `version 2 B`, what `VERSION` will read · reserved 18 B, zeros — and the body
+    follows, **the last frame padded with zeros to 32 B**. The `frame` field counts the stream; a CRC miss or
     a gap aborts it, the unit answers ERROR and the master starts the stream again from `LOAD` — no
     per-frame resend, because a restart costs seconds: at 2²¹ the line carries ~160 kB/s of payload,
     a 512 kB image in under four seconds. **Through an Argus the card cuts each 32 B into four 8 B
-    mini payloads** at its segment's data rung, 2²⁰ alone or 2²¹ chained — 2²⁰ ÷ 10 bits × 8 B / 16
+    mini payloads**, its own `LOAD` to the sonde announcing four times the frames, at its segment's
+    data rung, 2²⁰ alone or 2²¹ chained — 2²⁰ ÷ 10 bits × 8 B / 16
     B ≈ 52 kB/s, ~105 kB/s at 2²¹ — a mini-NOD's image in under a minute. At the end the unit checks
     the CRC-32 against the whole body and answers ACK, or ERROR with the reason.
   - **`APPLY`** (op 19, M→N or M→C): boot the loaded slot **as a trial**. The bootloader marks the
@@ -1019,7 +1021,7 @@ alike (`0x0000` the value · `0x0001` a second value where the quantity has one 
 | GET | 9 | M→N; the reply N→M under the same op | register | reply: the value, `arg1` low and `arg2` high | up to 16 bits answer here; a wider register answers as a DATA frame, `kind` 5, the register number first; **`GET REPORT` · `GET PORTS` · `GET HEALTH` answer with that frame itself** (§5). The node's own registers only — never the ModBus bridge, which is the tunnel's alone |
 | SET | 10 | M→N | register | value, `arg1` low and `arg2` high | written, then ACK. **A register wider than 16 bits is written as a DATA frame down, `kind` 5, the register number first, the value after it, zeros to 32 B — the same frame a `GET` answers with, sent the other way** — in the unit's third frame-time like any CONTROL, and answered `ACK`; a card relays it as it relays a `TUNNEL` frame, an Argus by `SUB` onto the segment. **One sanctioned use across every port-carrying board: the per-port current limit** — the number the firmware trips on, read from the block's INA237 and executed with `PORT_PWR`, so a limit is set from the handset at run time and **nothing in the frame grows for it** (`../galvani/HARDWARE.md`, *Protecting the feed*) |
 | ACK | 11 | N→M | the op acknowledged | — | |
-| ERROR | 12 | N→M, **only as the answer to a command** | code | detail | the op that failed and why — a register the node does not have, a tunnel that timed out, a calibration too noisy. **Never unasked**: a board's own fault is the header's `FAULT` flag and `HEALTH` on `GET` (§1, §7) |
+| ERROR | 12 | N→M, **only as the answer to a command** | code | the op it answers | the op that failed and why — a register the node does not have, a tunnel that timed out, a calibration too noisy. **Never unasked**: a board's own fault is the header's `FAULT` flag and `HEALTH` on `GET` (§1, §7) |
 | DIAG | 13 | — | — | — | **retired, the number not reused** — its vocabulary is the `HEALTH` frame's, its trigger the `FAULT` flag (`WHY.md`) |
 | EVENT | 14 | bcast | event class | — | the station event board: the source is the address, the instant is the header's. Policy lives in the Mayak's config; a receiver may only do something **local and reversible** (tag a record, hold a buffer, pre-drain). At the head an alarm or EVENT also feeds the **marker pipeline** (§6): an archive marker for search, the immediate rate-limited radio marker, and the head's **event assessment — short windows, never real time** (`../mayak/README.md`) — the server stays the real detector. µs correlation stays with the stamps and the server |
 | PORT_PWR | 15 | M→C | port, **0 = every port on the card** | 0 off · 1 on | **switch a port's feed and line side** — its `ENABLE` and `LINE_EN`, one GPIO. §10 |
@@ -1027,6 +1029,12 @@ alike (`0x0000` the value · `0x0001` a second value where the quantity has one 
 | FLOOR | 17 | M→C | — | — | **bring your floor up** — the card's one original verb. §10 |
 | LOAD | 18 | M→N, M→C | frames to follow, `arg0` low and `arg1` high | slot in `arg2`: 0 image · 1 table | **a stream is coming**: that many `kind` 9 DATA frames on the master's own line, the first the image header, the last zero-padded; ACK opens the slot, ACK or ERROR closes the stream on the CRC-32 (§7) |
 | APPLY | 19 | M→N, M→C | — | — | **boot the loaded image as a trial**; it confirms itself on its first answered `GET VERSION`, else the old slot comes back (§7) |
+
+**ERROR's codes**: 1 no such register · 2 no such address (a card's) · 3 the tunnel timed out ·
+4 a calibration too noisy · 5 a value the register does not take · **the stream's**: 16 a frame out
+of its count or failing its CRC · 17 an image for another TYPE or slot · 18 the length and the
+frames `LOAD` announced disagree, or the body is past the slot · 19 the body's CRC-32 is not the
+header's · 20 the slot could not be erased or written · 21 `APPLY` with no whole image loaded.
 
 **What is a register and not a verb.** A unit's state answers `DISCOVER`. `VERSION`, `HEALTH`,
 `IDENT`, `CALIBRATE`, **`TAG`** (the CRC-16 of the UID, §2) and **`slots`** are registers behind

@@ -10,11 +10,12 @@ alike and unit-tested on a PC.
 | file | what |
 |---|---|
 | `nic_proto.h` · `nic_proto.c` | the CRC; a frame told by its length; the three buses' addresses packed and checked; DATA on a spur, on mini and on the trunk, the card's completion of a spur frame in place; CONTROL with `SUB` and an Argus's swap of the last hop; a wide register's `kind` 5 payload; the master's roster keyed by (bus, TYPE, NUMBER) in 256-entry tables |
+| `nic_load.h` · `nic_load.c` | `LOAD`, the `kind` 9 stream and `APPLY` (§7): the image header, the unit's receiver writing a slot through the firmware's flash callbacks and checking count, TYPE, length and CRC-32, the master's frames on a spur or cut for an Argus, and the trial boot — an untried image started once, confirmed by its first answered `GET VERSION`, else the old slot back; ERROR's codes (§9) |
 | `test/test_proto.c` | every rule above against the document's own examples — Quake #2 is `0x52`, Gauss #2 `0x12`, Pluvius #2 `0x16`, Modbus's ceiling 247 — every bit flip caught, the trunk frame never moved, the second across a wrap, a sonde seeing its own address, a host dropped with what hangs under it |
+| `test/test_load.c` | an image streamed into a slot on a spur and through an Argus, a frame left out or failing its CRC, another TYPE's image, a wrong count, a bad CRC-32, a table past its slot, a failing erase; a trial confirmed, and one that resets unconfirmed handing the boot back |
 
 ```
 make check                     # with $CC; CC=clang, or CFLAGS with -fsanitize=address,undefined
 ```
 
-**Owed here**: the `LOAD` stream and the `APPLY` trial boot (§7), then each layer the firmware
-pages list — a card's per-spur masters, the head's ingest — each beside this one, on it.
+**Owed here**: each layer the firmware pages list — a card's per-spur masters, the head's ingest — each beside this one, on it.
