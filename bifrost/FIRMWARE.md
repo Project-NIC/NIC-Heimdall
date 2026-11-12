@@ -466,12 +466,13 @@ hardware already latched.
 
 ## 14. What is tested, and where
 
-**The host-testable layer is everything above the pins.** The circular buffer, the stamp arithmetic, the
-`unix.0` check, the filler rules, the tiling — written, `../core/proto/nic_card.c`, its tests in
-`../core/proto/test/test_card.c` — the sweep's state machine, the ladder, the
-register map, the cells — each compiles on a PC with the pins replaced by callbacks and is
-tested there with recorded frames: a frame late by 7, a frame with a bad CRC twice, a label off
-by one, a PPS-K edge 3 µs early, eight units on one port and a ninth answering `DISCOVER`, an
-Argus with five sondes taking two NUMBERs, an `END` mid-round.
+**The host-testable layer is everything above the pins.** The circular buffer, the stamp
+arithmetic, the `unix.0` check, the filler rules, the tiling, the ranging rule and the ladder —
+written, `../core/proto/nic_card.c`, its tests in `../core/proto/test/test_card.c`; the sweep,
+`../core/proto/nic_sweep.c`; the cells, `../core/proto/nic_cells.c`. They, and the register map
+still to write, compile on a PC with the pins replaced by callbacks and are tested there with
+recorded frames: a frame late by 7, a frame with a bad CRC twice, a label off by one, a PPS-K
+edge 3 µs early, eight units on one port and a ninth answering `DISCOVER`, an Argus with five
+sondes taking two NUMBERs, an `END` mid-round.
 
 **The board layer is tested on the bench against `HARDWARE.md`, *Bench criteria*.**

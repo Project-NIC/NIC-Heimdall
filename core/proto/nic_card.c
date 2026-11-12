@@ -159,3 +159,109 @@ uint8_t nic_tile_status(const nic_tile *t, uint8_t seated)
         worst = NIC_SENSOR;
     return (uint8_t)(t->flags | worst);
 }
+
+/* ------------------------------------------------------------------ ranging */
+
+int32_t nic_route_of(uint32_t measured, uint32_t ccr)
+{
+    return ((int32_t)measured - (int32_t)(ccr + 3)) / 2;
+}
+
+int32_t nic_median3(int32_t a, int32_t b, int32_t c)
+{
+    if (a > b) { int32_t t = a; a = b; b = t; }
+    if (b > c) { int32_t t = b; b = c; c = t; }
+    if (a > b) { int32_t t = a; a = b; b = t; }
+    return b;
+}
+
+static int32_t absdiff(int32_t a, int32_t b) { return a > b ? a - b : b - a; }
+
+enum nic_range_action nic_range_update(nic_ranger *r, int ok, int32_t route)
+{
+    if (!ok) {
+        r->unranged = 1;
+        return NIC_RANGE_LOST;
+    }
+    r->unranged = 0;
+    if (!r->have) {
+        r->route = route;
+        r->have = 1;
+        return NIC_RANGE_WRITE;
+    }
+    int32_t d = absdiff(route, r->route);
+    if (r->pending) {
+        r->pending = 0;
+        if (d > 128 && absdiff(route, r->candidate) <= 2) {   /* two agreeing: the cable moved */
+            r->route = route;
+            r->changes++;
+            return NIC_RANGE_WRITE;
+        }
+        if (d <= 128) {                                       /* the far one was a lone outlier */
+            r->outliers++;
+        } else {                                               /* far again and not agreeing */
+            r->outliers++;
+            r->candidate = route;
+            r->pending = 1;
+            return NIC_RANGE_AGAIN;
+        }
+    }
+    if (d <= 2)
+        return NIC_RANGE_KEEP;
+    if (d <= 128) {
+        r->route = route;
+        r->changes++;
+        return NIC_RANGE_WRITE;
+    }
+    r->candidate = route;
+    r->pending = 1;
+    return NIC_RANGE_AGAIN;
+}
+
+/* ------------------------------------------------------------------ the ladder */
+
+void nic_ladder_fault(nic_ladder *l, uint32_t now)
+{
+    if (l->step != NIC_L_OK)
+        return;
+    l->step = NIC_L_WAIT;
+    l->since = now;
+    l->attempts = 0;
+}
+
+void nic_ladder_alive(nic_ladder *l)
+{
+    l->step = NIC_L_OK;
+    l->attempts = 0;
+}
+
+enum nic_ladder_action nic_ladder_tick(nic_ladder *l, uint32_t now, uint32_t round_us)
+{
+    uint32_t dt = now - l->since;
+    switch (l->step) {
+    case NIC_L_WAIT:                       /* step 2: eight rounds for the unit to rejoin itself */
+        if ((uint64_t)dt * 1000 < (uint64_t)NIC_LADDER_ROUNDS * round_us)
+            return NIC_LA_NONE;
+        break;
+    case NIC_L_OFF:                        /* step 3: the feed off for a second */
+        if (dt < NIC_LADDER_OFF_MS)
+            return NIC_LA_NONE;
+        l->step = NIC_L_REJOIN;
+        l->since = now;
+        return NIC_LA_POWER_ON;
+    case NIC_L_REJOIN:                     /* step 4: four seconds to come back */
+        if (dt < NIC_LADDER_WAIT_MS)
+            return NIC_LA_NONE;
+        if (l->attempts >= NIC_LADDER_TRIES) {
+            l->step = NIC_L_DEAD;          /* step 5 */
+            return NIC_LA_DEAD;
+        }
+        break;
+    default:
+        return NIC_LA_NONE;
+    }
+    l->attempts++;
+    l->step = NIC_L_OFF;
+    l->since = now;
+    return NIC_LA_POWER_OFF;
+}

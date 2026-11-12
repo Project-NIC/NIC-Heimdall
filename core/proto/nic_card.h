@@ -93,4 +93,56 @@ void nic_tile_place(nic_tile *t, unsigned pos, uint8_t status, const uint8_t pay
  * SENSOR. `seated` the positions the segment table fills. */
 uint8_t nic_tile_status(const nic_tile *t, uint8_t seated);
 
+/* ------------------------------------------------------------------ ranging (§4, step 8) */
+
+/* A round trip measured as 2 × route + K in ticks of 2²⁷, K the unit's CCR plus three ticks of
+ * the silicon's own: the route. */
+int32_t nic_route_of(uint32_t measured, uint32_t ccr);
+int32_t nic_median3(int32_t a, int32_t b, int32_t c);
+
+typedef struct {
+    int32_t route, candidate;
+    uint8_t have, pending, unranged;
+    uint32_t outliers, changes;
+} nic_ranger;
+
+enum nic_range_action {
+    NIC_RANGE_KEEP = 0,     /* within 2 ticks of the stored route: nothing */
+    NIC_RANGE_WRITE,        /* write ROUTE to the unit, persist it, report it */
+    NIC_RANGE_AGAIN,        /* over 128 ticks off: range again at once before writing anything */
+    NIC_RANGE_LOST          /* no return: the last route kept, the unit UNRANGED */
+};
+
+/* A median measurement, or `ok` 0 when no return came within the window. */
+enum nic_range_action nic_range_update(nic_ranger *r, int ok, int32_t route);
+
+/* ------------------------------------------------------------------ the ladder (§11) */
+
+enum nic_ladder_step { NIC_L_OK = 0, NIC_L_WAIT, NIC_L_OFF, NIC_L_REJOIN, NIC_L_DEAD };
+
+enum nic_ladder_action {
+    NIC_LA_NONE = 0,
+    NIC_LA_POWER_OFF,       /* the port's feed off — the table re-sent, the slot's status 5 */
+    NIC_LA_POWER_ON,
+    NIC_LA_DEAD             /* a standing filler, the table with the slot's status 3 */
+};
+
+typedef struct {
+    uint8_t step, attempts;
+    uint32_t since;         /* ms */
+} nic_ladder;
+
+#define NIC_LADDER_ROUNDS   8u
+#define NIC_LADDER_OFF_MS   1000u
+#define NIC_LADDER_WAIT_MS  4000u
+#define NIC_LADDER_TRIES    3u
+
+/* Step 1: the unit marked faulty — silent, slipped, three slot failures, two CRC misses. */
+void nic_ladder_fault(nic_ladder *l, uint32_t now);
+/* A whole frame from the unit in its place: the ladder left. */
+void nic_ladder_alive(nic_ladder *l);
+/* Called as time passes; `round_ms` the round's length (7,8125 ms at 128 Hz, given in µs × 1000
+ * as round_us). */
+enum nic_ladder_action nic_ladder_tick(nic_ladder *l, uint32_t now, uint32_t round_us);
+
 #endif

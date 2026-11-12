@@ -121,6 +121,38 @@ int main(void)
     nic_tile_place(&tl, 1, NIC_OK, m);
     CHECK(nic_tile_status(&tl, 0x03) == NIC_SENSOR);                   /* position 0 seated, silent */
     CHECK(nic_tile_status(&tl, 0x02) == NIC_OK);
+    /* ranging: the route from a round trip, the median of three, the rules for writing it */
+    CHECK(nic_route_of(2 * 1000 + 503, 500) == 1000 && nic_median3(7, 3, 5) == 5 && nic_median3(1, 9, 9) == 9);
+    nic_ranger rg = {0};
+    CHECK(nic_range_update(&rg, 1, 1000) == NIC_RANGE_WRITE && rg.route == 1000);      /* the first */
+    CHECK(nic_range_update(&rg, 1, 1002) == NIC_RANGE_KEEP && rg.route == 1000);       /* within 2 */
+    CHECK(nic_range_update(&rg, 1, 1010) == NIC_RANGE_WRITE && rg.route == 1010);      /* moved */
+    CHECK(nic_range_update(&rg, 1, 1300) == NIC_RANGE_AGAIN && rg.route == 1010);      /* > 128: again */
+    CHECK(nic_range_update(&rg, 1, 1011) == NIC_RANGE_KEEP && rg.outliers == 1);       /* a lone outlier */
+    CHECK(nic_range_update(&rg, 1, 1300) == NIC_RANGE_AGAIN);
+    CHECK(nic_range_update(&rg, 1, 1301) == NIC_RANGE_WRITE && rg.route == 1301);      /* two agreeing */
+    CHECK(nic_range_update(&rg, 0, 0) == NIC_RANGE_LOST && rg.unranged && rg.route == 1301);
+    CHECK(nic_range_update(&rg, 1, 1301) == NIC_RANGE_KEEP && !rg.unranged);
+    /* the ladder: eight rounds, then the feed off a second and four to come back, three times, dead */
+    nic_ladder ld = {0};
+    const uint32_t round_us = 7813;
+    nic_ladder_fault(&ld, 1000);
+    CHECK(nic_ladder_tick(&ld, 1050, round_us) == NIC_LA_NONE);                   /* 50 ms < 62,5 */
+    nic_ladder_alive(&ld);                                                         /* it rejoined */
+    CHECK(ld.step == NIC_L_OK && nic_ladder_tick(&ld, 9000, round_us) == NIC_LA_NONE);
+    nic_ladder_fault(&ld, 10000);
+    int offs = 0, ons = 0, dead = 0;
+    uint32_t dead_at = 0;
+    for (uint32_t t = 10000; t < 40000; t++) {
+        enum nic_ladder_action a = nic_ladder_tick(&ld, t, round_us);
+        offs += a == NIC_LA_POWER_OFF;
+        ons += a == NIC_LA_POWER_ON;
+        if (a == NIC_LA_DEAD) { dead++; dead_at = t; }
+    }
+    CHECK(offs == 3 && ons == 3 && dead == 1 && ld.step == NIC_L_DEAD);
+    CHECK(dead_at == 10000 + 63 + 3 * (1000 + 4000));                             /* 8 rounds, 3 × (1 s + 4 s) */
+    nic_ladder_fault(&ld, 50000);
+    CHECK(ld.step == NIC_L_DEAD);                                                  /* dead stays dead */
     if (fails) {
         printf("%d checks failed\n", fails);
         return 1;
