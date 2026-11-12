@@ -8,11 +8,30 @@ uint16_t nic_tag(const uint8_t uid[12])
     return nic_crc16(uid, 12);
 }
 
+uint16_t nic_tag_turned(const uint8_t uid[12], unsigned r)
+{
+    uint8_t b[12];
+    for (unsigned i = 0; i < 12; i++)
+        b[i] = uid[(i + r) % 12];
+    return nic_crc16(b, 12);
+}
+
+/* the sweep's frames carry the second tag in the reserve bytes */
+static void with_tag2(uint8_t f[NIC_CTRL_LEN], uint16_t tag2)
+{
+    f[8] = (uint8_t)tag2;
+    f[9] = (uint8_t)(tag2 >> 8);
+    uint16_t c = nic_crc16(f, 10);
+    f[10] = (uint8_t)c;
+    f[11] = (uint8_t)(c >> 8);
+}
+
 void nic_sweep_unit_init(nic_sweep_unit *u, const uint8_t uid[12], uint8_t addr, int enrolled)
 {
     memset(u, 0, sizeof *u);
     memcpy(u->uid, uid, 12);
     u->tag = nic_tag(uid);
+    u->tag2 = nic_tag_turned(uid, 6);
     u->addr = addr;
     u->enrolled = (uint8_t)(enrolled != 0);
 }
@@ -43,6 +62,7 @@ int nic_sweep_unit_due(nic_sweep_unit *u, uint32_t now, int bus_busy, uint8_t ou
     }
     nic_ctrl c = {(uint8_t)u->tag, (uint8_t)(u->tag >> 8), u->addr, 0, NIC_DISCOVER, 0, 0, 0};
     nic_ctrl_build(&c, out);
+    with_tag2(out, u->tag2);
     u->waiting = 0;
     u->sending = 1;
     return 1;
@@ -55,10 +75,8 @@ void nic_sweep_unit_echo(nic_sweep_unit *u, int whole, uint32_t now)
         u->answered = 1;
         return;
     }
-    uint8_t b[13];                        /* a new wait: CRC-16 over the UID and the attempt */
-    memcpy(b, u->uid, 12);
-    b[12] = ++u->attempt;
-    u->delay = nic_crc16(b, 13);
+    u->attempt++;                         /* a new wait: the UID turned by the attempt's bytes */
+    u->delay = nic_tag_turned(u->uid, 1 + (u->attempt - 1u) % 11);
     u->waiting = 1;
     u->due = now + (uint32_t)u->delay * NIC_SWEEP_STEP_US;
 }
@@ -66,7 +84,8 @@ void nic_sweep_unit_echo(nic_sweep_unit *u, int whole, uint32_t now)
 int nic_sweep_unit_assign(nic_sweep_unit *u, const uint8_t f[NIC_CTRL_LEN], uint8_t ack[NIC_CTRL_LEN])
 {
     nic_ctrl c;
-    if (nic_ctrl_parse(f, &c) || c.op != NIC_ASSIGN_ADDR || (uint16_t)(c.unix0 | c.frame << 8) != u->tag)
+    if (nic_ctrl_parse(f, &c) || c.op != NIC_ASSIGN_ADDR || (uint16_t)(c.unix0 | c.frame << 8) != u->tag
+        || (uint16_t)(f[8] | f[9] << 8) != u->tag2)
         return 0;
     u->addr = c.arg0;
     u->slot = c.arg1;
@@ -100,12 +119,13 @@ void nic_sweep_host_rx(nic_sweep_host *h, const uint8_t *f, size_t len, uint32_t
     h->heard_in_window = 1;
     if (len != NIC_CTRL_LEN || nic_ctrl_parse(f, &c) || c.op != NIC_DISCOVER || c.addr == NIC_BCAST)
         return;
-    uint16_t tag = (uint16_t)(c.unix0 | c.frame << 8);
+    uint16_t tag = (uint16_t)(c.unix0 | c.frame << 8), tag2 = (uint16_t)(f[8] | f[9] << 8);
     for (uint8_t i = 0; i < h->n; i++)
-        if (h->found[i].tag == tag)
+        if (h->found[i].tag == tag && h->found[i].tag2 == tag2)
             return;
     if (h->n < NIC_SWEEP_MAX) {
         h->found[h->n].tag = tag;
+        h->found[h->n].tag2 = tag2;
         h->found[h->n].addr = c.addr;
         h->n++;
     }
@@ -126,8 +146,9 @@ int nic_sweep_host_tick(nic_sweep_host *h, uint32_t now, uint8_t out[NIC_CTRL_LE
     return 1;
 }
 
-void nic_assign(uint16_t tag, uint8_t addr_said, uint8_t addr, uint8_t slot, uint8_t out[NIC_CTRL_LEN])
+void nic_assign(const nic_found *f, uint8_t addr, uint8_t slot, uint8_t out[NIC_CTRL_LEN])
 {
-    nic_ctrl c = {(uint8_t)tag, (uint8_t)(tag >> 8), addr_said, 0, NIC_ASSIGN_ADDR, addr, slot, 0};
+    nic_ctrl c = {(uint8_t)f->tag, (uint8_t)(f->tag >> 8), f->addr, 0, NIC_ASSIGN_ADDR, addr, slot, 0};
     nic_ctrl_build(&c, out);
+    with_tag2(out, f->tag2);
 }

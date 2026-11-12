@@ -117,13 +117,38 @@ int main(void)
             worst = t;
     }
     printf("eight units: %.2f s on average, %.2f s at worst of %d rounds\n", sum / 1e6 / runs, worst / 1e6, runs);
+    /* two units with one tag: they collide once, part on their turned waits, and are told apart
+       by their second tags */
+    uint8_t a[12], b[12];
+    for (;;) {
+        static uint16_t seen[65536];
+        static uint8_t uids[65536][12];
+        uid_of(a);
+        uint16_t t = nic_tag(a);
+        if (seen[t] && memcmp(uids[t], a, 12)) {
+            memcpy(b, uids[t], 12);
+            break;
+        }
+        seen[t] = 1;
+        memcpy(uids[t], a, 12);
+    }
+    nic_sweep_unit_init(&u[0], a, 0x5F, 0);
+    nic_sweep_unit_init(&u[1], b, 0x5F, 0);
+    CHECK(u[0].tag == u[1].tag && u[0].tag2 != u[1].tag2);
+    uint32_t tt = round_on_bus(u, 2, &h);
+    CHECK(tt && u[0].answered && u[1].answered && u[0].attempt >= 1 && u[1].attempt >= 1 && u[0].attempt < 4);
+    CHECK(h.n == 2 && h.found[0].tag2 != h.found[1].tag2);
+    int k1 = h.found[0].tag2 == u[1].tag2 ? 0 : 1;
+    nic_assign(&h.found[k1], 0x52, 3, f);
+    CHECK(!nic_sweep_unit_assign(&u[0], f, ack) && nic_sweep_unit_assign(&u[1], f, ack) && u[1].addr == 0x52);
     /* nobody there: two silent windows */
     uint32_t t0 = round_on_bus(u, 0, &h);
     CHECK(h.n == 0 && t0 >= 2 * NIC_SWEEP_SILENCE_US && t0 < 2 * NIC_SWEEP_SILENCE_US + 10);
     /* ASSIGN_ADDR by tag: only the unit whose tag it is */
     uid_of(uid); nic_sweep_unit_init(&u[0], uid, 0x5F, 0);
     uid_of(uid); nic_sweep_unit_init(&u[1], uid, 0x5F, 0);
-    nic_assign(u[1].tag, 0x5F, 0x52, 3, f);
+    nic_found fd = {u[1].tag, u[1].tag2, 0x5F};
+    nic_assign(&fd, 0x52, 3, f);
     CHECK(!nic_sweep_unit_assign(&u[0], f, ack) && u[0].addr == 0x5F && !u[0].enrolled);
     CHECK(nic_sweep_unit_assign(&u[1], f, ack) && u[1].addr == 0x52 && u[1].slot == 3 && u[1].enrolled);
     nic_ctrl c;
