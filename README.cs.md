@@ -14,12 +14,12 @@ nesou. Běžně dostupné součástky a data dost lehká na zpracování na dom�
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
 [![License: CERN-OHL-P v2](https://img.shields.io/badge/License-CERN--OHL--P%20v2-red.svg)](https://ohwr.org/cern_ohl_p_v2.txt)
-![Version: 0.2 — concept](https://img.shields.io/badge/version-0.2%20concept-blue.svg)
+![Version: 0.3 — concept](https://img.shields.io/badge/version-0.3%20concept-blue.svg)
 
 > ⚠️ **Koncept ve fázi návrhu — NEOVĚŘENO na hardwaru.** Architektura, přenosový protokol a archiv
-> jsou propracované do hloubky a referenční kodek archivu je **otestovaný na hostitelském počítači**;
-> **nic nebylo postaveno ani spuštěno na skutečném hardwaru** — žádná deska nebyla vyrobena, žádný
-> firmware napsán, žádný senzor kalibrován. Psáno pro **zkušené stavitele**: dává topologii
+> jsou propracované do hloubky, archiv a přenositelné knihovny firmwaru jsou napsané a **otestované
+> na počítači**; **nic nebylo postaveno ani spuštěno na skutečném hardwaru** — žádná deska nebyla
+> vyrobena, žádný senzor kalibrován, vrstva firmwaru u desek není napsaná. Psáno pro **zkušené stavitele**: dává topologii
 > a zdůvodnění, ne návod. **Koncept této velikosti BUDE obsahovat chyby** — konzistence mezi
 > dokumenty není totéž co správnost. Našli jste nějakou? To systém funguje — ověřte ji proti
 > záznamu a záznam opravte.
@@ -264,15 +264,17 @@ kontinentu.
 
 ## Kód
 
-**Zatím není napsán žádný firmware a žádný není v tomto repozitáři.** Firmware jednotky je popsán
-v jejím `FIRMWARE.md` — start, stavy, sběrnice, čas, registry, poruchy — a píše se podle tohoto
-popisu, jakmile se `HARDWARE.md` desky ustálí: nejdřív deska, potom firmware.
-
-Kód, který tu je, je dvojího druhu, obojí čistý Python 3:
+**Přenositelná vrstva firmwaru je napsaná, vrstva u desek ne.** Firmware jednotky je popsán v jejím
+`FIRMWARE.md` — start, stavy, sběrnice, čas, registry, poruchy. Co leží nad piny — bajty, proud
+obrazu, datová cesta karty, příjem na hlavě, archiv — je přenositelné C, testované na počítači a
+přeložené pro Cortex-M33 v H523 a RISC-V hlavy; co sahá na piny, časovače a DMA, se píše, jakmile
+se `HARDWARE.md` desky ustálí: nejdřív deska, potom tato vrstva.
 
 | | |
 |---|---|
-| referenční kodek archivu | [`core/archive/ref/`](core/archive/ref/) — HCC tak, jak ho určuje `HCC.md`, Steim-2, se kterým se porovnává, a jeho testy (`python3 tests/test_hcc.py` a `tests/test_damaged.py` pro proudy, které nejsou celé) |
+| jádro protokolu | [`core/proto/`](core/proto/) — rámce, adresy, CONTROL a roster; `LOAD`, proud a zkušební boot; datová cesta karty; příjem na hlavě — C99, `make check`, `make cross` |
+| referenční knihovna archivu | [`core/archive/ref/`](core/archive/ref/) — HMC a HCC, pravidla záznamu a odesílání, odesílací sezení, v Pythonu a v C se stejnými bajty (`tests/test_c.py`), HCC změřený na otevřených nahrávkách |
+| exportéry | [`core/archive/export/`](core/archive/export/) — miniSEED + StationXML, IAGA-2002, CSV a SQL, čtené z archivu dodatečně |
 | výpočty za dokumenty | [`gaia/tools/`](gaia/tools/) mapy umístění · [`gauss/models/`](gauss/models/) model umístění v mělké vodě · [`marconi/models/`](marconi/models/) směrování smyčky · [`tesla/design/`](tesla/design/) pracovní list tyče, výpočet jejího pole a limitace a šumové dno řetězce |
 
 ## Strom

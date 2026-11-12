@@ -14,11 +14,12 @@ power and cabling that carry them. Commodity parts, light enough to process on a
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
 [![License: CERN-OHL-P v2](https://img.shields.io/badge/License-CERN--OHL--P%20v2-red.svg)](https://ohwr.org/cern_ohl_p_v2.txt)
-![Version: 0.2 — concept](https://img.shields.io/badge/version-0.2%20concept-blue.svg)
+![Version: 0.3 — concept](https://img.shields.io/badge/version-0.3%20concept-blue.svg)
 
 > ⚠️ **Design-stage concept — NOT hardware-validated.** The architecture, the wire protocol and the
-> archive are worked in depth, and the archive's reference codec is **host-tested**; **nothing has
-> been built or run on real hardware** — no board fabricated, no firmware written, no sensor calibrated.
+> archive are worked in depth, and the archive and the firmware's portable libraries are written
+> and **host-tested**; **nothing has been built or run on real hardware** — no board fabricated, no
+> sensor calibrated, the boards' own firmware layer not written.
 > Written for **experienced builders**: it gives the topology and the reasoning, not a tutorial.
 > **A concept this size WILL contain mistakes** — consistency between documents is not correctness.
 > Found one? That is the system working — check it against the record and fix the record.
@@ -264,15 +265,18 @@ stations in one.
 
 ## Code
 
-**No firmware is written yet, and none is in this repository.** A unit's firmware is described in
-its `FIRMWARE.md` — boot, states, the bus, time, registers, faults — and is written against that
-description once the board's `HARDWARE.md` has settled: the board first, the firmware second.
-
-The code that is here is of two kinds, both plain Python 3:
+**The firmware's portable layer is written; the boards' own layer is not.** A unit's firmware is
+described in its `FIRMWARE.md` — boot, states, the bus, time, registers, faults. What sits above the
+pins — the bytes, the stream, a card's data path, the head's ingest, the archive — is portable C,
+unit-tested on a PC and built for the H523's Cortex-M33 and the head's RISC-V; what touches pins,
+timers and DMA is written once a board's `HARDWARE.md` has settled: the board first, that layer
+second.
 
 | | |
 |---|---|
-| the archive's reference codec | [`core/archive/ref/`](core/archive/ref/) — HCC as `HCC.md` fixes it, the Steim-2 it is measured against, and its tests (`python3 tests/test_hcc.py`, and `tests/test_damaged.py` for streams that are not whole) |
+| the protocol's core | [`core/proto/`](core/proto/) — the frames, the addresses, CONTROL and the roster; `LOAD`, the stream and the trial boot; a card's data path; the head's ingest — C99, `make check`, `make cross` |
+| the archive's reference library | [`core/archive/ref/`](core/archive/ref/) — HMC and HCC, the recording and send rules, the uplink session, in Python and in C writing the same bytes (`tests/test_c.py`), HCC measured on open recordings |
+| the exporters | [`core/archive/export/`](core/archive/export/) — miniSEED + StationXML, IAGA-2002, CSV and SQL, read from the archive after the fact |
 | the calculations behind the documents | [`gaia/tools/`](gaia/tools/) the siting maps · [`gauss/models/`](gauss/models/) the shallow-water siting model · [`marconi/models/`](marconi/models/) the loop's pointing · [`tesla/design/`](tesla/design/) the rod worksheet, its field solve and the chain's clip and floor |
 
 ## The tree
