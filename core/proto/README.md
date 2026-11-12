@@ -16,6 +16,9 @@ alike and unit-tested on a PC.
 
 ```
 make check                     # with $CC; CC=clang, or CFLAGS with -fsanitize=address,undefined
+make CC="arm-linux-gnueabihf-gcc -static" test/test_proto test/test_load      # a 32-bit ARM,
+qemu-arm test/test_proto; qemu-arm test/test_load                               # run under QEMU
+make cross                     # the Cortex-M33 and the head's RV32 — arm-none-eabi, riscv64-unknown-elf
 ```
 
 **Owed here**: each layer the firmware pages list — a card's per-spur masters, the head's ingest — each beside this one, on it.

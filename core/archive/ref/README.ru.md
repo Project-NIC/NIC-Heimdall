@@ -34,6 +34,7 @@ python3 tests/test_damaged.py
 python3 tests/test_hmc.py
 python3 tests/test_session.py
 python3 tests/test_c.py                 # builds c/ with $CC, which may carry flags
+HCC_RUN=qemu-arm CC="arm-linux-gnueabihf-gcc -static" python3 tests/test_c.py   # on a 32-bit ARM
 python3 measure.py recording.mseed --seconds 1,2,4,8,16,32
 python3 measure.py obs.min --seconds 60,300,900,3600      # IAGA-2002, nT × 100
 ```

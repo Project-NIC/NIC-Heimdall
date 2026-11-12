@@ -1,7 +1,8 @@
 """The C reference against the Python: the same bytes from the same records, the same records
 from the same bytes, and the same verdict on every damaged stream (HCC.md, *What it is tested
-against*). Builds ../c/ with $CC (cc by default) into a temporary directory; `HCC_C_SEED` and
-`HCC_C_ROUNDS` widen the random part."""
+against*). Builds ../c/ with $CC (cc by default) into a temporary directory and runs it under
+$HCC_RUN where one is named — `qemu-arm` for a 32-bit ARM build; `HCC_C_SEED` and `HCC_C_ROUNDS`
+widen the random part."""
 import math, os, random, shlex, struct, subprocess, sys, tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -97,7 +98,8 @@ class Tool:
         self.req.append(b"P" + struct.pack("<BI", address, second)); self.what.append("P")
 
     def run(self):
-        out = subprocess.run([self.path], input=b"".join(self.req), capture_output=True, check=True).stdout
+        out = subprocess.run(shlex.split(os.environ.get("HCC_RUN", "")) + [self.path], input=b"".join(self.req),
+                             capture_output=True, check=True).stdout
         at, answers = 0, []
         for w in self.what:
             if callable(w):

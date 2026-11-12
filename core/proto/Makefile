@@ -12,7 +12,14 @@ check: test/test_proto test/test_load
 	./test/test_proto
 	./test/test_load
 
+# the same sources for the MCUs: the H523's and H7A3's Cortex-M, the head's 32-bit RISC-V
+cross:
+	arm-none-eabi-gcc -mcpu=cortex-m33 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 $(CFLAGS) -Os -c nic_proto.c -o /dev/null
+	arm-none-eabi-gcc -mcpu=cortex-m33 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 $(CFLAGS) -Os -c nic_load.c -o /dev/null
+	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -c nic_proto.c -o /dev/null
+	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -c nic_load.c -o /dev/null
+
 clean:
 	rm -f test/test_proto test/test_load
 
-.PHONY: check clean
+.PHONY: check cross clean
