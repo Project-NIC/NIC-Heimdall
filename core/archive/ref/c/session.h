@@ -12,7 +12,8 @@
 #define SES_TAG 8u
 #define SES_NONE_ENTRY 0xFFFFFFFFu
 
-enum { SES_HELLO = 1, SES_CURSOR, SES_ARCHIVE, SES_ACK, SES_LIVE, SES_WINDOW, SES_BOARD };
+enum { SES_HELLO = 1, SES_CURSOR, SES_ARCHIVE, SES_ACK, SES_LIVE, SES_WINDOW, SES_BOARD, SES_COMMAND,
+       SES_SET_K1 };
 
 void ses_sha256(const uint8_t *d, size_t n, uint8_t out[32]);
 void ses_hmac_sha256(const uint8_t *key, size_t klen, const uint8_t *d, size_t n, uint8_t out[32]);

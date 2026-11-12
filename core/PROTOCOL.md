@@ -783,8 +783,9 @@ reads it off the BMS; its arms' and `EXT`'s feeds are sockets 1–5 of the same 
     operator's key store. It never travels by air and never reaches a handset. A station whose
     K0 is lost to the operator is re-flashed over `BOOT0`/USB and makes a new one.
   - **K1 is the working key and K0 roots its change.** Every command is MAC'd with K0‖K1 —
-    except **`SET K1`, which is MAC'd with K0 alone**: the key store always holds K0, so a lost,
-    leaked or forgotten K1 is overwritten from the server without a visit. A handset receives a
+    except **`SET K1`, which is MAC'd with K0 alone and carries the new K1 wrapped under K0**: the
+    key store always holds K0, so a lost, leaked or forgotten K1 is overwritten from the server
+    without a visit. A handset receives a
     station's K1 from the operator's server — a signed-in technician, the stations assigned, a
     bounded validity — and loads it before leaving where it will work offline; a handset never
     holds K0, so a lost handset costs one re-key.
@@ -797,9 +798,10 @@ reads it off the BMS; its arms' and `EXT`'s feeds are sockets 1–5 of the same 
   - **The archive session is authenticated, the data is not.** `HELLO` is MAC'd with K0‖K1 and
     carries the counter, and **every archive packet carries an 8 B truncated HMAC chained to its
     session**, so nobody writes segments into a station's files but the station — 8 B on a packet
-    of ~16 kB segments. The live packet and the markers on the modem carry no MAC: a false marker fails
-    to correlate, and a reading is open by doctrine. **Nothing is encrypted and nothing needs a key
-    to be read**; a key is needed only to write — to the station, or into its archive.
+    of ~16 kB segments. The live packet and the markers on the modem carry no MAC: a false marker
+    fails to correlate, and a reading is open by doctrine. **Nothing is encrypted but a new K1 on
+    its way down, and nothing needs a key to be read**; a key is needed only to write — to the
+    station, or into its archive.
   The S31's TRNG, SHA engine and Key Manager carry this in hardware (`../mayak/HARDWARE.md`).
 - **The server coordinates, the station stays dumb.** The server is the operator's, not the
   station's. Markers and the live packet go up; **the live board comes back down** — the server
@@ -827,6 +829,8 @@ signs and covers every byte before it, the type included.
 | 5 | `LIVE` | up | `second 4 B · count 1 B`, then per address `address 1 B · length 4 B · segment` — an HMC segment, coded as in a file |
 | 6 | `WINDOW` | down | `counter 4 B · address 1 B` (`0xFF` every address) · `second 4 B · window 4 B` · `tag` |
 | 7 | `BOARD` | down | `station 3 B` · the body of another head's `LIVE` |
+| 8 | `COMMAND` | down | `counter 4 B` · the command — the handset's JSON command, UTF-8, no newline, at most 1 kB · `tag` |
+| 9 | `SET_K1` | down | `counter 4 B · K1 8 B`, wrapped · `tag` under K0 alone |
 
 **`ARCHIVE`'s tag is chained**: the tag of packet *i* covers the session's `nonce`, then packet
 *i* − 1's tag — `HELLO`'s for the first — then the packet, so a packet forged, dropped, reordered or
@@ -837,6 +841,17 @@ the head answers with `ARCHIVE` packets carrying the file's header, its configs 
 segment sent, and the segments whose first to last second touches the window. `CURSOR`, `ACK`,
 `LIVE` and `BOARD` carry no tag: a forged `CURSOR` or `ACK` costs a resend at most, since the head
 forgets nothing, and a reading is open by doctrine.
+
+**`COMMAND` carries every command from outside but the window and the re-key**, the server's and
+the handset's alike: the handset writes the same bytes, framed the same way, to its command
+characteristic (`../mayak/handset/README.md`), and the head checks one form. Its tag is over the
+`station`, the counter and the message, as `WINDOW`'s. **A `COMMAND` under counter 0 is a read** —
+a `refresh` — taken without a check, its tag zeros, moving no counter; anything else under 0 is
+dropped. **`SET_K1` carries the new K1 wrapped under K0**: XOR'd with the first 8 B of
+HMAC-SHA-256 under K0 over the `station` and the counter, so the working key never travels in
+clear and no counter gives the same wrap twice; its tag is HMAC-SHA-256 under K0 alone, over the
+`station` and the message. The wrap is the protocol's one cipher, and it hides a key, never a
+reading. Every command's counter is checked before its tag.
 
 ## 7. The node's contract
 

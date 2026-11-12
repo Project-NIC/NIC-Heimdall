@@ -536,3 +536,12 @@ JLCPCB. The `WPN` part has the same size and price, $0,04 (`C98350`), and `I_SAT
 π its lower `DCR`, 0,12 Ω against 0,20, lifts the corner's Q from ~3 to ~4–5, where nothing
 switches; its self-resonance, 32 MHz against 69, falls under the fast converters' 34–44 MHz
 lines, which the bead behind it takes with their harmonics.
+
+## The handset's bare JSON command and a K1 sent in clear — superseded by `COMMAND` and `SET_K1`
+
+The handset wrote a newline-terminated JSON line and the documents said every write was MAC'd,
+with no place in the line for a counter or a tag; the server's commands had no message at all.
+One signed message for both, `COMMAND`, gives the head one check. `SET K1` was MAC'd with K0
+and carried the new key as it was, so anyone listening to a re-key had the working key; the key
+now travels XOR'd with an HMAC of K0 over the station and the counter (`PROTOCOL.md` §6, the
+owner, 12 Nov 2026).

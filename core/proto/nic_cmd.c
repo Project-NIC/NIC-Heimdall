@@ -49,3 +49,41 @@ void nic_cmd_rekey(nic_cmd_keys *s, const uint8_t k1[8])
 {
     memcpy(s->k1, k1, 8);
 }
+
+void nic_cmd_pad(const nic_cmd_keys *s, uint32_t counter, uint8_t pad[8])
+{
+    uint8_t d[7] = {(uint8_t)s->station, (uint8_t)(s->station >> 8), (uint8_t)(s->station >> 16),
+                    (uint8_t)counter, (uint8_t)(counter >> 8), (uint8_t)(counter >> 16),
+                    (uint8_t)(counter >> 24)}, mac[32];
+    ses_hmac_sha256(s->k0, 8, d, 7, mac);
+    memcpy(pad, mac, 8);
+}
+
+enum nic_cmd_result nic_cmd_take(nic_cmd_keys *s, const uint8_t *msg, size_t n)
+{
+    if (n < 1 + 4 + 8)
+        return NIC_CMD_SIZE;
+    switch (msg[0]) {
+    case NIC_MSG_COMMAND:
+        if ((msg[1] | msg[2] | msg[3] | msg[4]) == 0)
+            return NIC_CMD_READ;
+        return nic_cmd_check(s, msg, n, 0);
+    case NIC_MSG_WINDOW:
+        return n == 22 ? nic_cmd_check(s, msg, n, 0) : NIC_CMD_SIZE;
+    case NIC_MSG_SET_K1: {
+        if (n != 21)
+            return NIC_CMD_SIZE;
+        enum nic_cmd_result r = nic_cmd_check(s, msg, n, 1);
+        if (r != NIC_CMD_OK)
+            return r;
+        uint8_t pad[8], k1[8];
+        nic_cmd_pad(s, s->counter, pad);
+        for (int i = 0; i < 8; i++)
+            k1[i] = (uint8_t)(msg[5 + i] ^ pad[i]);
+        nic_cmd_rekey(s, k1);
+        return NIC_CMD_OK;
+    }
+    default:
+        return NIC_CMD_TYPE;
+    }
+}

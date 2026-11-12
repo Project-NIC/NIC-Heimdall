@@ -329,7 +329,9 @@ window requests — is authenticated: an HMAC over the command with K0‖K1, the
 station identity and the station's **32-bit command counter** — monotonic, persisted in the
 configuration cells (§14), reported in `HELLO` and as a register over BLE; a command whose
 counter is not above the stored one is dropped before the MAC is checked, a failed MAC is logged
-and dropped (`../core/PROTOCOL.md` §6). **`SET K1` alone is MAC'd with K0** — K0 roots the
+and dropped — the messages `COMMAND`, `WINDOW` and `SET_K1` of `../core/PROTOCOL.md` §6, a
+`COMMAND` under counter 0 a read. **`SET K1` alone is MAC'd with K0, its new key wrapped under
+K0** — K0 roots the
 re-key; K0 itself was made by the TRNG at the first boot, lives in the encrypted flash behind
 the Key Manager, left the board once over the service USB into the operator's key store, and
 is never sent anywhere.
@@ -375,7 +377,8 @@ frame**, sent after the hour's heartbeat and counted in the same duty-cycle cap.
 comes back on the same session**: a head on a link that carries it subscribes at HELLO and receives
 every other head's live packets and markers as the server fans them out; it writes them to the
 archive as a received stream and to the handset's live view, and **acts on nothing in them** — a
-command arrives on the authenticated channel and nowhere else. **Nothing is encrypted.** OTA is
+command arrives on the authenticated channel and nowhere else. **Nothing is encrypted** but a
+new K1, wrapped under K0 in `SET_K1`. OTA is
 head-only and lands in the second app partition, verified by the secure-boot signature before the
 switch, the old image kept for a rollback on a failed boot. The session ends at the window's end or
 when the pack says so (§11); the archive is complete either way.
@@ -396,7 +399,8 @@ console is the way in** (below).
 while a phone is connected, closed on the button again or the timeout; in normal running BLE
 is off and the LED gives the station-wide blink. The GATT service is `handset/README.md`'s: one *status* characteristic, notify, a
 newline-delimited JSON document reassembled across notifications; one *command* characteristic,
-write, a newline-terminated JSON command. The status document is the head's HEALTH/SOH aggregate
+write: a `COMMAND` or `SET_K1` message of `../core/PROTOCOL.md` §6 — the JSON command inside a
+counter and a tag, COBS-framed and closed by a zero, the same bytes the server sends. The status document is the head's HEALTH/SOH aggregate
 — `go`, the nodes with TYPE, NUMBER, `bus` and each sensor's health — plus the corrections table
 and the mirror's pending values; it is pushed on connect, on every change, and on `refresh`.
 The commands: `refresh` · `recommission` (every floor run again, the sweep results put to the

@@ -47,6 +47,7 @@ Jeden úplný dokument na řádek; dokument **může zabrat několik notifikací
 ```
 
 - `go` — celkové GO/NO-GO (všechny osazené senzory OK).
+- `counter` — čítač příkazů stanice; další zápis nese `counter` + 1.
 - `n` NUMBER uzlu, `type` TYPE uzlu — **kód z vlastní tabulky typů dané sběrnice** (`../../core/PROTOCOL.md` §2: NodBus 1 Mayak · 2 Bifrost · 3 Argus · 4 Marconi · 5 Quake · 6 Palatine · 7 Tesla · 8 Sputnik · 9 Photon · 10 rezervováno (Neutron) · 11 Positron · 12 Pip · 13 Steinmetz; mini 1 Gauss · 2 Quark-Tubes · 3 Pascal; ModBus 4..61, jeden na veličinu na pozici) a `bus` říká, o kterou tabulku jde. Volitelné pole `label` je jen laskavost pro ladění — identitou je kód, nikdy jméno.
 - pro každý senzor: `id` = lokální číslo senzoru v uzlu (adresa v soupisu Modbus nebo index senzoru SPI), `name` popisek pro člověka, `h` = **zdravotní kód senzoru**: `0` OK, `1` SELFTEST_FAIL, `2` NO_RESPONSE, `3` DEGRADED.
 
@@ -86,7 +87,9 @@ Co aplikace nastavuje:
 
 **Stanice bez nahraných tabulek stále měří a stále archivuje.** Jen neklasifikuje: třída je interpretace přidaná nad hodnotu, nikdy podmínka jejího zaznamenání. Chybějící tabulka tedy není NO-GO, na rozdíl od nevyměřeného `route`.
 
-### Příkaz (write) — JSON ukončený novým řádkem
+### Příkaz (write) — JSON v podepsané zprávě
+
+Příkaz je JSON; zápis ho nese jako zprávu relace `COMMAND` (`../../core/PROTOCOL.md` §6): `08 · čítač 4 B, little-endian · JSON v UTF-8 bez konce řádku · podpis 8 B`, zabalené COBS a ukončené nulou — tytéž bajty, jaké posílá server. Podpis je prvních 8 B HMAC-SHA-256 klíčem stanice K0‖K1 (aplikace má K1 od serveru provozovatele, K0 nikdy) přes 3 B identity stanice a všechny bajty před podpisem. **`refresh` jde s čítačem 0 a nulovým podpisem**: čtení nic neposouvá. Výměna klíče je serverová zpráva `SET_K1`, nikdy ne aplikace.
 
 ```json
 {"cmd":"refresh"} // push a fresh status snapshot now

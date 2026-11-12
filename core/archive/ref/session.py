@@ -1,5 +1,5 @@
 """The uplink session's messages, the Python reference, as `core/PROTOCOL.md` §6 fixes them:
-HELLO, CURSOR, ARCHIVE with its chained tag, ACK, LIVE, WINDOW and BOARD; the head's cut of a file
+HELLO, CURSOR, ARCHIVE with its chained tag, ACK, LIVE, WINDOW, BOARD, COMMAND and SET_K1; the head's cut of a file
 for a cursor or a window, and the server's rebuilding of the file from the packets. The C
 (`c/session.c`) writes the same bytes, and `tests/test_c.py` compares them."""
 
@@ -12,7 +12,7 @@ from typing import Dict, List, Optional, Sequence, Tuple
 
 import hmc
 
-HELLO, CURSOR, ARCHIVE, ACK, LIVE, WINDOW, BOARD = range(1, 8)
+HELLO, CURSOR, ARCHIVE, ACK, LIVE, WINDOW, BOARD, COMMAND, SET_K1 = range(1, 10)
 NONE_ENTRY = 0xFFFFFFFF
 
 
@@ -167,6 +167,54 @@ def parse_window(key: bytes, station: int, stored_counter: int, body: bytes) -> 
     if counter <= stored_counter:
         raise ValueError("session: WINDOW's counter is not above the stored one")
     return {"counter": counter, "address": address, "second": second, "window": span}
+
+
+def command(key: bytes, station: int, counter: int, text: str) -> bytes:
+    """The handset's JSON command, or the server's, in its counter and tag. Counter 0 is a read:
+    a `refresh`, taken unchecked, moving nothing; its tag is zeros."""
+    raw = bytes([COMMAND]) + struct.pack("<I", counter) + text.encode("utf-8")
+    t = bytes(8) if counter == 0 else tag(key, station.to_bytes(3, "little") + raw)
+    return message(raw + t)
+
+
+def parse_command(key: bytes, station: int, stored_counter: int, body: bytes) -> dict:
+    if len(body) < 12:
+        raise ValueError("session: not a COMMAND")
+    counter = struct.unpack_from("<I", body)[0]
+    text = body[4:-8].decode("utf-8")
+    if counter == 0:
+        return {"counter": 0, "command": text}
+    if counter <= stored_counter:
+        raise ValueError("session: COMMAND's counter is not above the stored one")
+    raw = bytes([COMMAND]) + body[:-8]
+    if not hmac.compare_digest(tag(key, station.to_bytes(3, "little") + raw), body[-8:]):
+        raise ValueError("session: COMMAND's tag fails")
+    return {"counter": counter, "command": text}
+
+
+def k1_pad(k0: bytes, station: int, counter: int) -> bytes:
+    """The wrap: the first 8 B of HMAC-SHA-256 under K0 over the station and the counter."""
+    return tag(k0, station.to_bytes(3, "little") + struct.pack("<I", counter))
+
+
+def set_k1(k0: bytes, station: int, counter: int, k1: bytes) -> bytes:
+    """The re-key: the new K1 XOR'd with the wrap, the tag under K0 alone."""
+    wrapped = bytes(a ^ b for a, b in zip(k1, k1_pad(k0, station, counter)))
+    raw = bytes([SET_K1]) + struct.pack("<I", counter) + wrapped
+    return message(raw + tag(k0, station.to_bytes(3, "little") + raw))
+
+
+def parse_set_k1(k0: bytes, station: int, stored_counter: int, body: bytes) -> dict:
+    if len(body) != 20:
+        raise ValueError("session: not a SET_K1")
+    counter = struct.unpack_from("<I", body)[0]
+    if counter <= stored_counter:
+        raise ValueError("session: SET_K1's counter is not above the stored one")
+    raw = bytes([SET_K1]) + body[:12]
+    if not hmac.compare_digest(tag(k0, station.to_bytes(3, "little") + raw), body[12:]):
+        raise ValueError("session: SET_K1's tag fails")
+    k1 = bytes(a ^ b for a, b in zip(body[4:12], k1_pad(k0, station, counter)))
+    return {"counter": counter, "k1": k1}
 
 
 def board(station: int, live_body_: bytes) -> bytes:

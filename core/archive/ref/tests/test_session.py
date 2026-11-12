@@ -97,6 +97,23 @@ def main():
                 raise AssertionError("a stale or forged WINDOW passed")
             except ValueError:
                 pass
+        # a command, a read under counter 0, and the re-key wrapped under K0
+        cm = session.command(KEY, STATION, 44, '{"cmd":"recommission"}')
+        cd = session.parse_command(KEY, STATION, 43, session.unframe(cm[:-1])[1])
+        assert cd == {"counter": 44, "command": '{"cmd":"recommission"}'}
+        rf = session.command(KEY, STATION, 0, '{"cmd":"refresh"}')
+        assert session.parse_command(bytes(16), STATION, 44, session.unframe(rf[:-1])[1])["counter"] == 0
+        new_k1 = bytes(range(0xA1, 0xA9))
+        sk = session.set_k1(KEY[:8], STATION, 45, new_k1)
+        assert new_k1 not in sk
+        sd = session.parse_set_k1(KEY[:8], STATION, 44, session.unframe(sk[:-1])[1])
+        assert sd == {"counter": 45, "k1": new_k1}
+        for stored, k0 in ((45, KEY[:8]), (44, bytes(8))):
+            try:
+                session.parse_set_k1(k0, STATION, stored, session.unframe(sk[:-1])[1])
+                raise AssertionError("a stale or forged SET_K1 passed")
+            except ValueError:
+                pass
         bd = session.board(0x654321, session.unframe(lv[:-1])[1])
         t, body = session.unframe(bd[:-1])
         assert t == session.BOARD and session.parse_live(body[3:]) == (sec, segs_)

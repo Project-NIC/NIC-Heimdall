@@ -59,6 +59,7 @@ One full document per line; a document **may span several notifications** (reass
 ```
 
 - `go` — overall GO/NO-GO (all fitted sensors OK).
+- `counter` — the station's command counter; the next write carries `counter` + 1.
 - `n` node NUMBER, `type` node TYPE — **the code of the bus's own type table**
   (`../../core/PROTOCOL.md` §2: NodBus 1 Mayak · 2 Bifrost · 3 Argus · 4 Marconi · 5 Quake ·
   6 Palatine · 7 Tesla · 8 Sputnik · 9 Photon · 10 reserved (Neutron) · 11 Positron · 12 Pip · 13 Steinmetz; mini 1 Gauss · 2 Quark-Tubes ·
@@ -134,7 +135,14 @@ in this contract describes the box, this describes where the box is standing.
 classify: the class is an interpretation added on top of a value, never a condition for
 recording one. So a missing table is not NO-GO, unlike an unranged `route`.
 
-### Command (write) — newline-terminated JSON
+### Command (write) — JSON in a signed message
+
+The command is JSON; the write carries it as the session's `COMMAND` message
+(`../../core/PROTOCOL.md` §6): `08 · counter 4 B, little-endian · the JSON, UTF-8, no newline ·
+tag 8 B`, COBS-framed and closed by a zero, the bytes the server sends. The tag is the first 8 B of
+HMAC-SHA-256 under the station's K0‖K1 — the app holds K1 from the operator's server and K0 never
+— over the station's 3 B identity and every byte before the tag. **`refresh` goes under counter
+0 with a tag of zeros**: a read moves nothing. A re-key is the server's `SET_K1`, never the app's.
 
 ```json
 {"cmd":"refresh"} // push a fresh status snapshot now

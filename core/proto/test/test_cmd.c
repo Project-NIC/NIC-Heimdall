@@ -9,6 +9,17 @@
 static int fails;
 #define CHECK(c) do { if (!(c)) { printf("FAIL %s:%d %s\n", __FILE__, __LINE__, #c); fails++; } } while (0)
 
+static size_t unhex(const char *h, uint8_t *out)
+{
+    size_t n = 0;
+    for (; h[0] && h[1]; h += 2) {
+        unsigned b;
+        sscanf(h, "%2x", &b);
+        out[n++] = (uint8_t)b;
+    }
+    return n;
+}
+
 int main(void)
 {
     nic_cmd_keys s = {{1, 2, 3, 4, 5, 6, 7, 8}, {9, 10, 11, 12, 13, 14, 15, 16}, 0x123456, 41, 0, 0};
@@ -47,6 +58,25 @@ int main(void)
     CHECK(nic_cmd_check(&s, raw, rawlen, 0) == NIC_CMD_FORGED);
     nic_cmd_sign(&s, raw, 14, 0);
     CHECK(nic_cmd_check(&s, raw, rawlen, 0) == NIC_CMD_OK && s.counter == 51);
+    /* the Python reference's bytes (../archive/ref/session.py): a COMMAND under K0‖K1 and a
+     * SET_K1 under K0, its new key unwrapped */
+    static const char *const cmd_hex = "082b0000007b22636d64223a227265636f6d6d697373696f6e227d"
+                                       "bac25fff569a5421";
+    static const char *const set_hex = "0932000000fad346f5fbf21835636febd97c85a32a";
+    uint8_t v[64];
+    size_t vn = unhex(cmd_hex, v);
+    nic_cmd_keys f = {{1, 2, 3, 4, 5, 6, 7, 8}, {9, 10, 11, 12, 13, 14, 15, 16}, 0x123456, 42, 0, 0};
+    CHECK(nic_cmd_take(&f, v, vn) == NIC_CMD_OK && f.counter == 43);
+    CHECK(nic_cmd_take(&f, v, vn) == NIC_CMD_STALE);
+    vn = unhex(set_hex, v);
+    CHECK(nic_cmd_take(&f, v, vn) == NIC_CMD_OK && f.counter == 50);
+    CHECK(f.k1[0] == 0xA1 && f.k1[7] == 0xA8);
+    CHECK(nic_cmd_take(&f, v, vn) == NIC_CMD_STALE);
+    /* a read under counter 0 moves nothing; an unknown type is refused */
+    uint8_t rd[13] = {8, 0, 0, 0, 0};
+    CHECK(nic_cmd_take(&f, rd, 13) == NIC_CMD_READ && f.counter == 50);
+    rd[0] = 5;
+    CHECK(nic_cmd_take(&f, rd, 13) == NIC_CMD_TYPE);
     /* sizes */
     CHECK(nic_cmd_check(&s, raw, 12, 0) == NIC_CMD_SIZE);
     free(msg);
