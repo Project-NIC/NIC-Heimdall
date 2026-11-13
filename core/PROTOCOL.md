@@ -847,7 +847,12 @@ replayed into another session fails. The server writes each object at its entry'
 entry in its place, and holds the file the card holds. **`WINDOW` is a command**: its `counter`
 above the stored one and its tag over the `station`, the counter and the message, as every command;
 the head answers with `ARCHIVE` packets carrying the file's header, its configs before the last
-segment sent, and the segments whose first to last second touches the window. `CURSOR`, `ACK`,
+segment sent, and the segments whose first to last second touches the window — **before anything
+else it has to send**, address by address and file by file; eight windows wait their turn and a
+ninth is refused. An entry's second is its segment's last and never goes back, so a file is
+searched from the first entry at or after the window's start, and the search stops a minute past
+its end: a segment spans 8 s and a repair comes within seconds of its own record, so nothing later
+holds the window (13 Nov 2026). `CURSOR`, `ACK`,
 `LIVE` and `BOARD` carry no tag: a forged `CURSOR` or `ACK` costs a resend at most, since the head
 forgets nothing, and a reading is open by doctrine.
 

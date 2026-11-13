@@ -368,7 +368,9 @@ the event log first, the others a packet each in turn; caught up, the live files
 are written (`../core/PROTOCOL.md` §6) — and cumulative `ACK`s, which trim nothing: the head
 forgets nothing, the cards are the store, and the last `ACK` is how far behind the server is, shown
 on the handset and the console. **Bounded windows on demand**: the server asks `(ts, ±window)` and
-the head cuts the segments that touch it out of the files.
+the head cuts the segments that touch it out of the files, answered before the forward stream,
+eight waiting at most, each file searched to a minute past the window's end
+(`../core/PROTOCOL.md` §6).
 
 **The live packet** goes on every link given a cadence — Wi-Fi, cellular, a satellite module on a
 freed trunk UART: what each address's **send rule** for that link selects from what was recorded
