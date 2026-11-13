@@ -749,7 +749,16 @@ reads it off the BMS; its arms' and `EXT`'s feeds are sockets 1–5 of the same 
   Resume is server-authoritative and idempotent — the head discards its guess, opens the file the
   cursor names and sends forward from the entry after it; a segment sent twice is the same bytes
   under the same entry, so conservative rewinds are free. The SD card is the buffer; the head
-  retains nothing it cannot re-derive.
+  retains nothing it cannot re-derive. **From the cursor on** (the owner, 13 Nov 2026): the file
+  the cursor names goes forward from the entry after the one held, then every later file of that
+  address in order, each opening with its header; an address the cursor does not name goes from
+  its oldest file on the cards, and a sequence the cards cannot place — before their oldest file,
+  past the live one — is rewound to what they hold. Sequences compare in a circle of 2^16, so
+  their wrap breaks nothing. **One packet at a time, the event log first**: address 0 whenever it
+  has anything, then the other addresses in turn, a packet each, so a Quake's 64 MB file does not
+  hold a Palatine's back. Caught up, the live files' new segments go as they are written, for as
+  long as the window lasts. **The `ACK` trims nothing**: the head keeps it to show how far behind
+  the server is, on the handset and the console.
 - **The spool:** a buffer per address, written as one segment at 16 kB or 8 s — per-frame I/O is
   wrong on both ends (flash write amplification and FAT hot-spots on the card; header overhead on
   the link). Durable-first: SD, then the uplink. A crash costs at most what the buffers held; a

@@ -362,8 +362,12 @@ network, takes NTP once, and runs the session of `../core/PROTOCOL.md` §6 — `
 carrying the command counter, every archive packet with its 8 B truncated HMAC chained to the
 session, the live packet and the values frames bare: `HELLO` with the station identity, the server's
 `CURSOR` per address — the file and the last description entry it holds — and the head sends
-**archive packets** forward from each, cumulative `ACK`s trimming what it may forget — it forgets
-nothing; the cards are the store. **Bounded windows on demand**: the server asks `(ts, ±window)` and
+**archive packets** forward from each — the named file on from the entry after, then the
+address's later files, each with its header; an address the cursor leaves out from its oldest file;
+the event log first, the others a packet each in turn; caught up, the live files' segments as they
+are written (`../core/PROTOCOL.md` §6) — and cumulative `ACK`s, which trim nothing: the head
+forgets nothing, the cards are the store, and the last `ACK` is how far behind the server is, shown
+on the handset and the console. **Bounded windows on demand**: the server asks `(ts, ±window)` and
 the head cuts the segments that touch it out of the files.
 
 **The live packet** goes on every link given a cadence — Wi-Fi, cellular, a satellite module on a

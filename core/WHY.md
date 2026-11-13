@@ -545,3 +545,10 @@ One signed message for both, `COMMAND`, gives the head one check. `SET K1` was M
 and carried the new key as it was, so anyone listening to a re-key had the working key; the key
 now travels XOR'd with an HMAC of K0 over the station and the counter (`PROTOCOL.md` §6, the
 owner, 12 Nov 2026).
+
+## The archive sent oldest second first across every address — weighed, not taken
+
+Sending by time across the station would put a full 64 MB Quake file between a Palatine and
+the server for a whole window. A packet per address in turn keeps every address moving, and the
+event log goes first because it is small and says what happened to the station. A file's own
+order is kept either way (`PROTOCOL.md` §6, the owner, 13 Nov 2026).
