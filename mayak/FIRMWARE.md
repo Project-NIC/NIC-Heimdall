@@ -582,7 +582,8 @@ K0 (`../core/proto/nic_cmd.c`, `test/test_cmd.c`); the tree composed and the num
 archive forward, `WINDOW`'s answer, `ACK` — and the live packet (`../core/proto/nic_uplink.c`,
 `nic_live.c`, `test/test_uplink.c`, `test/test_live.c`); the cards' circle, a card let out and
 brought level (`../core/proto/nic_cards.c`, `test/test_cards.c`); the mirror's rows and cells, its
-halves and a lost supply (`../core/proto/nic_mirror.c`, `test/test_mirror.c`).
+halves and a lost supply (`../core/proto/nic_mirror.c`, `test/test_mirror.c`); the ModBus tunnel's
+packages, pairing and retry (`../core/proto/nic_tunnel.c`, `test/test_tunnel.c`).
 
 **On a PC, with the pins replaced by callbacks:** the trunk parser against recorded traffic —
 a 48 B record cut by a stall, a 12 B `ERROR` between two records, a CRC miss and its

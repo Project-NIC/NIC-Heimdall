@@ -43,7 +43,10 @@ test/test_cards: nic_cards.c nic_cards.h test/test_cards.c $(ARCH)/hmc.c
 test/test_mirror: nic_mirror.c nic_mirror.h nic_tree.h test/test_mirror.c
 	$(CC) $(CFLAGS) -o $@ nic_mirror.c test/test_mirror.c
 
-check: test/test_mirror test/test_cards test/test_uplink test/test_live test/test_kronos test/test_tree test/test_cmd test/test_proto test/test_load test/test_card test/test_ingest test/test_cells test/test_sweep
+test/test_tunnel: nic_tunnel.c nic_tunnel.h test/test_tunnel.c
+	$(CC) $(CFLAGS) -o $@ nic_tunnel.c test/test_tunnel.c
+
+check: test/test_tunnel test/test_mirror test/test_cards test/test_uplink test/test_live test/test_kronos test/test_tree test/test_cmd test/test_proto test/test_load test/test_card test/test_ingest test/test_cells test/test_sweep
 	./test/test_proto
 	./test/test_load
 	./test/test_card
@@ -57,6 +60,7 @@ check: test/test_mirror test/test_cards test/test_uplink test/test_live test/tes
 	./test/test_live
 	./test/test_cards
 	./test/test_mirror
+	./test/test_tunnel
 
 # the same sources for the MCUs: the H523's and H7A3's Cortex-M, the head's 32-bit RISC-V
 cross:
@@ -73,10 +77,11 @@ cross:
 	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -I$(ARCH) -c nic_live.c -o /dev/null
 	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -I$(ARCH) -c nic_cards.c -o /dev/null
 	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -c nic_mirror.c -o /dev/null
+	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -c nic_tunnel.c -o /dev/null
 	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -c nic_tree.c -o /dev/null
 	arm-none-eabi-gcc -mcpu=cortex-m33 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 $(CFLAGS) -Os -c nic_kronos.c -o /dev/null
 
 clean:
-	rm -f test/test_proto test/test_load test/test_card test/test_ingest test/test_cells test/test_sweep test/test_cmd test/test_tree test/test_kronos test/test_uplink test/test_live test/test_cards test/test_mirror
+	rm -f test/test_proto test/test_load test/test_card test/test_ingest test/test_cells test/test_sweep test/test_cmd test/test_tree test/test_kronos test/test_uplink test/test_live test/test_cards test/test_mirror test/test_tunnel
 
 .PHONY: check cross clean
