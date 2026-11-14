@@ -82,6 +82,13 @@ offset 0                                                             1 MB × 2^s
   `52/20261001/120000.hmc` — the address in two upper-case hex digits, then the date, then the
   file's first second, the second read as a calendar without leap seconds. The head's event log is
   the series of address `00`.
+- **The cards fill in a circle** (the owner, 14 Nov 2026). Both cards carry the same files, and
+  **512 MB is kept free on each**: when either falls below it, the oldest files go — by their first
+  second, whatever the address, never a file still open — from both cards, until both are above it
+  again, so a write never meets a full card. A file goes whole; exFAT frees no part of one. A card
+  of hundreds of GB holds a year and more of a station under its default rules, so the circle
+  turns only where nobody comes; a file given up before the server acknowledged it whole is a line
+  in the event log.
 - **The two cards carry the same bytes.** The second card is the mirror.
 - **Everything is little-endian.** Segments and configs carry CRC-32 (IEEE 802.3, the one zlib
   computes) — a segment reaches ~16 kB; a description entry carries the station's CRC-16-CCITT,

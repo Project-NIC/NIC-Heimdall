@@ -150,6 +150,7 @@ HMAC-SHA-256 under the station's K0‖K1 — the app holds K1 from the operator'
 {"cmd":"provision","node":1} // (re)provision one node's sensors
 {"cmd":"corr","set":[{"id":"cab","m":25}]}     // write one TYPED term; the station recomputes ns
                                                // a ranged term is read-only and a write is refused
+{"cmd":"card","out":1}                         // write up and close slot 1's card; it may come out
 ```
 
 > JSON was chosen for legibility and because commissioning is low-rate / occasional. If

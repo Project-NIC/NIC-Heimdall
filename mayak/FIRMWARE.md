@@ -189,6 +189,21 @@ until it is swapped; the primary for reads is slot 0 unless slot 0 is the failed
 cover a card's wear-levelling stall; a stall longer than 8 s costs the oldest records and counts.
 The writer is the HMC/HCC reference library in C, the same code the readers use.
 
+**The circle and the second card** (the owner, 14 Nov 2026). **512 MB stays free on each card**:
+when either falls below it the oldest files go from both, never an open one, and a file given up
+before the server acknowledged it whole is a line in the event log (`../core/archive/HMC.md`).
+**A card is taken out by the `card` command** — from the handset or the console: the head writes
+every buffer to it, stops writing it, closes its files, and the status document and the LED say it
+may come out; the other card carries on alone. A card pulled without it loses at most the segment
+being written. **A card put back is brought level.** The head tries an empty slot every 10 s; a card
+that answers has each file's last good entry found by binary search, and the files open now are
+created on it where missing, before the writer turns to it. From then the writer writes both
+cards, and the head copies across in the background, below every write, what the card lacks: the
+open files' gap first, then every other file newest first — a missing file whole, a short one from
+its last good entry — and a file the circle took meanwhile is deleted from it. An empty card is
+filled the same way, about a day and a half for 512 GB at 5 MB/s. The cards level is a line in the
+event log.
+
 **The rules are the only processing on the way to the card.** What the head derives beside the
 archive is only what its own thin frame needs: the alive mask, the event count, the last peak,
 and the SOH.
@@ -414,7 +429,7 @@ and the mirror's pending values; it is pushed on connect, on every change, and o
 The commands: `refresh` · `recommission` (every floor run again, the sweep results put to the
 human as *new* / *missing* / *replaced?*) · `provision node` (a Palatine learning session, §6 of
 its document, driven by the phone one sensor at a time) · `corr set` (a typed term written to
-the corrections table, Kronos's copy updated; a ranged term refused) · a mirror edit. **Every
+the corrections table, Kronos's copy updated; a ranged term refused) · `card` (a slot's card written up, closed and let out, §6) · a mirror edit. **Every
 write is MAC'd as in §8**; the phone holds K1 and never K0 — it receives a station's K1 from the
 operator's server, for the stations the technician is assigned and for a bounded time, and loads
 it before leaving where it will work offline; it reads the station's command counter over BLE

@@ -97,6 +97,7 @@
 {"cmd":"provision","node":1} // (re)provision one node's sensors
 {"cmd":"corr","set":[{"id":"cab","m":25}]}     // write one TYPED term; the station recomputes ns
                                                // a ranged term is read-only and a write is refused
+{"cmd":"card","out":1}                         // write up and close slot 1's card; it may come out
 ```
 
 > JSON выбран ради читаемости и потому, что ввод в эксплуатацию — редкая / эпизодическая операция. Если позже захочется компактнее, переведите обе стороны на упакованный TLV — приложение касается его только в своём парсере статуса и в своём слое BLE.

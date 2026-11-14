@@ -97,6 +97,7 @@ Příkaz je JSON; zápis ho nese jako zprávu relace `COMMAND` (`../../core/PROT
 {"cmd":"provision","node":1} // (re)provision one node's sensors
 {"cmd":"corr","set":[{"id":"cab","m":25}]}     // write one TYPED term; the station recomputes ns
                                                // a ranged term is read-only and a write is refused
+{"cmd":"card","out":1}                         // write up and close slot 1's card; it may come out
 ```
 
 > JSON byl zvolen kvůli čitelnosti a protože uvádění do provozu je řídké / příležitostné. Pokud ho později budete chtít úspornější, přepněte obě strany na zhuštěný TLV — aplikace se ho dotýká jen ve svém parseru stavu a ve své BLE vrstvě.
