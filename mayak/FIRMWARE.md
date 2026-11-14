@@ -272,24 +272,35 @@ only on the human's word; a moved unit, a collision and a stranger are renumbere
 phone is told. A TYPE with no NUMBER left is put to the phone and nothing is sent. Written in
 `../core/proto/nic_tree.c`.
 
-**The mirror** is the station's configuration in one few-kB table. The roster — who is enrolled,
+**The mirror** is the station's configuration — everything the head knows of how each unit is set.
+The roster — who is enrolled,
 TYPE + NUMBER → port and slot — is its spine, and per-unit configuration hangs off it. A change
 travels as a command to the unit and is **written to the mirror only when the unit confirms it**;
 the phone reads the mirror and never crawls the station.
 
-**The layout is fixed, per unit, identical for every unit.** Each unit's slot holds its NUMBER,
-port and slot, the persisted registers the head has written to it, and its delay and
-synchronisation block, laid out the same way for all — so an address and a field's place never
-move across a reset, a re-enrol or a fresh boot; only the values do. It is the node's fixed flash
-cells (`../core/PROTOCOL.md` §7) one level up, at station scope. **The measured tables ride the
-same slot as read-only rows**: the segment tables the cards report after `FLOOR`, the ranged
-routes, the rungs, the units' `DELAY`s, the Argus positions, the Palatine roster and arm table. So
-the phone shows in one place what a unit is set to and what the sweep measured about it — nothing
-crawled, nothing typed, and the firmware hard-codes only the dictionary.
+**Rows and cells** (the owner, 14 Nov 2026). Each enrolled thing is a **row** — a card, a unit,
+an Argus NUMBER, a sonde, a ModBus sensor on a Palatine arm, Chinook's among them — **512 rows**: 16
+cards, the 128 units behind them, 32 Argus NUMBERs, the 247 ModBus addresses, and room. A row's own
+fields and every register it holds are **cells**, the node's fixed flash cells
+(`../core/PROTOCOL.md` §7) one level up: `key 4 B · value 10 B · CRC-16 2 B`, 16 B, the key the row
+(10 bits), a page (4 bits), a read-only flag and the register (16 bits); a wider value takes pages,
+up to 160 B. The row's own fields are the registers `0xFE00`–`0xFE03`, which no unit uses: its
+identity (bus, TYPE|NUM, both tags, card, port, slot or position, the Palatine and arm of a ModBus
+sensor), its recording rule and file size, its send rule per link, and what the sweep measured —
+the route, the rung, the `DELAY`, the segment row, the Argus position. **Everything goes in**: the
+registers the head writes, the ModBus modules' settings it writes through the tunnel, the Palatine
+roster and arm table, and the bench's calibrations read back, flagged read-only. So an address and a
+field never move across a reset, a re-enrol or a fresh boot, only the values do, and the phone shows
+in one place what a unit is set to and what the sweep measured about it — nothing crawled, nothing
+typed, and the firmware hard-codes only the dictionary. **A base station holds ~700 cells, ~11 kB;
+a full one ~4500, ~72 kB**; each half of its flash area is 128 kB, and is doubled if it ever runs
+short.
 
 **A value has three states, and the phone shows all three**: *edited* locally and not yet sent ·
 *pending* — sent to the unit, awaiting its confirmation · *confirmed* — the unit's `ACK` through the
-card came back and the mirror committed. A value never reads done the moment it is saved. A direct
+card came back and the mirror committed. A value never reads done the moment it is saved. Only a
+confirmed value reaches the flash; an edited or a pending one is held in RAM, and a reboot drops it
+— the phone shows the confirmed value again, and the unit was never left half-written. A direct
 write to a unit would tunnel, wait and confirm exactly the same, so the mirror costs nothing and
 adds the audit point.
 
@@ -526,7 +537,7 @@ leaves the previous one:
 
 | block | content | written |
 |---|---|---|
-| the mirror | the roster and per-unit slots, fixed layout | on a confirmation |
+| the mirror | its rows and cells, appended to one half of its area; when the half is full the live set is written into the other, which takes the next generation, and the old half erased — the half with the newer whole generation is read at boot | on a confirmation |
 | the corrections table | the typed terms; the ranged ones as last reported | on a `corr set`; on a report |
 | the climatology tables | the country's boundaries | wholesale, from the phone or the server |
 | the keys | K0 (made by the TRNG at the first boot, read out once at provisioning, never again), K1 | K1 on a re-key |
