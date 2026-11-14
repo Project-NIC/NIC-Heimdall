@@ -284,17 +284,20 @@ cards, the 128 units behind them, 32 Argus NUMBERs, the 247 ModBus addresses, an
 fields and every register it holds are **cells**, the node's fixed flash cells
 (`../core/PROTOCOL.md` §7) one level up: `key 4 B · value 10 B · CRC-16 2 B`, 16 B, the key the row
 (10 bits), a page (4 bits), a read-only flag and the register (16 bits); a wider value takes pages,
-up to 160 B. The row's own fields are the registers `0xFE00`–`0xFE03`, which no unit uses: its
-identity (bus, TYPE|NUM, both tags, card, port, slot or position, the Palatine and arm of a ModBus
-sensor), its recording rule and file size, its send rule per link, and what the sweep measured —
+up to 157 B — page 0 carries the length, the CRC-16 of the whole value and its first 7 B, and is
+written last, so a value cut short by a lost supply is never taken. Entry *i* of a table register
+*r* — the Palatine roster, Marconi's sounders — is kept as the register `0x8000 | r«7 | i`. The
+row's own fields are the registers `0xFE00`–`0xFE03`, which no unit uses: its identity, 11 B (bus ·
+TYPE|NUM · tag · second tag · card · port · slot or position · the Argus or Palatine NUMBER above it
+· the arm), its recording rule and file size, its send rule per link, and what the sweep measured —
 the route, the rung, the `DELAY`, the segment row, the Argus position. **Everything goes in**: the
 registers the head writes, the ModBus modules' settings it writes through the tunnel, the Palatine
 roster and arm table, and the bench's calibrations read back, flagged read-only. So an address and a
 field never move across a reset, a re-enrol or a fresh boot, only the values do, and the phone shows
 in one place what a unit is set to and what the sweep measured about it — nothing crawled, nothing
-typed, and the firmware hard-codes only the dictionary. **A base station holds ~700 cells, ~11 kB;
-a full one ~4500, ~72 kB**; each half of its flash area is 128 kB, and is doubled if it ever runs
-short.
+typed, and the firmware hard-codes only the dictionary. **A base station holds ~930 cells, 14 kB;
+a full one ~5400, 85 kB** (measured, `../core/proto/test/test_mirror.c`); each half of its flash area
+is 128 kB, and is doubled if it ever runs short.
 
 **A value has three states, and the phone shows all three**: *edited* locally and not yet sent ·
 *pending* — sent to the unit, awaiting its confirmation · *confirmed* — the unit's `ACK` through the
@@ -578,7 +581,8 @@ K0 (`../core/proto/nic_cmd.c`, `test/test_cmd.c`); the tree composed and the num
 (`../core/proto/nic_tree.c`, `test/test_tree.c`); the uplink — `HELLO`, the `CURSOR`, the
 archive forward, `WINDOW`'s answer, `ACK` — and the live packet (`../core/proto/nic_uplink.c`,
 `nic_live.c`, `test/test_uplink.c`, `test/test_live.c`); the cards' circle, a card let out and
-brought level (`../core/proto/nic_cards.c`, `test/test_cards.c`).
+brought level (`../core/proto/nic_cards.c`, `test/test_cards.c`); the mirror's rows and cells, its
+halves and a lost supply (`../core/proto/nic_mirror.c`, `test/test_mirror.c`).
 
 **On a PC, with the pins replaced by callbacks:** the trunk parser against recorded traffic —
 a 48 B record cut by a stall, a 12 B `ERROR` between two records, a CRC miss and its
