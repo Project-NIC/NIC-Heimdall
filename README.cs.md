@@ -14,7 +14,7 @@ nesou. Běžně dostupné součástky a data dost lehká na zpracování na dom�
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
 [![License: CERN-OHL-P v2](https://img.shields.io/badge/License-CERN--OHL--P%20v2-red.svg)](https://ohwr.org/cern_ohl_p_v2.txt)
-![Version: 0.3 — concept](https://img.shields.io/badge/version-0.3%20concept-blue.svg)
+![Version: 0.4 — concept](https://img.shields.io/badge/version-0.4%20concept-blue.svg)
 
 > ⚠️ **Koncept ve fázi návrhu — NEOVĚŘENO na hardwaru.** Architektura, přenosový protokol a archiv
 > jsou propracované do hloubky, archiv a přenositelné knihovny firmwaru jsou napsané a **otestované
@@ -266,8 +266,10 @@ kontinentu.
 
 **Přenositelná vrstva firmwaru je napsaná, vrstva u desek ne.** Firmware jednotky je popsán v jejím
 `FIRMWARE.md` — start, stavy, sběrnice, čas, registry, poruchy. Co leží nad piny — bajty, proud
-obrazu, datová cesta karty, příjem na hlavě, archiv — je přenositelné C, testované na počítači a
-přeložené pro Cortex-M33 v H523 a RISC-V hlavy; co sahá na piny, časovače a DMA, se píše, jakmile
+obrazu, datová cesta karty, archiv a **celá přenositelná vrstva hlavy** (0.4): příjem, odesílání
+na server s okny a živým paketem, obě karty v kruhu, zrcadlo konfigurace, tunel ModBus, rámec
+hodnot pro modem, strana GATT pro telefon, napájení a konzole — je přenositelné C, testované na
+počítači a přeložené pro Cortex-M33 v H523 a RISC-V hlavy; co sahá na piny, časovače a DMA, se píše, jakmile
 se `HARDWARE.md` desky ustálí: nejdřív deska, potom tato vrstva.
 
 | | |
