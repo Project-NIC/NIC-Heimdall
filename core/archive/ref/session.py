@@ -1,5 +1,5 @@
 """The uplink session's messages, the Python reference, as `core/PROTOCOL.md` §6 fixes them:
-HELLO, CURSOR, ARCHIVE with its chained tag, ACK, LIVE, WINDOW, BOARD, COMMAND and SET_K1; the head's cut of a file
+HELLO, CURSOR, ARCHIVE with its chained tag, ACK, LIVE, WINDOW, COMMAND and SET_K1; the head's cut of a file
 for a cursor or a window, and the server's rebuilding of the file from the packets. The C
 (`c/session.c`) writes the same bytes, and `tests/test_c.py` compares them."""
 
@@ -12,7 +12,7 @@ from typing import Dict, List, Optional, Sequence, Tuple
 
 import hmc
 
-HELLO, CURSOR, ARCHIVE, ACK, LIVE, WINDOW, BOARD, COMMAND, SET_K1 = range(1, 10)
+HELLO, CURSOR, ARCHIVE, ACK, LIVE, WINDOW, RETIRED_7, COMMAND, SET_K1 = range(1, 10)   # 7 was BOARD
 NONE_ENTRY = 0xFFFFFFFF
 
 
@@ -46,10 +46,10 @@ def split(stream: bytes) -> List[Tuple[int, bytes]]:
 
 # ---------------------------------------------------------------- the messages
 
-def hello(key: bytes, station: int, counter: int, nonce: bytes, board: bool) -> Tuple[bytes, bytes]:
-    """(the message, its tag — the chain's start)."""
+def hello(key: bytes, station: int, counter: int, nonce: bytes) -> Tuple[bytes, bytes]:
+    """(the message, its tag — the chain's start). The byte after the nonce is reserved, 0."""
     raw = bytes([HELLO, 1]) + station.to_bytes(3, "little") + struct.pack("<I", counter) + nonce \
-        + bytes([int(board)])
+        + bytes([0])
     t = tag(key, raw)
     return message(raw + t), t
 
@@ -60,7 +60,7 @@ def parse_hello(key: bytes, body: bytes) -> dict:
     if not hmac.compare_digest(tag(key, bytes([HELLO]) + body[:17]), body[17:]):
         raise ValueError("session: HELLO's tag fails")
     return {"station": int.from_bytes(body[1:4], "little"), "counter": struct.unpack_from("<I", body, 4)[0],
-            "nonce": body[8:16], "board": bool(body[16]), "tag": body[17:]}
+            "nonce": body[8:16], "tag": body[17:]}
 
 
 def marks(type_: int, held: Sequence[Tuple[int, int, int]]) -> bytes:
@@ -215,10 +215,6 @@ def parse_set_k1(k0: bytes, station: int, stored_counter: int, body: bytes) -> d
         raise ValueError("session: SET_K1's tag fails")
     k1 = bytes(a ^ b for a, b in zip(body[4:12], k1_pad(k0, station, counter)))
     return {"counter": counter, "k1": k1}
-
-
-def board(station: int, live_body_: bytes) -> bytes:
-    return message(bytes([BOARD]) + station.to_bytes(3, "little") + live_body_)
 
 
 # ---------------------------------------------------------------- the files

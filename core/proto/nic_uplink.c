@@ -50,7 +50,7 @@ int nic_up_files(nic_uplink *u, uint8_t addr, uint16_t first, uint16_t live)
 }
 
 size_t nic_up_hello(nic_uplink *u, uint32_t station, uint32_t counter, const uint8_t nonce[8],
-                    int board, uint8_t out[26])
+                    uint8_t out[26])
 {
     out[0] = SES_HELLO;
     out[1] = 1;
@@ -58,7 +58,7 @@ size_t nic_up_hello(nic_uplink *u, uint32_t station, uint32_t counter, const uin
     put16(out + 3, station >> 8);
     put32(out + 5, counter);
     memcpy(out + 9, nonce, 8);
-    out[17] = board ? 1 : 0;
+    out[17] = 0;                                    /* reserved */
     const uint8_t *p = out;
     size_t l = 18;
     ses_tag(u->key, &p, &l, 1, out + 18);

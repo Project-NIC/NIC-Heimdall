@@ -116,7 +116,7 @@ static void srv_hello(const uint8_t *msg, size_t n)
     ses_hello_t h;
     CHECK(n == 26 && msg[0] == SES_HELLO);
     CHECK(!ses_hello_parse(KEY, msg + 1, n - 1, &h));
-    CHECK(h.station == STATION && h.counter == 41 && !memcmp(h.nonce, NONCE, 8) && h.board == 1);
+    CHECK(h.station == STATION && h.counter == 41 && !memcmp(h.nonce, NONCE, 8));
     ses_chain_init(&chain, KEY, h.nonce, h.tag);
 }
 
@@ -212,7 +212,7 @@ static nic_uplink up;
 static void open_session(const uint8_t *cursor, size_t n)
 {
     uint8_t hello[26];
-    CHECK(nic_up_hello(&up, STATION, 41, NONCE, 1, hello) == 26);
+    CHECK(nic_up_hello(&up, STATION, 41, NONCE, hello) == 26);
     srv_hello(hello, 26);
     CHECK(nic_up_next(&up) == 0);                 /* nothing before the server's CURSOR */
     CHECK(!nic_up_cursor(&up, cursor, n));

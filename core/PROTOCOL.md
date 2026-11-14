@@ -733,7 +733,7 @@ reads it off the BMS; its arms' and `EXT`'s feeds are sockets 1–5 of the same 
   out-only**: the one downlink is a resend request — a radio link able to reconfigure a buried node
   is an attack surface for almost no benefit. **An LTE-M / NB-IoT modem is a link like Wi-Fi** and
   carries the authenticated session below — `HELLO`, the `CURSOR`, the command channel under its
-  MAC, the live board — within the tariff's volume, never the archive's. **Wi-Fi, the rich uplink,
+  MAC — within the tariff's volume, never the archive's. **Wi-Fi, the rich uplink,
   is optional and fully decoupled:** bulk archive upload, NTP, a small API, the head's own OTA; the
   station records and runs without it (`UPLINK_TRANSPORT.md`).
 - **Two packets go up, and each unit's send rule decides the second** (`archive/HMC.md`, *The
@@ -819,10 +819,9 @@ reads it off the BMS; its arms' and `EXT`'s feeds are sockets 1–5 of the same 
     station, or into its archive.
   The S31's TRNG, SHA engine and Key Manager carry this in hardware (`../mayak/HARDWARE.md`).
 - **The server coordinates, the station stays dumb.** The server is the operator's, not the
-  station's. Markers and the live packet go up; **the live board comes back down** — the server
-  fans every head's live packet and markers out to every head that subscribes, and a head shows or
-  archives what it receives and acts on none of it. The server correlates across stations and
-  vehicles and sends back only what it needs — group commands (a regional pre-drain before a
+  station's. Markers and the live packet go up; **nothing of another station comes back down** — a
+  station has no use for another's readings, which are on the server and on that station's own
+  cards. The server correlates across stations and vehicles and sends back only what it needs — group commands (a regional pre-drain before a
   storm, a config push) and the bounded window requests — all over the authenticated command
   channel. The server's own brains (correlation, spatial QC, maps,
   targeting) are a separate project, never the station's.
@@ -837,13 +836,13 @@ signs and covers every byte before it, the type included.
 
 | type | message | way | body |
 |---|---|---|---|
-| 1 | `HELLO` | up | `version 1 B` (1) · `station 3 B` · `counter 4 B` (the command counter) · `nonce 8 B` (from the TRNG, new each session) · `board 1 B` (1 subscribes to the live board) · `tag` |
+| 1 | `HELLO` | up | `version 1 B` (1) · `station 3 B` · `counter 4 B` (the command counter) · `nonce 8 B` (from the TRNG, new each session) · `reserved 1 B` (0) · `tag` |
 | 2 | `CURSOR` | down | `count 2 B`, then per address `address 1 B · sequence 2 B · entry 4 B` — the last entry the server holds of that file, `0xFFFFFFFF` none |
 | 3 | `ARCHIVE` | up | `address 1 B · sequence 2 B · packet 4 B` (1, 2 … in the session) · `header 4 B` and the file's header, or 0 · `count 2 B`, then per object `index 4 B · entry 16 B · its COBS bytes as they lie on the card` · `tag` |
 | 4 | `ACK` | down | as `CURSOR` — the last entry of each file the server holds durably |
 | 5 | `LIVE` | up | `second 4 B · count 1 B`, then per address `address 1 B · length 4 B · segment` — an HMC segment, coded as in a file |
 | 6 | `WINDOW` | down | `counter 4 B · address 1 B` (`0xFF` every address) · `second 4 B · window 4 B` · `tag` |
-| 7 | `BOARD` | down | `station 3 B` · the body of another head's `LIVE` |
+| 7 | — | | retired — it was `BOARD`, another head's `LIVE` fanned out; never used again |
 | 8 | `COMMAND` | down | `counter 4 B` · the command — the handset's JSON command, UTF-8, no newline, at most 1 kB · `tag` |
 | 9 | `SET_K1` | down | `counter 4 B · K1 8 B`, wrapped · `tag` under K0 alone |
 
@@ -859,7 +858,7 @@ ninth is refused. An entry's second is its segment's last and never goes back, s
 searched from the first entry at or after the window's start, and the search stops a minute past
 its end: a segment spans 8 s and a repair comes within seconds of its own record, so nothing later
 holds the window (13 Nov 2026). `CURSOR`, `ACK`,
-`LIVE` and `BOARD` carry no tag: a forged `CURSOR` or `ACK` costs a resend at most, since the head
+and `LIVE` carry no tag: a forged `CURSOR` or `ACK` costs a resend at most, since the head
 forgets nothing, and a reading is open by doctrine.
 
 **`COMMAND` carries every command from outside but the window and the re-key**, the server's and

@@ -357,17 +357,16 @@ def check_session(tool, fails):
     for _ in range(ROUNDS):
         key = bytes(rng.randrange(256) for _ in range(16))
         st, ctr, nonce = rng.randrange(1 << 24), rng.randrange(1 << 32), bytes(rng.randrange(256) for _ in range(8))
-        bd = rng.random() < 0.5
-        msg, tg = session.hello(key, st, ctr, nonce, bd)
-        tool.raw(b"H" + key + struct.pack("<II", st, ctr) + nonce + bytes([bd]),
+        msg, tg = session.hello(key, st, ctr, nonce)
+        tool.raw(b"H" + key + struct.pack("<II", st, ctr) + nonce,
                  answer("H", lambda o, a: ((o[a:a + 8],) + (_bytes(o, a + 8)[0],), _bytes(o, a + 8)[1])))
         want.append(("hello", (tg, msg)))
         body = session.unframe(msg[:-1])[1]
         bad = body[:5] + bytes([body[5] ^ 1]) + body[6:]
         for b, ok in ((body, True), (bad, False)):
             tool.raw(b"h" + key + struct.pack("<I", len(b)) + b, answer("h", status_then(
-                lambda o, a: ((struct.unpack_from("<II", o, a) + (o[a + 8:a + 16], o[a + 16], o[a + 17:a + 25])), a + 25))))
-            want.append(("hello parse", (st, ctr, nonce, int(bd), tg) if ok else ("refused",)))
+                lambda o, a: ((struct.unpack_from("<II", o, a) + (o[a + 8:a + 16], o[a + 16:a + 24])), a + 24))))
+            want.append(("hello parse", (st, ctr, nonce, tg) if ok else ("refused",)))
         marks = [(rng.randrange(256), rng.randrange(1 << 16), rng.choice([0, 7, session.NONE_ENTRY, rng.randrange(1 << 32)]))
                  for _ in range(rng.randrange(5))]
         t = rng.choice([session.CURSOR, session.ACK])
@@ -394,8 +393,6 @@ def check_session(tool, fails):
             tool.raw(b"n" + key + struct.pack("<III", st, stored, len(wb)) + wb, answer("n", status_then(
                 lambda o, a: (struct.unpack_from("<IBII", o, a), a + 13))))
             want.append(("window parse", (ctr, addr, sec, span) if stored < ctr else ("refused",)))
-        tool.raw(b"B" + struct.pack("<II", st, len(lb)) + lb, answer("B", _bytes))
-        want.append(("board", session.board(st, lb)))
     for (what, w), got in zip(want, tool.run()):
         if what.endswith("skipped"):
             continue

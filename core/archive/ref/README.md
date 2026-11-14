@@ -12,7 +12,7 @@ recorded series. Nothing here runs on the head yet; the head will write with the
 |---|---|
 | `hcc.py` | HCC coder and decoder: the bit stream, the five modes, Rice partitions, the reference channel, a layout composed from fields and the bytes none covers, an Argus NUMBER's layout from its positions |
 | `hmc.py` | HMC in memory: the header and its sections, `LAYOUT` and `UNIT` read into the layout HCC codes with, segments coded raw and by HCC and the shorter kept, configs, the COBS framing, the description's entries and their binary search, the event log, the path, the recording and send rules over frames and ModBus blocks; a reader that recovers a file's objects from the zeros when its description is lost |
-| `session.py` | the uplink session's messages as `../../PROTOCOL.md` §6 fixes them — HELLO, CURSOR, ARCHIVE with its chained tag, ACK, LIVE, WINDOW, BOARD — the head's cut of a file forward from a cursor and for a window, and the server's file rebuilt from the packets |
+| `session.py` | the uplink session's messages as `../../PROTOCOL.md` §6 fixes them — HELLO, CURSOR, ARCHIVE with its chained tag, ACK, LIVE, WINDOW — the head's cut of a file forward from a cursor and for a window, and the server's file rebuilt from the packets |
 | `steim2.py` | a Steim-2 packer and unpacker — the miniSEED codec HCC is measured against, checked against libmseed's frame count |
 | `measure.py` | bits per sample of Steim-2 and of every HCC mode on recorded traces, per segment length; `--ref` codes paired channels against each other |
 | `tests/test_hcc.py` | the cases `HCC.md` lists, on synthetic records; every one round-trips byte for byte |

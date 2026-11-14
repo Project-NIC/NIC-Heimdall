@@ -185,7 +185,7 @@ static int finish(uint8_t *raw, size_t n, uint8_t **msg, size_t *len)
 /* ------------------------------------------------------------------ the messages */
 
 int ses_hello(const uint8_t key[16], uint32_t station, uint32_t counter, const uint8_t nonce[8],
-              int board, uint8_t tag[8], uint8_t **msg, size_t *len)
+              uint8_t tag[8], uint8_t **msg, size_t *len)
 {
     uint8_t raw[26];
     raw[0] = SES_HELLO;
@@ -194,7 +194,7 @@ int ses_hello(const uint8_t key[16], uint32_t station, uint32_t counter, const u
     put16(raw + 3, station >> 8);
     put32(raw + 5, counter);
     memcpy(raw + 9, nonce, 8);
-    raw[17] = (uint8_t)(board != 0);
+    raw[17] = 0;                                    /* reserved */
     const uint8_t *p = raw;
     size_t l = 18;
     ses_tag(key, &p, &l, 1, raw + 18);
@@ -215,7 +215,6 @@ int ses_hello_parse(const uint8_t key[16], const uint8_t *body, size_t n, ses_he
     h->station = body[1] | get16(body + 2) << 8;
     h->counter = get32(body + 4);
     memcpy(h->nonce, body + 8, 8);
-    h->board = body[16] != 0;
     memcpy(h->tag, body + 17, 8);
     return HMC_OK;
 }
@@ -443,18 +442,6 @@ int ses_window_parse(const uint8_t key[16], uint32_t station, uint32_t stored, c
     w->second = get32(body + 5);
     w->window = get32(body + 9);
     return HMC_OK;
-}
-
-int ses_board(uint32_t station, const uint8_t *live_body, size_t n, uint8_t **msg, size_t *len)
-{
-    uint8_t *raw = malloc(4 + n);
-    if (!raw)
-        return HMC_ENOMEM;
-    raw[0] = SES_BOARD;
-    raw[1] = (uint8_t)station;
-    put16(raw + 2, station >> 8);
-    memcpy(raw + 4, live_body, n);
-    return finish(raw, 4 + n, msg, len);
 }
 
 /* ------------------------------------------------------------------ the head's cuts */

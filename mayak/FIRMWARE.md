@@ -389,7 +389,7 @@ the alive mask in it are the two numbers that predict a fault before it is one. 
 the heartbeat's count. **What comes back depends on the modem.** On LoRa and a satellite module the
 one downlink is a resend request for a frame the server missed, answered from the last 16 frames
 kept, and nothing else is accepted on that radio. **An LTE-M / NB-IoT modem runs the session of
-Wi-Fi below** — `HELLO`, the `CURSOR`, the command channel under its MAC, the live board — within
+Wi-Fi below** — `HELLO`, the `CURSOR`, the command channel under its MAC — within
 its tariff's volume. Duty cycle is a configured cap per hour and the summary cadence stretches to
 meet it.
 
@@ -404,7 +404,7 @@ the event log first, the others a packet each in turn; caught up, the live files
 are written (`../core/PROTOCOL.md` §6) — and cumulative `ACK`s, which trim nothing: the head
 forgets nothing, the cards are the store, and the last `ACK` is how far behind the server is, shown
 on the handset and the console. **Ethernet, on Proteus and Mimir** (14 Nov 2026): a link that is up carries the same session all
-the time — `HELLO`, the archive forward, the live packet, the commands, the live board — and the
+the time — `HELLO`, the archive forward, the live packet, the commands — and the
 Wi-Fi window is not opened while it holds; the router behind it dies with the 12 V, so the modem
 keeps its frame and the last report. **Bounded windows on demand**: the server asks `(ts, ±window)` and
 the head cuts the segments that touch it out of the files, answered before the forward stream,
@@ -420,11 +420,9 @@ the server's live view and never its archive. A station with no Wi-Fi sends one 
 packet an hour over the modem — a mode-B Palatine's `HOUR` row, and its `DAY` row once a day
 (`../palatine/WMO.md`), 32 B each, every other address `NONE` — and keeps the rest on its cards
 until they are read. **On the modem the live packet is a frame of its own beside the 32 B values
-frame**, sent after the hour's heartbeat and counted in the same duty-cycle cap. **The live board
-comes back on the same session**: a head on a link that carries it subscribes at HELLO and receives
-every other head's live packets and markers as the server fans them out; it writes them to the
-archive as a received stream and to the handset's live view, and **acts on nothing in them** — a
-command arrives on the authenticated channel and nowhere else. **Nothing is encrypted** but a
+frame**, sent after the hour's heartbeat and counted in the same duty-cycle cap. **Nothing of
+another station comes down**: what the server sends a head is commands — a reading asked of a
+sensor, a pre-drain, a setting — and windows, on the authenticated channel. **Nothing is encrypted** but a
 new K1, wrapped under K0 in `SET_K1`. OTA is
 head-only and lands in the second app partition, verified by the secure-boot signature before the
 switch, the old image kept for a rollback on a failed boot. The session ends at the window's end or

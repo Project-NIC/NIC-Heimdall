@@ -12,7 +12,7 @@
 #define SES_TAG 8u
 #define SES_NONE_ENTRY 0xFFFFFFFFu
 
-enum { SES_HELLO = 1, SES_CURSOR, SES_ARCHIVE, SES_ACK, SES_LIVE, SES_WINDOW, SES_BOARD, SES_COMMAND,
+enum { SES_HELLO = 1, SES_CURSOR, SES_ARCHIVE, SES_ACK, SES_LIVE, SES_WINDOW, SES_RETIRED_7 /* BOARD */, SES_COMMAND,
        SES_SET_K1 };
 
 void ses_sha256(const uint8_t *d, size_t n, uint8_t out[32]);
@@ -28,11 +28,11 @@ int ses_unframe(const uint8_t *framed, size_t n, uint8_t **raw, size_t *rawlen);
 
 typedef struct {
     uint32_t station, counter;
-    uint8_t nonce[8], board, tag[8];
+    uint8_t nonce[8], tag[8];
 } ses_hello_t;
 
 int ses_hello(const uint8_t key[16], uint32_t station, uint32_t counter, const uint8_t nonce[8],
-              int board, uint8_t tag[8], uint8_t **msg, size_t *len);
+              uint8_t tag[8], uint8_t **msg, size_t *len);
 int ses_hello_parse(const uint8_t key[16], const uint8_t *body, size_t n, ses_hello_t *h);
 
 typedef struct {
@@ -92,7 +92,6 @@ int ses_window(const uint8_t key[16], uint32_t station, uint32_t counter, uint8_
                uint32_t second, uint32_t span, uint8_t **msg, size_t *len);
 int ses_window_parse(const uint8_t key[16], uint32_t station, uint32_t stored, const uint8_t *body,
                      size_t n, ses_window_t *w);
-int ses_board(uint32_t station, const uint8_t *live_body, size_t n, uint8_t **msg, size_t *len);
 
 /* The head's cuts of a file. forward: the good entries after `held`, packed into packets of up
  * to `budget` bytes of objects — packet[k] the packet entry idx[k] rides in. window: the segments

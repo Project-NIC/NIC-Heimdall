@@ -26,7 +26,7 @@ is the vehicle.
   tied to a bar every 30 cm so nothing flaps. Inside, the Proteus — the DC/DC brick is on its board — and the
   LTE router sit where the vehicle's fit-out and construction allow, a 1-DIN slot included.
 - **A display head in the driver's reach, the size of a mobile radio**, on Proteus's Ethernet: a
-  client of the live board showing what the unit sees — the sources in view with their class and
+  client of the head's own live view showing what the unit sees — the sources in view with their class and
   their distance along the line, the floor, the GNSS fix and the link. The handset in a holder
   shows the same over BLE where no head is fitted.
 - **The GNSS antenna** is glued to the windscreen inside the cabin, its coax to Polaris on the

@@ -91,7 +91,7 @@ int nic_up_files(nic_uplink *u, uint8_t addr, uint16_t first, uint16_t live);
 
 /* A session opens: HELLO into out (26 B), the chain started on its tag. */
 size_t nic_up_hello(nic_uplink *u, uint32_t station, uint32_t counter, const uint8_t nonce[8],
-                    int board, uint8_t out[26]);
+                    uint8_t out[26]);
 /* The server's CURSOR body (after the type): -1 when it is cut short. */
 int nic_up_cursor(nic_uplink *u, const uint8_t *body, size_t n);
 /* The next ARCHIVE message, in u->pkt; its length, 0 when everything the cards hold has gone. */

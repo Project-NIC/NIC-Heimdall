@@ -138,7 +138,7 @@ Where neither a LoRa gateway nor a reachable AP exists:
 - **Cellular carries the live tier, never the archive.** An archive of gigabytes a day wants an
   unlimited tariff at roughly **600 Kč a month per SIM**, which a few hundred stations turn into
   over a hundred thousand crowns a month; the live tier — the live packet, the markers, the command
-  channel, the live board — is tens of megabytes a month at most, and that is what an **IoT tariff
+  channel — is tens of megabytes a month at most, and that is what an **IoT tariff
   on LTE-M or NB-IoT** is sold for: O2's *Machine 100 MB* at **110 Kč a month**, Vodafone's *IoT
   Easy Connect* at **449 Kč once for 1 GB and ten years**, Miotiq's roaming tariff at **2,59 € a
   year for 1 GB** in 45 countries. **The cellular path is an LTE-M / NB-IoT modem in the Mayak's

@@ -567,3 +567,13 @@ Sixteen bytes were the frame of a station a fifth or a tenth of today's, and the
 mask of a few bits. With 16 cards and 128 units behind them the mask alone is 16 B; at 32 B it is a
 bit a unit, the pack in millivolts and the event count past 255, and the frame is still one LoRa
 packet, 1,8 s at SF12 against 1,3 s (`../mayak/FIRMWARE.md` §9, the owner, 14 Nov 2026).
+
+## The live board — removed
+
+The server fanned every head's live packet and markers out to every head that subscribed, and a
+head showed and archived another station's readings while acting on none of them. A station has
+no use for another's readings — they are on the server and on that station's own cards — and
+archiving them needed a series of its own, since `0x52` is a Quake on every station. What the
+server sends a head is commands and windows. `BOARD`, type 7, is retired and never used again;
+`HELLO`'s byte that subscribed is reserved, 0, so the message keeps its layout (`PROTOCOL.md` §6,
+the owner, 14 Nov 2026).

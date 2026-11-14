@@ -255,8 +255,7 @@ static void session_req(uint8_t cmd)
         memcpy(key, in + at, 16); at += 16;
         uint32_t st = u32(), ctr = u32();
         const uint8_t *nonce = in + at; at += 8;
-        int board = u8();
-        ses_hello(key, st, ctr, nonce, board, tag, &msg, &len);
+        ses_hello(key, st, ctr, nonce, tag, &msg, &len);
         put8('H'); fwrite(tag, 1, 8, stdout); put_bytes(msg, len);
     } else if (cmd == 'h') {
         ses_hello_t h;
@@ -267,7 +266,7 @@ static void session_req(uint8_t cmd)
         put8('h'); put8((uint8_t)e);
         if (!e) {
             put32(h.station); put32(h.counter); fwrite(h.nonce, 1, 8, stdout);
-            put8(h.board); fwrite(h.tag, 1, 8, stdout);
+            fwrite(h.tag, 1, 8, stdout);
         }
     } else if (cmd == 'M') {
         int type = u8();
@@ -362,12 +361,6 @@ static void session_req(uint8_t cmd)
         if (!e) {
             put32(w.counter); put8(w.address); put32(w.second); put32(w.window);
         }
-    } else if (cmd == 'B') {
-        uint32_t st = u32();
-        size_t n = u32();
-        ses_board(st, in + at, n, &msg, &len);
-        at += n;
-        put8('B'); put_bytes(msg, len);
     } else if (cmd == 'F' || cmd == 'C') {
         size_t n = u32();
         hmc_reader r;

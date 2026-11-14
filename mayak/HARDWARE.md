@@ -571,8 +571,8 @@ reserves, and this is the one description of it.** The S31's MAC runs RMII to a 
 | `MDC` · `MDIO` | 60 · 61 — the boot straps; `MDIO` pulled up 1,5 kΩ, the strap's own direction |
 | PHY `RESET_N` | 37 |
 
-The firmware serves the port as it serves Wi-Fi: the archive session, NTP, the command channel,
-the live board (`FIRMWARE.md` §9).
+The firmware serves the port as it serves Wi-Fi: the archive session, NTP, the command channel
+(`FIRMWARE.md` §9).
 
 ## USB-C — on the boards that carry a receptacle
 

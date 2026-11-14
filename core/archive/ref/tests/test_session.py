@@ -31,7 +31,7 @@ def main():
         w, _ = test_hmc.write(header, ops)
         image = bytes(w.image)
         nonce = bytes(rng.randrange(256) for _ in range(8))
-        msg, htag = session.hello(KEY, STATION, 41, nonce, True)
+        msg, htag = session.hello(KEY, STATION, 41, nonce)
         t, body = session.unframe(msg[:-1])
         hl = session.parse_hello(KEY, body)
         assert t == session.HELLO and hl["counter"] == 41 and hl["nonce"] == nonce
@@ -44,7 +44,7 @@ def main():
         assert bytes(srv.image) == image, name
         mid = srv.held // 2
         nonce2 = bytes(rng.randrange(256) for _ in range(8))
-        msg2, htag2 = session.hello(KEY, STATION, 42, nonce2, False)
+        msg2, htag2 = session.hello(KEY, STATION, 42, nonce2)
         cur = session.parse_marks(session.unframe(session.marks(session.CURSOR, [(header.address, header.sequence, mid)])[:-1])[1])
         assert cur == [(header.address, header.sequence, mid)]
         part = Server()
@@ -83,7 +83,7 @@ def main():
         want = [i for i, o in segs if o["first"] <= mid_sec + 5 and o["last"] >= mid_sec - 5]
         assert [i for i in got if r.entries[i][3] == hmc.SEG] == want, name
         assert all(r.entries[i][3] == hmc.SEG or i < want[-1] for i in got)
-        # live, window, board and the stream
+        # live, window and the stream
         lv = session.live(test_hmc.T0, [(0x52, hmc.segment_bytes(ops[0][1][:50], hmc.hcc_layout(header.sections)))
                                         if ops[0][0] == "seg" else (0, hmc.event_segment(ops[0][1][:5]))])
         sec, segs_ = session.parse_live(session.unframe(lv[:-1])[1])
@@ -114,9 +114,6 @@ def main():
                 raise AssertionError("a stale or forged SET_K1 passed")
             except ValueError:
                 pass
-        bd = session.board(0x654321, session.unframe(lv[:-1])[1])
-        t, body = session.unframe(bd[:-1])
-        assert t == session.BOARD and session.parse_live(body[3:]) == (sec, segs_)
         stream = msg + packets[0][:7] + b"\x00" + lv + wm
         got = session.split(stream)                     # the cut packet unframes, but does not parse
         assert [t for t, _ in got if t != session.ARCHIVE] == [session.HELLO, session.LIVE, session.WINDOW], name
