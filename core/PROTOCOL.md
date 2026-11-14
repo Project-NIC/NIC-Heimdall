@@ -69,7 +69,8 @@ says (§3), and an `ERROR` or `EVENT` from a unit carries its instant without an
   one (§3), and the echo receiver reads it to check that the round runs in order. The card
   carries it through unchanged.
 - **`kind`** — what the payload is. **0 DATA** the unit's own samples · **1 TUNNEL** a ModBus
-  package going down (§9) · **2 TUNNEL_REPLY** the ModBus arm's answer going up, verbatim · **3 FILLER**
+  package going down (§9) · **2 TUNNEL_REPLY** the ModBus arm's answer going up, verbatim — both
+  its length 1 B first, the package after it, zeros to 32 B · **3 FILLER**
   the card's frame for an absent unit, the reason code in the payload (§10) · **4 TABLE** the
   card's segment table, 8 × 4 B (§10) · **5 REGISTER** a register too wide for CONTROL, **either
   direction** — up as a `GET`'s answer, down as a wide `SET`'s value — the register number first,
@@ -1091,7 +1092,11 @@ it onto the arm verbatim; the sensor's whole reply comes up verbatim as **`kind`
 in the gaps. **One question, one answer**: the Mayak holds one package open per bridge and pairs
 the reply by that alone. **The node composes nothing, parses nothing and retries nothing** — a
 timeout is an `ERROR` from the node, and end-to-end retry is the Mayak's, which also validates
-the RTU CRC itself. A package is capped at the 32 B payload — no fragmentation; **the mini bus
+the RTU CRC itself. **A package is told by its length**, the payload's first byte, both ways
+(the owner, 14 Nov 2026): RTU frames end in silence, not in a mark, and a CRC may end in a zero,
+so the node streams exactly that many bytes onto the arm and sends up exactly what the arm gave.
+A package is capped at 31 B — no fragmentation: a write of at most 11 registers (FC16), a read of
+at most 13 (FC03), a longer read cut into several by the Mayak; **the mini bus
 has no ModBus tunnel** (no arm, no ModBus registers) — a sonde's own dialogue is the plain
 CONTROL frame addressed through its Argus by `SUB` (§1). `GET`/`SET` stay for the node's own registers only.
 **The fault ladder:** one CRC miss → RESEND; persistent misbehaviour → HARD_RESET; still dead →

@@ -552,3 +552,11 @@ Sending by time across the station would put a full 64 MB Quake file between a P
 the server for a whole window. A packet per address in turn keeps every address moving, and the
 event log goes first because it is small and says what happened to the station. A file's own
 order is kept either way (`PROTOCOL.md` §6, the owner, 13 Nov 2026).
+
+## A tunnel package told by its RTU framing — corrected: a length byte
+
+The package rode the 32 B payload with zeros behind it and nothing said where it ended. An RTU
+frame ends in silence on the wire, not in a mark, and its CRC may end in a zero, so the bridge,
+which parses nothing, could not know how many bytes to put on the arm, nor the Mayak how many came
+back. The payload's first byte is now the package's length, both ways; the cap is 31 B, which
+holds a write of 11 registers and a read of 13 (`PROTOCOL.md` §1, §9, the owner, 14 Nov 2026).

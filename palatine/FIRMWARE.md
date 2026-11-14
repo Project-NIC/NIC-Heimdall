@@ -251,10 +251,12 @@ STATUS · RAW`. The node never looks inside, but for the one bit a `PWR EXT` rul
 `PUMP` (§6).
 
 **The tunnel.** A `kind` 1 TUNNEL frame in the gaps carries a complete RTU package — address,
-function, data, CRC — and the node streams it onto the arm the roster maps that address to (a
+function, data, CRC — after its length, the payload's first byte, 1–31; the node streams exactly
+those bytes onto the arm the roster maps that address to (a
 package for an address in no roster entry goes to the arm a provisioning session has open, or
 is refused with `ERROR`). The arm's poll is paused between its transactions for it; the whole
-reply comes back as **`kind` 2 TUNNEL_REPLY** in the node's next gap, verbatim, CRC and all; a
+reply comes back as **`kind` 2 TUNNEL_REPLY** in the node's next gap, verbatim, CRC and all, its
+length first — a reply longer than 31 B is an `ERROR`, which the head never provokes; a
 timeout of 100 ms is an `ERROR` from the node. One package open per node; the head retries and
 validates the CRC (`../core/PROTOCOL.md` §9). Pluvius's `TARE`, `DRAIN` and thresholds, a
 bought sensor's offsets, a remote pre-drain — all of it is this path and none of it is a
