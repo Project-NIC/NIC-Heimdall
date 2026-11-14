@@ -274,7 +274,7 @@ second.
 
 | | |
 |---|---|
-| the protocol's core | [`core/proto/`](core/proto/) — the frames, the addresses, CONTROL and the roster; `LOAD`, the stream and the trial boot; a card's data path; the head's ingest — C99, `make check`, `make cross` |
+| the protocol's core | [`core/proto/`](core/proto/) — the frames, the addresses, CONTROL and the roster; `LOAD`, the stream and the trial boot; a card's data path; the head's ingest, uplink and live packet — C99, `make check`, `make cross` |
 | the archive's reference library | [`core/archive/ref/`](core/archive/ref/) — HMC and HCC, the recording and send rules, the uplink session, in Python and in C writing the same bytes (`tests/test_c.py`), HCC measured on open recordings |
 | the exporters | [`core/archive/export/`](core/archive/export/) — miniSEED + StationXML, IAGA-2002, CSV and SQL, read from the archive after the fact |
 | the calculations behind the documents | [`gaia/tools/`](gaia/tools/) the siting maps · [`gauss/models/`](gauss/models/) the shallow-water siting model · [`marconi/models/`](marconi/models/) the loop's pointing · [`tesla/design/`](tesla/design/) the rod worksheet, its field solve and the chain's clip and floor |

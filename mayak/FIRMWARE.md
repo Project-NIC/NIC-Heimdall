@@ -375,7 +375,9 @@ eight waiting at most, each file searched to a minute past the window's end
 **The live packet** goes on every link given a cadence — Wi-Fi, cellular, a satellite module on a
 freed trunk UART: what each address's **send rule** for that link selects from what was recorded
 since the last live packet, coded by HCC, one segment per address (`../core/archive/HMC.md`, *The
-uplink*). It is the server's live view and never its archive. A station with no Wi-Fi sends one live
+uplink*), taken as the archive writes it — at most a segment's 8 s behind, a repair never, the
+newest kept when an address outgrows its 8 kB between packets (`../core/PROTOCOL.md` §6). It is
+the server's live view and never its archive. A station with no Wi-Fi sends one live
 packet an hour over the modem — a mode-B Palatine's `HOUR` row, and its `DAY` row once a day
 (`../palatine/WMO.md`), 32 B each, every other address `NONE` — and keeps the rest on its cards
 until they are read. **On the modem the live packet is a frame of its own beside the 16 B values
@@ -546,7 +548,9 @@ time is the card's stamp; a late handler moves nothing but the moment a block is
 late repair (`../core/proto/nic_ingest.c`, `test/test_ingest.c`); the HMC/HCC library, the rules
 and the session (`../core/archive/ref/`); the command check — the counter, the tag, `SET K1` under
 K0 (`../core/proto/nic_cmd.c`, `test/test_cmd.c`); the tree composed and the numbers decided
-(`../core/proto/nic_tree.c`, `test/test_tree.c`).
+(`../core/proto/nic_tree.c`, `test/test_tree.c`); the uplink — `HELLO`, the `CURSOR`, the
+archive forward, `WINDOW`'s answer, `ACK` — and the live packet (`../core/proto/nic_uplink.c`,
+`nic_live.c`, `test/test_uplink.c`, `test/test_live.c`).
 
 **On a PC, with the pins replaced by callbacks:** the trunk parser against recorded traffic —
 a 48 B record cut by a stall, a 12 B `ERROR` between two records, a CRC miss and its

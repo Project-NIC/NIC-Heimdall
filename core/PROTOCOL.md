@@ -739,7 +739,11 @@ reads it off the BMS; its arms' and `EXT`'s feeds are sockets 1–5 of the same 
   them into the same files, and reads them with the same library as a pulled card — it goes where a
   link carries the volume. **The live packet** is what each unit's send rule for that link selects
   from what was recorded since the last one, at the link's cadence — the server's live view, never
-  its archive. A station with no Wi-Fi that sends Palatine's hourly row over the modem and keeps
+  its archive. Its records are taken as the archive writes them, so it runs at most a segment's
+  8 s behind; a repaired record, older than the newest its address has given, never goes live; an
+  address holds 8 kB of records between packets, past which the oldest give way to the newest;
+  a packet longer than the link takes carries the addresses that fit and the rest wait for the
+  next (13 Nov 2026). A station with no Wi-Fi that sends Palatine's hourly row over the modem and keeps
   everything else on its card is the same mechanism with other rules. HMC and HCC live only from the
   head on (variable length would wreck the TDMA). Under `ALL` everywhere the full station's raw
   ceiling is ~1,1 Mb/s, less after HCC; the SD buffers bursts.

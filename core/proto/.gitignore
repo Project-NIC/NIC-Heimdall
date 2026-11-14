@@ -7,3 +7,5 @@ test/test_sweep
 test/test_cmd
 test/test_tree
 test/test_kronos
+test/test_uplink
+test/test_live
