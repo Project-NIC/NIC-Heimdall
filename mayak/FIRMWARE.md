@@ -403,7 +403,10 @@ address's later files, each with its header; an address the cursor leaves out fr
 the event log first, the others a packet each in turn; caught up, the live files' segments as they
 are written (`../core/PROTOCOL.md` §6) — and cumulative `ACK`s, which trim nothing: the head
 forgets nothing, the cards are the store, and the last `ACK` is how far behind the server is, shown
-on the handset and the console. **Bounded windows on demand**: the server asks `(ts, ±window)` and
+on the handset and the console. **Ethernet, on Proteus and Mimir** (14 Nov 2026): a link that is up carries the same session all
+the time — `HELLO`, the archive forward, the live packet, the commands, the live board — and the
+Wi-Fi window is not opened while it holds; the router behind it dies with the 12 V, so the modem
+keeps its frame and the last report. **Bounded windows on demand**: the server asks `(ts, ±window)` and
 the head cuts the segments that touch it out of the files, answered before the forward stream,
 eight waiting at most, each file searched to a minute past the window's end
 (`../core/PROTOCOL.md` §6).
@@ -463,7 +466,12 @@ reads OK, and the corrections table has no missing `route` on a remoted receiver
 
 **USB Serial/JTAG** carries a console in every state — a line-oriented command set that reads
 the mirror, the tree, the event log, the archive's tail, and Hermes's block, and in `USB
-SERVICE` is the only thing alive. `EFUSE_DIS_USB_JTAG` is never burnt.
+SERVICE` is the only thing alive. The commands (14 Nov 2026): `mirror` · `tree` · `log` · `tail`
+· `hermes` · `id` · `card out 0|1` · `k0`; a line ends in CR, LF or both, 128 B at most, and an
+answer is closed by `ok` or `error` and why. **`k0` answers once** — the provisioning tool's one read
+of K0 into the operator's key store, marked read in the key store before it is shown — and is
+refused for ever after; a board whose K0 is lost is flashed again over `BOOT0` and makes a new
+one. At the first boot, with no K0 in the key store, the TRNG makes it. `EFUSE_DIS_USB_JTAG` is never burnt.
 
 ## 11. Power — Hermes, the coulomb count, the ordered shutdown, survival
 
@@ -472,8 +480,9 @@ as the BMS reports it, the cell temperatures, the BMS status and faults, the PV 
 charge state (`../hermes/FIRMWARE.md` §6) — and the `SHT45`. The reading goes into the SOH, the
 event log on a change of fault bits, and the modem's summary. **The capacity is the head's, not
 the BMS's**: the head integrates the pack current over the minute readings into its own
-coulomb estimate, re-anchored at full charge (the MPPT's float state), and that estimate is the
-SoC the decisions below use; the BMS's own SoC rides beside it for the record.
+coulomb estimate, re-anchored at full charge — the MPPT's float state, which is the charge stop,
+80 % of the nameplate (`../core/POWER.md` §3) — and that estimate is the SoC the decisions below
+use; a gap of over an hour between readings, a reboot, is not integrated; the BMS's own SoC rides beside it for the record.
 
 **The thresholds are the head's configuration**, written into Hermes at boot so `ALERT` fires
 between polls (§6 of its document): pack voltage low and high, cell temperature low and high,
@@ -592,7 +601,10 @@ brought level (`../core/proto/nic_cards.c`, `test/test_cards.c`); the mirror's r
 halves and a lost supply (`../core/proto/nic_mirror.c`, `test/test_mirror.c`); the ModBus tunnel's
 packages, pairing and retry (`../core/proto/nic_tunnel.c`, `test/test_tunnel.c`); the values
 frame, its hour, its markers and the duty cap (`../core/proto/nic_values.c`, `test/test_values.c`);
-the handset's status document and commands (`../core/proto/nic_gatt.c`, `test/test_gatt.c`).
+the handset's status document and commands (`../core/proto/nic_gatt.c`, `test/test_gatt.c`); the
+coulomb count, the shed, the ordered shutdown and the survival loop's wake
+(`../core/proto/nic_power.c`, `test/test_power.c`); the console and K0's one read
+(`../core/proto/nic_console.c`, `test/test_console.c`).
 
 **On a PC, with the pins replaced by callbacks:** the trunk parser against recorded traffic —
 a 48 B record cut by a stall, a 12 B `ERROR` between two records, a CRC miss and its

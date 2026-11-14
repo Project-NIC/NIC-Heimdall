@@ -52,7 +52,13 @@ test/test_values: nic_values.c nic_values.h test/test_values.c
 test/test_gatt: nic_gatt.c nic_gatt.h nic_cmd.c test/test_gatt.c $(ARCH)/session.c
 	$(CC) $(CFLAGS) -ffp-contract=off -I$(ARCH) -o $@ nic_gatt.c nic_cmd.c $(ARCH)/session.c $(ARCH)/hmc.c $(ARCH)/hcc.c test/test_gatt.c -lm
 
-check: test/test_gatt test/test_values test/test_tunnel test/test_mirror test/test_cards test/test_uplink test/test_live test/test_kronos test/test_tree test/test_cmd test/test_proto test/test_load test/test_card test/test_ingest test/test_cells test/test_sweep
+test/test_power: nic_power.c nic_power.h test/test_power.c
+	$(CC) $(CFLAGS) -o $@ nic_power.c test/test_power.c
+
+test/test_console: nic_console.c nic_console.h test/test_console.c
+	$(CC) $(CFLAGS) -o $@ nic_console.c test/test_console.c
+
+check: test/test_power test/test_console test/test_gatt test/test_values test/test_tunnel test/test_mirror test/test_cards test/test_uplink test/test_live test/test_kronos test/test_tree test/test_cmd test/test_proto test/test_load test/test_card test/test_ingest test/test_cells test/test_sweep
 	./test/test_proto
 	./test/test_load
 	./test/test_card
@@ -69,6 +75,8 @@ check: test/test_gatt test/test_values test/test_tunnel test/test_mirror test/te
 	./test/test_tunnel
 	./test/test_values
 	./test/test_gatt
+	./test/test_power
+	./test/test_console
 
 # the same sources for the MCUs: the H523's and H7A3's Cortex-M, the head's 32-bit RISC-V
 cross:
@@ -88,10 +96,12 @@ cross:
 	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -c nic_tunnel.c -o /dev/null
 	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -c nic_values.c -o /dev/null
 	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -c nic_gatt.c -o /dev/null
+	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -c nic_power.c -o /dev/null
+	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -c nic_console.c -o /dev/null
 	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -c nic_tree.c -o /dev/null
 	arm-none-eabi-gcc -mcpu=cortex-m33 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 $(CFLAGS) -Os -c nic_kronos.c -o /dev/null
 
 clean:
-	rm -f test/test_proto test/test_load test/test_card test/test_ingest test/test_cells test/test_sweep test/test_cmd test/test_tree test/test_kronos test/test_uplink test/test_live test/test_cards test/test_mirror test/test_tunnel test/test_values test/test_gatt
+	rm -f test/test_proto test/test_load test/test_card test/test_ingest test/test_cells test/test_sweep test/test_cmd test/test_tree test/test_kronos test/test_uplink test/test_live test/test_cards test/test_mirror test/test_tunnel test/test_values test/test_gatt test/test_power test/test_console
 
 .PHONY: check cross clean
