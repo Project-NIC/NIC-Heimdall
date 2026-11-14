@@ -13,3 +13,4 @@ test/test_cards
 test/test_mirror
 test/test_tunnel
 test/test_values
+test/test_gatt
