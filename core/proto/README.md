@@ -53,4 +53,4 @@ qemu-arm test/test_proto; qemu-arm test/test_load                               
 make cross                     # the Cortex-M33 and the head's RV32 — arm-none-eabi, riscv64-unknown-elf
 ```
 
-**Owed here**: each layer the firmware pages list — a card's sweep, ranging and ladder, the head's tree and control plane — each beside this one, on it.
+**The head's portable layers are whole**; what is left on the head is the hardware's — the drivers, the BLE stack, the radios, FatFs. **Owed here**: the card's per-spur masters, its trunk side and `FLOOR`'s sequence on the pins, an Argus's four mini masters; Kronos's receiver dialogue and its label; the mini units' rung on a timer capture, the `FRACN` loop and edge loss as clock loss — each beside this one, on it.
