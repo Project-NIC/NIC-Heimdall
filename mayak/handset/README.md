@@ -135,6 +135,23 @@ in this contract describes the box, this describes where the box is standing.
 classify: the class is an interpretation added on top of a value, never a condition for
 recording one. So a missing table is not NO-GO, unlike an unranged `route`.
 
+### The mirror — what each unit is set to
+
+**The phone reads the station's configuration from the Mayak's mirror and never from the units**
+(`../FIRMWARE.md` §7). A unit is named as the status document names it — `bus`, `type`, `n` — never
+by the mirror's own row, and a value is its bytes as the unit takes them, in hex.
+
+- **An edit** is the `set` command: the register, decimal, and its value. The Mayak sends it to the
+  unit — a ModBus sensor's through the tunnel — and commits it when the unit confirms it.
+- **What is not yet confirmed rides the status document**, as `"mirror":[{"bus":"nodbus","type":5,
+  "n":1,"reg":19,"v":"0384","state":"sent"}]` — `state` `edited` or `sent`, a confirmed value gone
+  from the list. A reboot drops both, and the phone shows the confirmed value again.
+- **One unit's whole mirror** comes on the `mirror` command, as one line of its own:
+  `{"unit":{"bus":"nodbus","type":5,"n":1},"regs":[{"reg":19,"v":"0384","ro":false},…]}` — every
+  register the mirror holds for it, its own fields (`0xFE00`–`0xFE03`) and the read-only ones
+  among them, `ro` marking what the station only reads. The whole mirror at once would be up to
+  85 kB on BLE; a unit at a time is what a screen shows.
+
 ### Command (write) — JSON in a signed message
 
 The command is JSON; the write carries it as the session's `COMMAND` message
@@ -151,6 +168,8 @@ HMAC-SHA-256 under the station's K0‖K1 — the app holds K1 from the operator'
 {"cmd":"corr","set":[{"id":"cab","m":25}]}     // write one TYPED term; the station recomputes ns
                                                // a ranged term is read-only and a write is refused
 {"cmd":"card","out":1}                         // write up and close slot 1's card; it may come out
+{"cmd":"set","bus":"nodbus","type":5,"n":1,"reg":19,"v":"0384"} // a register of a unit, edited: sent to it, confirmed by it
+{"cmd":"mirror","bus":"nodbus","type":5,"n":1} // one unit's whole mirror, as one line
 ```
 
 > JSON was chosen for legibility and because commissioning is low-rate / occasional. If

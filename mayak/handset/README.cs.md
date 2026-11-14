@@ -87,6 +87,24 @@ Co aplikace nastavuje:
 
 **Stanice bez nahraných tabulek stále měří a stále archivuje.** Jen neklasifikuje: třída je interpretace přidaná nad hodnotu, nikdy podmínka jejího zaznamenání. Chybějící tabulka tedy není NO-GO, na rozdíl od nevyměřeného `route`.
 
+### Zrcadlo — jak je která jednotka nastavená
+
+**Telefon čte konfiguraci stanice ze zrcadla Mayaku, nikdy z jednotek** (`../FIRMWARE.md` §7).
+Jednotka se jmenuje tak, jak ji jmenuje stavový dokument — `bus`, `type`, `n` — nikdy podle
+vlastního řádku zrcadla, a hodnota jsou její bajty tak, jak je jednotka bere, šestnáctkově.
+
+- **Úprava** je příkaz `set`: registr, desítkově, a jeho hodnota. Mayak ji pošle jednotce —
+  čidlu na ModBusu tunelem — a zapíše ji, až ji jednotka potvrdí.
+- **Co ještě není potvrzené, jede ve stavovém dokumentu** jako `"mirror":[{"bus":"nodbus",
+  "type":5,"n":1,"reg":19,"v":"0384","state":"sent"}]` — `state` `edited` (upraveno) nebo `sent`
+  (odesláno), potvrzená hodnota ze seznamu zmizí. Restart obojí zahodí a telefon ukáže znovu
+  potvrzenou hodnotu.
+- **Celé zrcadlo jedné jednotky** přijde na příkaz `mirror` jako samostatný řádek:
+  `{"unit":{"bus":"nodbus","type":5,"n":1},"regs":[{"reg":19,"v":"0384","ro":false},…]}` — každý
+  registr, který pro ni zrcadlo drží, včetně jejích vlastních polí (`0xFE00`–`0xFE03`) a těch jen
+  ke čtení; `ro` značí, co stanice jen čte. Celé zrcadlo naráz by bylo po BLE až 85 kB; jedna
+  jednotka je to, co ukáže jedna obrazovka.
+
 ### Příkaz (write) — JSON v podepsané zprávě
 
 Příkaz je JSON; zápis ho nese jako zprávu relace `COMMAND` (`../../core/PROTOCOL.md` §6): `08 · čítač 4 B, little-endian · JSON v UTF-8 bez konce řádku · podpis 8 B`, zabalené COBS a ukončené nulou — tytéž bajty, jaké posílá server. Podpis je prvních 8 B HMAC-SHA-256 klíčem stanice K0‖K1 (aplikace má K1 od serveru provozovatele, K0 nikdy) přes 3 B identity stanice a všechny bajty před podpisem. **`refresh` jde s čítačem 0 a nulovým podpisem**: čtení nic neposouvá. Výměna klíče je serverová zpráva `SET_K1`, nikdy ne aplikace.
@@ -98,6 +116,8 @@ Příkaz je JSON; zápis ho nese jako zprávu relace `COMMAND` (`../../core/PROT
 {"cmd":"corr","set":[{"id":"cab","m":25}]}     // write one TYPED term; the station recomputes ns
                                                // a ranged term is read-only and a write is refused
 {"cmd":"card","out":1}                         // write up and close slot 1's card; it may come out
+{"cmd":"set","bus":"nodbus","type":5,"n":1,"reg":19,"v":"0384"} // a register of a unit, edited: sent to it, confirmed by it
+{"cmd":"mirror","bus":"nodbus","type":5,"n":1} // one unit's whole mirror, as one line
 ```
 
 > JSON byl zvolen kvůli čitelnosti a protože uvádění do provozu je řídké / příležitostné. Pokud ho později budete chtít úspornější, přepněte obě strany na zhuštěný TLV — aplikace se ho dotýká jen ve svém parseru stavu a ve své BLE vrstvě.

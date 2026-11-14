@@ -450,7 +450,8 @@ and the mirror's pending values; it is pushed on connect, on every change, and o
 The commands: `refresh` · `recommission` (every floor run again, the sweep results put to the
 human as *new* / *missing* / *replaced?*) · `provision node` (a Palatine learning session, §6 of
 its document, driven by the phone one sensor at a time) · `corr set` (a typed term written to
-the corrections table, Kronos's copy updated; a ranged term refused) · `card` (a slot's card written up, closed and let out, §6) · a mirror edit. **Every
+the corrections table, Kronos's copy updated; a ranged term refused) · `card` (a slot's card written up, closed and let out, §6) · `set`, a mirror edit, and `mirror`, one
+unit's whole mirror (`handset/README.md`, *The mirror*). **Every
 write is MAC'd as in §8**; the phone holds K1 and never K0 — it receives a station's K1 from the
 operator's server, for the stations the technician is assigned and for a bounded time, and loads
 it before leaving where it will work offline; it reads the station's command counter over BLE
