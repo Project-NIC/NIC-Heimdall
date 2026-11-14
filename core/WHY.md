@@ -560,3 +560,10 @@ frame ends in silence on the wire, not in a mark, and its CRC may end in a zero,
 which parses nothing, could not know how many bytes to put on the arm, nor the Mayak how many came
 back. The payload's first byte is now the package's length, both ways; the cap is 31 B, which
 holds a write of 11 registers and a read of 13 (`PROTOCOL.md` §1, §9, the owner, 14 Nov 2026).
+
+## The values frame at 16 B — superseded: 32 B
+
+Sixteen bytes were the frame of a station a fifth or a tenth of today's, and they held an alive
+mask of a few bits. With 16 cards and 128 units behind them the mask alone is 16 B; at 32 B it is a
+bit a unit, the pack in millivolts and the event count past 255, and the frame is still one LoRa
+packet, 1,8 s at SF12 against 1,3 s (`../mayak/FIRMWARE.md` §9, the owner, 14 Nov 2026).

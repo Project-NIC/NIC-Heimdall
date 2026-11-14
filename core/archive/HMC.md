@@ -306,7 +306,7 @@ The live packet and the values frame go bare. A key is needed only to write, nev
 - **A window `(ts, ±window)`** asked by the server is an archive packet cut to the segments whose
   span touches it.
 
-The modem's 16 B values frame is neither: it is the heartbeat and the marker, built by the head
+The modem's 32 B values frame is neither: it is the heartbeat and the marker, built by the head
 (`../../mayak/FIRMWARE.md` §9); a live packet on the modem goes beside it, a frame of its own.
 
 **A mode-B Palatine's tables are series of their own.** Each of its table blocks, addresses

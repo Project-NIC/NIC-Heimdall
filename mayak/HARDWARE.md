@@ -103,7 +103,7 @@ Wi-Fi cannot reach:
 
 | module | bus | what it buys | where |
 |---|---|---|---|
-| **`SX1262`** | `SPI2` | LoRa to a gateway, the 16 B values frame | anywhere a gateway is in range — the cheapest |
+| **`SX1262`** | `SPI2` | LoRa to a gateway, the 32 B values frame | anywhere a gateway is in range — the cheapest |
 | **`LR1121`** | `SPI2` | LoRa, and LR-FHSS straight to a satellite that receives it — the values frame from anywhere, a few hundred bytes a day — about six messages, so the heartbeat stretches to ~4 h and the hourly live packet does not fit | remote islands, open sea, no gateway |
 | **Iridium `9603N`** | a UART | short-burst data to Iridium, global, billed per message | a site with nothing else, and a trunk UART freed by joining cards |
 | **Kinéis `KIM1`** | a UART | Argos-class satellite IoT, markers only | as above |
@@ -198,7 +198,7 @@ station's battery ground (`../galvani/README.md`). **Everything local stays non-
   source must deliver 0,6 A** (sheet §6.2); Wi-Fi TX peaks 295 mA at 17 dBm; external-antenna variant for a sealed enclosure.
 - **Two microSD cards** on the SD/MMC host, **both in 1-bit** — slot 0 on the `SD_*` pins, slot 1 a mirror (the store-and-forward buffer) — the card IS the uplink
   buffer; a brownout flush needs the backup cell below.
-- **The modem** — an SPI module on `SPI2` (LoRa, `LR1121`) or a UART module on a freed trunk — the 16 B values frame out, and the last report on a lost 12 V.
+- **The modem** — an SPI module on `SPI2` (LoRa, `LR1121`) or a UART module on a freed trunk — the 32 B values frame out, and the last report on a lost 12 V.
 - **No RS-485 transceiver on the head** — and none on any other board in the box either: the
   trunk UARTs are plain-level MasterNOD links to the Bifrost cards, and 485 starts on a Galvani
   board at a Bifrost port, never before it (`../galvani/README.md`).

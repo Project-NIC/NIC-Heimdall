@@ -368,11 +368,17 @@ is never sent anywhere.
 
 ## 9. The uplink
 
-**The modem — the thin backbone, outbound.** The module in the modem position sends the 16 B values
-frame: station id, the second, pack voltage, board temperature, the event count since the last
-frame, the alive mask, the flags — the clock SOH and the shed/survival reason among them — the last
-peak, CRC-16. One frame serves both uses, and it is not made shorter: 16 B is one LoRa packet whose
-preamble and header outweigh it, and a second format would buy nothing. **Once an hour as the
+**The modem — the thin backbone, outbound.** The module in the modem position sends the **32 B values
+frame** (the owner, 14 Nov 2026: the 16 B it had was the frame of a station a fraction the size),
+little-endian: `station 3 B · second 4 B · pack 2 B` (mV) `· temperature 1 B` (the board's, °C,
+signed) `· events 2 B` (the weak events since the last frame, held at 65 535) `· alive 16 B` (a bit
+a unit, card × 8 + slot, set when it answered through the last minute) `· flags 1 B` ([1:0] the
+clock's state from the SOH byte · [2] a marker · [5:3] its reason — 0 the heartbeat, 1 a strong
+event, 2 a `FAULT`, 3 a SUPPLY edge, 4 `NO_CLOCK`, 5 `NO_STORE`, 6 `NO_BMS`, 7 a shed or a wake ·
+[7:6] power — normal, shed, survival, on the backup cell) `· peak 1 B` (dB over the window's
+median, in 0,5 dB, §12) `· CRC-16 2 B`, the station's. One frame serves both uses: 32 B is still one
+LoRa packet at every spreading factor — 1,8 s at SF12 against 1,3 s for 16 B — and a second format
+would buy nothing. **Once an hour as the
 heartbeat**, and **immediately on a marker** — a line of the event log whose code is in the marker
 set (§6): a `strong` event from a unit's ALARM flag with the peak of §12, a card's `FAULT` of the
 set, a SUPPLY edge, `NO_CLOCK`, `NO_STORE`, `NO_BMS`, a shed or a wake — rate-limited to one marker
@@ -410,7 +416,7 @@ newest kept when an address outgrows its 8 kB between packets (`../core/PROTOCOL
 the server's live view and never its archive. A station with no Wi-Fi sends one live
 packet an hour over the modem — a mode-B Palatine's `HOUR` row, and its `DAY` row once a day
 (`../palatine/WMO.md`), 32 B each, every other address `NONE` — and keeps the rest on its cards
-until they are read. **On the modem the live packet is a frame of its own beside the 16 B values
+until they are read. **On the modem the live packet is a frame of its own beside the 32 B values
 frame**, sent after the hour's heartbeat and counted in the same duty-cycle cap. **The live board
 comes back on the same session**: a head on a link that carries it subscribes at HELLO and receives
 every other head's live packets and markers as the server fans them out; it writes them to the

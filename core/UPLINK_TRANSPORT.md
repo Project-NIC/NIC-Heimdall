@@ -24,7 +24,7 @@ the list**; the card underneath never depends on any of them.
 | Layer | Role | When | Rough cost |
 |---|---|---|---|
 | **Card (HMC)** | the durable local truth — everything, always | always | — |
-| **The modem** | the always-on **thin backbone**, one module in the modem position on the backup cell's rail — LoRa, the cheapest, where a gateway is in range: the 16 B values frame **at once on a marker** and **once an hour as the heartbeat**, one frame for both (`../mayak/FIRMWARE.md` §9). Carries the **16 B values frame, never the archive** — the frame stands alone; and where a site sets it, **the live packet**: a mode-B Palatine's hourly row and daily row, 32 B each (`../palatine/WMO.md`). **On the `LR1121`'s satellite path**, about six messages a day, the heartbeat stretches to ~4 h and the hourly live packet does not fit | everywhere | lowest on LoRa |
+| **The modem** | the always-on **thin backbone**, one module in the modem position on the backup cell's rail — LoRa, the cheapest, where a gateway is in range: the 32 B values frame **at once on a marker** and **once an hour as the heartbeat**, one frame for both (`../mayak/FIRMWARE.md` §9). Carries the **32 B values frame, never the archive** — the frame stands alone; and where a site sets it, **the live packet**: a mode-B Palatine's hourly row and daily row, 32 B each (`../palatine/WMO.md`). **On the `LR1121`'s satellite path**, about six messages a day, the heartbeat stretches to ~4 h and the hourly live packet does not fit | everywhere | lowest on LoRa |
 | **Wi-Fi (directional, opportunistic)** | the **archive** in archive packets forward from the `CURSOR`, and any asked window, when an access point is reachable | site near an AP | low, **duty-cycled** |
 | **Satellite (small-burst)** | the values frame where there is **nothing** — the `LR1121` in the modem position, or an Iridium / Kinéis module on a freed trunk UART (`../mayak/HARDWARE.md`) | no gateway, no AP | bursty |
 
@@ -36,8 +36,8 @@ site and fed from the rail the backup cell carries, so the last report leaves wh
 straight to a satellite, an Iridium or Kinéis module, or an LTE-M / NB-IoT modem where none is:
 
 - **A marker — at once.** Something happened (an ALARM, a `FAULT` of the marker set, a supply edge,
-  a lost clock or store): the 16 B values frame goes out now, rate-limited to one a minute.
-- **The heartbeat — once an hour**, restarted by every marker: the same 16 B frame — the second,
+  a lost clock or store): the 32 B values frame goes out now, rate-limited to one a minute.
+- **The heartbeat — once an hour**, restarted by every marker: the same 32 B frame — the second,
   the pack voltage, the board temperature, the event count, the alive mask, the flags with the
   clock's state and any shed. Nothing that is merely OK is sent; the heartbeat exists because
   silence cannot be told from death.
@@ -184,7 +184,7 @@ gateway:**
 - **LoRa gathers the cluster** → a single **gateway** station carries the one fatter link out. The
   leaves stay cheap and low-power; only the gateway spends the uplink watts/cost.
 - **The ratio is limited by LoRa, not the backhaul.** What the cluster gathers over LoRa is each
-  leaf's 16 B values frame, an hour apart and on a marker — a concentrator carries **30–100** leaves
+  leaf's 32 B values frame, an hour apart and on a marker — a concentrator carries **30–100** leaves
   on that, and the archive stays on each leaf's card until a fatter link or a visit takes it. Push
   the ratio high: the gateway's uplink is the dominant cost and power, so **minimise gateways**, and
   let the mesh **re-route** if one dies (don't over-concentrate).

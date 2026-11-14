@@ -723,8 +723,9 @@ reads it off the BMS; its arms' and `EXT`'s feeds are sockets 1–5 of the same 
 
 ## 6. Storage & uplink
 
-- **The modem carries what the modem can** — on every modem a fixed 16-byte values frame (id,
-  second, voltage, temperature, event count, node-alive mask, flags, last peak; CRC-16), sent **as a
+- **The modem carries what the modem can** — on every modem a fixed 32-byte values frame (id,
+  second, voltage, temperature, event count, a unit-alive mask of 128 bits, flags, last peak;
+  CRC-16 — the layout in `../mayak/FIRMWARE.md` §9), sent **as a
   heartbeat once an hour and immediately on a marker, every marker restarting the hour**; markers
   are rate-limited. Nothing that is merely OK is sent — the heartbeat exists because silence cannot
   be told from death, and it carries the two numbers that predict a fault before it is one, the pack
