@@ -300,7 +300,8 @@ short.
 *pending* — sent to the unit, awaiting its confirmation · *confirmed* — the unit's `ACK` through the
 card came back and the mirror committed. A value never reads done the moment it is saved. Only a
 confirmed value reaches the flash; an edited or a pending one is held in RAM, and a reboot drops it
-— the phone shows the confirmed value again, and the unit was never left half-written. A direct
+— the phone shows the confirmed value again, and a value that was pending is read back from the
+unit before it is offered once more. A direct
 write to a unit would tunnel, wait and confirm exactly the same, so the mirror costs nothing and
 adds the audit point.
 
