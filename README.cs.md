@@ -272,7 +272,7 @@ se `HARDWARE.md` desky ustálí: nejdřív deska, potom tato vrstva.
 
 | | |
 |---|---|
-| jádro protokolu | [`core/proto/`](core/proto/) — rámce, adresy, CONTROL a roster; `LOAD`, proud a zkušební boot; datová cesta karty; příjem na hlavě, uplink a živý paket — C99, `make check`, `make cross` |
+| jádro protokolu | [`core/proto/`](core/proto/) — rámce, adresy, CONTROL a roster; `LOAD`, proud a zkušební boot; datová cesta karty; příjem na hlavě, uplink, živý paket a obě karty — C99, `make check`, `make cross` |
 | referenční knihovna archivu | [`core/archive/ref/`](core/archive/ref/) — HMC a HCC, pravidla záznamu a odesílání, odesílací sezení, v Pythonu a v C se stejnými bajty (`tests/test_c.py`), HCC změřený na otevřených nahrávkách |
 | exportéry | [`core/archive/export/`](core/archive/export/) — miniSEED + StationXML, IAGA-2002, CSV a SQL, čtené z archivu dodatečně |
 | výpočty za dokumenty | [`gaia/tools/`](gaia/tools/) mapy umístění · [`gauss/models/`](gauss/models/) model umístění v mělké vodě · [`marconi/models/`](marconi/models/) směrování smyčky · [`tesla/design/`](tesla/design/) pracovní list tyče, výpočet jejího pole a limitace a šumové dno řetězce |

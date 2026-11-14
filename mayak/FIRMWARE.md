@@ -565,7 +565,8 @@ and the session (`../core/archive/ref/`); the command check — the counter, the
 K0 (`../core/proto/nic_cmd.c`, `test/test_cmd.c`); the tree composed and the numbers decided
 (`../core/proto/nic_tree.c`, `test/test_tree.c`); the uplink — `HELLO`, the `CURSOR`, the
 archive forward, `WINDOW`'s answer, `ACK` — and the live packet (`../core/proto/nic_uplink.c`,
-`nic_live.c`, `test/test_uplink.c`, `test/test_live.c`).
+`nic_live.c`, `test/test_uplink.c`, `test/test_live.c`); the cards' circle, a card let out and
+brought level (`../core/proto/nic_cards.c`, `test/test_cards.c`).
 
 **On a PC, with the pins replaced by callbacks:** the trunk parser against recorded traffic —
 a 48 B record cut by a stall, a 12 B `ERROR` between two records, a CRC miss and its

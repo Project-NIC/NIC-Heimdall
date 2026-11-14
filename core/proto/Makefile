@@ -37,7 +37,10 @@ test/test_uplink: nic_uplink.c nic_uplink.h test/test_uplink.c $(ARCH)/session.c
 test/test_live: nic_live.c nic_live.h test/test_live.c $(ARCH)/session.c
 	$(CC) $(CFLAGS) -ffp-contract=off -I$(ARCH) -o $@ nic_live.c $(ARCH)/session.c $(ARCH)/hmc.c $(ARCH)/hcc.c test/test_live.c -lm
 
-check: test/test_uplink test/test_live test/test_kronos test/test_tree test/test_cmd test/test_proto test/test_load test/test_card test/test_ingest test/test_cells test/test_sweep
+test/test_cards: nic_cards.c nic_cards.h test/test_cards.c $(ARCH)/hmc.c
+	$(CC) $(CFLAGS) -ffp-contract=off -I$(ARCH) -o $@ nic_cards.c $(ARCH)/hmc.c $(ARCH)/hcc.c test/test_cards.c -lm
+
+check: test/test_cards test/test_uplink test/test_live test/test_kronos test/test_tree test/test_cmd test/test_proto test/test_load test/test_card test/test_ingest test/test_cells test/test_sweep
 	./test/test_proto
 	./test/test_load
 	./test/test_card
@@ -49,6 +52,7 @@ check: test/test_uplink test/test_live test/test_kronos test/test_tree test/test
 	./test/test_kronos
 	./test/test_uplink
 	./test/test_live
+	./test/test_cards
 
 # the same sources for the MCUs: the H523's and H7A3's Cortex-M, the head's 32-bit RISC-V
 cross:
@@ -63,10 +67,11 @@ cross:
 	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -I$(ARCH) -c nic_cmd.c -o /dev/null
 	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -I$(ARCH) -c nic_uplink.c -o /dev/null
 	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -I$(ARCH) -c nic_live.c -o /dev/null
+	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -I$(ARCH) -c nic_cards.c -o /dev/null
 	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -c nic_tree.c -o /dev/null
 	arm-none-eabi-gcc -mcpu=cortex-m33 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 $(CFLAGS) -Os -c nic_kronos.c -o /dev/null
 
 clean:
-	rm -f test/test_proto test/test_load test/test_card test/test_ingest test/test_cells test/test_sweep test/test_cmd test/test_tree test/test_kronos test/test_uplink test/test_live
+	rm -f test/test_proto test/test_load test/test_card test/test_ingest test/test_cells test/test_sweep test/test_cmd test/test_tree test/test_kronos test/test_uplink test/test_live test/test_cards
 
 .PHONY: check cross clean

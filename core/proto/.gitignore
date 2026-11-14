@@ -9,3 +9,4 @@ test/test_tree
 test/test_kronos
 test/test_uplink
 test/test_live
+test/test_cards
