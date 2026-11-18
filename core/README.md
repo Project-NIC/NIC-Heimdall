@@ -112,7 +112,7 @@ Reusable hardware blocks shared by every node and master — copy a block, don't
 
 ```
 core/                    the node core — the bus, the frame, the clock, the uplink
-├── archive/             HMC, the container · HCC, the codec · the exporters · ref/, the reference library
+├── archive/             MLF, the container · NRC, the codec · the exporters · ref/, the reference library
 └── blocks/              the hardware blocks, one file each
 ```
 
@@ -131,10 +131,10 @@ core/                    the node core — the bus, the frame, the clock, the up
 | [`INTEROP.md`](INTEROP.md) | who takes our data, and in what format |
 | [`WHY.md`](WHY.md) | the graveyard |
 | [`blocks/`](blocks/) | the hardware blocks, one file each — the table above |
-| [`archive/HMC.md`](archive/HMC.md) | the archive: the container — a series of files per unit, the recording and send rules, data from the front and the description from the back |
-| [`archive/HCC.md`](archive/HCC.md) | the archive: the codec — one address's kept records, column by column, lossless; no table, a rule |
+| [`archive/MLF.md`](archive/MLF.md) | Heimdall's profile of MLF, the container, its core in NIC-SDK — a series of files per unit, the recording and send rules, the uplink |
+| [`archive/NRC.md`](archive/NRC.md) | Heimdall's profile of NRC, the codec, its core in NIC-SDK — one address's kept records cut into series, column by column, lossless |
 | [`archive/EXPORTERS.md`](archive/EXPORTERS.md) | the archive's readers — miniSEED, IAGA-2002, RINEX, BUFR, CWOP, IOC, air quality, Blitzortung, CSV, SQL, the viewer; one template each |
-| [`archive/ref/`](archive/ref/README.md) | the reference code, Python — HCC's coder and decoder, Steim-2, the measurement |
+| [`archive/ref/`](archive/ref/README.md) | the reference code, Python — NRC's coder and decoder, Steim-2, the measurement |
 
 ---
 

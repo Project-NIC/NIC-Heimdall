@@ -5,7 +5,7 @@
 > **Design-stage concept — nothing built.** What each exporter takes and writes is fixed here; the
 > code is written against this page when the reference library runs, and checked as each entry says.
 
-**An exporter is a reader.** It opens HMC files (`HMC.md`) through the one reference library,
+**An exporter is a reader.** It opens MLF files (`MLF.md`) through the one reference library,
 takes the records of the addresses and the window it is asked for, and writes a format someone
 else defines. **It never touches the station, the bus or the archive**: a new format is a new
 reader, and an export is re-written from the same bytes whenever a layout or a model improves.
@@ -18,7 +18,7 @@ written.
   format's time is the second plus `frame × 2²⁰ / rows` project ticks — 8 192 a frame at 128 rows —
   made decimal by the one constant 10⁶/2²⁰ (`../blocks/nodbus.md`). A record front carries the
   instant its own `BUS.md` gives it: Sputnik's epochs carry the receiver's tag. **The archive's
-  seconds are GPS time in the Unix epoch, leap-blind** (`HMC.md`); an exporter subtracts the GPS −
+  seconds are GPS time in the Unix epoch, leap-blind** (`MLF.md`); an exporter subtracts the GPS −
   UTC offset of the `TIME` section in force at the record's second, and writes UTC throughout — a
   leap second the format's own business, from the `TIME` section's announcement.
 - **Values follow the one calibration rule** (`../INTEROP.md`): a format built for counts — miniSEED
@@ -44,7 +44,7 @@ written.
   configuration, never the station's.
 - **An export is a function of the archive and its request**: the same files and the same request
   write the same bytes. An exporter keeps no state of its own; what it last sent is the server's
-  catalogue (`HMC.md`, *On the server*).
+  catalogue (`MLF.md`, *On the server*).
 
 **Each entry below says the same seven things**: what it takes, what it writes, the time, the
 values, the metadata, the gaps and flags, and what it is checked with.
@@ -176,7 +176,7 @@ values, the metadata, the gaps and flags, and what it is checked with.
 
 **Not an archive — a query tool beside it**, for whoever wants to ask a few years of a station with
 a query instead of a program. The tables are written from the files and dropped and rebuilt at
-will; the catalogue of *On the server* (`HMC.md`) is the same schema without the values.
+will; the catalogue of *On the server* (`MLF.md`) is the same schema without the values.
 
 | | |
 |---|---|

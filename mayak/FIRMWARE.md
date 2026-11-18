@@ -52,7 +52,7 @@ and nothing on the head hands out a token per sample.
 |---|---|---|---|
 | 1 | reset | the four trunk UARTs idle at 38 400, the modem held in reset, the LED off, the BLE radio off; `VBUS` (`GPIO49`) read — **USB power with no 12 V is service mode** (§3) | — |
 | 2 | flash | the configuration read from the module's flash: the mirror, the climatology tables, K0 and K1, the uplink settings, the corrections table; each block CRC-checked | a block that fails is replaced by its default and `HEALTH`, `FAULT` up says so; a station with no mirror is fresh |
-| 3 | the cards | the SD host brought up on both slots at 1-bit; each unit's last file on each card found, its description binary-searched for the last good entry (`../core/archive/HMC.md`); the archive's last timestamp read — the floor for a seed | a card that fails to mount is reported and the other carries on; both failing is `NO_STORE` — the head still runs and uplinks, the PSRAM buffers the only store |
+| 3 | the cards | the SD host brought up on both slots at 1-bit; each unit's last file on each card found, its description binary-searched for the last good entry (`../core/archive/MLF.md`); the archive's last timestamp read — the floor for a seed | a card that fails to mount is reported and the other carries on; both failing is `NO_STORE` — the head still runs and uplinks, the PSRAM buffers the only store |
 | 4 | IDs | the four port `ID`s and Hermes's read on ADC1 once, 16× oversampled: 0,15 is a card, 1,00 an empty port, 0,90 Hermes; a port at 0,00 or off-scale is not spoken to | — |
 | 5 | Kronos | the time bus's HP I²C 0 up as a multi-master; `ATTN` (`GPIO5`) read once and mirrored; the MCPWM capture armed on `GPIO47`; Kronos's `STATE` and `QUALITY` read (`../kronos/FIRMWARE.md` §8); the corrections table offered — Kronos's copy read, the head's copy written where they differ, the head's being the authority | no Kronos on the bus: `NO_CLOCK`, reported; the head runs, archives nothing stamped, and uplinks the fault |
 | 6 | Hermes | the LP I²C up; Hermes's block read once; the thresholds of §11 written; the `SHT45` read | no Hermes: `NO_BMS`, reported; the survival loop is disabled and the head says so in every SOH |
@@ -149,7 +149,7 @@ event log.
 **The leap offset rides into the archive.** With the label once a minute the head reads Kronos's
 `0x65 LEAP` — the GPS − UTC offset, a pending leap and its boundary (`../kronos/FIRMWARE.md`) —
 and when any of it changes writes a `TIME` config into every live file from that second
-(`../core/archive/HMC.md`), so an exporter turns the archive's leap-blind seconds into UTC from the
+(`../core/archive/MLF.md`), so an exporter turns the archive's leap-blind seconds into UTC from the
 file alone.
 
 **A record's second is checked, not trusted.** A record whose 4 B second is more than
@@ -175,11 +175,11 @@ by comparing bytes, never values. Whatever the rule but `NONE`, a frame whose `k
 differs from the last one kept is kept, and so is every report frame. The defaults are per TYPE — `CHANGE` at
 least hourly on Palatine, `NONZERO` at least every minute on Tesla, `ALL` on the rest — and the
 mirror holds the rule per address, set from the handset or by the server; a change is written into
-the unit's file as a config from that second (`../core/archive/HMC.md`). The report frames are the
+the unit's file as a config from that second (`../core/archive/MLF.md`). The report frames are the
 one kind the head reads, for the leak watch (§8).
 
 **The spool.** **A buffer per address in PSRAM; a buffer becomes one segment when it holds 16 kB or
-8 s after its first record**, coded by the shortest codec — HCC (`../core/archive/HCC.md`) or raw —
+8 s after its first record**, coded by the shortest codec — NRC (`../core/archive/NRC.md`) or raw —
 and written into the unit's live file — the data at the front, its 16 B description entry at the
 back, the data first. Files are allocated whole at **1 MB × 2^size** — 64 MB for an address under
 `ALL`, 1 MB for every other — and the next opens when the two meet, under the unit's address and the
@@ -187,11 +187,11 @@ day: a Quake's file lasts hours, a Palatine's months; the FAT is touched only wh
 Both cards get every segment; a write that fails on one card is reported and that card is marked
 until it is swapped; the primary for reads is slot 0 unless slot 0 is the failed one. The buffers
 cover a card's wear-levelling stall; a stall longer than 8 s costs the oldest records and counts.
-The writer is the HMC/HCC reference library in C, the same code the readers use.
+The writer is the MLF/NRC reference library in C, the same code the readers use.
 
 **The circle and the second card** (the owner, 14 Nov 2026). **512 MB stays free on each card**:
 when either falls below it the oldest files go from both, never an open one, and a file given up
-before the server acknowledged it whole is a line in the event log (`../core/archive/HMC.md`).
+before the server acknowledged it whole is a line in the event log (`../core/archive/MLF.md`).
 **A card is taken out by the `card` command** — from the handset or the console: the head writes
 every buffer to it, stops writing it, closes its files, and the status document and the LED say it
 may come out; the other card carries on alone. A card pulled without it loses at most the segment
@@ -413,7 +413,7 @@ eight waiting at most, each file searched to a minute past the window's end
 
 **The live packet** goes on every link given a cadence — Wi-Fi, cellular, a satellite module on a
 freed trunk UART: what each address's **send rule** for that link selects from what was recorded
-since the last live packet, coded by HCC, one segment per address (`../core/archive/HMC.md`, *The
+since the last live packet, coded by NRC, one segment per address (`../core/archive/MLF.md`, *The
 uplink*), taken as the archive writes it — at most a segment's 8 s behind, a repair never, the
 newest kept when an address outgrows its 8 kB between packets (`../core/PROTOCOL.md` §6). It is
 the server's live view and never its archive. A station with no Wi-Fi sends one live
@@ -429,7 +429,7 @@ switch, the old image kept for a rollback on a failed boot. The session ends at 
 when the pack says so (§11); the archive is complete either way.
 
 **Interop is the server's** — the exporters of `../core/archive/EXPORTERS.md` are readers of the
-archive (`../core/INTEROP.md`); the head emits HMC and nothing else.
+archive (`../core/INTEROP.md`); the head emits MLF and nothing else.
 
 ## 10. The service window — the phone, the button, the LED, the console
 
@@ -588,8 +588,8 @@ time is the card's stamp; a late handler moves nothing but the moment a block is
 
 ## 16. What is tested, and where
 
-**Written so far** — the buckets, the close and its fillers, the rules, the spool into HMC and a
-late repair (`../core/proto/nic_ingest.c`, `test/test_ingest.c`); the HMC/HCC library, the rules
+**Written so far** — the buckets, the close and its fillers, the rules, the spool into MLF and a
+late repair (`../core/proto/nic_ingest.c`, `test/test_ingest.c`); the MLF/NRC library, the rules
 and the session (`../core/archive/ref/`); the command check — the counter, the tag, `SET K1` under
 K0 (`../core/proto/nic_cmd.c`, `test/test_cmd.c`); the tree composed and the numbers decided
 (`../core/proto/nic_tree.c`, `test/test_tree.c`); the uplink — `HELLO`, the `CURSOR`, the
@@ -607,8 +607,8 @@ coulomb count, the shed, the ordered shutdown and the survival loop's wake
 **On a PC, with the pins replaced by callbacks:** the trunk parser against recorded traffic —
 a 48 B record cut by a stall, a 12 B `ERROR` between two records, a CRC miss and its
 `RESEND`; the reassembly with frames arriving 0,9 s and 1,1 s late; every recording rule against
-recorded traffic, its edges kept; the spool's segments, entries and file change against the HMC
-reader, and every HCC stream round-tripped; the boot's binary search on a file cut mid-segment; the tree composed from three cards' tables and an
+recorded traffic, its edges kept; the spool's segments, entries and file change against the MLF
+reader, and every NRC stream round-tripped; the boot's binary search on a file cut mid-segment; the tree composed from three cards' tables and an
 Argus's; the renumbering cases of §7 one by one; the mirror's three states; the MAC with a
 replayed nonce; the values frame's fields and the rate limit; the session's resume from a
 `CURSOR` in the middle of a file; the coulomb estimate against a recorded week of Hermes

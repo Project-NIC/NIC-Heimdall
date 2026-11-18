@@ -50,7 +50,7 @@ space and are indexed below with the rest; a number is never issued twice.
 | D27 | Absolute time: a GPS-disciplined anchor + the sample index | `PROTOCOL.md` §4 |
 | D28 | Generic config slots (front-agnostic protocol, front-defined meaning) | `PROTOCOL.md` §5 |
 | D29 | Fixed 8-byte frame overhead + Modbus tunnelled in the payload | `PROTOCOL.md` §1 |
-| D30 | The archive and the uplink = HMC files per unit, HCC segments; archive and live packets | `archive/HMC.md` · `archive/HCC.md` |
+| D30 | The archive and the uplink = MLF files per unit, NRC segments; archive and live packets | `archive/MLF.md` · `archive/NRC.md` |
 | D31 | Uplink session protocol: HELLO / server CURSOR / cumulative ACK | `PROTOCOL.md` §6 |
 | D32 | DATA payload widened 28 → 32 B (power-of-two); frame still fixed | `PROTOCOL.md` §1 |
 | D33 | Station position: auto-acquired from the on-board GPS | `PROTOCOL.md` §7 |
@@ -59,7 +59,7 @@ space and are indexed below with the rest; a number is never issued twice.
 | D36 | Data-priority tiers: what streams, what is queried, what never leaves the node | `PROTOCOL.md` §5 |
 | D37 | Subcommutation: mux slow channels on the wire, demux to per-channel storage | `PROTOCOL.md` §5 |
 | D38 | Universal per-NODE_TYPE wire schema | `PROTOCOL.md` §5 |
-| D39 | Master-side storage: a recording rule per unit selects by bytes; a send rule per unit and link | `archive/HMC.md` · `PROTOCOL.md` §5 |
+| D39 | Master-side storage: a recording rule per unit selects by bytes; a send rule per unit and link | `archive/MLF.md` · `PROTOCOL.md` §5 |
 | D40 | Master split: ESP32 data head + a separate STM32 clock board | `../kronos/README.md` · `../mayak/README.md` |
 | D41 | One universal MCU across the whole project: STM32H523 | `../NAMING.md` |
 | D42 | A station is a modular master + node-subset bus; freed slots are open extension points | `PROTOCOL.md` §8 |

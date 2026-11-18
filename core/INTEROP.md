@@ -13,8 +13,8 @@ absolute reference — we deliberately leave to them. The path is proven: **Rasp
 got an FDSN network code (`AM`), its ~2k community stations flow into EarthScope, and the
 ISC cites their picks. NIC walks the same path with ten quantities instead of one.
 
-**Why it is cheap for us:** the architecture already assumes it. The HMC archive is raw and
-self-describing (derive-from-raw, `archive/HMC.md`), so **an export format is just another reader** — no
+**Why it is cheap for us:** the architecture already assumes it. The MLF archive is raw and
+self-describing (derive-from-raw, `archive/MLF.md`), so **an export format is just another reader** — no
 change to the station, the bus, or the protocol. How each one is written is
 [`archive/EXPORTERS.md`](archive/EXPORTERS.md). And the trade goes both ways: we give the
 aggregators the density they don't have (see `../gaia/` — India, Turkey, Indonesia…), and
@@ -25,11 +25,11 @@ regression in `../gauss/CONSTRUCTION.md` is exactly this, and FDSN locations val
 
 | domain | system | takes us? | format / channel | from the station |
 |---|---|---|---|---|
-| **seismology** | FDSN / EarthScope, SeisComP, ObsPy | **yes** — Raspberry Shake precedent | **miniSEED** + StationXML | the miniSEED exporter on the HMC reader (Steim-2 + StationXML); the network code is a registration (the gate below) |
+| **seismology** | FDSN / EarthScope, SeisComP, ObsPy | **yes** — Raspberry Shake precedent | **miniSEED** + StationXML | the miniSEED exporter on the MLF reader (Steim-2 + StationXML); the network code is a registration (the gate below) |
 | | ISC (bulletin) | yes — takes picks/data from registered networks | via FDSN | paperwork only |
 | **geomagnetics** | INTERMAGNET | **no** — needs an *absolute observatory*: weekly DI-flux measurements by a human on a fixed pier (see below) | — | out of scope by design |
-| | **SuperMAG** | **yes** — aggregates ~600 *variometers*, strips baselines itself | **IAGA-2002**, `Data Type: variation` | the IAGA-2002 exporter on the HMC reader (calibrated nT out of the archive) |
-| **GNSS: TEC** | Madrigal (MIT Haystack) | **yes** — takes any dual-frequency RINEX | **RINEX** | the RINEX exporter on the HMC reader, from Sputnik's Tier B |
+| | **SuperMAG** | **yes** — aggregates ~600 *variometers*, strips baselines itself | **IAGA-2002**, `Data Type: variation` | the IAGA-2002 exporter on the MLF reader (calibrated nT out of the archive) |
+| **GNSS: TEC** | Madrigal (MIT Haystack) | **yes** — takes any dual-frequency RINEX | **RINEX** | the RINEX exporter on the MLF reader, from Sputnik's Tier B |
 | **GNSS: geodesy** | Nevada Geodetic Lab, EarthScope | **yes** — NGL processes any submitted RINEX (20k+ stations) → PPP positions, crustal motion | RINEX upload | the same RINEX export — pairs beautifully with Quake |
 | | CORS / IGS densification | **yes** — the UM980 is survey/geodetic class | RINEX + site info | needs a decent antenna |
 | | IGS core | per-station — needs a **calibrated antenna (ANTEX) + monument + site log**; the receiver is NOT the blocker | RINEX | achievable where a station earns it |
@@ -47,10 +47,10 @@ Two exporters, two deliberate conventions, one raw archive:
 
 - **miniSEED carries raw counts**; calibration belongs in **StationXML** metadata (that is
   seismology's own split — data vs. response). Both are written by the miniSEED exporter.
-- **IAGA-2002 carries physical nT**; the exporter applies the scale of the field's layout in the HMC
+- **IAGA-2002 carries physical nT**; the exporter applies the scale of the field's layout in the MLF
   header (`physical = (raw + add) · mantissa · 10^exp10`, mantissa `0 ≡ 1`) on the way out.
 
-The archive itself never stores corrected values (derive-from-raw, `archive/HMC.md`); an export
+The archive itself never stores corrected values (derive-from-raw, `archive/MLF.md`); an export
 is a *view*, re-derivable forever with a better model.
 
 ### No field calibration — precision by selection, zero by reference
@@ -72,7 +72,7 @@ calibration buys nothing:
 **So the StationXML response is flat — `InstrumentSensitivity` only** — which is correct for this
 sensor set and is what the miniSEED exporter emits. A sensor that one day needs a response is
 given a write-once calibration block per unit, carried to the head as one out-of-band packet
-and into the HMC header's `RESPONSE` section, from which StationXML takes poles and zeros.
+and into the MLF header's `RESPONSE` section, from which StationXML takes poles and zeros.
 
 ## Why INTERMAGNET is a "no" — and why that costs nothing
 

@@ -37,8 +37,8 @@
 > их ждёт. Тот, кто нарисует первую плату, начинает с готового описания, а не с чистого листа, —
 > и если это вы, папка ваша. Сквозной нумерации по станции нет; плату находят в её проекте по имени.
 
-*(Архив — HMC, контейнер, и HCC, кодек, — собственный у станции, в
-[`core/archive/`](core/archive/HMC.md).)*
+*(Архив — MLF, контейнер, и NRC, кодек, — собственный у станции, в
+[`core/archive/`](core/archive/MLF.md).)*
 
 ## С чего начать
 
@@ -46,7 +46,7 @@
 |---|---|
 | **что она измеряет** | [*Блоки*](#блоки--что-измеряется-и-чем), ниже — по строке на блок, каждая со ссылкой на его папку |
 | **как устроена станция** | [*Что такое станция*](#что-такое-станция), затем [`core/`](core/README.md) и [`core/COMMS.md`](core/COMMS.md) — шина, часы, все связи в одной таблице |
-| **как данные хранятся и передаются** | [`core/archive/HMC.md`](core/archive/HMC.md), [`EXPORTERS.md`](core/archive/EXPORTERS.md) и [`core/INTEROP.md`](core/INTEROP.md) — архив, его читатели и кто забирает данные |
+| **как данные хранятся и передаются** | [`core/archive/MLF.md`](core/archive/MLF.md), [`EXPORTERS.md`](core/archive/EXPORTERS.md) и [`core/INTEROP.md`](core/INTEROP.md) — архив, его читатели и кто забирает данные |
 | **как она собирается** | [`daedalus/`](daedalus/README.md) — станция как сооружение, `HARDWARE.md` каждой платы — сама плата, [`schematics/`](schematics/README.md) — будущие чертежи |
 | **почему она такая, какая есть** | `WHY.md` в каждой папке — что пробовали, что отвергли и почему |
 | **как помочь и как цитировать** | [`CONTRIBUTING.md`](CONTRIBUTING.md) · [`CITATION.cff`](CITATION.cff) |
@@ -285,7 +285,7 @@ Modbus RTU, 9 600 или 19 200 8N1, питание от 12 V ветви (вхо
 | | |
 |---|---|
 | ядро протокола | [`core/proto/`](core/proto/) — кадры, адреса, CONTROL и реестр; `LOAD`, поток и пробная загрузка; тракт данных карты; приём, выгрузка на сервер, живой пакет, две карты, зеркало конфигурации, туннель ModBus, кадр значений для модема, сторона GATT для телефона, питание и консоль на головном блоке — C99, `make check`, `make cross` |
-| эталонная библиотека архива | [`core/archive/ref/`](core/archive/ref/) — HMC и HCC, правила записи и отправки, сеанс выгрузки, на Python и на C с одинаковыми байтами (`core/archive/ref/tests/test_c.py`), HCC измерен на открытых записях |
+| эталонная библиотека архива | [`core/archive/ref/`](core/archive/ref/) — MLF и NRC, правила записи и отправки, сеанс выгрузки, на Python и на C с одинаковыми байтами (`core/archive/ref/tests/test_c.py`), NRC измерен на открытых записях |
 | экспортёры | [`core/archive/export/`](core/archive/export/) — miniSEED + StationXML, IAGA-2002, CSV и SQL, читаемые из архива задним числом |
 | расчёты, на которых стоят документы | [`gaia/tools/`](gaia/tools/) карты размещения · [`gauss/models/`](gauss/models/) модель размещения на мелководье · [`marconi/models/`](marconi/models/) наведение рамки · [`tesla/design/`](tesla/design/) расчётный лист стержня, расчёт его поля, а также ограничение и шумовой порог тракта |
 
@@ -343,7 +343,7 @@ NIC-Heimdall/
 | что с чем связано и через что | **[`core/COMMS.md`](core/COMMS.md)** |
 | имена, назначение MCU, кто NOD, а кто MOD | **[`NAMING.md`](NAMING.md)** |
 | кто забирает наши данные и в каком формате | **[`core/INTEROP.md`](core/INTEROP.md)** |
-| архив — HMC, контейнер, и HCC, кодек | **[`core/archive/`](core/archive/HMC.md)** |
+| архив — MLF, контейнер, и NRC, кодек | **[`core/archive/`](core/archive/MLF.md)** |
 | экспортёры — все форматы, которые принимает мир, записанные из архива | **[`core/archive/EXPORTERS.md`](core/archive/EXPORTERS.md)** |
 
 ## Открытость

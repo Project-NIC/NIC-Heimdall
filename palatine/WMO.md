@@ -205,7 +205,7 @@ its ten-minute sums of squares for the standard deviations — a few kilobytes o
 ## In the archive and on the link
 
 **The head stores each table as a series of its own**, address `6n` and the table's address, under
-the default rule `CHANGE` per block, which keeps every row once (`../core/archive/HMC.md`). The
+the default rule `CHANGE` per block, which keeps every row once (`../core/archive/MLF.md`). The
 other blocks of a mode-B Palatine go into its ordinary series as in mode A.
 
 **The `HOUR` and `DAY` rows are what a thin link carries.** A station with no Wi-Fi sends its live

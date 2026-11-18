@@ -8,14 +8,14 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "ref"))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "ref", "tests"))
-import hmc, export, steim2
-import test_hmc
+import hmlf, export, steim2
+import test_hmlf
 from obspy import read, read_inventory, UTCDateTime
 from obspy.io.stationxml.core import validate_stationxml
 
 
 def main():
-    name, header, ops = test_hmc.scenarios()[0]                  # the Quake, two configs
+    name, header, ops = test_hmlf.scenarios()[0]                  # the Quake, two configs
     # a CLIPPED and a DISTURBED frame, and one segment left out: a gap
     ops = [list(op) for op in ops]
     segs = [k for k, op in enumerate(ops) if op[0] == "seg"]
@@ -24,7 +24,7 @@ def main():
     recs[-5] = recs[-5][:3] + (export.DISTURBED,) + recs[-5][4:]
     ops[segs[1]][1] = recs
     gap = ops.pop(segs[3])
-    w, kept = test_hmc.write(header, [tuple(op) for op in ops])
+    w, kept = test_hmlf.write(header, [tuple(op) for op in ops])
     images = [bytes(w.image)]
     series = [export.read_series(images, c) for c in range(3)]
     s0 = series[0]

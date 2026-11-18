@@ -7,7 +7,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "hmc.h"
+#include "hmlf.h"
 
 #define SES_TAG 8u
 #define SES_NONE_ENTRY 0xFFFFFFFFu
@@ -97,10 +97,10 @@ int ses_window_parse(const uint8_t key[16], uint32_t station, uint32_t stored, c
  * to `budget` bytes of objects — packet[k] the packet entry idx[k] rides in. window: the segments
  * whose first to last second touches [second − span, second + span] and the configs before the
  * last of them. idx and packet hold r->entries. */
-size_t ses_forward(const hmc_reader *r, uint32_t held, size_t budget, uint32_t *idx,
+size_t ses_forward(const mlf_reader *r, uint32_t held, size_t budget, uint32_t *idx,
                    uint32_t *packet);
-size_t ses_window_cut(const hmc_reader *r, uint32_t second, uint32_t span, uint32_t *idx);
+size_t ses_window_cut(const mlf_reader *r, uint32_t second, uint32_t span, uint32_t *idx);
 /* The object an entry points at, as an ARCHIVE packet carries it. */
-int ses_object_of(const hmc_reader *r, uint32_t index, ses_object *o);
+int ses_object_of(const mlf_reader *r, uint32_t index, ses_object *o);
 
 #endif

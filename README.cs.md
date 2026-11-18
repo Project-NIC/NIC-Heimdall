@@ -36,8 +36,8 @@ nesou. Běžně dostupné součástky a data dost lehká na zpracování na dom�
 > desku, začíná z hotového popisu, ne z prázdné stránky — a jste-li to vy, složka je vaše.
 > Číslování v rámci celé stanice neexistuje; desku najdete pod jejím projektem podle jména.
 
-*(Archiv — HMC, kontejner, a HCC, kodek — je vlastní součástí stanice, v
-[`core/archive/`](core/archive/HMC.md).)*
+*(Archiv — MLF, kontejner, a NRC, kodek — je vlastní součástí stanice, v
+[`core/archive/`](core/archive/MLF.md).)*
 
 ## Začněte zde
 
@@ -45,7 +45,7 @@ nesou. Běžně dostupné součástky a data dost lehká na zpracování na dom�
 |---|---|
 | **co měří** | [*Jednotky*](#jednotky--co-měří-a-čím-to-měří), níže — jeden řádek na jednotku, každý s odkazem na její složku |
 | **jak stanice drží pohromadě** | [*Co je stanice*](#co-je-stanice), pak [`core/`](core/README.md) a [`core/COMMS.md`](core/COMMS.md) — sběrnice, hodiny, každé spojení v jedné tabulce |
-| **jak se data uchovávají a sdílejí** | [`core/archive/HMC.md`](core/archive/HMC.md), [`EXPORTERS.md`](core/archive/EXPORTERS.md) a [`core/INTEROP.md`](core/INTEROP.md) — archiv, jeho čtečky a kdo data přebírá |
+| **jak se data uchovávají a sdílejí** | [`core/archive/MLF.md`](core/archive/MLF.md), [`EXPORTERS.md`](core/archive/EXPORTERS.md) a [`core/INTEROP.md`](core/INTEROP.md) — archiv, jeho čtečky a kdo data přebírá |
 | **jak se staví** | [`daedalus/`](daedalus/README.md) pro stanici jako konstrukci, `HARDWARE.md` každé desky pro desku, [`schematics/`](schematics/README.md) pro budoucí výkresy |
 | **proč je taková, jaká je** | `WHY.md` v každé složce — co se zkusilo, co padlo a proč |
 | **jak pomoci a jak citovat** | [`CONTRIBUTING.md`](CONTRIBUTING.md) · [`CITATION.cff`](CITATION.cff) |
@@ -275,7 +275,7 @@ se `HARDWARE.md` desky ustálí: nejdřív deska, potom tato vrstva.
 | | |
 |---|---|
 | jádro protokolu | [`core/proto/`](core/proto/) — rámce, adresy, CONTROL a roster; `LOAD`, proud a zkušební boot; datová cesta karty; příjem na hlavě, uplink, živý paket, obě karty, zrcadlo, tunel ModBus, rámec hodnot pro modem, strana GATT pro telefon, napájení a konzole — C99, `make check`, `make cross` |
-| referenční knihovna archivu | [`core/archive/ref/`](core/archive/ref/) — HMC a HCC, pravidla záznamu a odesílání, odesílací sezení, v Pythonu a v C se stejnými bajty (`core/archive/ref/tests/test_c.py`), HCC změřený na otevřených nahrávkách |
+| referenční knihovna archivu | [`core/archive/ref/`](core/archive/ref/) — MLF a NRC, pravidla záznamu a odesílání, odesílací sezení, v Pythonu a v C se stejnými bajty (`core/archive/ref/tests/test_c.py`), NRC změřený na otevřených nahrávkách |
 | exportéry | [`core/archive/export/`](core/archive/export/) — miniSEED + StationXML, IAGA-2002, CSV a SQL, čtené z archivu dodatečně |
 | výpočty za dokumenty | [`gaia/tools/`](gaia/tools/) mapy umístění · [`gauss/models/`](gauss/models/) model umístění v mělké vodě · [`marconi/models/`](marconi/models/) směrování smyčky · [`tesla/design/`](tesla/design/) pracovní list tyče, výpočet jejího pole a limitace a šumové dno řetězce |
 
@@ -333,7 +333,7 @@ NIC-Heimdall/
 | co mluví s čím a po čem | **[`core/COMMS.md`](core/COMMS.md)** |
 | názvy, přiřazení MCU, kdo je NOD a kdo MOD | **[`NAMING.md`](NAMING.md)** |
 | kdo přebírá naše data a v jakém formátu | **[`core/INTEROP.md`](core/INTEROP.md)** |
-| archiv — HMC, kontejner, a HCC, kodek | **[`core/archive/`](core/archive/HMC.md)** |
+| archiv — MLF, kontejner, a NRC, kodek | **[`core/archive/`](core/archive/MLF.md)** |
 | exportéry — každý formát, který svět přijímá, zapsaný z archivu | **[`core/archive/EXPORTERS.md`](core/archive/EXPORTERS.md)** |
 
 ## Otevřenost

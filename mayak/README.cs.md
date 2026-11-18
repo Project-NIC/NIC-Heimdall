@@ -12,7 +12,7 @@
 
 **Mayak zaznamenává stanici a je jejími jedinými dveřmi do světa.** Jedna deska s ESP32-S31: uvádí
 karty do fáze FLOOR, přijímá od nich hotové záznamy s časovou značkou, uzavírá každou sekundu, z každé
-jednotky si ponechá to, co vybere její pravidlo záznamu, a zapisuje to na dvě karty microSD jako HMC,
+jednotky si ponechá to, co vybere její pravidlo záznamu, a zapisuje to na dvě karty microSD jako MLF,
 řadu souborů pro každou jednotku, drží zrcadlo konfigurace stanice a posílá data domů — Wi-Fi pro
 archiv, modem pro tenký rámec hodnot, BLE pro telefon u otevřené skříně. **Neinterpretuje payload
 (užitečná data) žádného frontendu**: seismický vzorek i blok dat GNSS jsou bajty pod určitým TYPE,

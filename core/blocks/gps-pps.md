@@ -73,7 +73,7 @@ physics**: sferic propagation smears the waveform to ~µs and the network geomet
 satellite, so two stations need no common satellite to share time, to tens of ns. Per-event
 coherence is regional anyway, a sferic being heard within VLF range: the worldwide network is a
 mosaic of overlapping regional solutions, each stitched by GPS time. All stamps are GPS time in the Unix epoch — zone-free, leap-blind — and become UTC at export
-(`../archive/HMC.md`).
+(`../archive/MLF.md`).
 
 ## The GNSS receiver — two named types
 

@@ -13,7 +13,7 @@
 
 **Mayak records the station and is its one door to the world.** One board on an ESP32-S31: it brings
 the cards' floors up, receives the finished, stamped records they hand it, closes each second, keeps
-of each unit what its recording rule selects and writes it to two microSD cards as HMC, a series of
+of each unit what its recording rule selects and writes it to two microSD cards as MLF, a series of
 files per unit, holds the station's configuration mirror, and sends the data home — Wi-Fi for the
 archive, the modem for the thin values frame, BLE for the phone at the open box. **It interprets no
 front's payload**: a seismic sample and a GNSS chunk are bytes under a TYPE, kept or dropped by a

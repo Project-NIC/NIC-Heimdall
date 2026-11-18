@@ -104,10 +104,10 @@ length would cost the fixed slot schedule and buy nothing on a wire this empty.
 
 ## At storage
 
-**The archive codes this payload in Steim's shape.** HCC turns a segment's rows — up to 8 s of 128 a
+**The archive codes this payload in Steim's shape.** NRC turns a segment's rows — up to 8 s of 128 a
 second — into one series per field — each axis down its own column — and codes each against its last
 value or the line through the last two, with a Rice parameter chosen per 32 samples, so an event
-costs bits where it happens (`../core/archive/HCC.md`). **The slow channels need no decimation
+costs bits where it happens (`../core/archive/NRC.md`). **The slow channels need no decimation
 before the write**: the tilt and the field ride at their latest value, repeat between updates, and a
 repeated value is a zero residual of one bit a frame. The miniSEED export takes the axes' series as
 they are.

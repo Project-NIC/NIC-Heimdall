@@ -385,7 +385,7 @@ The two layers are 7 bits and 16, so a two-byte field carries one of them, never
 station-wide.** A frame is 2¹³ = 8 192 project ticks; an event time is the frame index shifted
 (× 8192) less a backward offset in the same ticks, with a borrow into the second — shifts and one
 subtraction, exact on the binary clock, no conversion constant anywhere on the station. **Decimal
-microseconds exist only at the exporters**: an HMC record carries the second and the frame index natively, and
+microseconds exist only at the exporters**: an MLF record carries the second and the frame index natively, and
 every exporter multiplies by the one constant 10⁶/2²⁰. **The record's own
 quantisation, ±0,48 µs, is the largest single term of the budget** (`gps-pps.md`, *The precision contract*),
 and it is accepted: a return stroke's channel is kilometres long, and its onset reaches two stations

@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "hmc.h"
+#include "hmlf.h"
 
 static int fails;
 #define CHECK(x) do { if (!(x)) { fails++; fprintf(stderr, "%s:%d: %s\n", __FILE__, __LINE__, #x); } } while (0)
@@ -68,7 +68,7 @@ static int io_create(void *ctx, int k, const nic_card_file *nf)
     (void)ctx;
     for (int i = 0; i < 64; i++)
         if (!card[k][i].used) {
-            card[k][i] = (cfile){1, nf->addr, nf->seq, calloc(1, (size_t)HMC_MB << nf->size), (size_t)HMC_MB << nf->size};
+            card[k][i] = (cfile){1, nf->addr, nf->seq, calloc(1, (size_t)MLF_MB << nf->size), (size_t)MLF_MB << nf->size};
             return 0;
         }
     return -1;
@@ -110,7 +110,7 @@ static nic_cards c;
 
 /* ------------------------------------------------------------------ the writer */
 
-typedef struct { int used; uint8_t addr; uint16_t seq; hmc_writer w; size_t end, entries; } master;
+typedef struct { int used; uint8_t addr; uint16_t seq; mlf_writer w; size_t end, entries; } master;
 static master m[64];
 static uint32_t clock_s = 1790856000u;
 
@@ -132,7 +132,7 @@ static void io_gone(void *ctx, uint8_t addr, uint16_t seq, int held)
     first_of[addr] = (uint16_t)(seq + 1);
     if (!held) unheld++;
     if (x) {
-        hmc_writer_close(&x->w);
+        mlf_writer_close(&x->w);
         x->used = 0;
     }
 }
@@ -140,15 +140,15 @@ static void io_gone(void *ctx, uint8_t addr, uint16_t seq, int held)
 
 static void open_file(uint8_t addr, uint16_t seq)
 {
-    static uint8_t sec[8 + 11] = {HMC_UNIT, 0, 0, 0, 11, 0, 0, 0, 1, 5, 1, 1, 1, 128, 0, 0, 0, 0, 0};
+    static uint8_t sec[8 + 11] = {HMLF_UNIT, 0, 0, 0, 11, 0, 0, 0, 1, 5, 1, 1, 1, 128, 0, 0, 0, 0, 0};
     master *x = 0;
     for (int i = 0; i < 64 && !x; i++)
         if (!m[i].used) x = &m[i];
-    hmc_header h = {addr, seq, clock_s, 0x123456, 0, 0, sec, sizeof sec};
+    hmlf_header h = {addr, seq, clock_s, 0x123456, 0, 0, sec, sizeof sec};
     x->used = 1;
     x->addr = addr;
     x->seq = seq;
-    CHECK(!hmc_writer_open(&x->w, &h));
+    CHECK(!hmlf_writer_open(&x->w, &h));
     x->end = x->w.end;
     x->entries = 0;
     nic_card_file nf = {addr, seq, clock_s, 0};
@@ -164,15 +164,15 @@ static void open_file(uint8_t addr, uint16_t seq)
 /* a segment, written to every card in: the data, then the entry */
 static void segment(uint8_t addr, size_t n)
 {
-    static hmc_event lines[1400];
+    static hmlf_event lines[1400];
     for (size_t i = 0; i < n; i++)
-        lines[i] = (hmc_event){clock_s + (uint32_t)(i * 8 / n), addr, (uint8_t)i, (uint16_t)(i * 31), (uint32_t)(i * 2654435761u)};
+        lines[i] = (hmlf_event){clock_s + (uint32_t)(i * 8 / n), addr, (uint8_t)i, (uint16_t)(i * 31), (uint32_t)(i * 2654435761u)};
     master *x = mfind(addr, live_of[addr]);
-    int e = hmc_writer_events(&x->w, lines, n);
-    if (e == HMC_FULL) {
+    int e = hmlf_writer_events(&x->w, lines, n);
+    if (e == MLF_FULL) {
         open_file(addr, (uint16_t)(live_of[addr] + 1));
         x = mfind(addr, live_of[addr]);
-        e = hmc_writer_events(&x->w, lines, n);
+        e = hmlf_writer_events(&x->w, lines, n);
     }
     CHECK(!e);
     clock_s += 8;
@@ -305,7 +305,7 @@ int main(void)
         for (int j = 0; j < 64; j++)
             if (card[k][j].used) free(card[k][j].img);
     for (int i = 0; i < 64; i++)
-        if (m[i].used) hmc_writer_close(&m[i].w);
+        if (m[i].used) mlf_writer_close(&m[i].w);
     if (fails) {
         printf("test_cards: %d FAILED\n", fails);
         return 1;

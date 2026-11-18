@@ -231,7 +231,7 @@ guessed.
 it from the frame header's `unix.0`, which changes at frame 0 — is preceded by 8 B: the Unix
 second the receiver's last `RMC` named — UTC, where the receiver's own epoch tags and the station's
 seconds are GPS time, so a reader adds the GPS − UTC offset of the archive's `TIME` section
-(`../core/archive/HMC.md`) — and `pps_tick` (§5), uint32 — the position of that
+(`../core/archive/MLF.md`) — and `pps_tick` (§5), uint32 — the position of that
 second's PPS edge on the grid. That is the one place the node writes an absolute time and it is
 the receiver's, not the card's; the card stamps the frame's own second as on every unit.
 

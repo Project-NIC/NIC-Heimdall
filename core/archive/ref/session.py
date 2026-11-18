@@ -10,7 +10,7 @@ import hmac
 import struct
 from typing import Dict, List, Optional, Sequence, Tuple
 
-import hmc
+import hmlf
 
 HELLO, CURSOR, ARCHIVE, ACK, LIVE, WINDOW, RETIRED_7, COMMAND, SET_K1 = range(1, 10)   # 7 was BOARD
 NONE_ENTRY = 0xFFFFFFFF
@@ -22,11 +22,11 @@ def tag(key: bytes, data: bytes) -> bytes:
 
 
 def message(raw: bytes) -> bytes:
-    return hmc.framed(raw)
+    return hmlf.framed(raw)
 
 
 def unframe(framed_without_zero: bytes) -> Tuple[int, bytes]:
-    raw = hmc.cobs_decode(framed_without_zero)
+    raw = hmlf.cobs_decode(framed_without_zero)
     if not raw:
         raise ValueError("session: an empty message")
     return raw[0], raw[1:]
@@ -114,7 +114,7 @@ def parse_archive(body: bytes) -> dict:
         for _ in range(count):
             index = struct.unpack_from("<I", body, i)[0]
             entry = body[i + 4:i + 20]
-            e = hmc.parse_entry(entry)
+            e = hmlf.parse_entry(entry)
             if e is None or i + 20 + e[2] > len(body) - 8:
                 raise ValueError
             objects.append((index, entry, body[i + 20:i + 20 + e[2]]))
@@ -219,9 +219,9 @@ def parse_set_k1(k0: bytes, station: int, stored_counter: int, body: bytes) -> d
 
 # ---------------------------------------------------------------- the files
 
-def file_objects(image: bytes) -> Tuple[hmc.Header, List[Tuple[int, bytes, bytes, Tuple]]]:
+def file_objects(image: bytes) -> Tuple[hmlf.Header, List[Tuple[int, bytes, bytes, Tuple]]]:
     """A file's objects as an ARCHIVE packet carries them: (index, entry, COBS bytes, entry)."""
-    r = hmc.Reader(image)
+    r = hmlf.Reader(image)
     out = []
     for i, e in enumerate(r.entries):
         if e is None:
@@ -253,18 +253,18 @@ def window_cut(image: bytes, second: int, span: int) -> List[Tuple[int, bytes, b
     lo, hi = second - span, second + span
     segs = []
     for i, e, c, ent in objs:
-        if ent[3] != hmc.SEG:
+        if ent[3] != hmlf.SEG:
             continue
         try:
-            t, o = hmc.parse_object(hmc.cobs_decode(c))
+            t, o = hmlf.parse_object(hmlf.cobs_decode(c))
         except ValueError:
             continue
-        if t == hmc.SEG and o["first"] <= hi and o["last"] >= lo:
+        if t == hmlf.SEG and o["first"] <= hi and o["last"] >= lo:
             segs.append(i)
     if not segs:
         return []
     return [(i, e, c) for i, e, c, ent in objs
-            if i in segs or (ent[3] == hmc.CFG and i < segs[-1])]
+            if i in segs or (ent[3] == hmlf.CFG and i < segs[-1])]
 
 
 class Server:
@@ -277,12 +277,12 @@ class Server:
 
     def take(self, p: dict) -> None:
         if p["header"]:
-            h = hmc.parse_header(p["header"])
+            h = hmlf.parse_header(p["header"])
             if self.image is None:
-                self.image = bytearray(hmc.MB << h.size)
+                self.image = bytearray(hmlf.MB << h.size)
             self.image[:len(p["header"])] = p["header"]
         for index, entry, cobs in p["objects"]:
-            e = hmc.parse_entry(entry)
+            e = hmlf.parse_entry(entry)
             self.image[e[1]:e[1] + e[2]] = cobs
             self.image[e[1] + e[2]] = 0
             at = len(self.image) - 16 * (index + 1)

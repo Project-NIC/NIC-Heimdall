@@ -8,7 +8,7 @@
 
 ## The principle — the card is the truth, the uplink is thin and layered
 
-Every station is **autonomous**: it records everything to its **card (HMC)** locally, always. The
+Every station is **autonomous**: it records everything to its **card (MLF)** locally, always. The
 uplink is **not** the data path of record — it is a **thin, best-effort, layered** convenience on
 top. This is only possible because the volume rides where it is cheap: the station sends the
 **archive forward from its `CURSOR` over Wi-Fi** when a window opens, **markers and the hourly
@@ -23,7 +23,7 @@ the list**; the card underneath never depends on any of them.
 
 | Layer | Role | When | Rough cost |
 |---|---|---|---|
-| **Card (HMC)** | the durable local truth — everything, always | always | — |
+| **Card (MLF)** | the durable local truth — everything, always | always | — |
 | **The modem** | the always-on **thin backbone**, one module in the modem position on the backup cell's rail — LoRa, the cheapest, where a gateway is in range: the 32 B values frame **at once on a marker** and **once an hour as the heartbeat**, one frame for both (`../mayak/FIRMWARE.md` §9). Carries the **32 B values frame, never the archive** — the frame stands alone; and where a site sets it, **the live packet**: a mode-B Palatine's hourly row and daily row, 32 B each (`../palatine/WMO.md`). **On the `LR1121`'s satellite path**, about six messages a day, the heartbeat stretches to ~4 h and the hourly live packet does not fit | everywhere | lowest on LoRa |
 | **Wi-Fi (directional, opportunistic)** | the **archive** in archive packets forward from the `CURSOR`, and any asked window, when an access point is reachable | site near an AP | low, **duty-cycled** |
 | **Satellite (small-burst)** | the values frame where there is **nothing** — the `LR1121` in the modem position, or an Iridium / Kinéis module on a freed trunk UART (`../mayak/HARDWARE.md`) | no gateway, no AP | bursty |
@@ -56,22 +56,22 @@ forward from the `CURSOR` over Wi-Fi, a window on demand elsewhere — or the ca
 ### How big is the archive, and the uplink — counted from what the head writes
 
 **Every NUMBER on the station fills its slot every frame, and the head keeps what its recording
-rule selects** (`archive/HMC.md`): under `ALL`, 128 frames a second, each its 32 B payload plus
+rule selects** (`archive/MLF.md`): under `ALL`, 128 frames a second, each its 32 B payload plus
 the `status` and `kind` bytes — what the units deliver; codec 0's record adds 7 B of its own, and
-HCC takes most of it back. A slot with nothing in it carries a filler. So the ceiling is the
+NRC takes most of it back. A slot with nothing in it carries a filler. So the ceiling is the
 same for every unit, whatever it measures:
 
-| | raw under `ALL`, before HCC |
+| | raw under `ALL`, before NRC |
 |---|---|
 | one NUMBER | 128 × 34 B = **4,35 kB/s · ~376 MB a day** |
 | a station of eight NUMBERs — one card full | ~35 kB/s · **~3 GB a day** |
 | the full station, 32 NUMBERs on four cards | ~139 kB/s · **~12 GB a day** |
 
 **What separates a seismic channel from a slow one is the recording rule.** A Quake under `ALL`
-keeps every frame and HCC codes it column by column (`archive/HCC.md`); a Palatine under `CHANGE`
+keeps every frame and NRC codes it column by column (`archive/NRC.md`); a Palatine under `CHANGE`
 keeps a ModBus block only when its bytes change — a few hundred bytes an hour for a weather set;
 a Tesla under `NONZERO` keeps only the frames that carry something. The table is the ceiling a
-card is sized against; the retention a station actually gets is its own rules' mix after HCC.
+card is sized against; the retention a station actually gets is its own rules' mix after NRC.
 
 **The card:** at the raw ceiling a 512 GB card holds ~6 weeks of the full station and ~6 months of
 one full card; a station of slow quantities under their default rules holds decades. **The uplink:**
@@ -80,7 +80,7 @@ archive. The archive leaves in archive packets over Wi-Fi or on a pulled card, a
 station's raw ceiling, ~1,1 Mb/s, is a small load on a Wi-Fi link that is up for a window. **The
 live packet** — what each unit's send rule selects, at a cadence per link — rides whatever link the
 site has: a station with no Wi-Fi sends a mode-B Palatine's hourly row over the modem, 32 B, and its
-cards are read when somebody comes (`archive/HMC.md`, *The uplink*).
+cards are read when somebody comes (`archive/MLF.md`, *The uplink*).
 
 ### Wi-Fi — opportunistic bulk over a directional antenna
 
@@ -117,7 +117,7 @@ at each end, 1,5 dB of cable and connectors and a 10 dB fade margin:
   narrow-band end-fire antenna is the Yagi. **A circular antenna needs a circular one at the far
   end** — against a linear one it loses 3 dB — and rejects a reflection, which comes back with the
   opposite hand.
-- **The archive needs MCS0 to MCS2** — the full station's raw ceiling is ~1,1 Mb/s and HCC takes it
+- **The archive needs MCS0 to MCS2** — the full station's raw ceiling is ~1,1 Mb/s and NRC takes it
   lower. **The base is a 1 m grid dish, ~15–20 km; a 1 m Yagi, ~6–10 km, where the path is
   shorter.** Past ~20 km the path, not the antenna, decides: a larger dish adds receive gain the
   transmit limit cannot use, and a 3° beam holds only on a mast that twists less than ±1° in a gale

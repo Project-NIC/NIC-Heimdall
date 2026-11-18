@@ -10,8 +10,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "ref"))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "ref", "tests"))
-import hmc, export, measure
-from hmc import Header, LayoutField
+import hmlf, export, measure
+from hmlf import Header, LayoutField
 from scipy import signal as sps
 
 T0 = 1_790_812_800 + 3 * 3600          # 2026-10-01 03:00:00 UTC, a day number 20727 + 3 h
@@ -54,9 +54,9 @@ def main():
     fields = [LayoutField(3 * c, 3, True, False, c, 0, -2, 0, 0, b"mag" + bytes("XYZ"[c], "ascii"), b"nT")
               for c in range(3)]
     header = Header(0x11, 1, T0, 0x123456, 2, [
-        hmc.station_section(b"Test", 490_719_000, 140_190_000, 496), hmc.unit_section(1, 1, 1, 1, 1, 32),
-        hmc.layout_section(1, 1, 1, 0, fields), hmc.time_section(18)])
-    w = hmc.Writer(header)
+        hmlf.station_section(b"Test", 490_719_000, 140_190_000, 496), hmlf.unit_section(1, 1, 1, 1, 1, 32),
+        hmlf.layout_section(1, 1, 1, 0, fields), hmlf.time_section(18)])
+    w = hmlf.Writer(header)
     recs, base = [], [2_040_000, 166_000, 4_460_000]
     for i in range(32 * 1200):
         sec, fr = T0 + 18 + i // 32, i % 32

@@ -1,5 +1,5 @@
 """The exporters, the Python reference, as `core/archive/EXPORTERS.md` enters them: a channel's
-series read out of an address's HMC files, and written as miniSEED 2.4 with Steim-2 in 512 B
+series read out of an address's MLF files, and written as miniSEED 2.4 with Steim-2 in 512 B
 records, with one StationXML document beside it.
 
 An export is a function of the files and the request: the same bytes in, the same bytes out.
@@ -15,8 +15,8 @@ from fractions import Fraction
 from typing import Dict, List, Optional, Sequence, Tuple
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "ref"))
-import hmc  # noqa: E402
-from hmc import LayoutField  # noqa: E402
+import hmlf  # noqa: E402
+from hmlf import LayoutField  # noqa: E402
 
 CLIPPED, DISTURBED = 6, 7
 US = 10 ** 6
@@ -46,12 +46,12 @@ def _signed(v: int, width: int) -> int:
 
 def _layout_fields(sections, channel: int) -> Tuple[List[LayoutField], int]:
     """The channel's fields in offset order, and the unit's rows."""
-    unit = next((hmc.parse_unit(s.body) for s in sections if s.id == hmc.UNIT), None)
+    unit = next((hmlf.parse_unit(s.body) for s in sections if s.id == hmlf.UNIT), None)
     rows = unit[5] if unit else 128
     lay = None
     for s in sections:
-        if s.id == hmc.LAYOUT and unit:
-            space, type_, _, _, fs = hmc.parse_layout(s.body)
+        if s.id == hmlf.LAYOUT and unit:
+            space, type_, _, _, fs = hmlf.parse_layout(s.body)
             if (space, type_) == (unit[0], unit[1]) and lay is None:
                 lay = fs
     fs = sorted((f for f in (lay or []) if f.channel == channel), key=lambda f: f.offset)
@@ -75,23 +75,23 @@ def read_series(images: Sequence[bytes], channel: int) -> Series:
     fields, rows, address, station = None, 128, None, None
     times: List[Tuple[int, int]] = []
     for image in images:
-        r = hmc.Reader(image)
+        r = hmlf.Reader(image)
         address = r.header.address
         sections = list(r.header.sections)
         for s in sections:
-            if s.id == hmc.TIME:
+            if s.id == hmlf.TIME:
                 times.append((r.header.first_second, struct.unpack_from("<b", s.body)[0]))
-            if s.id == hmc.STATION and station is None:
+            if s.id == hmlf.STATION and station is None:
                 name, lat, lon, elev = struct.unpack_from("<32siih", s.body)
                 station = (name.rstrip(b"\x00"), lat, lon, elev)
         for t, obj, recs in r.objects():
-            if t == hmc.CFG:
-                sections = hmc.in_force(sections, obj["sections"])
+            if t == hmlf.CFG:
+                sections = hmlf.in_force(sections, obj["sections"])
                 for s in obj["sections"]:
-                    if s.id == hmc.TIME:
+                    if s.id == hmlf.TIME:
                         times.append((obj["from"], struct.unpack_from("<b", s.body)[0]))
                 continue
-            if t != hmc.SEG or not isinstance(recs, list):
+            if t != hmlf.SEG or not isinstance(recs, list):
                 continue
             fs, rw = _layout_fields(sections, channel)
             if fields is None:

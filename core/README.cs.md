@@ -110,7 +110,7 @@ Znovupoužitelné hardwarové bloky sdílené všemi uzly a mastery — blok zko
 
 ```
 core/                    the node core — the bus, the frame, the clock, the uplink
-├── archive/             HMC, the container · HCC, the codec · the exporters · ref/, the reference library
+├── archive/             MLF, the container · NRC, the codec · the exporters · ref/, the reference library
 └── blocks/              the hardware blocks, one file each
 ```
 
@@ -129,10 +129,10 @@ core/                    the node core — the bus, the frame, the clock, the up
 | [`INTEROP.md`](INTEROP.md) | kdo přebírá naše data a v jakém formátu |
 | [`WHY.md`](WHY.md) | hřbitov — co se zkusilo, co padlo a proč |
 | [`blocks/`](blocks/) | hardwarové bloky, každý v jednom souboru — tabulka výše |
-| [`archive/HMC.md`](archive/HMC.md) | archiv: kontejner — řada souborů na jednotku, pravidla záznamu a odesílání, data zepředu a popis zezadu |
-| [`archive/HCC.md`](archive/HCC.md) | archiv: kodek — uchované záznamy jedné adresy, sloupec po sloupci, bezztrátově; žádná tabulka, ale pravidlo |
+| [`archive/MLF.md`](archive/MLF.md) | profil Heimdallu pro MLF, kontejner s jádrem v NIC-SDK — řada souborů na jednotku, pravidla záznamu a odesílání, uplink |
+| [`archive/NRC.md`](archive/NRC.md) | profil Heimdallu pro NRC, kodek s jádrem v NIC-SDK — uchované záznamy jedné adresy rozdělené na řady, sloupec po sloupci, bezztrátově |
 | [`archive/EXPORTERS.md`](archive/EXPORTERS.md) | čtečky archivu — miniSEED, IAGA-2002, RINEX, BUFR, CWOP, IOC, kvalita vzduchu, Blitzortung, CSV, SQL, prohlížeč; každý jedna šablona |
-| [`archive/ref/`](archive/ref/README.md) | referenční kód, Python — kodér a dekodér HCC, Steim-2, měření |
+| [`archive/ref/`](archive/ref/README.md) | referenční kód, Python — kodér a dekodér NRC, Steim-2, měření |
 
 ---
 

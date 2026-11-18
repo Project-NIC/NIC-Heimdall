@@ -3,7 +3,7 @@
 # The exporters
 
 What the world takes, written from the archive after the fact, as [`../EXPORTERS.md`](../EXPORTERS.md)
-enters each one. **Nothing here is the station's record**: the record is the HMC files and the
+enters each one. **Nothing here is the station's record**: the record is the MLF files and the
 library in [`../ref/`](../ref/) that writes and reads them; an exporter only reads them, on the
 server or a laptop, and the same files and the same request always write the same bytes.
 
@@ -21,5 +21,5 @@ python3 tests/test_iaga.py           # needs SciPy; BDV_SEC and BDV_MIN name Bud
 python3 tests/test_tables.py
 ```
 
-The test files are the reference's (`../ref/tests/test_hmc.py`); fetching Budkov's day is in
+The test files are the reference's (`../ref/tests/test_hmlf.py`); fetching Budkov's day is in
 `../ref/README.md`.

@@ -130,7 +130,7 @@ says (§3), and an `ERROR` or `EVENT` from a unit carries its instant without an
   carrying an original plus two corrections carries three answers, and the reader has to decide
   which is true. One value that is overwritten is coherent.
 - **CRC-16-CCITT on both** — one polynomial, so the H523's hardware CRC unit is configured once:
-  0x1021 from 0xFFFF, unreflected, no final XOR, the station's one CRC-16 (`archive/HMC.md`),
+  0x1021 from 0xFFFF, unreflected, no final XOR, the station's one CRC-16 (MLF's core, NIC-SDK, §1),
   little-endian, over every byte before it — the trunk frame's over its 46.
 - **Payload = 32 B, a power of two:** it tiles a 512 B SD sector exactly (16/sector, no
   straddle) and keeps DMA/ring arithmetic clean. The `DISCOVER` reply reports the length the
@@ -501,7 +501,7 @@ sources in [`blocks/gps-pps.md`](blocks/gps-pps.md). What belongs to the protoco
 - **Leap seconds: acquire on a continuous scale, derive UTC only at the edge.** The anchor
   timescale is GPS-time-in-Unix-epoch — monotonic, leap-blind; the live GPS-UTC offset and a
   latched announcement are held beside it, carried into the archive's `TIME` section and applied
-  only at export (`archive/HMC.md`). An inserted
+  only at export (`archive/MLF.md`). An inserted
   second yields the repeated UTC second by construction; no data path sees a discontinuity.
 - **Clock SOH is a low-rate channel, never a bit in every record.** Clock quality is
   master-known and slow-changing, so one status byte is a field of the head's **SOH — a state held in RAM, refreshed once a minute,
@@ -568,7 +568,7 @@ two rules and nothing else is invented.
   and Sputnik's epoch spreading is "big and slow spreads", parsed to the zeros with no schedule
   agreed.
 - **A per-TYPE layout** — per field its offset, width, byte order, channel, scale, unit and name —
-  held in the head's mirror and written into the archive's header (`archive/HMC.md`). One frame
+  held in the head's mirror and written into the archive's header (`archive/MLF.md`). One frame
   format; a TYPE with no layout is archived with none, its bytes kept and the TYPE unknown to the
   reader, never a crash.
 
@@ -703,14 +703,14 @@ where it stands behind a Galvani barrier — a second mast, a sensor plot out on
 and 0 in the head's enclosure, where the battery is hard-wired half a metre from a head that
 reads it off the BMS; its arms' and `EXT`'s feeds are sockets 1–5 of the same frame (§5). The SUPPLY flag says when the reading leaves its window. The same goes for Argus.
 - **The head records what each unit's recording rule keeps, and interprets no DATA payload.**
-  Every unit has its own series of HMC files. The rule — `ALL`, `CHANGE`, `DECIMATE`,
+  Every unit has its own series of MLF files. The rule — `ALL`, `CHANGE`, `DECIMATE`,
   `INTERVAL`, `NONZERO`, `NONE` — keeps or drops a frame, on Palatine a ModBus block, **by
   comparing bytes; it never converts a value**, so what reaches the card is raw. Every state edge
   and every report frame is kept whatever the rule. The defaults are per TYPE — `CHANGE` on
   Palatine, `NONZERO` on Tesla, `ALL` on the rest — and the head's mirror holds the rule per
-  address, changed from the handset or by the server. What is kept is coded by the shorter of HCC and raw — HCC column by
+  address, changed from the handset or by the server. What is kept is coded by the shorter of NRC and raw — NRC column by
   column along the TYPE's layout — cut by width, never read, lossless whatever the layout says
-  (`archive/HMC.md`, `archive/HCC.md`, `../mayak/FIRMWARE.md` §6). Beside it runs **the event
+  (`archive/MLF.md`, `archive/NRC.md`, `../mayak/FIRMWARE.md` §6). Beside it runs **the event
   log, the series of the head's own address 0** — the head's second, the source address, a code,
   a detail, a value — written when something changes and never otherwise. **No SOH stream anywhere**: the SOH
   is a state the head holds and shows, not a record.
@@ -736,7 +736,7 @@ reads it off the BMS; its arms' and `EXT`'s feeds are sockets 1–5 of the same 
   MAC — within the tariff's volume, never the archive's. **Wi-Fi, the rich uplink,
   is optional and fully decoupled:** bulk archive upload, NTP, a small API, the head's own OTA; the
   station records and runs without it (`UPLINK_TRANSPORT.md`).
-- **Two packets go up, and each unit's send rule decides the second** (`archive/HMC.md`, *The
+- **Two packets go up, and each unit's send rule decides the second** (`archive/MLF.md`, *The
   uplink*). **The archive packet** is a file's segments as they lie on the card; the server writes
   them into the same files, and reads them with the same library as a pulled card — it goes where a
   link carries the volume. **The live packet** is what each unit's send rule for that link selects
@@ -746,9 +746,9 @@ reads it off the BMS; its arms' and `EXT`'s feeds are sockets 1–5 of the same 
   address holds 8 kB of records between packets, past which the oldest give way to the newest;
   a packet longer than the link takes carries the addresses that fit and the rest wait for the
   next (13 Nov 2026). A station with no Wi-Fi that sends Palatine's hourly row over the modem and keeps
-  everything else on its card is the same mechanism with other rules. HMC and HCC live only from the
+  everything else on its card is the same mechanism with other rules. MLF and NRC live only from the
   head on (variable length would wreck the TDMA). Under `ALL` everywhere the full station's raw
-  ceiling is ~1,1 Mb/s, less after HCC; the SD buffers bursts.
+  ceiling is ~1,1 Mb/s, less after NRC; the SD buffers bursts.
 - **Session protocol: HELLO / CURSOR / cumulative ACK.** HELLO carries station identity;
   CURSOR is the server's durable high-water mark **per address** — the file's sequence and the
   last description entry it holds; ACK is cumulative durability, so a lost ACK is harmless.
@@ -788,7 +788,7 @@ reads it off the BMS; its arms' and `EXT`'s feeds are sockets 1–5 of the same 
 - **The format is the contract, not the component.** A station may be built from any parts; the
   network requires only that it emits the NIC format — swapping a receiver rewrites local glue,
   never the protocol. Every station is self-describing (address + format version + the format's
-  description on every card, `HMC.txt`). **Reading is unrestricted** — open, unencrypted, no key,
+  description on every card, `MLF.txt`). **Reading is unrestricted** — open, unencrypted, no key,
   and **nothing the station sends is encrypted**; **writing and control are authenticated** — the
   command MAC uses the two-tier station secret: **factory K0 · software K1, 64 bits each, K0‖K1 =
   the 128-bit base**.
@@ -829,7 +829,7 @@ reads it off the BMS; its arms' and `EXT`'s feeds are sockets 1–5 of the same 
 ### The session's messages
 
 **A message is `type 1 B · body`, COBS-framed and followed by a zero, as the archive's objects
-are** (`archive/HMC.md`, *The data*), on a byte stream — TCP over Wi-Fi or an LTE-M / NB-IoT
+are** (MLF's core, NIC-SDK, §5), on a byte stream — TCP over Wi-Fi or an LTE-M / NB-IoT
 modem; a reader cut off mid-message skips to the next zero. Everything is little-endian. **A tag is
 HMAC-SHA-256 under K0‖K1, K0's 8 B first, truncated to its first 8 B**; it closes the message it
 signs and covers every byte before it, the type included.
@@ -840,7 +840,7 @@ signs and covers every byte before it, the type included.
 | 2 | `CURSOR` | down | `count 2 B`, then per address `address 1 B · sequence 2 B · entry 4 B` — the last entry the server holds of that file, `0xFFFFFFFF` none |
 | 3 | `ARCHIVE` | up | `address 1 B · sequence 2 B · packet 4 B` (1, 2 … in the session) · `header 4 B` and the file's header, or 0 · `count 2 B`, then per object `index 4 B · entry 16 B · its COBS bytes as they lie on the card` · `tag` |
 | 4 | `ACK` | down | as `CURSOR` — the last entry of each file the server holds durably |
-| 5 | `LIVE` | up | `second 4 B · count 1 B`, then per address `address 1 B · length 4 B · segment` — an HMC segment, coded as in a file |
+| 5 | `LIVE` | up | `second 4 B · count 1 B`, then per address `address 1 B · length 4 B · segment` — an MLF segment, coded as in a file |
 | 6 | `WINDOW` | down | `counter 4 B · address 1 B` (`0xFF` every address) · `second 4 B · window 4 B` · `tag` |
 | 7 | — | | retired — it was `BOARD`, another head's `LIVE` fanned out; never used again |
 | 8 | `COMMAND` | down | `counter 4 B` · the command — the handset's JSON command, UTF-8, no newline, at most 1 kB · `tag` |

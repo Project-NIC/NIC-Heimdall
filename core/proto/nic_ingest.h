@@ -2,7 +2,7 @@
  * into its second's bucket, two buckets open; a second closed one second after its end, a slot no
  * frame arrived for made a FILLER, *no data arrived*; each address's frames through its recording
  * rule into its buffer; a buffer a segment at 16 kB or 8 s after its first record, handed to the
- * writer the firmware gives (the HMC writer, on both cards). A frame repaired after its second
+ * writer the firmware gives (the MLF writer, on both cards). A frame repaired after its second
  * closed goes into its unit's buffer as a record with an older second, kept. */
 #ifndef NIC_INGEST_H
 #define NIC_INGEST_H
@@ -11,8 +11,8 @@
 #include <stdint.h>
 
 #include "nic_proto.h"
-#include "hcc.h"
-#include "hmc.h"
+#include "hnrc.h"
+#include "hmlf.h"
 
 #define NIC_INGEST_UNITS   32u      /* four trunks of eight */
 #define NIC_INGEST_ROWS    256u
@@ -21,7 +21,7 @@
 
 typedef struct {
     uint8_t addr, rows, blocks;     /* blocks: a ModBus payload, kept per block */
-    hmc_rule rule;
+    hmlf_rule rule;
 } nic_ingest_unit;
 
 typedef struct {
@@ -34,19 +34,19 @@ typedef struct {
 
 typedef struct {
     uint8_t bytes[NIC_SPOOL_BYTES + 512];
-    hcc_record recs[NIC_SPOOL_BYTES / 9 + 16];
+    hnrc_record recs[NIC_SPOOL_BYTES / 9 + 16];
     size_t n, used;
     uint32_t first_second;
 } nic_spool;
 
-typedef int (*nic_segment_fn)(void *ctx, uint8_t addr, const hcc_record *recs, size_t n);
+typedef int (*nic_segment_fn)(void *ctx, uint8_t addr, const hnrc_record *recs, size_t n);
 
 typedef struct {
     uint8_t idx[256];                /* address → unit, 0xFF none */
     nic_ingest_unit units[NIC_INGEST_UNITS];
     uint8_t nunits;
     nic_bucket b[2];
-    hmc_selector sel[NIC_INGEST_UNITS];
+    hmlf_selector sel[NIC_INGEST_UNITS];
     nic_spool spool[NIC_INGEST_UNITS];
     nic_segment_fn segment;
     void *ctx;

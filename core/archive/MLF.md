@@ -1,16 +1,23 @@
 ★ N.I.C. ★
 
-# HMC — the Heimdall Matryoshka Container
+# MLF — the station's archive, Heimdall's profile
 
 > **Design-stage concept — nothing built.** The format is fixed here; its figures are reasoned,
-> and HCC's ratios assumed (`HCC.md`, *What is assumed*).
+> and NRC's ratios measured on open recordings only.
 
-HMC is the station's archive: what the Mayak writes to its two cards, what the uplink carries and
-what the server stores. **Every unit has its own series of files** — a Quake its own, a Palatine its
-own, a Tesla its own — because the units differ in everything an archive cares about: a Quake pours
-128 frames a second, a Palatine changes a few values an hour, a Tesla sends zeros most of the time.
-**What a unit's file holds is chosen by its recording rule; what leaves the station is chosen by its
-send rule**, and the two are independent: a station in a field with no Wi-Fi sends a small packet of
+The station's archive is written as **MLF, the Matroshka Log File** — its core in NIC-SDK's
+[`MLF.md`](https://github.com/Project-NIC/NIC-SDK/blob/main/MLF.md): the file taken whole, the data growing up and the description down,
+segments and configs, COBS, the codecs, the checks. **This page is Heimdall's profile**: what the
+core leaves to the project (MLF §10). The segments are coded by **NRC**, the NIC Rice Codec, its
+core in NIC-SDK's [`NRC.md`](https://github.com/Project-NIC/NIC-SDK/blob/main/NRC.md) and Heimdall's reading of the records in
+[`NRC.md`](NRC.md) here.
+
+The archive is what the Mayak writes to its two cards, what the uplink carries and what the server
+stores. **Every unit has its own series of files** — a Quake its own, a Palatine its own, a Tesla its
+own — because the units differ in everything an archive cares about: a Quake pours 128 frames a
+second, a Palatine changes a few values an hour, a Tesla sends zeros most of the time. **What a
+unit's file holds is chosen by its recording rule; what leaves the station is chosen by its send
+rule**, and the two are independent: a station in a field with no Wi-Fi sends a small packet of
 weather an hour over the head's modem and keeps everything else on its cards until they are read.
 
 ## The rules — the head selects, it never computes
@@ -62,24 +69,14 @@ uplink*).
 
 ## The files
 
-```
-offset 0                                                             1 MB × 2^size
-┌────────┬──────────────────────────────┬──────────┬──────────────────────────────┐
-│ HEADER │ DATA → segments, configs     │  unused  │ ← DESCRIPTION, 16 B entries  │
-└────────┴──────────────────────────────┴──────────┴──────────────────────────────┘
-```
-
-- **A file is 1 MB × 2^`size` — 1, 2, 4 … 128 MB — allocated whole when it opens**, so the FAT is
-  touched only when a file opens. On exFAT, the base, the unwritten part reads as zeros. **The size
-  follows the unit's rate**: it is a setting per address in the head's configuration mirror, set
-  like the rules, and the file records its own in the header. The default is **64 MB for an address
-  recorded under `ALL`** and **1 MB for every other** — a Quake fills 64 MB in hours, a Palatine
-  under `CHANGE` takes months over one.
-- **Data grows up from the header, the description grows down from the end.** The file is full
-  when the next object's framed bytes and its entry would cross; the next file opens. **A file closes on nothing
-  else** — a Palatine's file runs for months, a Quake's for hours.
+- **The size follows the unit's rate** (MLF §1, `size`): a setting per address in the head's
+  configuration mirror, set like the rules. The default is **64 MB for an address recorded under
+  `ALL`** and **1 MB for every other** — a Quake fills 64 MB in hours, a Palatine under `CHANGE`
+  takes months over one. The base is exFAT.
+- **A file closes only when full**, as the core has it — a Palatine's file runs for months, a
+  Quake's for hours.
 - **The path is the address and the day the file opened**, on the station's scale:
-  `52/20261001/120000.hmc` — the address in two upper-case hex digits, then the date, then the
+  `52/20261001/120000.mlf` — the address in two upper-case hex digits, then the date, then the
   file's first second, the second read as a calendar without leap seconds. The head's event log is
   the series of address `00`.
 - **The cards fill in a circle** (the owner, 14 Nov 2026). Both cards carry the same files, and
@@ -90,31 +87,20 @@ offset 0                                                             1 MB × 2^s
   turns only where nobody comes; a file given up before the server acknowledged it whole is a line
   in the event log.
 - **The two cards carry the same bytes.** The second card is the mirror.
-- **Everything is little-endian.** Segments and configs carry CRC-32 (IEEE 802.3, the one zlib
-  computes) — a segment reaches ~16 kB; a description entry carries the station's CRC-16-CCITT,
-  polynomial 0x1021 from 0xFFFF, unreflected, no final XOR, so a free entry's zeros fail it.
 
-## The header
+## The header — the source and the sections
 
-```
-[0]   magic        4 B   "HMC" 0x00
-[4]   version      1 B   2
-[5]   address      1 B   TYPE«4 | NUMBER, 0 for the event log
-[6]   sequence     2 B   the file's number in its address's series
-[8]   length       4 B   the whole header, magic to CRC
-[12]  first second 4 B   the second the file opened
-[16]  station      3 B   the station identity, little-endian
-[19]  size         1 B   the file is 1 MB × 2^size, 0…7
-[20]  sections     …     until length − 4
-[end] CRC-32       4 B
-```
+**The source** (MLF §2, bytes 16–19): **the station** in bytes 16–18, its identity, little-endian,
+and **the address** in byte 19 — `TYPE«4 | NUMBER`, 0 for the event log.
 
 **Every second in the file is the station's continuous scale** — GPS time in the Unix epoch,
 leap-blind, as Kronos labels it (`../PROTOCOL.md` §4): the header, the records, the configs and the
 entries alike. UTC is derived at export, from the `TIME` section in force.
 
-**A section** is `id 1 B · reserved 3 B · length 4 B · body`, the length the body's; a reader
-skips an id it does not know. The header's CRC-32 covers every byte before it.
+A section is framed as the core frames it (MLF §3); a reader skips an id it does not know.
+
+**Heimdall's sections**, ids 1–9 of the profile's 1–127 (MLF §3); id 8 is not used — a codec's
+table rides in the core's `CODEC`, 128:
 
 | id | section | |
 |---|---|---|
@@ -125,7 +111,6 @@ skips an id it does not know. The header's CRC-32 covers every byte before it.
 | 5 | `SETTINGS` | the unit's registers, and its sondes' |
 | 6 | `RULES` | the recording rule, then `links 1 B` and per link `link 1 B · rule · modules 1 B · module addresses` — a rule is `mode 1 B` (0 `ALL` · 1 `CHANGE` · 2 `DECIMATE` · 3 `INTERVAL` · 4 `NONZERO` · 5 `NONE`) `· n 1 B · s 2 B` (seconds, 0 none); a link is numbered as the head's uplink table numbers it, modules 0 meaning all |
 | 7 | `RESPONSE` | `SUB 1 B · length 2 B ·` the unit's write-once calibration block verbatim, for a sensor that needs a response beyond its factory sensitivity (`../INTEROP.md`) |
-| 8 | `CODEC` | `codec 1 B · revision 1 B · length 2 B · table` — the table a codec needs to decode, for a codec that needs one (*Carrying its own description*, below); HCC needs none and writes none |
 | 9 | `TIME` | `offset 1 B` (int8, GPS − UTC in seconds, 18 in 2026) · `pending 1 B` (int8, the announced leap, +1, −1 or 0) · `at 4 B` (the second it takes effect, 0 none) — Kronos's `LEAP` register as the head reads it; a config is written whenever it changes |
 
 **`LAYOUT`** — what a TYPE's 32 B payload holds:
@@ -148,7 +133,7 @@ skips an id it does not know. The header's CRC-32 covers every byte before it.
 Fields sharing a **channel** are one series in time — two samples of one quantity in one payload
 give both fields one channel. **`ref` names a reference channel**, plus one, 0 none: a channel
 measuring the same motion or field as this one — Quake's two accelerometers on one axis — against
-which HCC may code this one as the difference; the reference is always a lower channel. **The class says what the fields do not**: Quake, Gauss, Pascal and
+which NRC may code this one as the difference; the reference is always a lower channel. **The class says what the fields do not**: Quake, Gauss, Pascal and
 the `Quark` boards are fields and class 0; **Palatine** is class 1 with no fields, its payload
 read with the `PROFILE` sections; **a record front** — Pip, Marconi, Sputnik, and Tesla behind its
 fixed offsets — is class 2, its records read by the TYPE's decoder as its own `BUS.md` defines it
@@ -163,103 +148,30 @@ registers 1 B` and per register `flags 1 B` (bit 0 signed · bit 1 low half of a
 **`SETTINGS`** — per unit or sonde: `SUB 1 B` (0 the unit itself) `· count 1 B`, then `register
 2 B · length 1 B · value`, as the unit holds it.
 
-## The data — segments and configs
-
-**A segment is one write of one address's kept records**, coded by a codec:
-
-```
-[0]   sync          4 B   "HSEG"
-[4]   length        4 B   sync to CRC
-[8]   first second  4 B   the oldest record's second
-[12]  last second   4 B   the newest
-[16]  codec         1 B   0 raw · 1 HCC
-[17]  reserved      3 B
-[20]  body          …
-[end] CRC-32        4 B
-```
+## The data — the records
 
 **A record** is one kept frame, or on a block payload one kept block, with its time:
 `second 4 B · frame 1 B · kind 1 B · status 1 B · form 1 B` (0 frame, 1 block) `· length 1 B ·
 bytes` — 32 B of payload for a frame, the block as it rode (`module · length · data`) for a block.
-A block's data is at most 253 B, so its record's length fits its byte. Codec 0 is the records back
-to back; **codec 1 is HCC** (`HCC.md`). **The codecs are a set**: the head codes a segment with
-every codec it has and writes the shortest body, the lower codec on a tie, and a codec added later
-takes the next number — a reader skips a segment whose codec it does not know. **A segment's
-`length` is the whole segment, its CRC included, as the header's; the CRC-32 covers every byte
-before it** — a config's the same.
-
-**The data stream is COBS-framed.** Every segment and every config is written COBS-encoded — no
-zero byte inside it — and followed by one 0x00; the cost is at most one byte in 254. The encoding
-is Cheshire and Baker's: each run of up to 254 non-zero bytes behind a code byte one more than its
-length, 0xFF a run with no zero after it, and an object that ends on a full run closed by an empty
-one (0x01). A reader dropped anywhere in the data — a damaged entry, a file whose description is
-lost, a packet cut short — skips to the next zero and reads on. **An entry points at the framed
-bytes**: its offset the first COBS byte, its length the COBS bytes without the zero, so the next
-object starts one byte past them.
+A block's data is at most 253 B, so its record's length fits its byte. Codec 0 (MLF §4) is the
+records back to back; codec 1 is NRC, read as [`NRC.md`](NRC.md) says. **A segment is one write of
+one address's kept records.**
 
 **A late frame is just a record.** A frame repaired after its second was written arrives as a
 record with an older second; the reader places every record by its second and frame, and of two
 records for one frame the later written is the one.
 
-**A config** is written when a section of the header changes — a setting, a rule, a layout, a
-seat on an Argus — and holds from the second it names:
-
-```
-"HCFG" 4 B · length 4 B · from second 4 B · reserved 4 B · sections as in the header · CRC-32 4 B
-```
-
-**A config carries only the sections that changed, and every id it carries replaces all the
-sections of that id in force** — an Argus whose one mini layout changed carries all its `LAYOUT`s.
-**A setting change does not close the file**: the unit's `CHANGED` state code marks the frame, the
+**A config** (MLF §4) is written when a section of the header changes — a setting, a rule, a
+layout, a seat on an Argus. **A setting change does not close the file**: the unit's `CHANGED` state code marks the frame, the
 head writes a config from that second, and a reader applies the last config at or before each
 record's second over the header.
 
-**HCC codes a segment with the layout in force where the segment lies**: the header's sections as
-changed by every config written before it in the file — so the head writes its buffer out as a
-segment before it writes a config that changes the layout. The layout is read from the sections:
-an Argus NUMBER — a `UNIT` with a position seated — takes at each position the mini `LAYOUT` (space
-2) of the seated TYPE, `TYPE` being the address's high four bits; any other unit the `LAYOUT` of its
-`UNIT`'s space and type; a TYPE with no `LAYOUT` — or a file with no `UNIT` — one channel a byte.
-The first `UNIT` and the first `LAYOUT` of a space and type count. A field gives HCC its offset,
-width, the two flags and its channel and `ref`; the scale and the names are the reader's.
-
-## The description — 16 B entries from the end
-
-```
-[0]  second   4 B   a segment: its last second · a config: its from second
-[4]  offset   4 B   where it starts in the file
-[8]  length   4 B
-[12] type     1 B   1 segment · 2 config
-[13] reserved 1 B
-[14] CRC-16   2 B   over the 14 before
-```
-
-**Entries are fixed-stride and their seconds never go back**, so a second is a binary search over
-the description of a live file or a full one alike. A free entry reads all zeros and fails its
-CRC. Entry *i* lies at the file's end less 16 × (*i* + 1); the reader's binary search for the last
-good entry is the head's, and an entry inside that range that fails its CRC is a damaged object,
-its second taken as the last good one's before it.
-
-**Writing order: the data first, then its entry.** An entry never points at bytes not yet
-written. At boot the head finds each series' last file, binary-searches its description for the
-last good entry, and goes on writing behind that entry's data. Nothing is repaired, truncated or
-rebuilt.
-
 ## Carrying its own description
 
-**Nothing a reader needs is outside the file and its card.** The layouts, the profiles and the
-settings already ride in the header; the codec and the format ride with them:
-
-- **Every card carries the format's description in words**: `HMC.txt` at the card's root, UTF-8 —
-  this document, `HCC.md`, and the description of every codec the head writes, written when the
-  card is prepared and rewritten when a codec is added. The server keeps the same text beside its
-  archive. Whoever finds a card in fifty years reads the text and writes a reader from it: the
-  descriptions are exact to the bit, and no code is stored or needed.
-- **A codec that needs a table carries it in the file**: a `CODEC` section in the header, and in a
-  config from the second it changes — so a table updated by a firmware release never orphans a
-  file written with the old one; the reader takes the table in force for each segment from the
-  configs, as it takes a layout. **HCC needs no table**: its predictor coefficients and its Rice
-  parameters ride inside each segment's own stream.
+**Nothing a reader needs is outside the file and its card** (MLF §8): the layouts, the profiles and
+the settings ride in the header and the configs, and **every card carries `MLF.txt` at its root** —
+MLF's core, NRC's, this profile and [`NRC.md`](NRC.md) here, in words. **The server keeps the same
+text beside its archive.**
 
 ## Writing it — the head
 
@@ -273,9 +185,9 @@ address's recording rule and appends what it keeps to that buffer. **A crash cos
 buffers held, 8 s at most; a lost 12 V costs nothing** — the backup cell writes every buffer to
 both cards before the head goes down (`../../mayak/HARDWARE.md`).
 
-**The head cuts payloads, it does not read them.** HCC codes a frame column by column along the
+**The head cuts payloads, it does not read them.** NRC codes a frame column by column along the
 layout's widths, and the rules compare bytes; no value is read anywhere. **A wrong layout costs
-compression and never data** — HCC is lossless whatever widths it is given.
+compression and never data** — NRC is lossless whatever widths it is given.
 
 **The event log** is the series of address `00`: one record a line — `second 4 B · source 1 B ·
 code 1 B · detail 2 B · value 4 B`, the head's second when the line was written, the source address
@@ -298,7 +210,7 @@ The live packet and the values frame go bare. A key is needed only to write, nev
   sends forward from there. **This packet goes only where a link carries the volume** — Wi-Fi in a
   window.
 - **The live packet** — what each address's send rule for that link selects from what was recorded
-  since the last live packet, coded fresh by HCC as one segment per address, at the cadence the link
+  since the last live packet, coded fresh by NRC as one segment per address, at the cadence the link
   is given. It is the server's live view, never its archive: the archive arrives later in archive
   packets or on a pulled card. **A station with no Wi-Fi** sends one live packet an hour over the
   modem — a mode-B Palatine's `HOUR` row, and its `DAY` row once a day (`../../palatine/WMO.md`),
@@ -315,10 +227,10 @@ ordinary series, under the same `CHANGE` rule, which keeps every row once.
 
 ## Reading it
 
-**One reference library, C and Python, writes and reads HMC and HCC**; the head writes with the C,
+**One reference library, C and Python, writes and reads MLF and NRC with this profile**; the head writes with the C,
 and the server, the exporters and the viewer read with either. A query is an address and a
-time: the path gives the files, the description's binary search the segments, the configs the
-header in force, HCC the records.
+time: the path gives the files, the description's binary search the segments (MLF §6), the configs the
+header in force, NRC the records.
 
 **The archive stays raw.** Physical units, ModBus registers and record fields are derived on read
 from the layouts and profiles, so a corrected layout re-derives everything from the same bytes.

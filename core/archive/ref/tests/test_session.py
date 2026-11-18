@@ -4,9 +4,9 @@ the segments that touch it with the configs they need; every message parses back
 import os, random, sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, os.path.dirname(__file__))
-import hmc, session
+import hmlf, session
 from session import Chain, Server, NONE_ENTRY
-import test_hmc
+import test_hmlf
 
 KEY = bytes(range(16))
 STATION = 0x123456
@@ -27,8 +27,8 @@ def main():
     import hmac, hashlib
     assert hmac.new(b"Jefe", b"what do ya want for nothing?", hashlib.sha256).hexdigest().startswith("5bdcc146bf60754e")
     rng = random.Random(1)
-    for name, header, ops in test_hmc.scenarios():
-        w, _ = test_hmc.write(header, ops)
+    for name, header, ops in test_hmlf.scenarios():
+        w, _ = test_hmlf.write(header, ops)
         image = bytes(w.image)
         nonce = bytes(rng.randrange(256) for _ in range(8))
         msg, htag = session.hello(KEY, STATION, 41, nonce)
@@ -75,19 +75,19 @@ def main():
             except ValueError:
                 pass
         # a window: the segments that touch it, with the configs before them
-        r = hmc.Reader(image)
-        segs = [(i, o) for i, (t, o, _) in enumerate(r.objects()) if t == hmc.SEG]
+        r = hmlf.Reader(image)
+        segs = [(i, o) for i, (t, o, _) in enumerate(r.objects()) if t == hmlf.SEG]
         mid_sec = segs[len(segs) // 2][1]["first"] + 3
         cut = session.window_cut(image, mid_sec, 5)
         got = [i for i, _, _ in cut]
         want = [i for i, o in segs if o["first"] <= mid_sec + 5 and o["last"] >= mid_sec - 5]
-        assert [i for i in got if r.entries[i][3] == hmc.SEG] == want, name
-        assert all(r.entries[i][3] == hmc.SEG or i < want[-1] for i in got)
+        assert [i for i in got if r.entries[i][3] == hmlf.SEG] == want, name
+        assert all(r.entries[i][3] == hmlf.SEG or i < want[-1] for i in got)
         # live, window and the stream
-        lv = session.live(test_hmc.T0, [(0x52, hmc.segment_bytes(ops[0][1][:50], hmc.hcc_layout(header.sections)))
-                                        if ops[0][0] == "seg" else (0, hmc.event_segment(ops[0][1][:5]))])
+        lv = session.live(test_hmlf.T0, [(0x52, hmlf.segment_bytes(ops[0][1][:50], hmlf.nrc_layout(header.sections)))
+                                        if ops[0][0] == "seg" else (0, hmlf.event_segment(ops[0][1][:5]))])
         sec, segs_ = session.parse_live(session.unframe(lv[:-1])[1])
-        assert sec == test_hmc.T0 and len(segs_) == 1
+        assert sec == test_hmlf.T0 and len(segs_) == 1
         wm = session.window(KEY, STATION, 43, 0xFF, mid_sec, 5)
         wd = session.parse_window(KEY, STATION, 42, session.unframe(wm[:-1])[1])
         assert wd == {"counter": 43, "address": 0xFF, "second": mid_sec, "window": 5}

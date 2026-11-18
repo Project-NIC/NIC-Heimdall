@@ -3,7 +3,7 @@
 
 #include <string.h>
 
-#include "hmc.h"
+#include "hmlf.h"
 
 static uint32_t get32(const uint8_t *p)
 {
@@ -34,31 +34,31 @@ static int primary(const nic_cards *c)
 static int header(nic_cards *c, int card, uint8_t addr, uint16_t seq, uint32_t *len, nic_card_file *f)
 {
     uint8_t h[24];
-    if (card < 0 || c->io.read(c->io.ctx, card, addr, seq, 0, sizeof h, h) || memcmp(h, "HMC", 4))
+    if (card < 0 || c->io.read(c->io.ctx, card, addr, seq, 0, sizeof h, h) || memcmp(h, "MLF", 4))
         return -1;
     *len = get32(h + 8);
     f->addr = addr;
     f->seq = seq;
     f->first_second = get32(h + 12);
-    f->size = h[19];
+    f->size = h[5];               /* MLF's header: the size at byte 5 */
     return f->size > 7 ? -1 : 0;
 }
 
-static int entry(nic_cards *c, int card, uint8_t addr, uint16_t seq, uint8_t size, uint32_t i, hmc_entry *e)
+static int entry(nic_cards *c, int card, uint8_t addr, uint16_t seq, uint8_t size, uint32_t i, mlf_entry *e)
 {
     uint8_t b[16];
-    uint32_t bytes = HMC_MB << size;
+    uint32_t bytes = MLF_MB << size;
     if ((uint64_t)16 * (i + 1) > bytes || c->io.read(c->io.ctx, card, addr, seq, bytes - 16 * (i + 1), 16, b))
         return -1;
-    return hmc_entry_parse(b, e) ? -1 : 0;
+    return mlf_entry_parse(b, e) ? -1 : 0;
 }
 
 uint32_t nic_cards_good(nic_cards *c, int card, uint8_t addr, uint16_t seq, uint8_t size)
 {
-    uint32_t lo = 0, hi = (HMC_MB << size) / 16;
+    uint32_t lo = 0, hi = (MLF_MB << size) / 16;
     while (lo < hi) {
         uint32_t m = lo + (hi - lo) / 2;
-        hmc_entry e;
+        mlf_entry e;
         if (!entry(c, card, addr, seq, size, m, &e))
             lo = m + 1;
         else
@@ -188,10 +188,10 @@ static int start_copy(nic_cards *c, uint8_t addr, uint16_t seq, uint32_t from, u
     int p = primary(c);
     uint32_t hlen;
     nic_card_file f;
-    hmc_entry e;
+    mlf_entry e;
     if (header(c, p, addr, seq, &hlen, &f))
         return -1;
-    uint32_t bytes = HMC_MB << f.size;
+    uint32_t bytes = MLF_MB << f.size;
     c->c_addr = addr;
     c->c_seq = seq;
     c->c_off = from && !entry(c, p, addr, seq, f.size, from - 1, &e) ? e.offset + e.length + 1 : 0;

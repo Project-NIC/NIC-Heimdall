@@ -1,29 +1,33 @@
 """The C reference against the Python: the same bytes from the same records, the same records
-from the same bytes, and the same verdict on every damaged stream (HCC.md, *What it is tested
+from the same bytes, and the same verdict on every damaged stream (NRC.md, *What it is tested
 against*). Builds ../c/ with $CC (cc by default) into a temporary directory and runs it under
-$HCC_RUN where one is named — `qemu-arm` for a 32-bit ARM build; `HCC_C_SEED` and `HCC_C_ROUNDS`
+$NRC_RUN where one is named — `qemu-arm` for a 32-bit ARM build; `NRC_C_SEED` and `NRC_C_ROUNDS`
 widen the random part."""
 import math, os, random, shlex, struct, subprocess, sys, tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
 sys.path.insert(0, HERE)
-import hcc, hmc, session
-from hcc import Field, compose_layout, argus_layout
-import test_hcc, test_damaged, test_hmc
+import hnrc, hmlf, session
+from hnrc import Field, compose_layout, argus_layout
+import test_hnrc, test_damaged, test_hmlf
 
-SEED = int(os.environ.get("HCC_C_SEED", "1"))
-ROUNDS = int(os.environ.get("HCC_C_ROUNDS", "60"))
+SDK = os.environ.get("NIC_SDK") or os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                                   "..", "..", "..", "..", "..", "NIC-SDK")
+SEED = int(os.environ.get("NRC_C_SEED", "1"))
+ROUNDS = int(os.environ.get("NRC_C_ROUNDS", "60"))
 rng = random.Random(SEED)
 
 
 def build():
     src = os.path.join(HERE, "..", "c")
-    out = os.path.join(tempfile.mkdtemp(prefix="hcc-c-"), "hcc_tool")
+    out = os.path.join(tempfile.mkdtemp(prefix="hnrc-c-"), "hnrc_tool")
     subprocess.run(shlex.split(os.environ.get("CC", "cc")) + ["-std=c99", "-O2", "-Wall", "-Wextra", "-Wpedantic",
-                    "-Werror", "-ffp-contract=off", "-o", out, os.path.join(src, "hcc.c"),
-                    os.path.join(src, "hmc.c"), os.path.join(src, "session.c"),
-                    os.path.join(src, "hcc_tool.c"), "-lm"], check=True)
+                    "-Werror", "-ffp-contract=off", "-I" + os.path.join(SDK, "mlf"), "-I" + os.path.join(SDK, "nrc"),
+                    "-o", out, os.path.join(SDK, "nrc", "nrc.c"), os.path.join(SDK, "mlf", "mlf.c"),
+                    os.path.join(src, "hnrc.c"),
+                    os.path.join(src, "hmlf.c"), os.path.join(src, "session.c"),
+                    os.path.join(src, "hnrc_tool.c"), "-lm"], check=True)
     return out
 
 
@@ -65,7 +69,7 @@ class Tool:
     def write_file(self, header, ops):
         b = bytearray(b"W" + struct.pack("<BHIIB", header.address, header.sequence, header.first_second,
                                           header.station, header.size))
-        sb = hmc.sections_bytes(header.sections)
+        sb = hmlf.sections_bytes(header.sections)
         b += struct.pack("<I", len(sb)) + sb
         for op in ops:
             if op[0] == "seg":
@@ -73,7 +77,7 @@ class Tool:
             elif op[0] == "ev":
                 b += b"V" + struct.pack("<I", len(op[1])) + b"".join(struct.pack("<IBBHI", *ln) for ln in op[1])
             else:
-                sb = hmc.sections_bytes(op[2])
+                sb = hmlf.sections_bytes(op[2])
                 b += b"C" + struct.pack("<II", op[1], len(sb)) + sb
         self.req.append(bytes(b) + b"Z"); self.what.append("W")
 
@@ -94,11 +98,11 @@ class Tool:
     def raw(self, req, parse):
         self.req.append(req); self.what.append(parse)
 
-    def hmc_path(self, address, second):
+    def hmlf_path(self, address, second):
         self.req.append(b"P" + struct.pack("<BI", address, second)); self.what.append("P")
 
     def run(self):
-        out = subprocess.run(shlex.split(os.environ.get("HCC_RUN", "")) + [self.path], input=b"".join(self.req),
+        out = subprocess.run(shlex.split(os.environ.get("NRC_RUN", "")) + [self.path], input=b"".join(self.req),
                              capture_output=True, check=True).stdout
         at, answers = 0, []
         for w in self.what:
@@ -305,11 +309,11 @@ def frame_stream(n):
 
 
 def random_rule(send=False):
-    mode = rng.choice([hmc.ALL, hmc.CHANGE, hmc.DECIMATE, hmc.INTERVAL, hmc.NONZERO, hmc.NONE])
-    n = rng.choice([0, 1, 2, 4, 32]) if mode == hmc.DECIMATE else 0
-    s = rng.choice([0, 1, 7, 60, 3600]) if mode in (hmc.CHANGE, hmc.NONZERO, hmc.INTERVAL) else 0
+    mode = rng.choice([hmlf.ALL, hmlf.CHANGE, hmlf.DECIMATE, hmlf.INTERVAL, hmlf.NONZERO, hmlf.NONE])
+    n = rng.choice([0, 1, 2, 4, 32]) if mode == hmlf.DECIMATE else 0
+    s = rng.choice([0, 1, 7, 60, 3600]) if mode in (hmlf.CHANGE, hmlf.NONZERO, hmlf.INTERVAL) else 0
     mods = tuple(rng.sample(range(1, 40), rng.randint(1, 4))) if send and rng.random() < 0.5 else ()
-    return hmc.Rule(mode, n, s, mods)
+    return hmlf.Rule(mode, n, s, mods)
 
 
 def _bytes(out, at):
@@ -401,11 +405,11 @@ def check_session(tool, fails):
         if got != w:
             fails.append(f"session {what}: the C differs from the Python")
     # ARCHIVE packets, the forward cut and the window cut on every test file
-    for name, header, ops in test_hmc.scenarios(SEED):
-        w, _ = test_hmc.write(header, ops)
+    for name, header, ops in test_hmlf.scenarios(SEED):
+        w, _ = test_hmlf.write(header, ops)
         image = bytes(w.image)
         key, nonce, htag = bytes(range(16)), bytes(range(8, 16)), bytes(8)
-        r = hmc.Reader(image)
+        r = hmlf.Reader(image)
         held = rng.choice([session.NONE_ENTRY, len(r.entries) // 3])
         packets = session.forward(image, held, rng.choice([600, 16384]))
         py, cstate, want = session.Chain(key, nonce, htag), [], []
@@ -423,7 +427,7 @@ def check_session(tool, fails):
                 tool.raw(b"Y" + chain_bytes(before) + struct.pack("<I", len(b)) + b, answer("Y", lambda o, a: (
                     ("refused",) if o[a] else ("ok", o[a + 1]), a + 1 if o[a] else skip_verify(o, a + 1))))
                 want.append(("verify", ("ok", r.header.address) if ok else ("refused",)))
-        segs = [o for t, o, _ in r.objects() if t == hmc.SEG]
+        segs = [o for t, o, _ in r.objects() if t == hmlf.SEG]
         sec = segs[len(segs) // 2]["first"] + 2
         cut = [i for i, _, _ in session.window_cut(image, sec, 4)]
         tool.raw(b"C" + struct.pack("<I", len(image)) + image + struct.pack("<II", sec, 4), answer("C", lambda o, a: (
@@ -465,15 +469,15 @@ def skip_verify(o, a):
 def py_read(image):
     """The Python reader's view of a file, in the C tool's terms."""
     try:
-        r = hmc.Reader(image)
+        r = hmlf.Reader(image)
     except ValueError:
         return 1, None
     out = []
     for t, obj, recs in r.objects():
         if t == 0:
             out.append(("damaged",))
-        elif t == hmc.CFG:
-            out.append(("cfg", obj["from"], hmc.sections_bytes(obj["sections"])))
+        elif t == hmlf.CFG:
+            out.append(("cfg", obj["from"], hmlf.sections_bytes(obj["sections"])))
         else:
             out.append(("seg", obj["first"], obj["last"], obj["codec"],
                         [tuple(x) for x in recs] if isinstance(recs, list) else recs))
@@ -482,7 +486,7 @@ def py_read(image):
 
 def py_decode(stream, layout):
     try:
-        return 0, hcc.decode(stream, layout)
+        return 0, hnrc.decode(stream, layout)
     except ValueError:
         return 1, None
 
@@ -505,18 +509,18 @@ def main():
             fails.append(f"layout {i}: the C composes {got}, the Python {w}")
 
     # the documents' cases, the damaged-stream cases and random segments: the same bytes
-    named = test_hcc.cases()
+    named = test_hnrc.cases()
     cases = named + test_damaged.cases() + [random_case(i) for i in range(ROUNDS)]
     streams = []
     for name, layout, records in cases:
-        s = hcc.encode(records, layout)
+        s = hnrc.encode(records, layout)
         streams.append(s)
         tool.encode(layout, records)
         tool.decode(layout, s)
     answers = tool.run()
     raw = coded = 0
     for (name, layout, records), s, (est, cs), (dst, back) in zip(cases, streams, answers[0::2], answers[1::2]):
-        raw += hcc.raw_length(records); coded += len(s)
+        raw += hnrc.raw_length(records); coded += len(s)
         if est != 0 or cs != s:
             where = next((i for i, (a, b) in enumerate(zip(cs or b"", s)) if a != b), min(len(cs or b""), len(s)))
             fails.append(f"{name}: the C writes {len(cs or b'')} B (status {est}), the Python {len(s)} B; "
@@ -547,22 +551,22 @@ def main():
         if cst != pst or crecs != precs:
             fails.append(f"junk {b.hex()}: the C says {cst}, the Python {pst}")
 
-    # HMC: the same file from the same writes, the same reading of every file and its damage
-    files = test_hmc.scenarios(SEED)
+    # MLF: the same file from the same writes, the same reading of every file and its damage
+    files = test_hmlf.scenarios(SEED)
     images = []
     for name, header, ops in files:
-        w, kept = test_hmc.write(header, ops)
+        w, kept = test_hmlf.write(header, ops)
         images.append((name, header, w.image, len(kept)))
         tool.write_file(header, ops)
     for (name, header, image, kept), (st, ckept, cimage) in zip(images, tool.run()):
         if st != 0 or ckept != kept or cimage != image:
             where = next((i for i, (a, b) in enumerate(zip(cimage, image)) if a != b), None)
-            fails.append(f"HMC {name}: the C writes {ckept} objects (status {st}), the Python {kept}; "
+            fails.append(f"MLF {name}: the C writes {ckept} objects (status {st}), the Python {kept}; "
                          f"first difference at byte {where}")
-    hmc_checked = 0
+    mlf_checked = 0
     for name, header, image, kept in images:
         variants = [image]
-        r = hmc.Reader(image)
+        r = hmlf.Reader(image)
         for k in range(ROUNDS // 3):
             img = bytearray(image)
             e = rng.choice([x for x in r.entries if x])
@@ -575,9 +579,9 @@ def main():
             tool.read_file(v)
         for v, got in zip(variants, tool.run()):
             want = py_read(v)
-            hmc_checked += 1
+            mlf_checked += 1
             if got != want:
-                fails.append(f"HMC {name}: the C reads a file {'as written' if v is image else 'with a bit flipped'} "
+                fails.append(f"MLF {name}: the C reads a file {'as written' if v is image else 'with a bit flipped'} "
                              f"differently from the Python")
     # the rules: the same records kept from the same frames, and the same sent from the same kept
     sel = []
@@ -585,11 +589,11 @@ def main():
         blocks, frames = frame_stream(rng.choice([1, 5, 50, 400]))
         rule = random_rule()
         kept = []
-        py = hmc.Selector(rule, blocks)
+        py = hmlf.Selector(rule, blocks)
         for f in frames:
             kept += py.frame(*f)
         send = random_rule(send=True)
-        sp = hmc.Selector(send, blocks)
+        sp = hmlf.Selector(send, blocks)
         sent = [r for k in kept for r in sp.record(k)]
         sel.append((rule, send, kept, sent))
         tool.select(rule, blocks, frames=frames)
@@ -604,15 +608,15 @@ def main():
     check_session(tool, fails)
     print(f"the session's messages built by both, HMAC against RFC 4231, ARCHIVE packets verified by both")
 
-    for sec in (0, test_hmc.T0, 951_782_400, 4_107_542_400, (1 << 32) - 1):
-        tool.hmc_path(0x52, sec)
-    for sec, got in zip((0, test_hmc.T0, 951_782_400, 4_107_542_400, (1 << 32) - 1), tool.run()):
-        if got != hmc.path(0x52, sec):
-            fails.append(f"HMC path of {sec}: the C {got}, the Python {hmc.path(0x52, sec)}")
-    print(f"{len(files)} HMC files written by both and compared byte for byte; {hmc_checked} files, "
+    for sec in (0, test_hmlf.T0, 951_782_400, 4_107_542_400, (1 << 32) - 1):
+        tool.hmlf_path(0x52, sec)
+    for sec, got in zip((0, test_hmlf.T0, 951_782_400, 4_107_542_400, (1 << 32) - 1), tool.run()):
+        if got != hmlf.path(0x52, sec):
+            fails.append(f"MLF path of {sec}: the C {got}, the Python {hmlf.path(0x52, sec)}")
+    print(f"{len(files)} MLF files written by both and compared byte for byte; {mlf_checked} files, "
           f"whole and damaged, read by both")
 
-    print(f"{len(cases)} segments, {raw} B raw -> {coded} B HCC ({coded / raw * 100:.1f} %): "
+    print(f"{len(cases)} segments, {raw} B raw -> {coded} B NRC ({coded / raw * 100:.1f} %): "
           f"the C and the Python streams compared byte for byte")
     print(f"{checked} damaged streams: the C's verdict and records against the Python's")
     if fails:

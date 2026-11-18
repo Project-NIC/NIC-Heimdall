@@ -21,7 +21,7 @@ static const uint8_t NONCE[8] = {0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6, 0x07, 0x18}
 
 /* ------------------------------------------------------------------ the cards */
 
-typedef struct { uint8_t addr; uint16_t seq; hmc_writer w; } card_file;
+typedef struct { uint8_t addr; uint16_t seq; mlf_writer w; } card_file;
 static card_file card[16];
 static int ncard;
 static uint32_t clock_s = 1790856000u;
@@ -36,23 +36,23 @@ static card_file *card_find(uint8_t addr, uint16_t seq)
 
 static void card_open(uint8_t addr, uint16_t seq)
 {
-    static uint8_t sec[8 + 11] = {HMC_UNIT, 0, 0, 0, 11, 0, 0, 0, 1, 5, 1, 1, 1, 128, 0, 0, 0, 0, 0};
+    static uint8_t sec[8 + 11] = {HMLF_UNIT, 0, 0, 0, 11, 0, 0, 0, 1, 5, 1, 1, 1, 128, 0, 0, 0, 0, 0};
     card_file *f = &card[ncard++];
-    hmc_header h = {addr, seq, clock_s, STATION, 0, 0, sec, sizeof sec};
+    hmlf_header h = {addr, seq, clock_s, STATION, 0, 0, sec, sizeof sec};
     f->addr = addr;
     f->seq = seq;
-    CHECK(!hmc_writer_open(&f->w, &h));
+    CHECK(!hmlf_writer_open(&f->w, &h));
 }
 
 /* a segment of n event lines over 8 s */
 static void card_segment(uint8_t addr, uint16_t seq, size_t n)
 {
-    static hmc_event lines[1400];
+    static hmlf_event lines[1400];
     for (size_t i = 0; i < n; i++)
-        lines[i] = (hmc_event){clock_s + (uint32_t)(i * 8 / n), addr, (uint8_t)(i * 7), (uint16_t)(i * 31),
+        lines[i] = (hmlf_event){clock_s + (uint32_t)(i * 8 / n), addr, (uint8_t)(i * 7), (uint16_t)(i * 31),
                                (uint32_t)(i * 2654435761u)};
     clock_s += 8;
-    CHECK(!hmc_writer_events(&card_find(addr, seq)->w, lines, n));
+    CHECK(!hmlf_writer_events(&card_find(addr, seq)->w, lines, n));
 }
 
 static size_t st_header(void *ctx, uint8_t addr, uint16_t seq, uint8_t *buf, size_t max)
@@ -137,13 +137,13 @@ static void srv_take(const uint8_t *msg, size_t n)
     }
     srv_file *f = srv_find(a.address, a.sequence);
     if (a.header_len) {
-        hmc_header h;
-        CHECK(!hmc_header_parse(a.header, a.header_len, &h));
+        hmlf_header h;
+        CHECK(!hmlf_header_parse(a.header, a.header_len, &h));
         if (!f) {
             f = &srv[nsrv++];
             f->addr = a.address;
             f->seq = a.sequence;
-            f->size = (size_t)HMC_MB << h.size;
+            f->size = (size_t)MLF_MB << h.size;
             f->image = calloc(1, f->size);
             f->held = SES_NONE_ENTRY;
         }
@@ -152,8 +152,8 @@ static void srv_take(const uint8_t *msg, size_t n)
     CHECK(f != 0);
     size_t bytes = 0;
     for (size_t i = 0; f && i < a.count; i++) {
-        hmc_entry e;
-        CHECK(!hmc_entry_parse(a.objects[i].entry, &e));
+        mlf_entry e;
+        CHECK(!mlf_entry_parse(a.objects[i].entry, &e));
         memcpy(f->image + e.offset, a.objects[i].cobs, a.objects[i].cobs_len);
         f->image[e.offset + e.length] = 0;
         memcpy(f->image + f->size - 16 * ((size_t)a.objects[i].index + 1), a.objects[i].entry, 16);
@@ -237,12 +237,12 @@ int main(void)
     for (int i = 0; i < 3; i++) card_segment(0x12, 65535, 500);
     card_open(0x00, 1); card_open(0x52, 1); card_open(0x16, 6); card_open(0x12, 0);
     for (int i = 0; i < 3; i++) card_segment(0x00, 1, 20);
-    static const uint8_t cfg[8 + 2] = {HMC_RULES, 0, 0, 0, 2, 0, 0, 0, 1, 0};
+    static const uint8_t cfg[8 + 2] = {HMLF_RULES, 0, 0, 0, 2, 0, 0, 0, 1, 0};
     uint32_t t_mid = clock_s + 20;
-    CHECK(!hmc_writer_config(&card_find(0x52, 1)->w, clock_s, cfg, sizeof cfg));
+    CHECK(!mlf_writer_config(&card_find(0x52, 1)->w, clock_s, cfg, sizeof cfg));
     for (int i = 0; i < 7; i++) {
         card_segment(0x52, 1, 1300);
-        if (i == 3) CHECK(!hmc_writer_config(&card_find(0x52, 1)->w, clock_s, cfg, sizeof cfg));
+        if (i == 3) CHECK(!mlf_writer_config(&card_find(0x52, 1)->w, clock_s, cfg, sizeof cfg));
     }
     for (int i = 0; i < 4; i++) card_segment(0x16, 6, 100);
     for (int i = 0; i < 2; i++) card_segment(0x12, 0, 700);
@@ -358,9 +358,9 @@ int main(void)
                 card_file *f = card_find(order[o], sq);
                 if (!f)
                     continue;
-                hmc_reader r;
+                mlf_reader r;
                 uint32_t idx[64];
-                CHECK(!hmc_reader_open(&r, f->w.image, f->w.size));
+                CHECK(!mlf_reader_open(&r, f->w.image, f->w.size));
                 size_t m = ses_window_cut(&r, at, spans[t][1], idx);
                 for (size_t k = 0; k < m; k++, g++)
                     CHECK(g < nobj && objs_[g].addr == order[o] && objs_[g].seq == sq && objs_[g].index == idx[k]);
@@ -382,7 +382,7 @@ int main(void)
     for (int k = 0; k < nsrv; k++)
         free(srv[k].image);
     for (int k = 0; k < ncard; k++)
-        hmc_writer_close(&card[k].w);
+        mlf_writer_close(&card[k].w);
     if (fails) {
         printf("test_uplink: %d FAILED\n", fails);
         return 1;

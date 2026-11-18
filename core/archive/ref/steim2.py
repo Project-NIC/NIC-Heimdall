@@ -1,4 +1,4 @@
-"""Steim-2 — the miniSEED compression HCC is measured against.
+"""Steim-2 — the miniSEED compression NRC is measured against.
 
 A faithful packer of the standard: 64-byte frames of sixteen 32-bit words, word 0 the sixteen
 2-bit nibbles, frame 0 carrying x₀ and xₙ in words 1 and 2, every other word one of the seven

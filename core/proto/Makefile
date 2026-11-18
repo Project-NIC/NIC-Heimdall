@@ -12,6 +12,8 @@ test/test_card: nic_proto.c nic_card.c nic_proto.h nic_card.h test/test_card.c
 	$(CC) $(CFLAGS) -o $@ nic_proto.c nic_card.c test/test_card.c
 
 ARCH = ../archive/ref/c
+NIC_SDK ?= ../../../NIC-SDK
+CORE = $(NIC_SDK)/nrc/nrc.c $(NIC_SDK)/mlf/mlf.c
 
 test/test_sweep: nic_proto.c nic_sweep.c nic_sweep.h test/test_sweep.c
 	$(CC) $(CFLAGS) -o $@ nic_proto.c nic_sweep.c test/test_sweep.c
@@ -19,8 +21,8 @@ test/test_sweep: nic_proto.c nic_sweep.c nic_sweep.h test/test_sweep.c
 test/test_cells: nic_proto.c nic_load.c nic_cells.c nic_cells.h test/test_cells.c
 	$(CC) $(CFLAGS) -o $@ nic_proto.c nic_load.c nic_cells.c test/test_cells.c
 
-test/test_ingest: nic_proto.c nic_ingest.c nic_ingest.h test/test_ingest.c $(ARCH)/hcc.c $(ARCH)/hmc.c
-	$(CC) $(CFLAGS) -ffp-contract=off -I$(ARCH) -o $@ nic_proto.c nic_ingest.c $(ARCH)/hcc.c $(ARCH)/hmc.c test/test_ingest.c -lm
+test/test_ingest: nic_proto.c nic_ingest.c nic_ingest.h test/test_ingest.c $(ARCH)/hnrc.c $(ARCH)/hmlf.c $(CORE)
+	$(CC) $(CFLAGS) -ffp-contract=off -I$(ARCH) -I$(NIC_SDK)/mlf -I$(NIC_SDK)/nrc -o $@ nic_proto.c nic_ingest.c $(ARCH)/hnrc.c $(ARCH)/hmlf.c $(CORE) test/test_ingest.c -lm
 
 test/test_kronos: nic_kronos.c nic_kronos.h test/test_kronos.c
 	$(CC) $(CFLAGS) -D_DEFAULT_SOURCE -o $@ nic_kronos.c test/test_kronos.c -lm
@@ -29,16 +31,16 @@ test/test_tree: nic_proto.c nic_sweep.c nic_tree.c nic_tree.h test/test_tree.c
 	$(CC) $(CFLAGS) -o $@ nic_proto.c nic_sweep.c nic_tree.c test/test_tree.c
 
 test/test_cmd: nic_cmd.c nic_cmd.h test/test_cmd.c $(ARCH)/session.c
-	$(CC) $(CFLAGS) -ffp-contract=off -I$(ARCH) -o $@ nic_cmd.c $(ARCH)/session.c $(ARCH)/hmc.c $(ARCH)/hcc.c test/test_cmd.c -lm
+	$(CC) $(CFLAGS) -ffp-contract=off -I$(ARCH) -I$(NIC_SDK)/mlf -I$(NIC_SDK)/nrc -o $@ nic_cmd.c $(ARCH)/session.c $(ARCH)/hmlf.c $(ARCH)/hnrc.c $(CORE) test/test_cmd.c -lm
 
 test/test_uplink: nic_uplink.c nic_uplink.h test/test_uplink.c $(ARCH)/session.c
-	$(CC) $(CFLAGS) -ffp-contract=off -I$(ARCH) -o $@ nic_uplink.c $(ARCH)/session.c $(ARCH)/hmc.c $(ARCH)/hcc.c test/test_uplink.c -lm
+	$(CC) $(CFLAGS) -ffp-contract=off -I$(ARCH) -I$(NIC_SDK)/mlf -I$(NIC_SDK)/nrc -o $@ nic_uplink.c $(ARCH)/session.c $(ARCH)/hmlf.c $(ARCH)/hnrc.c $(CORE) test/test_uplink.c -lm
 
 test/test_live: nic_live.c nic_live.h test/test_live.c $(ARCH)/session.c
-	$(CC) $(CFLAGS) -ffp-contract=off -I$(ARCH) -o $@ nic_live.c $(ARCH)/session.c $(ARCH)/hmc.c $(ARCH)/hcc.c test/test_live.c -lm
+	$(CC) $(CFLAGS) -ffp-contract=off -I$(ARCH) -I$(NIC_SDK)/mlf -I$(NIC_SDK)/nrc -o $@ nic_live.c $(ARCH)/session.c $(ARCH)/hmlf.c $(ARCH)/hnrc.c $(CORE) test/test_live.c -lm
 
-test/test_cards: nic_cards.c nic_cards.h test/test_cards.c $(ARCH)/hmc.c
-	$(CC) $(CFLAGS) -ffp-contract=off -I$(ARCH) -o $@ nic_cards.c $(ARCH)/hmc.c $(ARCH)/hcc.c test/test_cards.c -lm
+test/test_cards: nic_cards.c nic_cards.h test/test_cards.c $(ARCH)/hmlf.c
+	$(CC) $(CFLAGS) -ffp-contract=off -I$(ARCH) -I$(NIC_SDK)/mlf -I$(NIC_SDK)/nrc -o $@ nic_cards.c $(ARCH)/hmlf.c $(ARCH)/hnrc.c $(CORE) test/test_cards.c -lm
 
 test/test_mirror: nic_mirror.c nic_mirror.h nic_tree.h test/test_mirror.c
 	$(CC) $(CFLAGS) -o $@ nic_mirror.c test/test_mirror.c
@@ -50,7 +52,7 @@ test/test_values: nic_values.c nic_values.h test/test_values.c
 	$(CC) $(CFLAGS) -o $@ nic_values.c test/test_values.c
 
 test/test_gatt: nic_gatt.c nic_gatt.h nic_cmd.c test/test_gatt.c $(ARCH)/session.c
-	$(CC) $(CFLAGS) -ffp-contract=off -I$(ARCH) -o $@ nic_gatt.c nic_cmd.c $(ARCH)/session.c $(ARCH)/hmc.c $(ARCH)/hcc.c test/test_gatt.c -lm
+	$(CC) $(CFLAGS) -ffp-contract=off -I$(ARCH) -I$(NIC_SDK)/mlf -I$(NIC_SDK)/nrc -o $@ nic_gatt.c nic_cmd.c $(ARCH)/session.c $(ARCH)/hmlf.c $(ARCH)/hnrc.c $(CORE) test/test_gatt.c -lm
 
 test/test_power: nic_power.c nic_power.h test/test_power.c
 	$(CC) $(CFLAGS) -o $@ nic_power.c test/test_power.c
@@ -87,11 +89,11 @@ cross:
 	arm-none-eabi-gcc -mcpu=cortex-m33 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 $(CFLAGS) -Os -c nic_card.c -o /dev/null
 	arm-none-eabi-gcc -mcpu=cortex-m33 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 $(CFLAGS) -Os -c nic_cells.c -o /dev/null
 	arm-none-eabi-gcc -mcpu=cortex-m33 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 $(CFLAGS) -Os -c nic_sweep.c -o /dev/null
-	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -I$(ARCH) -c nic_ingest.c -o /dev/null
-	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -I$(ARCH) -c nic_cmd.c -o /dev/null
-	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -I$(ARCH) -c nic_uplink.c -o /dev/null
-	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -I$(ARCH) -c nic_live.c -o /dev/null
-	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -I$(ARCH) -c nic_cards.c -o /dev/null
+	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -I$(ARCH) -I$(NIC_SDK)/mlf -I$(NIC_SDK)/nrc -c nic_ingest.c -o /dev/null
+	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -I$(ARCH) -I$(NIC_SDK)/mlf -I$(NIC_SDK)/nrc -c nic_cmd.c -o /dev/null
+	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -I$(ARCH) -I$(NIC_SDK)/mlf -I$(NIC_SDK)/nrc -c nic_uplink.c -o /dev/null
+	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -I$(ARCH) -I$(NIC_SDK)/mlf -I$(NIC_SDK)/nrc -c nic_live.c -o /dev/null
+	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -I$(ARCH) -I$(NIC_SDK)/mlf -I$(NIC_SDK)/nrc -c nic_cards.c -o /dev/null
 	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -c nic_mirror.c -o /dev/null
 	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -c nic_tunnel.c -o /dev/null
 	riscv64-unknown-elf-gcc -march=rv32imafc_zicsr -mabi=ilp32f --specs=picolibc.specs $(CFLAGS) -Os -c nic_values.c -o /dev/null

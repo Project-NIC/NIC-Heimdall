@@ -452,19 +452,19 @@ The type names `seismo`, `basic`, `iono`, `mag`: the type is the board's name. "
 is per-rate streams": the head decodes no DATA payload and archives by TYPE
 (`../mayak/FIRMWARE.md` §6); big-endian ModBus registers are turned where the block is decoded.
 
-## NIC-MLA and NIC-DMD as the station's archive — superseded by HMC and HCC
+## NIC-MLA and NIC-DMD as the station's archive — superseded by MLF and NRC
 
 NIC-Arduino's NIC-MLA records and NIC-DMD compression (D30) were built for an append-only
 ATmega328 — a record every fifteen minutes, a 16–64 B LoRa packet. The station outgrew them four
 ways:
 
-- **MLA's one schema a file**: dozens of TYPEs cut by a table that did not describe them; HMC
+- **MLA's one schema a file**: dozens of TYPEs cut by a table that did not describe them; MLF
   carries a layout per TYPE.
 - **MLA's index per record**, where the station queries by second and address.
 - **DMD's delta chain**: a keyframe every seventh packet, so a record cost up to six reads and a
-  damaged one took six with it; HCC codes each second alone.
+  damaged one took six with it; NRC codes each second alone.
 - **DMD's row deltas** break multi-byte carries and ignore the series down the second: Quake
-  16,8 B a sample quiet, 22,9 B in an event, against ~7,6 / ~14,9 for Steim on columns, as HCC codes.
+  16,8 B a sample quiet, 22,9 B in an event, against ~7,6 / ~14,9 for Steim on columns, as NRC codes.
 
 Kept: the pre-allocated 1 MB file with descriptions from the back, the FAT touched only at open, a
 CRC per block; not the in-file header mirror — the second card is the mirror.
@@ -474,10 +474,10 @@ CRC per block; not the in-file header mirror — the second card is the mirror.
 The head wrote every frame, 128 a second, fillers included. **The archive cost the same whatever a
 unit measured** — a Palatine changing a few values an hour cost a Quake, a Tesla's quiet sky was
 95 % zeros — and a satellite-only station could not say what to send. Each unit now has a recording
-and a send rule (`archive/HMC.md`) comparing bytes, never values: the archive stays raw, the head
+and a send rule (`archive/MLF.md`) comparing bytes, never values: the archive stays raw, the head
 interprets no payload.
 
-## HMC's first form — one file for the station, one block a second — superseded
+## MLF's first form — one file for the station, one block a second — superseded
 
 One station file series of self-contained one-second blocks, every address's 128 rows in each,
 64 MB files closed at midnight or on a header change. **Units differ by orders of magnitude, so one
@@ -504,11 +504,11 @@ byte in 254.
 The file kept MLA's pre-allocated 1 MB. **A Quake under `ALL` filled it in minutes**, a new file
 and a FAT write each time, while a Palatine under `CHANGE` took months over the same megabyte. The
 size is now a setting per address, 1 MB × 2^`size` up to 128 MB, recorded in the header: 64 MB for
-an address under `ALL`, 1 MB for every other (`archive/HMC.md`).
+an address under `ALL`, 1 MB for every other (`archive/MLF.md`).
 
 ## The archive's seconds read as UTC — corrected: leap-blind, with a `TIME` section
 
-HMC called its seconds Unix seconds and its paths UTC, while Kronos labels the station's scale
+MLF called its seconds Unix seconds and its paths UTC, while Kronos labels the station's scale
 leap-blind, GPS time in the Unix epoch, 18 s ahead in 2026 — and nothing in the file carried the
 difference, so an exporter could not reach UTC from the file alone. **The seconds stay leap-blind;
 a `TIME` section carries the GPS − UTC offset and an announced leap**, written in a config when

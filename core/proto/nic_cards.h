@@ -1,4 +1,4 @@
-/* The head's two cards, as ../archive/HMC.md (*The files*) and ../../mayak/FIRMWARE.md §6 fix them:
+/* The head's two cards, as ../archive/MLF.md (*The files*) and ../../mayak/FIRMWARE.md §6 fix them:
  * the same files on both; the circle — while either card has less than the reserve free, the
  * oldest file by its first second, whatever the address and never an open one, goes from every
  * card that is in, the firmware told whether the server held it whole; a card let out by the

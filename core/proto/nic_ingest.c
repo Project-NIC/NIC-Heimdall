@@ -18,7 +18,7 @@ int nic_ingest_add(nic_ingest *g, const nic_ingest_unit *u)
     uint8_t i = g->nunits++;
     g->units[i] = *u;
     g->idx[u->addr] = i;
-    hmc_selector_init(&g->sel[i], &u->rule, u->blocks);
+    hmlf_selector_init(&g->sel[i], &u->rule, u->blocks);
     return 0;
 }
 
@@ -32,7 +32,7 @@ static void spool_out(nic_ingest *g, uint8_t i)
     s->n = s->used = 0;
 }
 
-static void spool_add(nic_ingest *g, uint8_t i, const hcc_record *r)
+static void spool_add(nic_ingest *g, uint8_t i, const hnrc_record *r)
 {
     nic_spool *s = &g->spool[i];
     if (s->n && s->used + 9 + r->length > NIC_SPOOL_BYTES)
@@ -79,7 +79,7 @@ int nic_ingest_frame(nic_ingest *g, const uint8_t trunk[NIC_TRUNK_LEN])
                     newest = g->b[k].second;
             }
         if (any && second < newest) {       /* its second is closed: a repair, kept */
-            hcc_record r = {second, h.frame, h.kind, h.status, 0, NIC_PAYLOAD, p};
+            hnrc_record r = {second, h.frame, h.kind, h.status, 0, NIC_PAYLOAD, p};
             spool_add(g, i, &r);
             g->repaired++;
             return NIC_IN_REPAIRED;
@@ -113,8 +113,8 @@ void nic_ingest_close(nic_ingest *g, uint32_t second)
                     b->head[i][f][1] = 0;
                     g->holes++;
                 }
-                hcc_record kept[16];
-                size_t n = hmc_select_frame(&g->sel[i], second, (uint8_t)f, b->head[i][f][0],
+                hnrc_record kept[16];
+                size_t n = hmlf_select_frame(&g->sel[i], second, (uint8_t)f, b->head[i][f][0],
                                             b->head[i][f][1], b->data[i][f], kept);
                 for (size_t k = 0; k < n; k++)
                     spool_add(g, i, &kept[k]);

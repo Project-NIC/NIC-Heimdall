@@ -1,8 +1,8 @@
-"""The cases HCC.md names, on synthetic records: every one round-trips byte for byte."""
+"""The cases NRC.md names, on synthetic records: every one round-trips byte for byte."""
 import os, random, sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-import hcc, steim2
-from hcc import Field, compose_layout, argus_layout
+import hnrc, steim2
+from hnrc import Field, compose_layout, argus_layout
 
 def frames(payloads, second0=1_700_000_000, kind=0, status=0, fps=128):
     out = []
@@ -44,11 +44,11 @@ def quake_payloads(n, amp=2000, event_at=None):
     return pls
 
 def check(records, layout, name):
-    s = hcc.encode(records, layout)
-    back = hcc.decode(s, layout)
+    s = hnrc.encode(records, layout)
+    back = hnrc.decode(s, layout)
     assert back == list(records), name
-    raw = hcc.raw_length(records)
-    print(f"{name:34s} {raw:7d} B raw -> {len(s):6d} B HCC  ({len(s)/raw*100:5.1f} %)")
+    raw = hnrc.raw_length(records)
+    print(f"{name:34s} {raw:7d} B raw -> {len(s):6d} B NRC  ({len(s)/raw*100:5.1f} %)")
     return s
 
 def case(records, layout, name):
@@ -56,7 +56,7 @@ def case(records, layout, name):
 
 
 def cases():
-    """(name, layout, records) — every case HCC.md lists; the C test codes the same ones."""
+    """(name, layout, records) — every case NRC.md lists; the C test codes the same ones."""
     random.seed(1)
     out = []
     # a Quake under ALL, 8 s

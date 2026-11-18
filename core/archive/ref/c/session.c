@@ -154,25 +154,25 @@ int ses_frame(const uint8_t *raw, size_t n, uint8_t **msg, size_t *len)
 {
     uint8_t *m = malloc(n + n / 254 + 2);
     if (!m)
-        return HMC_ENOMEM;
-    size_t k = hmc_cobs_encode(raw, n, m);
+        return MLF_ENOMEM;
+    size_t k = mlf_cobs_encode(raw, n, m);
     m[k++] = 0;
     *msg = m;
     *len = k;
-    return HMC_OK;
+    return MLF_OK;
 }
 
 int ses_unframe(const uint8_t *framed, size_t n, uint8_t **raw, size_t *rawlen)
 {
     uint8_t *r = malloc(n ? n : 1);
     if (!r)
-        return HMC_ENOMEM;
-    if (hmc_cobs_decode(framed, n, r, rawlen) || *rawlen == 0) {
+        return MLF_ENOMEM;
+    if (mlf_cobs_decode(framed, n, r, rawlen) || *rawlen == 0) {
         free(r);
-        return HMC_DAMAGED;
+        return MLF_DAMAGED;
     }
     *raw = r;
-    return HMC_OK;
+    return MLF_OK;
 }
 
 static int finish(uint8_t *raw, size_t n, uint8_t **msg, size_t *len)
@@ -206,24 +206,24 @@ int ses_hello_parse(const uint8_t key[16], const uint8_t *body, size_t n, ses_he
 {
     uint8_t t[8], type = SES_HELLO;
     if (n != 25 || body[0] != 1)
-        return HMC_DAMAGED;
+        return MLF_DAMAGED;
     const uint8_t *parts[2] = {&type, body};
     size_t lens[2] = {1, 17};
     ses_tag(key, parts, lens, 2, t);
     if (!same_tag(t, body + 17))
-        return HMC_DAMAGED;
+        return MLF_DAMAGED;
     h->station = body[1] | get16(body + 2) << 8;
     h->counter = get32(body + 4);
     memcpy(h->nonce, body + 8, 8);
     memcpy(h->tag, body + 17, 8);
-    return HMC_OK;
+    return MLF_OK;
 }
 
 int ses_marks(int type, const ses_mark *m, size_t n, uint8_t **msg, size_t *len)
 {
     uint8_t *raw = malloc(3 + 7 * n);
     if (!raw)
-        return HMC_ENOMEM;
+        return MLF_ENOMEM;
     raw[0] = (uint8_t)type;
     put16(raw + 1, (uint32_t)n);
     for (size_t i = 0; i < n; i++) {
@@ -237,18 +237,18 @@ int ses_marks(int type, const ses_mark *m, size_t n, uint8_t **msg, size_t *len)
 int ses_marks_parse(const uint8_t *body, size_t n, ses_mark **marks, size_t *count)
 {
     if (n < 2 || n != 2 + 7 * (size_t)get16(body))
-        return HMC_DAMAGED;
+        return MLF_DAMAGED;
     *count = get16(body);
     ses_mark *m = malloc(sizeof(ses_mark) * (*count ? *count : 1));
     if (!m)
-        return HMC_ENOMEM;
+        return MLF_ENOMEM;
     for (size_t i = 0; i < *count; i++) {
         m[i].address = body[2 + 7 * i];
         m[i].sequence = (uint16_t)get16(body + 3 + 7 * i);
         m[i].entry = get32(body + 5 + 7 * i);
     }
     *marks = m;
-    return HMC_OK;
+    return MLF_OK;
 }
 
 void ses_chain_init(ses_chain *c, const uint8_t key[16], const uint8_t nonce[8],
@@ -268,7 +268,7 @@ int ses_archive(ses_chain *c, uint8_t address, uint16_t sequence, const uint8_t 
         total += 20 + objs[i].cobs_len;
     uint8_t *raw = malloc(total), *p;
     if (!raw)
-        return HMC_ENOMEM;
+        return MLF_ENOMEM;
     c->packet++;
     raw[0] = SES_ARCHIVE;
     raw[1] = address;
@@ -298,34 +298,34 @@ int ses_archive_verify(ses_chain *c, const uint8_t *body, size_t n, ses_archive_
     uint8_t t[8], type = SES_ARCHIVE;
     memset(a, 0, sizeof *a);
     if (n < 8)
-        return HMC_DAMAGED;
+        return MLF_DAMAGED;
     const uint8_t *parts[4] = {c->nonce, c->last, &type, body};
     size_t lens[4] = {8, 8, 1, n - 8};
     ses_tag(c->key, parts, lens, 4, t);
     if (!same_tag(t, body + n - 8))
-        return HMC_DAMAGED;
+        return MLF_DAMAGED;
     size_t end = n - 8, i = 11;
     if (end < 13)
-        return HMC_DAMAGED;
+        return MLF_DAMAGED;
     a->address = body[0];
     a->sequence = (uint16_t)get16(body + 1);
     a->packet = get32(body + 3);
     a->header_len = get32(body + 7);
     if (a->header_len > end - i || end - i - a->header_len < 2)
-        return HMC_DAMAGED;
+        return MLF_DAMAGED;
     a->header = body + i;
     i += a->header_len;
     a->count = get16(body + i);
     i += 2;
     a->objects = malloc(sizeof(ses_object) * (a->count ? a->count : 1));
     if (!a->objects)
-        return HMC_ENOMEM;
+        return MLF_ENOMEM;
     for (size_t k = 0; k < a->count; k++) {
-        hmc_entry e;
-        if (end - i < 20 || hmc_entry_parse(body + i + 4, &e) || e.length > end - i - 20) {
+        mlf_entry e;
+        if (end - i < 20 || mlf_entry_parse(body + i + 4, &e) || e.length > end - i - 20) {
             free(a->objects);
             a->objects = NULL;
-            return HMC_DAMAGED;
+            return MLF_DAMAGED;
         }
         a->objects[k].index = get32(body + i);
         a->objects[k].entry = body + i + 4;
@@ -336,11 +336,11 @@ int ses_archive_verify(ses_chain *c, const uint8_t *body, size_t n, ses_archive_
     if (i != end || a->packet != c->packet + 1) {
         free(a->objects);
         a->objects = NULL;
-        return HMC_DAMAGED;
+        return MLF_DAMAGED;
     }
     c->packet = a->packet;
     memcpy(c->last, body + n - 8, 8);
-    return HMC_OK;
+    return MLF_OK;
 }
 
 int ses_live_body(uint32_t second, const ses_seg *segs, size_t n, uint8_t **body, size_t *len)
@@ -350,7 +350,7 @@ int ses_live_body(uint32_t second, const ses_seg *segs, size_t n, uint8_t **body
         total += 5 + segs[i].len;
     uint8_t *b = malloc(total), *p = b + 5;
     if (!b)
-        return HMC_ENOMEM;
+        return MLF_ENOMEM;
     put32(b, second);
     b[4] = (uint8_t)n;
     for (size_t i = 0; i < n; i++) {
@@ -361,7 +361,7 @@ int ses_live_body(uint32_t second, const ses_seg *segs, size_t n, uint8_t **body
     }
     *body = b;
     *len = total;
-    return HMC_OK;
+    return MLF_OK;
 }
 
 int ses_live(uint32_t second, const ses_seg *segs, size_t n, uint8_t **msg, size_t *len)
@@ -374,7 +374,7 @@ int ses_live(uint32_t second, const ses_seg *segs, size_t n, uint8_t **msg, size
     uint8_t *raw = malloc(bl + 1);
     if (!raw) {
         free(body);
-        return HMC_ENOMEM;
+        return MLF_ENOMEM;
     }
     raw[0] = SES_LIVE;
     memcpy(raw + 1, body, bl);
@@ -385,17 +385,17 @@ int ses_live(uint32_t second, const ses_seg *segs, size_t n, uint8_t **msg, size
 int ses_live_parse(const uint8_t *body, size_t n, uint32_t *second, ses_seg **segs, size_t *count)
 {
     if (n < 5)
-        return HMC_DAMAGED;
+        return MLF_DAMAGED;
     *second = get32(body);
     *count = body[4];
     ses_seg *s = malloc(sizeof(ses_seg) * (*count ? *count : 1));
     size_t i = 5;
     if (!s)
-        return HMC_ENOMEM;
+        return MLF_ENOMEM;
     for (size_t k = 0; k < *count; k++) {
         if (n - i < 5 || get32(body + i + 1) > n - i - 5) {
             free(s);
-            return HMC_DAMAGED;
+            return MLF_DAMAGED;
         }
         s[k].address = body[i];
         s[k].len = get32(body + i + 1);
@@ -404,10 +404,10 @@ int ses_live_parse(const uint8_t *body, size_t n, uint32_t *second, ses_seg **se
     }
     if (i != n) {
         free(s);
-        return HMC_DAMAGED;
+        return MLF_DAMAGED;
     }
     *segs = s;
-    return HMC_OK;
+    return MLF_OK;
 }
 
 int ses_window(const uint8_t key[16], uint32_t station, uint32_t counter, uint8_t address,
@@ -431,34 +431,34 @@ int ses_window_parse(const uint8_t key[16], uint32_t station, uint32_t stored, c
     uint8_t t[8], type = SES_WINDOW,
                   st[3] = {(uint8_t)station, (uint8_t)(station >> 8), (uint8_t)(station >> 16)};
     if (n != 21)
-        return HMC_DAMAGED;
+        return MLF_DAMAGED;
     const uint8_t *parts[3] = {st, &type, body};
     size_t lens[3] = {3, 1, 13};
     ses_tag(key, parts, lens, 3, t);
     if (!same_tag(t, body + 13) || get32(body) <= stored)
-        return HMC_DAMAGED;
+        return MLF_DAMAGED;
     w->counter = get32(body);
     w->address = body[4];
     w->second = get32(body + 5);
     w->window = get32(body + 9);
-    return HMC_OK;
+    return MLF_OK;
 }
 
 /* ------------------------------------------------------------------ the head's cuts */
 
-int ses_object_of(const hmc_reader *r, uint32_t index, ses_object *o)
+int ses_object_of(const mlf_reader *r, uint32_t index, ses_object *o)
 {
-    hmc_entry e;
-    if (hmc_reader_entry(r, index, &e))
-        return HMC_DAMAGED;
+    mlf_entry e;
+    if (mlf_reader_entry(r, index, &e))
+        return MLF_DAMAGED;
     o->index = index;
     o->entry = r->image + r->size - 16 * ((size_t)index + 1);
     o->cobs = r->image + (e.offset < r->size ? e.offset : r->size);
     o->cobs_len = e.offset < r->size ? (e.length < r->size - e.offset ? e.length : r->size - e.offset) : 0;
-    return HMC_OK;
+    return MLF_OK;
 }
 
-size_t ses_forward(const hmc_reader *r, uint32_t held, size_t budget, uint32_t *idx,
+size_t ses_forward(const mlf_reader *r, uint32_t held, size_t budget, uint32_t *idx,
                    uint32_t *packet)
 {
     size_t m = 0, size = 0, cur = 0;
@@ -480,7 +480,7 @@ size_t ses_forward(const hmc_reader *r, uint32_t held, size_t budget, uint32_t *
     return m;
 }
 
-size_t ses_window_cut(const hmc_reader *r, uint32_t second, uint32_t span, uint32_t *idx)
+size_t ses_window_cut(const mlf_reader *r, uint32_t second, uint32_t span, uint32_t *idx)
 {
     int64_t lo = (int64_t)second - span, hi = (int64_t)second + span;
     size_t m = 0;
@@ -490,24 +490,24 @@ size_t ses_window_cut(const hmc_reader *r, uint32_t second, uint32_t span, uint3
         return 0;
     for (uint32_t i = 0; i < r->entries; i++) {
         ses_object o;
-        hmc_entry e;
-        if (ses_object_of(r, i, &o) || hmc_reader_entry(r, i, &e) || e.type != HMC_SEG)
+        mlf_entry e;
+        if (ses_object_of(r, i, &o) || mlf_reader_entry(r, i, &e) || e.type != MLF_SEG)
             continue;
         uint8_t *buf = malloc(o.cobs_len ? o.cobs_len : 1);
         size_t len;
-        hmc_object ob;
-        if (buf && !hmc_cobs_decode(o.cobs, o.cobs_len, buf, &len) && !hmc_object_parse(buf, len, &ob)
-            && ob.type == HMC_SEG && ob.first <= hi && ob.last >= lo) {
+        mlf_object ob;
+        if (buf && !mlf_cobs_decode(o.cobs, o.cobs_len, buf, &len) && !mlf_object_parse(buf, len, &ob)
+            && ob.type == MLF_SEG && ob.first <= hi && ob.last >= lo) {
             touch[i] = 1;
             last = i;
         }
         free(buf);
     }
     for (uint32_t i = 0; last >= 0 && i < r->entries; i++) {
-        hmc_entry e;
-        if (hmc_reader_entry(r, i, &e))
+        mlf_entry e;
+        if (mlf_reader_entry(r, i, &e))
             continue;
-        if (touch[i] || (e.type == HMC_CFG && (int64_t)i < last))
+        if (touch[i] || (e.type == MLF_CFG && (int64_t)i < last))
             idx[m++] = i;
     }
     free(touch);

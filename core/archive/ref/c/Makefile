@@ -1,13 +1,17 @@
-# The C reference. -ffp-contract=off: the predictor rounds every double operation as the Python
-# does, never fused (HCC.md, *The coder's choices*).
+# The C reference: Heimdall's profiles on MLF's and NRC's cores from NIC-SDK, beside this
+# repository or where NIC_SDK points. -ffp-contract=off: the predictor rounds every double
+# operation as the Python does, never fused (NRC.md, *The coder's choices*).
 CC      ?= cc
+NIC_SDK ?= ../../../../../NIC-SDK
 CFLAGS  ?= -std=c99 -O2 -Wall -Wextra -Wpedantic
-CFLAGS  += -ffp-contract=off
+CFLAGS  += -ffp-contract=off -I$(NIC_SDK)/mlf -I$(NIC_SDK)/nrc
 
-hcc_tool: hcc.c hmc.c session.c hcc_tool.c hcc.h hmc.h session.h
-	$(CC) $(CFLAGS) -o $@ hcc.c hmc.c session.c hcc_tool.c -lm
+SRC = $(NIC_SDK)/nrc/nrc.c $(NIC_SDK)/mlf/mlf.c hnrc.c hmlf.c session.c hnrc_tool.c
+
+hnrc_tool: $(SRC) hnrc.h hmlf.h session.h $(NIC_SDK)/nrc/nrc.h $(NIC_SDK)/mlf/mlf.h
+	$(CC) $(CFLAGS) -o $@ $(SRC) -lm
 
 clean:
-	rm -f hcc_tool
+	rm -f hnrc_tool
 
 .PHONY: clean

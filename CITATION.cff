@@ -14,8 +14,8 @@ abstract: >-
   A design-stage open concept for a self-contained measuring station that records
   seismic motion, the geomagnetic field, lightning and sferics, the ionosphere
   (GNSS TEC, HF and longwave), ionising radiation, sea-floor pressure and the
-  weather on one clocked bus, with a self-describing archive (HMC) and its
-  lossless codec (HCC), and exporters to the formats of the world's networks
+  weather on one clocked bus, with a self-describing archive (MLF) and its
+  lossless codec (NRC), and exporters to the formats of the world's networks
   (miniSEED, IAGA-2002, RINEX, BUFR). Nothing has been built yet; the documents
   are the design.
 keywords:

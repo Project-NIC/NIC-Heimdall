@@ -115,7 +115,7 @@ static uint32_t pending(nic_uplink *u, nic_up_addr *a)
 }
 
 /* A segment's first and last second, from the head of its COBS bytes: -1 when it is not one. */
-static int seconds_of(nic_uplink *u, uint8_t addr, uint16_t seq, const hmc_entry *e, uint32_t *first,
+static int seconds_of(nic_uplink *u, uint8_t addr, uint16_t seq, const mlf_entry *e, uint32_t *first,
                       uint32_t *last)
 {
     uint8_t in[24], out[16];
@@ -135,17 +135,17 @@ static int seconds_of(nic_uplink *u, uint8_t addr, uint16_t seq, const hmc_entry
         if (o < sizeof out && c < 0xFF)
             out[o++] = 0;
     }
-    if (o < sizeof out || memcmp(out, "HSEG", 4))
+    if (o < sizeof out || memcmp(out, "MSEG", 4))
         return -1;
     *first = get32(out + 8);
     *last = get32(out + 12);
     return 0;
 }
 
-static int touches(nic_uplink *u, uint8_t addr, uint16_t seq, const hmc_entry *e, const nic_up_window *w)
+static int touches(nic_uplink *u, uint8_t addr, uint16_t seq, const mlf_entry *e, const nic_up_window *w)
 {
     uint32_t first, last;
-    return e->type == HMC_SEG && !seconds_of(u, addr, seq, e, &first, &last) && first <= w->hi
+    return e->type == MLF_SEG && !seconds_of(u, addr, seq, e, &first, &last) && first <= w->hi
            && last >= w->lo;
 }
 
@@ -171,13 +171,13 @@ static size_t packet(nic_uplink *u, uint8_t addr, uint16_t seq, int header, uint
     at += 2;
     for (; *i < end; ++*i) {
         uint8_t ent[16];
-        hmc_entry e;
-        if (u->store.entry(u->store.ctx, addr, seq, *i, ent) || hmc_entry_parse(ent, &e)
+        mlf_entry e;
+        if (u->store.entry(u->store.ctx, addr, seq, *i, ent) || mlf_entry_parse(ent, &e)
             || e.length > NIC_UP_OBJECT_MAX) {
             u->skipped++;
             continue;
         }
-        if (w && !(e.type == HMC_CFG ? *i < wlast : touches(u, addr, seq, &e, w)))
+        if (w && !(e.type == MLF_CFG ? *i < wlast : touches(u, addr, seq, &e, w)))
             continue;
         if (count && size + 20 + e.length > NIC_UP_BUDGET)
             break;
@@ -228,8 +228,8 @@ static uint32_t search(nic_uplink *u, uint8_t addr, uint16_t seq, uint32_t have,
     while (a < b) {
         uint32_t m = a + (b - a) / 2;
         uint8_t ent[16];
-        hmc_entry e;
-        int ok = !u->store.entry(u->store.ctx, addr, seq, m, ent) && !hmc_entry_parse(ent, &e);
+        mlf_entry e;
+        int ok = !u->store.entry(u->store.ctx, addr, seq, m, ent) && !mlf_entry_parse(ent, &e);
         if (ok && e.second < lo)
             a = m + 1;
         else
@@ -255,8 +255,8 @@ static int64_t file_last(nic_uplink *u, uint8_t addr, uint16_t seq, const nic_up
     int64_t last = -1;
     for (uint32_t i = search(u, addr, seq, have, w->lo); i < have; i++) {
         uint8_t ent[16];
-        hmc_entry e;
-        if (u->store.entry(u->store.ctx, addr, seq, i, ent) || hmc_entry_parse(ent, &e))
+        mlf_entry e;
+        if (u->store.entry(u->store.ctx, addr, seq, i, ent) || mlf_entry_parse(ent, &e))
             continue;
         if (e.second > stop)
             break;

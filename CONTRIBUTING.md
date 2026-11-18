@@ -15,7 +15,7 @@ truer, or taking it one step towards hardware.
 | **draw a board** | from its `HARDWARE.md`, into [`schematics/`](schematics/README.md), one folder per board, saying which state of the description you drew from |
 | **build and measure** | a board's `HARDWARE.md` says what it must meet, many in a bench-criteria section; a measured number against one of them settles more than any page of reasoning |
 | **write firmware** | against the unit's `FIRMWARE.md` and [`core/PROTOCOL.md`](core/PROTOCOL.md), once its board exists |
-| **write a reader of the archive** | an exporter as [`core/archive/EXPORTERS.md`](core/archive/EXPORTERS.md) enters it, on the HMC reference |
+| **write a reader of the archive** | an exporter as [`core/archive/EXPORTERS.md`](core/archive/EXPORTERS.md) enters it, on the MLF reference |
 | **site a station** | where one would fill a gap — [`gaia/`](gaia/README.md) |
 
 ## The rules of the record

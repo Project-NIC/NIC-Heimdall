@@ -1,17 +1,17 @@
 """A damaged stream fails cleanly: the decoder raises ValueError and nothing else, in bounded time.
 
-HMC's CRC says a segment is whole before HCC sees it, so a damaged stream is a coder fault and
+MLF's CRC says a segment is whole before NRC sees it, so a damaged stream is a coder fault and
 rare — but a reader of an old archive must still say "damaged" and read on, never crash, hang or
-exhaust memory on one (HCC.md, *Decoding*). Every stream here is cut, extended, bit-flipped,
+exhaust memory on one (NRC.md, *Decoding*). Every stream here is cut, extended, bit-flipped,
 overwritten or invented, and each case is reported with what reproduces it.
 """
 import math, os, random, signal, sys, time
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-import hcc
-from hcc import Field, compose_layout, argus_layout
+import hnrc
+from hnrc import Field, compose_layout, argus_layout
 
-SEED = int(os.environ.get("HCC_FUZZ_SEED", "1"))
-ROUNDS = int(os.environ.get("HCC_FUZZ_ROUNDS", "400"))
+SEED = int(os.environ.get("NRC_FUZZ_SEED", "1"))
+ROUNDS = int(os.environ.get("NRC_FUZZ_ROUNDS", "400"))
 LIMIT_S = 5.0          # one decode of a few kB never needs this long
 rng = random.Random(SEED)
 
@@ -66,7 +66,7 @@ def decode(stream, layout):
         signal.setitimer(signal.ITIMER_REAL, LIMIT_S)
     t0 = time.monotonic()
     try:
-        return "ok", hcc.decode(stream, layout)
+        return "ok", hnrc.decode(stream, layout)
     except ValueError as e:
         return "damaged", str(e)
     except Timeout:
@@ -94,8 +94,8 @@ def expect(name, how, stream, layout, must_be_damaged):
 def main():
     tally = {"ok": 0, "damaged": 0, "fault": 0}
     for name, layout, records in cases():
-        good = hcc.encode(records, layout)
-        assert hcc.decode(good, layout) == records, name
+        good = hnrc.encode(records, layout)
+        assert hnrc.decode(good, layout) == records, name
         # cut short — at every byte boundary: always damaged, the last byte always carries data
         for cut in range(len(good)):
             tally[expect(name, f"cut to {cut} B", good[:cut], layout, True)] += 1
@@ -117,15 +117,15 @@ def main():
             else:
                 n = rng.randint(1, 8); s[p:p + n] = b"\xff" * len(s[p:p + n]); how = f"{n} B set at {p}"
             tally[expect(name, how + f" (seed {SEED}, round {r})", bytes(s), layout, False)] += 1
-    # streams that were never HCC
+    # streams that were never NRC
     layout = cases()[0][1]
     for r in range(ROUNDS):
         junk = bytes(rng.randrange(256) for _ in range(rng.randint(0, 64)))
         tally[expect("junk", f"{len(junk)} random B (seed {SEED}, round {r})", junk, layout, False)] += 1
     # a count no coder writes: 70 B that once claimed a million records and took the decoder
     # seconds and hundreds of MB to refuse — CONST headers and CONST data cost no bits per record
-    for n in (65_537, 1 << 20, 1 << 32):          # HCC.md: a count above 65 536 is damaged
-        bw = hcc.BitWriter()
+    for n in (65_537, 1 << 20, 1 << 32):          # NRC.md: a count above 65 536 is damaged
+        bw = hnrc.BitWriter()
         bw.gamma(n)
         bw.write(0, 3); bw.write(1_700_000_000, 32)
         for _ in range(4):

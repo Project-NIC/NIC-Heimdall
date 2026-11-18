@@ -17,9 +17,9 @@ from fractions import Fraction
 from typing import Dict, Iterator, List, Optional, Sequence, Tuple
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "ref"))
-import hcc  # noqa: E402
-import hmc  # noqa: E402
-from hmc import LayoutField  # noqa: E402
+import hnrc  # noqa: E402
+import hmlf  # noqa: E402
+from hmlf import LayoutField  # noqa: E402
 
 RULE_NAMES = ["ALL", "CHANGE", "DECIMATE", "INTERVAL", "NONZERO", "NONE"]
 
@@ -27,7 +27,7 @@ RULE_NAMES = ["ALL", "CHANGE", "DECIMATE", "INTERVAL", "NONZERO", "NONE"]
 @dataclass
 class Context:
     """What is in force at a record: the layout's fields — on an Argus NUMBER the mini layouts at
-    their positions, numbered as HCC numbers them — its revision, the recording rule, GPS − UTC."""
+    their positions, numbered as NRC numbers them — its revision, the recording rule, GPS − UTC."""
     fields: List[LayoutField]
     revision: int
     rule: str
@@ -36,12 +36,12 @@ class Context:
     type_: int
 
 
-def _context(sections: Sequence[hmc.Section]) -> Context:
-    unit = next((hmc.parse_unit(s.body) for s in sections if s.id == hmc.UNIT), None)
+def _context(sections: Sequence[hmlf.Section]) -> Context:
+    unit = next((hmlf.parse_unit(s.body) for s in sections if s.id == hmlf.UNIT), None)
     layouts: Dict[Tuple[int, int], Tuple[int, List[LayoutField]]] = {}
     for s in sections:
-        if s.id == hmc.LAYOUT:
-            space, type_, rev, _, fs = hmc.parse_layout(s.body)
+        if s.id == hmlf.LAYOUT:
+            space, type_, rev, _, fs = hmlf.parse_layout(s.body)
             layouts.setdefault((space, type_), (rev, fs))
     fields, rev = [], 0
     if unit and any(unit[6]):
@@ -61,12 +61,12 @@ def _context(sections: Sequence[hmc.Section]) -> Context:
         rev, fields = layouts[(unit[0], unit[1])]
     rule = "ALL"
     for s in sections:
-        if s.id == hmc.RULES:
-            r, _ = hmc.parse_rules(s.body)
+        if s.id == hmlf.RULES:
+            r, _ = hmlf.parse_rules(s.body)
             rule = RULE_NAMES[r.mode] if r.mode < len(RULE_NAMES) else str(r.mode)
-            rule += f" {r.n}" if r.mode == hmc.DECIMATE else f" {r.s} s" if r.mode == hmc.INTERVAL else \
+            rule += f" {r.n}" if r.mode == hmlf.DECIMATE else f" {r.s} s" if r.mode == hmlf.INTERVAL else \
                 (f", at least every {r.s} s" if r.s else "")
-    offset = next((struct.unpack_from("<b", s.body)[0] for s in sections if s.id == hmc.TIME), 0)
+    offset = next((struct.unpack_from("<b", s.body)[0] for s in sections if s.id == hmlf.TIME), 0)
     return Context(sorted(fields, key=lambda f: f.offset), rev, rule, offset,
                    unit[5] if unit else 128, unit[1] if unit else 0)
 
@@ -83,7 +83,7 @@ class Row:
     ctx: Context
 
 
-def read_records(images: Sequence[bytes]) -> Tuple[hmc.Header, List[Row], List[dict]]:
+def read_records(images: Sequence[bytes]) -> Tuple[hmlf.Header, List[Row], List[dict]]:
     """Every record of one address, its files in sequence order: (the first header, the records
     ordered by second and frame — of two for one frame the later written — and the catalogue's
     rows: one a segment and one a config)."""
@@ -91,21 +91,21 @@ def read_records(images: Sequence[bytes]) -> Tuple[hmc.Header, List[Row], List[d
     order: Dict[Tuple, int] = {}
     catalogue, first, n = [], None, 0
     for image in images:
-        r = hmc.Reader(image)
+        r = hmlf.Reader(image)
         first = first or r.header
-        path = hmc.path(r.header.address, r.header.first_second)
+        path = hmlf.path(r.header.address, r.header.first_second)
         sections = list(r.header.sections)
         ctx = _context(sections)
         for i, (t, obj, recs) in enumerate(r.objects()):
             e = r.entries[i]
-            if t == hmc.CFG:
-                sections = hmc.in_force(sections, obj["sections"])
+            if t == hmlf.CFG:
+                sections = hmlf.in_force(sections, obj["sections"])
                 ctx = _context(sections)
                 catalogue.append({"kind": "config", "file": path, "offset": e[1], "length": e[2],
                                   "from": obj["from"], "rule": ctx.rule, "revision": ctx.revision,
-                                  "sections": hmc.sections_bytes(obj["sections"])})
+                                  "sections": hmlf.sections_bytes(obj["sections"])})
                 continue
-            if t != hmc.SEG:
+            if t != hmlf.SEG:
                 continue
             catalogue.append({"kind": "segment", "file": path, "offset": e[1], "length": e[2],
                               "first": obj["first"], "last": obj["last"], "codec": obj["codec"]})
@@ -162,7 +162,7 @@ def write_csv(images: Sequence[bytes], raw: bool = False) -> str:
     the layout does not read (another kind, a block, an event line) in hex. A comment repeats
     when a config changes what is in force."""
     header, rows, _ = read_records(images)
-    st = next((struct.unpack_from("<32siih", s.body) for s in header.sections if s.id == hmc.STATION), None)
+    st = next((struct.unpack_from("<32siih", s.body) for s in header.sections if s.id == hmlf.STATION), None)
     out = io.StringIO()
     w = csv.writer(out, lineterminator="\n")
     ctx = None
@@ -217,12 +217,12 @@ def write_sql(db: sqlite3.Connection, images: Sequence[bytes]) -> None:
     header, rows, catalogue = read_records(images)
     db.executescript(SCHEMA)
     sta, adr = header.station, header.address
-    st = next((struct.unpack_from("<32siih", s.body) for s in header.sections if s.id == hmc.STATION), None)
+    st = next((struct.unpack_from("<32siih", s.body) for s in header.sections if s.id == hmlf.STATION), None)
     if st:
         db.execute("INSERT OR REPLACE INTO stations VALUES (?,?,?,?,?)",
                    (sta, st[0].rstrip(bytes(1)).decode("utf-8", "replace"), st[1] / 1e7, st[2] / 1e7,
                     None if st[3] == -0x8000 else st[3]))
-    unit = next((hmc.parse_unit(s.body) for s in header.sections if s.id == hmc.UNIT), None)
+    unit = next((hmlf.parse_unit(s.body) for s in header.sections if s.id == hmlf.UNIT), None)
     db.execute("INSERT OR REPLACE INTO units VALUES (?,?,?,?,?)",
                (sta, adr, unit[1] if unit else None, unit[5] if unit else None, header.first_second))
     seen = set()

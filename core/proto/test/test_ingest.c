@@ -1,5 +1,5 @@
 /* The head's ingest on a PC: three units a second for twenty seconds through the buckets, the
- * close, the rules and the spool into HMC files, read back — holes filled, a late frame repaired
+ * close, the rules and the spool into MLF files, read back — holes filled, a late frame repaired
  * into a later segment, every segment within 16 kB and 8 s, each rule keeping what it says. */
 #include "../nic_ingest.h"
 
@@ -10,10 +10,10 @@
 static int fails;
 #define CHECK(x) do { if (!(x)) { fails++; fprintf(stderr, "%s:%d: %s\n", __FILE__, __LINE__, #x); } } while (0)
 
-static hmc_writer w[256];
+static mlf_writer w[256];
 static int maxspan, maxbytes;
 
-static int segment(void *ctx, uint8_t addr, const hcc_record *recs, size_t n)
+static int segment(void *ctx, uint8_t addr, const hnrc_record *recs, size_t n)
 {
     (void)ctx;
     uint32_t lo = recs[0].second, hi = recs[0].second;
@@ -25,14 +25,14 @@ static int segment(void *ctx, uint8_t addr, const hcc_record *recs, size_t n)
     }
     if ((int)(hi - lo) > maxspan && recs[0].kind != NIC_STREAM) maxspan = (int)(hi - lo);
     if (bytes > maxbytes) maxbytes = bytes;
-    return hmc_writer_segment(&w[addr], recs, n);
+    return hmlf_writer_segment(&w[addr], recs, n);
 }
 
 static void open_file(uint8_t addr, uint8_t type)
 {
-    uint8_t sec[8 + 11] = {HMC_UNIT, 0, 0, 0, 11, 0, 0, 0, 1, type, 1, 1, 1, 128, 0, 0, 0, 0, 0};
-    hmc_header h = {addr, 0, 1790856000u, 0x123456, 0, 0, sec, sizeof sec};
-    CHECK(!hmc_writer_open(&w[addr], &h));
+    uint8_t sec[8 + 11] = {HMLF_UNIT, 0, 0, 0, 11, 0, 0, 0, 1, type, 1, 1, 1, 128, 0, 0, 0, 0, 0};
+    hmlf_header h = {addr, 0, 1790856000u, 0x123456, 0, 0, sec, sizeof sec};
+    CHECK(!hmlf_writer_open(&w[addr], &h));
 }
 
 static void send(nic_ingest *g, uint32_t sec, uint8_t frame, uint8_t addr, const uint8_t *pl)
@@ -45,46 +45,46 @@ static void send(nic_ingest *g, uint32_t sec, uint8_t frame, uint8_t addr, const
 }
 
 /* every record an address's file holds, in the order written */
-static size_t read_back(uint8_t addr, hcc_record *out, uint8_t *pool)
+static size_t read_back(uint8_t addr, hnrc_record *out, uint8_t *pool)
 {
-    hmc_reader r;
+    mlf_reader r;
     size_t n = 0, used = 0;
-    CHECK(!hmc_reader_open(&r, w[addr].image, w[addr].size));
-    hmc_sections force = {0}, hs;
-    hmc_sections_parse(r.h.sections, r.h.sections_len, &hs);
-    hmc_sections_apply(&force, &hs);
+    CHECK(!mlf_reader_open(&r, w[addr].image, w[addr].size));
+    mlf_sections force = {0}, hs;
+    mlf_sections_parse(r.h.sections, r.h.sections_len, &hs);
+    mlf_sections_apply(&force, &hs);
     for (size_t i = 0; i < r.entries; i++) {
         uint8_t *buf;
-        hmc_object o;
-        hcc_field lay[HCC_MAX_LAYOUT];
+        mlf_object o;
+        hnrc_field lay[HNRC_MAX_LAYOUT];
         size_t nl, k;
-        hcc_record *recs;
-        CHECK(!hmc_reader_object(&r, i, &buf, &o));
-        CHECK(!hmc_hcc_layout(&force, lay, &nl));
-        CHECK(!hmc_segment_records(&o, lay, nl, &recs, &k));
+        hnrc_record *recs;
+        CHECK(!mlf_reader_object(&r, i, &buf, &o));
+        CHECK(!hmlf_nrc_layout(&force, lay, &nl));
+        CHECK(!hmlf_segment_records(&o, lay, nl, &recs, &k));
         for (size_t j = 0; j < k; j++) {
             out[n] = recs[j];
             memcpy(pool + used, recs[j].data, recs[j].length);
             out[n++].data = pool + used;
             used += recs[j].length;
         }
-        hcc_free(recs);
+        hnrc_free(recs);
         free(buf);
     }
-    hmc_sections_free(&force);
+    mlf_sections_free(&force);
     return n;
 }
 
 int main(void)
 {
     static nic_ingest g;
-    static hcc_record recs[8192];
+    static hnrc_record recs[8192];
     static uint8_t pool[8192 * 32];
     const uint32_t T0 = 1790856000u;
     nic_ingest_init(&g, segment, NULL);
-    nic_ingest_unit quake = {0x52, 128, 0, {HMC_ALL, 0, 0, 0, {0}}};
-    nic_ingest_unit pal = {0x61, 128, 1, {HMC_CHANGE, 0, 3600, 0, {0}}};
-    nic_ingest_unit tesla = {0x71, 128, 0, {HMC_NONZERO, 0, 60, 0, {0}}};
+    nic_ingest_unit quake = {0x52, 128, 0, {HMLF_ALL, 0, 0, 0, {0}}};
+    nic_ingest_unit pal = {0x61, 128, 1, {HMLF_CHANGE, 0, 3600, 0, {0}}};
+    nic_ingest_unit tesla = {0x71, 128, 0, {HMLF_NONZERO, 0, 60, 0, {0}}};
     CHECK(!nic_ingest_add(&g, &quake) && !nic_ingest_add(&g, &pal) && !nic_ingest_add(&g, &tesla));
     CHECK(nic_ingest_add(&g, &quake) == -1);
     open_file(0x52, 5);

@@ -1,10 +1,10 @@
-"""Measure HCC against Steim-2 on recorded series.
+"""Measure NRC against Steim-2 on recorded series.
 
     python3 measure.py FILE [FILE ...] [--seconds 1,2,4,8,16,32] [--ref]
 
 FILE is miniSEED (anything obspy reads) or IAGA-2002 text. Every trace is taken as one integer
 series — a miniSEED trace as its counts, an IAGA-2002 column as nT × 100. Per segment length the
-table gives bits per sample for Steim-2 and for HCC's series coder in each of its modes, and the
+table gives bits per sample for Steim-2 and for NRC's series coder in each of its modes, and the
 coder's own choice; with --ref, traces whose names differ only in their station are paired and
 the second is coded against the first as a reference channel.
 """
@@ -17,7 +17,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(__file__))
-import hcc  # noqa: E402
+import hnrc  # noqa: E402
 import steim2  # noqa: E402
 
 
@@ -66,16 +66,16 @@ def read_file(path):
 
 
 def series_bits(xs, w, mode=None, order=None, signed=True, ref=None):
-    """Bits HCC writes for a series under one mode (or the coder's own choice when mode is None)."""
+    """Bits NRC writes for a series under one mode (or the coder's own choice when mode is None)."""
     mask = (1 << w) - 1
     vals = [x & mask for x in xs]
     if mode is None:
-        bw = hcc.BitWriter()
-        hcc.write_series(bw, vals, w, signed, [y & mask for y in ref] if ref is not None else None)
+        bw = hnrc.BitWriter()
+        hnrc.write_series(bw, vals, w, signed, [y & mask for y in ref] if ref is not None else None)
         return bw.bit_length()
     if ref is not None:
         vals = [(x - y) & mask for x, y in zip(vals, ref)]
-    for bits, m, payload in hcc._mode_bits(vals, w, signed):
+    for bits, m, payload in hnrc._mode_bits(vals, w, signed):
         if m == mode and (order is None or m != 3 or payload[0] == order):
             return bits + (1 if ref is not None else 0)
     return None
@@ -88,7 +88,7 @@ def mode_table(xs, w, signed=True, ref=None):
     if ref is not None:
         vals = [(x - (y & mask)) & mask for x, y in zip(vals, ref)]
     out = {}
-    for bits, m, payload in hcc._mode_bits(vals, w, signed):
+    for bits, m, payload in hnrc._mode_bits(vals, w, signed):
         out[(m, payload[0]) if m == 3 else m] = bits + (1 if ref is not None else 0)
     return out
 
@@ -103,7 +103,7 @@ def measure(name, xs, rate, seconds, ref=None):
     print(f"\n{name}: {len(xs)} samples at {rate:g} Hz, {w}-bit fields"
           + (" — coded against the reference" if ref is not None else ""))
     head = f"{'segment':>8s} {'Steim-2':>8s} {'order1':>8s} {'order2':>8s}" + "".join(
-        f" {'LPC' + str(p):>7s}" for p in range(1, 9)) + f" {'HCC':>8s}"
+        f" {'LPC' + str(p):>7s}" for p in range(1, 9)) + f" {'NRC':>8s}"
     print(head)
     lmax = max(2, int(round(max(seconds) * rate)))
     common = (len(xs) // lmax) * lmax if len(xs) >= lmax else len(xs)
@@ -114,7 +114,7 @@ def measure(name, xs, rate, seconds, ref=None):
         if L > len(xs):
             continue
         nseg = len(xs) // L
-        tot = {"steim": 0, 1: 0, 2: 0, "hcc": 0}
+        tot = {"steim": 0, 1: 0, 2: 0, "hnrc": 0}
         lpc = {p: 0 for p in range(1, 9)}
         lpc_ok = {p: True for p in range(1, 9)}
         n = 0
@@ -126,7 +126,7 @@ def measure(name, xs, rate, seconds, ref=None):
             t = mode_table(seg, w, ref=rseg)
             tot[1] += t[1]
             tot[2] += t.get(2, t[1])
-            tot["hcc"] += series_bits(seg, w, None, ref=rseg)
+            tot["hnrc"] += series_bits(seg, w, None, ref=rseg)
             for p in range(1, 9):
                 if (3, p) not in t:
                     lpc_ok[p] = False
@@ -135,7 +135,7 @@ def measure(name, xs, rate, seconds, ref=None):
         row = f"{sec:6g} s {tot['steim']/n:8.2f} {tot[1]/n:8.2f} {tot[2]/n:8.2f}"
         for p in range(1, 9):
             row += f" {lpc[p]/n:7.2f}" if lpc_ok[p] else f" {'—':>7s}"
-        row += f" {tot['hcc']/n:8.2f}"
+        row += f" {tot['hnrc']/n:8.2f}"
         print(row)
 
 

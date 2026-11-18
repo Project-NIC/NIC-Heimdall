@@ -28,15 +28,15 @@ int main(void)
     memcpy(key, s.k0, 8);
     memcpy(key + 8, s.k1, 8);
     /* a WINDOW from the session's code is a command the check takes */
-    CHECK(ses_window(key, s.station, 42, 0xFF, 1700000000u, 600, &msg, &len) == HMC_OK);
-    CHECK(ses_unframe(msg, len - 1, &raw, &rawlen) == HMC_OK && rawlen == 22);
+    CHECK(ses_window(key, s.station, 42, 0xFF, 1700000000u, 600, &msg, &len) == MLF_OK);
+    CHECK(ses_unframe(msg, len - 1, &raw, &rawlen) == MLF_OK && rawlen == 22);
     CHECK(nic_cmd_check(&s, raw, rawlen, 0) == NIC_CMD_OK && s.counter == 42);
     CHECK(nic_cmd_check(&s, raw, rawlen, 0) == NIC_CMD_STALE && s.stale == 1);      /* a replay */
     /* signed here, checked by the session's parser */
     raw[1] = 43;
     nic_cmd_sign(&s, raw, 14, 0);
     ses_window_t w;
-    CHECK(ses_window_parse(key, s.station, 42, raw + 1, 21, &w) == HMC_OK && w.counter == 43);
+    CHECK(ses_window_parse(key, s.station, 42, raw + 1, 21, &w) == MLF_OK && w.counter == 43);
     /* a byte changed, another station, K0 alone where K0‖K1 signed: forged, the counter kept */
     raw[6] ^= 1;
     CHECK(nic_cmd_check(&s, raw, rawlen, 0) == NIC_CMD_FORGED && s.counter == 42);

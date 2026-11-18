@@ -36,8 +36,8 @@ power and cabling that carry them. Commodity parts, light enough to process on a
 > finished description, not a blank page — and if that is you, the folder is yours. There is no
 > station-wide numbering; a board is found under its project by its name.
 
-*(The archive — HMC, the container, and HCC, the codec — is the station's own, in
-[`core/archive/`](core/archive/HMC.md).)*
+*(The archive — MLF, the container, and NRC, the codec — is the station's own, in
+[`core/archive/`](core/archive/MLF.md).)*
 
 ## Start here
 
@@ -45,7 +45,7 @@ power and cabling that carry them. Commodity parts, light enough to process on a
 |---|---|
 | **what it measures** | [*The units*](#the-units--what-it-measures-and-what-it-measures-it-with), below — one row a unit, each linking to its folder |
 | **how a station fits together** | [*What a station is*](#what-a-station-is), then [`core/`](core/README.md) and [`core/COMMS.md`](core/COMMS.md) — the bus, the clock, every link in one table |
-| **how the data is kept and shared** | [`core/archive/HMC.md`](core/archive/HMC.md), [`EXPORTERS.md`](core/archive/EXPORTERS.md) and [`core/INTEROP.md`](core/INTEROP.md) — the archive, its readers, and who takes the data |
+| **how the data is kept and shared** | [`core/archive/MLF.md`](core/archive/MLF.md), [`EXPORTERS.md`](core/archive/EXPORTERS.md) and [`core/INTEROP.md`](core/INTEROP.md) — the archive, its readers, and who takes the data |
 | **how it is built** | [`daedalus/`](daedalus/README.md) for the station as a structure, each board's `HARDWARE.md` for the board, [`schematics/`](schematics/README.md) for the drawings to come |
 | **why it is the way it is** | the `WHY.md` in every folder — what was tried, what was dropped, and the reason |
 | **how to help, and how to cite it** | [`CONTRIBUTING.md`](CONTRIBUTING.md) · [`CITATION.cff`](CITATION.cff) |
@@ -277,7 +277,7 @@ board first, that layer second.
 | | |
 |---|---|
 | the protocol's core | [`core/proto/`](core/proto/) — the frames, the addresses, CONTROL and the roster; `LOAD`, the stream and the trial boot; a card's data path; the head's ingest, uplink, live packet, its two cards, the mirror, the ModBus tunnel, the modem's values frame, the handset's GATT side, the power and the console — C99, `make check`, `make cross` |
-| the archive's reference library | [`core/archive/ref/`](core/archive/ref/) — HMC and HCC, the recording and send rules, the uplink session, in Python and in C writing the same bytes (`core/archive/ref/tests/test_c.py`), HCC measured on open recordings |
+| the archive's reference library | [`core/archive/ref/`](core/archive/ref/) — MLF and NRC, the recording and send rules, the uplink session, in Python and in C writing the same bytes (`core/archive/ref/tests/test_c.py`), NRC measured on open recordings |
 | the exporters | [`core/archive/export/`](core/archive/export/) — miniSEED + StationXML, IAGA-2002, CSV and SQL, read from the archive after the fact |
 | the calculations behind the documents | [`gaia/tools/`](gaia/tools/) the siting maps · [`gauss/models/`](gauss/models/) the shallow-water siting model · [`marconi/models/`](marconi/models/) the loop's pointing · [`tesla/design/`](tesla/design/) the rod worksheet, its field solve and the chain's clip and floor |
 
@@ -335,7 +335,7 @@ NIC-Heimdall/
 | what talks to what, over what | **[`core/COMMS.md`](core/COMMS.md)** |
 | names, MCU assignment, who is a NOD and who a MOD | **[`NAMING.md`](NAMING.md)** |
 | who takes our data and in what format | **[`core/INTEROP.md`](core/INTEROP.md)** |
-| the archive — HMC, the container, and HCC, the codec | **[`core/archive/`](core/archive/HMC.md)** |
+| the archive — MLF, the container, and NRC, the codec | **[`core/archive/`](core/archive/MLF.md)** |
 | the exporters — every format the world takes, written from the archive | **[`core/archive/EXPORTERS.md`](core/archive/EXPORTERS.md)** |
 
 ## Open

@@ -1,27 +1,27 @@
 """The CSV and SQL exporters on the reference's synthetic files: every value against the reference
-library's own reading — the records HCC decodes, cut by the layout HCC codes with — a late frame's
+library's own reading — the records NRC decodes, cut by the layout NRC codes with — a late frame's
 later record kept, the catalogue's rows one a segment and one a config, a window queried."""
 import csv, io, os, sqlite3, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "ref"))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "ref", "tests"))
-import hmc, tables
-import test_hmc
+import hmlf, tables
+import test_hmlf
 
 
 def reference(image):
     """(second, frame) → the raw values of the declared fields, in offset order, as the reference
     library reads them; and the counts of segments and configs."""
-    r = hmc.Reader(image)
+    r = hmlf.Reader(image)
     sections, out, segs, cfgs = list(r.header.sections), {}, 0, 0
     for t, obj, recs in r.objects():
-        if t == hmc.CFG:
-            sections = hmc.in_force(sections, obj["sections"])
+        if t == hmlf.CFG:
+            sections = hmlf.in_force(sections, obj["sections"])
             cfgs += 1
             continue
         segs += 1
-        declared = [f for f in hmc.hcc_layout(sections) if not (f.width == 1 and not f.signed and f.channel >= 0
+        declared = [f for f in hmlf.nrc_layout(sections) if not (f.width == 1 and not f.signed and f.channel >= 0
                     and not any(lf.offset == f.offset for lf in tables._context(sections).fields))]
         for rec in recs:
             if r.header.address == 0 or rec[4] != 0 or rec[2] != 0:
@@ -38,13 +38,13 @@ def reference(image):
 
 
 def main():
-    for name, header, ops in test_hmc.scenarios():
+    for name, header, ops in test_hmlf.scenarios():
         ops = list(ops)
         late = None
         if ops[0][0] == "seg" and ops[0][1][0][4] == 0 and ops[-1][0] == "seg":
             late = ops[0][1][5][:5] + (bytes([0x7F]) * 32,)       # a frame repaired, in the next segment
             ops[-1] = ("seg", list(ops[-1][1]) + [late])
-        w, kept = test_hmc.write(header, ops)
+        w, kept = test_hmlf.write(header, ops)
         image = bytes(w.image)
         ref, segs, cfgs = reference(image)
         text = tables.write_csv([image], raw=True)

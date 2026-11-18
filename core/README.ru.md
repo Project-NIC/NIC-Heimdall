@@ -116,7 +116,7 @@
 
 ```
 core/                    the node core — the bus, the frame, the clock, the uplink
-├── archive/             HMC, the container · HCC, the codec · the exporters · ref/, the reference library
+├── archive/             MLF, the container · NRC, the codec · the exporters · ref/, the reference library
 └── blocks/              the hardware blocks, one file each
 ```
 
@@ -135,10 +135,10 @@ core/                    the node core — the bus, the frame, the clock, the up
 | [`INTEROP.md`](INTEROP.md) | кто забирает наши данные и в каком формате |
 | [`WHY.md`](WHY.md) | кладбище — что пробовали, что отвергли и почему |
 | [`blocks/`](blocks/) | аппаратные блоки, по файлу на каждый — таблица выше |
-| [`archive/HMC.md`](archive/HMC.md) | архив: контейнер — серия файлов на блок, правила записи и отправки, данные спереди и описание сзади |
-| [`archive/HCC.md`](archive/HCC.md) | архив: кодек — сохранённые записи одного адреса, столбец за столбцом, без потерь; не таблица, а правило |
+| [`archive/MLF.md`](archive/MLF.md) | профиль Heimdall для MLF, контейнера с ядром в NIC-SDK — серия файлов на блок, правила записи и отправки, аплинк |
+| [`archive/NRC.md`](archive/NRC.md) | профиль Heimdall для NRC, кодека с ядром в NIC-SDK — сохранённые записи одного адреса, разрезанные на ряды, столбец за столбцом, без потерь |
 | [`archive/EXPORTERS.md`](archive/EXPORTERS.md) | читатели архива — miniSEED, IAGA-2002, RINEX, BUFR, CWOP, IOC, качество воздуха, Blitzortung, CSV, SQL, просмотрщик; по шаблону на каждый |
-| [`archive/ref/`](archive/ref/README.md) | эталонный код, Python — кодер и декодер HCC, Steim-2, измерение |
+| [`archive/ref/`](archive/ref/README.md) | эталонный код, Python — кодер и декодер NRC, Steim-2, измерение |
 
 ---
 
