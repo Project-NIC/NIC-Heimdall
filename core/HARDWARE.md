@@ -149,6 +149,8 @@ ports, I²C, the capture inputs, MCO, SWD and the service resets — fits **LQFP
 board**: Kronos, Bifrost, nodes, Palatine, Quark-Tubes alike. One footprint, one layout block, no
 144/64 juggling. **The DSP tier is the same rule one size up: `STM32H7A3IIT6`, LQFP176, on
 Tesla, Marconi and both scintillation boards alike** — one footprint for the four boards.
+**Njord's boards are the one exception** (`../NAMING.md`): Iris and Arke carry the H523 in LQFP48 —
+one arm, a radio, a GNSS — and Ratatoskr the STM32U535 in the same body, a unit on one cell.
 
 ## No FPGA and no CPLD — anywhere
 

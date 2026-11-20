@@ -170,7 +170,8 @@ buys types with the two bits it does not need for instances.
 | 2 | Bifrost | 2 | Quark-Tubes | 5 | Pluvius |
 | 3 | Argus | 3 | Pascal | 6 | Ceres |
 | 4 | **Marconi** | | | 7 | Sakura |
-| 5 | Quake | | | 8..61 | **free — one per quantity at a position, claimed when its profile is written** |
+| 5 | Quake | | | 8 | **Iris** — Njord's radio gateway (`../njord/iris/`) |
+| | | | | 9..61 | **free — one per quantity at a position, claimed when its profile is written** |
 | 6 | Palatine | | | | |
 | 7 | Tesla | | | | |
 | 8 | Sputnik | | | | |
@@ -814,8 +815,8 @@ reads it off the BMS; its arms' and `EXT`'s feeds are sockets 1–5 of the same 
     carries the counter, and **every archive packet carries an 8 B truncated HMAC chained to its
     session**, so nobody writes segments into a station's files but the station — 8 B on a packet
     of ~16 kB segments. The live packet and the markers on the modem carry no MAC: a false marker
-    fails to correlate, and a reading is open by doctrine. **Nothing is encrypted but a new K1 on
-    its way down, and nothing needs a key to be read**; a key is needed only to write — to the
+    fails to correlate, and a reading is open by doctrine. **Nothing is encrypted but a key on its way
+    down — a new K1, a Njord unit's key — and nothing needs a key to be read**; a key is needed only to write — to the
     station, or into its archive.
   The S31's TRNG, SHA engine and Key Manager carry this in hardware (`../mayak/HARDWARE.md`).
 - **The server coordinates, the station stays dumb.** The server is the operator's, not the
@@ -871,6 +872,26 @@ HMAC-SHA-256 under K0 over the `station` and the counter, so the working key nev
 clear and no counter gives the same wrap twice; its tag is HMAC-SHA-256 under K0 alone, over the
 `station` and the message. The wrap is the protocol's one cipher, and it hides a key, never a
 reading. Every command's counter is checked before its tag.
+
+### Njord's records — the field units behind Iris
+
+**Njord's units reach the station through Iris, ModBus type 8, on a Palatine arm** (`../njord/`). Their
+own link — the packet, the acknowledgement, the slots — is `../njord/LINK.md`'s; what arrives here is
+ordinary: Palatine reads each unit's window at Iris as a run and ships it as a block, and the head
+archives it verbatim. **The block's first register is the unit's number, and the unit's profile in the
+mirror — its `FIELD` section (`archive/MLF.md`) — is keyed by Iris's address and that number**; its third register is the record's age at the read,
+so the time measured is the frame's second less it. **A record is archived once per counter**: Palatine reads a window on its
+roster's interval whether a packet came or not, and a window read twice carries the same counter. Each field unit's description in the mirror
+carries its own place — latitude, longitude, the ground's height — and its sensors' heights, so the
+exporters give it its own position, never the station's.
+
+**A unit's key** — the 16 B HMAC-SHA-256 key its 8 B tags are made under — is made by the operator's
+server and written into the unit at the bench; **into Iris it goes from the handset at the station,
+wrapped as `SET_K1` wraps K1** — XOR'd with the first 16 B of HMAC-SHA-256 under K0 over the
+`station` and the command's counter — in a `fieldkey` command; the head unwraps it and writes it
+through the tunnel into Iris's key register. It crosses the air of neither the radio nor the BLE in
+clear. **A setting for a field unit** is a write through the tunnel
+into its window at Iris, carried by the unit's next acknowledgement.
 
 ## 7. The node's contract
 

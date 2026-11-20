@@ -21,6 +21,11 @@ aggregators the density they don't have (see `../gaia/` — India, Turkey, Indon
 they give us **credibility and calibration for free** (the variometer-vs-observatory
 regression in `../gauss/CONSTRUCTION.md` is exactly this, and FDSN locations validate our picks).
 
+**A Njord field unit stands somewhere else than its station** (`../njord/`): its description in the
+head's mirror carries its own latitude, longitude, ground height and sensors' heights, and every
+exporter writes it as a site of its own — a sub-site of the station in the formats that have one,
+never at the station's coordinates.
+
 ## The map — system by system
 
 | domain | system | takes us? | format / channel | from the station |

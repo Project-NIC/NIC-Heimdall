@@ -189,6 +189,13 @@ that shape anyway; so Ceres reports the soil temperature at its depth beside the
 Sakura the temperature at its plate beside the wetness, one address each. A bought part that
 packs eight gases into one transfer is demultiplexed by the host, and we do not build one.
 
+**The one exception is Iris, ModBus type 8, Njord's radio gateway** (`../../njord/iris/`). It carries the
+field units beyond a cable's reach, so it answers as one slave whose windows hold their records — a
+window a unit, the first register the unit's number, the rest its values at the house scale — and
+Palatine reads a window as a run, a block in its payload like any other. **Each field unit is a
+multi-sensor, as a bought box of many values already is**, and its profile is keyed by Iris's type and
+the unit's number, so the decoder reads every window by its own unit's row.
+
 ## Two rates, one protocol — and no burst
 
 **Everything on a ModBus is primitive RTU, and the house adds nothing to it** — no ranging,

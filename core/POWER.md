@@ -39,6 +39,10 @@ system efficiency) before oversizing — every watt of load is ~14 W of panel. T
 shrink this: the source is sized against the full load, and the lockdown is survival, not a budget
 line.
 
+**Njord's units are their own** (`../njord/`): Iris takes its Palatine arm's 12 V like any MOD; Arke
+carries its own 12 V pack — sodium-ion 4S charged as LiFePO4 — and Ratatoskr one sodium-ion cell; none
+of them draws on the station's pack.
+
 ## 2. The source — solar or grid, by site
 
 - **Solar, off-grid.** A surface panel → an **MPPT** charge controller (better cold and cloudy

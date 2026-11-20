@@ -400,7 +400,8 @@ the whole bought range.)
 | Pluvius (weighing rain gauge) | 5 | 0x14 |
 | Ceres (soil moisture + soil temperature) | 6 | 0x18 |
 | Sakura (leaf wetness) | 7 | 0x1C |
-| a quantity at a position that arrives on a Babel position | **8..61, one per quantity at a position** | claimed when its profile is written |
+| Iris — Njord's radio gateway, the field units behind it (`../njord/iris/`) | 8 | 0x20 |
+| a quantity at a position that arrives on a Babel position | **9..61, one per quantity at a position** | claimed when its profile is written |
 
 **Nobody reads these in hex and nobody has to.** The address is computed from the identity, so
 what a build keeps is a list of sensor numbers — the wiring is *through this Bifrost, to this

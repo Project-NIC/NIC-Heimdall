@@ -38,6 +38,8 @@ written.
 - **A flagged frame never leaves as a clean number** (`../README.md`, the second principle):
   `status` 6 CLIPPED and 7 DISTURBED are carried as the format's flag where it has one, and as its
   missing value where it has none. The flagged frame itself stays in the archive.
+- **A Njord field unit is a site of its own**: its position and its sensors' heights from its `FIELD`
+  section (`MLF.md`), never the station's (`../INTEROP.md`).
 - **The metadata comes from the header**: the station's name and position from `STATION`, the
   unit from `UNIT`, the names, units and scales from `LAYOUT` and `PROFILE`, a response from
   `RESPONSE`. **A registered code** — an FDSN network, an IAGA code, a CWOP ID — is the server's

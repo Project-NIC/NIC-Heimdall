@@ -423,7 +423,7 @@ until they are read. **On the modem the live packet is a frame of its own beside
 frame**, sent after the hour's heartbeat and counted in the same duty-cycle cap. **Nothing of
 another station comes down**: what the server sends a head is commands — a reading asked of a
 sensor, a pre-drain, a setting — and windows, on the authenticated channel. **Nothing is encrypted** but a
-new K1, wrapped under K0 in `SET_K1`. OTA is
+key, wrapped under K0: a new K1 in `SET_K1`, a Njord unit's key in the handset's `fieldkey`. OTA is
 head-only and lands in the second app partition, verified by the secure-boot signature before the
 switch, the old image kept for a rollback on a failed boot. The session ends at the window's end or
 when the pack says so (§11); the archive is complete either way.

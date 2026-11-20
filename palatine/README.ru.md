@@ -72,7 +72,7 @@ ModBus RTU и блоком NodBus в сторону своей карты: он 
 ## Структурная схема
 
 ```
-   a BIFROST spur ──40 B NodBus, type 6──▶ ┌────────────────────────────────┐ ──arm 1..4, ModBus RTU──▶ bought sensors · Pluvius · Ceres · Sakura · Babel · Chinook's units
+   a BIFROST spur ──40 B NodBus, type 6──▶ ┌────────────────────────────────┐ ──arm 1..4, ModBus RTU──▶ bought sensors · Pluvius · Ceres · Sakura · Babel · Iris · Chinook's units
                                            │ PALATINE — H523 · LMR43610     │ ──EXT, one power body, EN_X──▶ 24 V, switched, to Pluvius's head
                                            │ polls the roster, packs blocks │
                                            │ into one 32 B record a frame   │

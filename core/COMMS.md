@@ -43,6 +43,7 @@ those win on any question of content.
 | BMS / MPPT | Mayak → Hermes → the power boards | the LP I²C to Hermes, the converter, on a Galvani power body, one point-to-point link — a small H523 card as an I²C slave fed 3,3 V by the head; on its far side **485 Modbus RTU on `THVD1450`** — what an MPPT and a smart BMS speak — with a plain 3,3 V UART as the second face, I²C out and CAN (`TCAN334`) fitted and asleep until a part wants them. The LP UART is not used | Hermes polls both on its own cadence and holds the latest register set; the head reads it as one block. Internal, **never gated** | `../hermes/README.md` |
 | uplink | Mayak ↔ server | Wi-Fi · the modem — LoRa, satellite or LTE-M, on the backup cell's rail; LTE-M on Proteus | transport: `UPLINK_TRANSPORT.md` · session HELLO / CURSOR / cumulative ACK: `PROTOCOL.md` §6 | both |
 | handset | Mayak ↔ phone | BLE (the S31 is BLE-only) | bring-up and service. Not a served web page | `../mayak/handset/README.md` |
+| **Njord** | Iris (on a Palatine arm) or Huginn ↔ Arke and Ratatoskr in the field | **LoRa at 868 MHz**, raw — h1.8 near, h1.7 far | a field unit's record every ten minutes — its values as house registers, an 8 B tag; the acknowledgement with the next wake's beat and a setting at most; slow quantities only | `../njord/LINK.md` |
 
 ## The frames
 

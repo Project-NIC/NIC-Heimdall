@@ -208,3 +208,12 @@ sees (the owner, 10 Nov 2026). It is adjustable: two Basic resistors set the 5 V
 The branch runs in PFM at its ~20 mA with any inductor, the `LP2985` and the π filter behind it,
 so it takes the 3,3 V's 10 µH: a ripple of 0,12–0,18 A at 2,08 MHz, under the part's ~12 µH
 ceiling, and one inductor kind on the board, one Extended fee less (11 Nov 2026).
+
+## Gauging by the water's level or its pressure — left before Pluvius, and again
+
+Every way of measuring the water's level was gone through before Pluvius and left: a tube read by
+capacitance mists inside; a pressure read through a trapped air bell drifts as the water takes up the
+air; a vessel draining through a small hole has its flow set by surface tension, wetting and dirt — a
+hole of 1 mm holds ~29 mm of water before it flows, where Torricelli's head for 1 mm/h through 1 mm² is
+0,004 mm. Proposed again for a small gauge on 20 Nov 2026 and left again. A bubbler, which renews its
+air and so does not drift, needs a pump: a moving part and its power. Weighing is where the road ended.

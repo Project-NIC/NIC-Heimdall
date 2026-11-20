@@ -14,7 +14,7 @@ power and cabling that carry them. Commodity parts, light enough to process on a
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
 [![License: CERN-OHL-P v2](https://img.shields.io/badge/License-CERN--OHL--P%20v2-red.svg)](https://ohwr.org/cern_ohl_p_v2.txt)
-![Version: 0.4 — concept](https://img.shields.io/badge/version-0.4%20concept-blue.svg)
+![Version: 0.5 — concept](https://img.shields.io/badge/version-0.5%20concept-blue.svg)
 
 > ⚠️ **Design-stage concept — NOT hardware-validated.** The architecture, the wire protocol and the
 > archive are worked in depth, and the archive and the firmware's portable libraries are written
@@ -91,12 +91,12 @@ its own ranged timing domain; the delivered precision is **±1 µs** across the 
 |---|---|---|---|
 | **NodBus** | 40 B frame, 32 B payload, TDMA, clocked | a **Bifrost** card: one trunk up, four spur ports down | the full-size units — Quake, Tesla, Marconi, Sputnik, Palatine, Photon, Positron, Pip, Steinmetz, Argus |
 | **NodBus mini** | 16 B frame, 8 B payload, TDMA, clocked | an **Argus** card: one link up, four segments down | the small clocked units — Gauss, Quark-Tubes, Pascal |
-| **ModBus** | Modbus RTU, polled, 9 600 or 19 200 | **Palatine**, four isolated arms and `PWR EXT`, one rate per arm | every bought sensor, and the house MODs — Pluvius, Ceres, Sakura, Babel |
+| **ModBus** | Modbus RTU, polled, 9 600 or 19 200 | **Palatine**, four isolated arms and `PWR EXT`, one rate per arm | every bought sensor, and the house MODs — Pluvius, Ceres, Sakura, Babel, Iris |
 
 **Identity is the address**: `TYPE«4 | NUMBER` on NodBus and mini, `TYPE«2 | NUMBER` on ModBus, one
 byte, self-describing, never translated. NodBus types: 1 Mayak · 2 Bifrost · 3 Argus · 4 Marconi ·
 5 Quake · 6 Palatine · 7 Tesla · 8 Sputnik · 9 Photon · 10 reserved for `Neutron` · 11 Positron · 12 Pip · 13 Steinmetz. Mini: 1 Gauss ·
-2 Quark-Tubes · 3 Pascal. ModBus: 4 Babel, bare · 5 Pluvius · 6 Ceres · 7 Sakura, then one type per bought quantity at a
+2 Quark-Tubes · 3 Pascal. ModBus: 4 Babel, bare · 5 Pluvius · 6 Ceres · 7 Sakura · 8 Iris, then one type per bought quantity at a
 position (`core/PROTOCOL.md`).
 
 ## The head, and what hangs off it
@@ -152,7 +152,20 @@ position (`core/PROTOCOL.md`).
 
 **Radiation, in two builds:** **[Quark](quark/)** is the radiation part, measuring the same quantities two ways — **[Quark-Tubes](quark/tubes/)**, high voltage, every tube counted on one board (Photon's GM tubes, **[Helion](quark/tubes/helion/)** and **[Gadolin](quark/tubes/gadolin/)** are tube heads on it, not units of their own), and **[Quark-Scintillation](quark/scintillation/)**, low voltage — Photon, Positron and its `Neutron` channel.
 
-**MCUs, and there are three.** `ESP32-S31` at the head · `STM32H523` (LQFP100, the one footprint) on nodes, Kronos, the card and every slave module · `STM32H7A3IIT6` (LQFP176) on the DSP tier — Tesla/Pip, Marconi and the two scintillation boards. **The four H7A3 boards share one digital half**: the same LQFP176, the `APS25608N-OBR-BD` position on OCTOSPI1 port 2 on the same eleven pins (fitted where the image wants it — Marconi always, Tesla for the classifier, Photon for the burst records, Positron open), the same Galvani output. What differs is the analogue front and the converter's data path — the `ADS127L14`'s frame-sync port on SAI on Tesla/Pip, a parallel port on PSSI on the other three.
+**MCUs, and there are three in Midgard** — Njord's Ratatoskr the one more, an STM32U535 (`NAMING.md`). `ESP32-S31` at the head · `STM32H523` (LQFP100, the one footprint in Midgard; Njord's in LQFP48) on nodes, Kronos, the card and every slave module · `STM32H7A3IIT6` (LQFP176) on the DSP tier — Tesla/Pip, Marconi and the two scintillation boards. **The four H7A3 boards share one digital half**: the same LQFP176, the `APS25608N-OBR-BD` position on OCTOSPI1 port 2 on the same eleven pins (fitted where the image wants it — Marconi always, Tesla for the classifier, Photon for the burst records, Positron open), the same Galvani output. What differs is the analogue front and the converter's data path — the `ADS127L14`'s frame-sync port on SAI on Tesla/Pip, a parallel port on PSSI on the other three.
+
+## Njord — the air part
+
+**Midgard is the station on its cables and its glass; Njord is its air part** — slow units beyond a
+cable's reach, on their own panel and cell, over LoRa at 868 MHz, a sample every ten minutes, to Iris, to Huginn or over a LoRaWAN network
+([`njord/`](njord/README.md)).
+
+| | what it is | MCU |
+|---|---|---|
+| **[Iris](njord/iris/)** | the receiver at the station — a MOD on a Palatine arm, ModBus type 8, every field unit a multi-sensor behind its address | STM32H523 (LQFP48) |
+| **[Arke](njord/iris/arke/)** | Iris's board in its second role — a ModBus arm in the field: bought sensors, Ceres, Sakura; its own 12 V pack and a GNSS | STM32H523 (LQFP48) |
+| **[Ratatoskr](njord/ratatoskr/)** | the small field unit — T/RH at 2 m and 5 cm, pressure, rain where Imber is fitted; one cell, a small glass panel | STM32U535 (LQFP48) |
+| **[Huginn](njord/huginn/)** | the gateway to the internet where no station stands — LoRa in, Wi-Fi out, the time from NTP | ESP32-S3, bought |
 
 ## What is bought
 
@@ -192,6 +205,8 @@ in one housing with a cable:
 | optical modules | `G-O-10-10` · `G-O-2-100` | the 10 Mb/s DC-coupled class to 10 km; `OPT2-55A03STR` (1550 nm, 1 m to 100 km) on the 2 Mb/s board |
 | transformers | the Galvani feed cells | six catalogue windings — `750310988` · `750311607` · `750310349` · `11328-T078` · `11338-T195` · `750311592` |
 | enclosure, mast, earthing | Daedalus | `daedalus/CONSTRUCTION.md` |
+| the internet gateway | Huginn | an ESP32-S3 with an SX1262 at 868 MHz and Wi-Fi, on 5 V USB (`njord/huginn/`) |
+| Njord's cells, packs and panels | Ratatoskr, Arke | open — what they must meet is in `njord/` |
 
 ## Power, in one paragraph
 
@@ -279,7 +294,7 @@ board first, that layer second.
 | the protocol's core | [`core/proto/`](core/proto/) — the frames, the addresses, CONTROL and the roster; `LOAD`, the stream and the trial boot; a card's data path; the head's ingest, uplink, live packet, its two cards, the mirror, the ModBus tunnel, the modem's values frame, the handset's GATT side, the power and the console — C99, `make check`, `make cross` |
 | the archive's reference library | [`core/archive/ref/`](core/archive/ref/) — MLF and NRC, the recording and send rules, the uplink session, in Python and in C writing the same bytes (`core/archive/ref/tests/test_c.py`), NRC measured on open recordings |
 | the exporters | [`core/archive/export/`](core/archive/export/) — miniSEED + StationXML, IAGA-2002, CSV and SQL, read from the archive after the fact |
-| the calculations behind the documents | [`gaia/tools/`](gaia/tools/) the siting maps · [`gauss/models/`](gauss/models/) the shallow-water siting model · [`marconi/models/`](marconi/models/) the loop's pointing · [`tesla/design/`](tesla/design/) the rod worksheet, its field solve and the chain's clip and floor |
+| the calculations behind the documents | [`gaia/tools/`](gaia/tools/) the siting maps · [`gauss/models/`](gauss/models/) the shallow-water siting model · [`marconi/models/`](marconi/models/) the loop's pointing · [`tesla/design/`](tesla/design/) the rod worksheet, its field solve and the chain's clip and floor · [`njord/calc/`](njord/calc/) Njord's power and reach |
 
 ## The tree
 
@@ -320,6 +335,11 @@ NIC-Heimdall/
 ├── ceres/              Ceres — soil moisture                             ModBus 6
 │   └── sakura/         Sakura — leaf wetness                             ModBus 7
 ├── babel/              Babel — any sensor → Modbus                       ModBus 4 bare
+├── njord/              Njord — the air part, LoRa at 868 MHz
+│   ├── iris/           Iris — the receiver at the station                ModBus 8
+│   │   └── arke/       Arke — the same board, a ModBus arm in the field
+│   ├── ratatoskr/      Ratatoskr — the small field unit
+│   └── huginn/         Huginn — the gateway to the internet
 ├── atlantis/           Atlantis — the water build
 ├── daedalus/           Daedalus — the station as a structure
 ├── gaia/               Gaia — the siting atlas

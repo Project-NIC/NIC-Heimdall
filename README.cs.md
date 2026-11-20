@@ -14,7 +14,7 @@ nesou. Běžně dostupné součástky a data dost lehká na zpracování na dom�
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
 [![License: CERN-OHL-P v2](https://img.shields.io/badge/License-CERN--OHL--P%20v2-red.svg)](https://ohwr.org/cern_ohl_p_v2.txt)
-![Version: 0.4 — concept](https://img.shields.io/badge/version-0.4%20concept-blue.svg)
+![Version: 0.5 — concept](https://img.shields.io/badge/version-0.5%20concept-blue.svg)
 
 > ⚠️ **Koncept ve fázi návrhu — NEOVĚŘENO na hardwaru.** Architektura, přenosový protokol a archiv
 > jsou propracované do hloubky, archiv a přenositelné knihovny firmwaru jsou napsané a **otestované
@@ -91,13 +91,13 @@ stanici.
 |---|---|---|---|
 | **NodBus** | rámec 40 B, payload (užitečná data) 32 B, TDMA, taktovaná | karta **Bifrost**: jedna kmenová linka nahoru, čtyři porty odboček dolů | plné jednotky — Quake, Tesla, Marconi, Sputnik, Palatine, Photon, Positron, Pip, Steinmetz, Argus |
 | **NodBus mini** | rámec 16 B, payload 8 B, TDMA, taktovaná | karta **Argus**: jedno spojení nahoru, čtyři segmenty dolů | malé taktované jednotky — Gauss, Quark-Tubes, Pascal |
-| **ModBus** | Modbus RTU, dotazovaná (polling), 9 600 nebo 19 200 | **Palatine**, čtyři izolované větve a `PWR EXT`, jedna rychlost na větev | každý kupovaný senzor a vlastní MODy — Pluvius, Ceres, Sakura, Babel |
+| **ModBus** | Modbus RTU, dotazovaná (polling), 9 600 nebo 19 200 | **Palatine**, čtyři izolované větve a `PWR EXT`, jedna rychlost na větev | každý kupovaný senzor a vlastní MODy — Pluvius, Ceres, Sakura, Babel, Iris |
 
 **Identita je adresa**: `TYPE«4 | NUMBER` na NodBus a mini, `TYPE«2 | NUMBER` na ModBus, jeden
 bajt, samopopisná, nikdy se nepřekládá. Typy NodBus: 1 Mayak · 2 Bifrost · 3 Argus · 4 Marconi ·
 5 Quake · 6 Palatine · 7 Tesla · 8 Sputnik · 9 Photon · 10 rezervováno pro `Neutron` · 11 Positron ·
 12 Pip · 13 Steinmetz. Mini: 1 Gauss · 2 Quark-Tubes · 3 Pascal. ModBus: 4 Babel, holý · 5 Pluvius ·
-6 Ceres · 7 Sakura, dále jeden typ na každou kupovanou veličinu na pozici (`core/PROTOCOL.md`).
+6 Ceres · 7 Sakura · 8 Iris, dále jeden typ na každou kupovanou veličinu na pozici (`core/PROTOCOL.md`).
 
 ## Centrála a co na ní visí
 
@@ -152,7 +152,20 @@ bajt, samopopisná, nikdy se nepřekládá. Typy NodBus: 1 Mayak · 2 Bifrost ·
 
 **Záření ve dvou provedeních:** **[Quark](quark/)** je radiační část, která měří tytéž veličiny dvěma způsoby — **[Quark-Tubes](quark/tubes/)**, vysoké napětí, každá trubice počítaná na jedné desce (GM trubice Photonu, **[Helion](quark/tubes/helion/)** a **[Gadolin](quark/tubes/gadolin/)** jsou na ní hlavice s trubicemi, ne samostatné jednotky), a **[Quark-Scintillation](quark/scintillation/)**, nízké napětí — Photon, Positron a jeho kanál `Neutron`.
 
-**MCU, a jsou tři.** `ESP32-S31` v centrále · `STM32H523` (LQFP100, jediný footprint) na uzlech, Kronosu, kartě a každém podřízeném modulu · `STM32H7A3IIT6` (LQFP176) na úrovni DSP — Tesla/Pip, Marconi a obě scintilační desky. **Čtyři desky H7A3 sdílejí jednu digitální polovinu**: stejné LQFP176, pozici `APS25608N-OBR-BD` na portu 2 OCTOSPI1 na týchž jedenácti pinech (osazenou tam, kde ji obraz firmwaru chce — Marconi vždy, Tesla pro klasifikátor, Photon pro záznamy záblesků, u Positronu otevřené), stejný výstup Galvani. Liší se analogový vstup a datová cesta převodníku — port frame-sync převodníku `ADS127L14` na SAI u Tesly/Pipu, paralelní port na PSSI u ostatních tří.
+**MCU, a v Midgardu jsou tři** — čtvrtý je STM32U535 Ratatoskra v Njordu (`NAMING.md`). `ESP32-S31` v centrále · `STM32H523` (LQFP100, jediný footprint v Midgardu; v Njordu LQFP48) na uzlech, Kronosu, kartě a každém podřízeném modulu · `STM32H7A3IIT6` (LQFP176) na úrovni DSP — Tesla/Pip, Marconi a obě scintilační desky. **Čtyři desky H7A3 sdílejí jednu digitální polovinu**: stejné LQFP176, pozici `APS25608N-OBR-BD` na portu 2 OCTOSPI1 na týchž jedenácti pinech (osazenou tam, kde ji obraz firmwaru chce — Marconi vždy, Tesla pro klasifikátor, Photon pro záznamy záblesků, u Positronu otevřené), stejný výstup Galvani. Liší se analogový vstup a datová cesta převodníku — port frame-sync převodníku `ADS127L14` na SAI u Tesly/Pipu, paralelní port na PSSI u ostatních tří.
+
+## Njord — vzdušná část
+
+**Midgard je stanice na kabelech a skle; Njord je její vzdušná část** — pomalé jednotky tam, kam kabel
+nedosáhne, na vlastním panelu a článku, přes LoRa na 868 MHz, vzorek každých deset minut, pro Iris, pro Huginna nebo přes síť LoRaWAN
+([`njord/`](njord/README.md)).
+
+| | co to je | MCU |
+|---|---|---|
+| **[Iris](njord/iris/)** | přijímač ve stanici — MOD na větvi Palatine, ModBus typ 8, každá polní jednotka jako multičidlo za její adresou | STM32H523 (LQFP48) |
+| **[Arke](njord/iris/arke/)** | deska Iris ve druhé roli — větev ModBus v terénu: kupovaná čidla, Ceres, Sakura; vlastní 12V pack a GNSS | STM32H523 (LQFP48) |
+| **[Ratatoskr](njord/ratatoskr/)** | malá polní jednotka — teplota a vlhkost ve 2 m a v 5 cm, tlak, srážky tam, kde je Imber; jeden článek, malý skleněný panel | STM32U535 (LQFP48) |
+| **[Huginn](njord/huginn/)** | brána do internetu tam, kde žádná stanice nestojí — LoRa dovnitř, Wi-Fi ven, čas z NTP | ESP32-S3, koupená |
 
 ## Co se kupuje
 
@@ -192,6 +205,8 @@ v jednom pouzdru s kabelem:
 | optické moduly | `G-O-10-10` · `G-O-2-100` | třída 10 Mb/s se stejnosměrnou vazbou do 10 km; `OPT2-55A03STR` (1550 nm, 1 m až 100 km) na desce 2 Mb/s |
 | transformátory | napájecí buňky Galvani | šest katalogových vinutí — `750310988` · `750311607` · `750310349` · `11328-T078` · `11338-T195` · `750311592` |
 | skříň, stožár, uzemnění | Daedalus | `daedalus/CONSTRUCTION.md` |
+| brána do internetu | Huginn | ESP32-S3 s SX1262 na 868 MHz a Wi-Fi, z 5 V USB (`njord/huginn/`) |
+| články, packy a panely Njordu | Ratatoskr, Arke | otevřené — co musí splnit, je v `njord/` |
 
 ## Napájení v jednom odstavci
 
@@ -277,7 +292,7 @@ se `HARDWARE.md` desky ustálí: nejdřív deska, potom tato vrstva.
 | jádro protokolu | [`core/proto/`](core/proto/) — rámce, adresy, CONTROL a roster; `LOAD`, proud a zkušební boot; datová cesta karty; příjem na hlavě, uplink, živý paket, obě karty, zrcadlo, tunel ModBus, rámec hodnot pro modem, strana GATT pro telefon, napájení a konzole — C99, `make check`, `make cross` |
 | referenční knihovna archivu | [`core/archive/ref/`](core/archive/ref/) — MLF a NRC, pravidla záznamu a odesílání, odesílací sezení, v Pythonu a v C se stejnými bajty (`core/archive/ref/tests/test_c.py`), NRC změřený na otevřených nahrávkách |
 | exportéry | [`core/archive/export/`](core/archive/export/) — miniSEED + StationXML, IAGA-2002, CSV a SQL, čtené z archivu dodatečně |
-| výpočty za dokumenty | [`gaia/tools/`](gaia/tools/) mapy umístění · [`gauss/models/`](gauss/models/) model umístění v mělké vodě · [`marconi/models/`](marconi/models/) směrování smyčky · [`tesla/design/`](tesla/design/) pracovní list tyče, výpočet jejího pole a limitace a šumové dno řetězce |
+| výpočty za dokumenty | [`gaia/tools/`](gaia/tools/) mapy umístění · [`gauss/models/`](gauss/models/) model umístění v mělké vodě · [`marconi/models/`](marconi/models/) směrování smyčky · [`tesla/design/`](tesla/design/) pracovní list tyče, výpočet jejího pole a limitace a šumové dno řetězce · [`njord/calc/`](njord/calc/) spotřeba a dosah Njordu |
 
 ## Strom
 
@@ -318,6 +333,11 @@ NIC-Heimdall/
 ├── ceres/              Ceres — soil moisture                             ModBus 6
 │   └── sakura/         Sakura — leaf wetness                             ModBus 7
 ├── babel/              Babel — any sensor → Modbus                       ModBus 4 bare
+├── njord/              Njord — the air part, LoRa at 868 MHz
+│   ├── iris/           Iris — the receiver at the station                ModBus 8
+│   │   └── arke/       Arke — the same board, a ModBus arm in the field
+│   ├── ratatoskr/      Ratatoskr — the small field unit
+│   └── huginn/         Huginn — the gateway to the internet
 ├── atlantis/           Atlantis — the water build
 ├── daedalus/           Daedalus — the station as a structure
 ├── gaia/               Gaia — the siting atlas

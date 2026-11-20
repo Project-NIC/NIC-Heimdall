@@ -147,7 +147,7 @@ the schedule land wherever it lands.
 | field | content |
 |---|---|
 | arm | 1..4 |
-| address | 0x01..0x0F a bought sensor · `TYPE«2 \| NUMBER` a house MOD or a Babel position (`HARDWARE.md`, *The Modbus address map*) |
+| address | 0x01..0x0F a bought sensor · `TYPE«2 \| NUMBER` a house MOD or a Babel position (`HARDWARE.md`, *The Modbus address map*); an Iris is one entry a field unit, each its window's run, on an ungated arm (`../njord/iris/FIRMWARE.md` §3) |
 | function | 03 holding · 04 input |
 | start · count | the contiguous run to read, count ≤ 15 registers — one block of ≤ 30 B; a sensor whose values are not contiguous is two entries, two blocks |
 | interval | how often it is read: **1 · 2 · 5 · 10 · 30 · 60 · 300 · 600 · 1800 · 3600 s** — every one a divisor of the hour, so the schedule repeats every 3600 s; **0,25 s for a wind entry in mode B**, four reads in every cell (`WMO.md`) |

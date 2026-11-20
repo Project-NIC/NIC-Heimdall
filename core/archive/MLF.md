@@ -99,7 +99,7 @@ entries alike. UTC is derived at export, from the `TIME` section in force.
 
 A section is framed as the core frames it (MLF §3); a reader skips an id it does not know.
 
-**Heimdall's sections**, ids 1–9 of the profile's 1–127 (MLF §3); id 8 is not used — a codec's
+**Heimdall's sections**, ids 1–10 of the profile's 1–127 (MLF §3); id 8 is not used — a codec's
 table rides in the core's `CODEC`, 128:
 
 | id | section | |
@@ -112,6 +112,7 @@ table rides in the core's `CODEC`, 128:
 | 6 | `RULES` | the recording rule, then `links 1 B` and per link `link 1 B · rule · modules 1 B · module addresses` — a rule is `mode 1 B` (0 `ALL` · 1 `CHANGE` · 2 `DECIMATE` · 3 `INTERVAL` · 4 `NONZERO` · 5 `NONE`) `· n 1 B · s 2 B` (seconds, 0 none); a link is numbered as the head's uplink table numbers it, modules 0 meaning all |
 | 7 | `RESPONSE` | `SUB 1 B · length 2 B ·` the unit's write-once calibration block verbatim, for a sensor that needs a response beyond its factory sensitivity (`../INTEROP.md`) |
 | 9 | `TIME` | `offset 1 B` (int8, GPS − UTC in seconds, 18 in 2026) · `pending 1 B` (int8, the announced leap, +1, −1 or 0) · `at 4 B` (the second it takes effect, 0 none) — Kronos's `LEAP` register as the head reads it; a config is written whenever it changes |
+| 10 | `FIELD` | one per Njord field unit behind an Iris — below |
 
 **`LAYOUT`** — what a TYPE's 32 B payload holds:
 
@@ -144,6 +145,12 @@ none: a reader gets its bytes and an unknown TYPE, never a failure.
 **`PROFILE`** — `type 1 B` (ModBus 4..61) · `runs 1 B`, then per run `start register 2 B ·
 registers 1 B` and per register `flags 1 B` (bit 0 signed · bit 1 low half of a 32-bit value · bit
 2 high half) `· exp10 1 B · mantissa 2 B · add 4 B · name 8 B · unit 8 B`.
+
+**`FIELD`** — a Njord field unit (`../../njord/`): `iris 1 B` (the Iris's ModBus address) · `unit 1 B` (its number
+under that Iris) · `kind 1 B` (1 Arke · 2 Ratatoskr) · `latitude 4 B · longitude 4 B` (int32, 10⁻⁷ degree) ·
+`elevation 2 B` (int16, metres, the ground) · `heights 1 B`, then per sensor `height 2 B` (int16, cm above the
+ground) · `name 8 B` · then its runs as `PROFILE`'s body — `runs 1 B` and on. A window at Iris is read by
+the `FIELD` whose `unit` its first register names.
 
 **`SETTINGS`** — per unit or sonde: `SUB 1 B` (0 the unit itself) `· count 1 B`, then `register
 2 B · length 1 B · value`, as the unit holds it.

@@ -577,3 +577,19 @@ archiving them needed a series of its own, since `0x52` is a Quake on every stat
 server sends a head is commands and windows. `BOARD`, type 7, is retired and never used again;
 `HELLO`'s byte that subscribed is reserved, 0, so the message keeps its layout (`PROTOCOL.md` §6,
 the owner, 14 Nov 2026).
+
+## No wireless units — reopened for slow ones: Njord
+
+The station measured only where a cable reached: a wireless unit was closed for its cost and, above
+all, for the time — a radio carries no ±1 µs. **Slow quantities do not need it** — a value every ten
+minutes must not run twenty minutes off, and milliseconds are nothing — and the link carries the time
+well enough by itself: Iris's window gives a record's age when Palatine reads it, Huginn stamps from
+NTP, Arke keeps a GNSS. So **Njord** (`../njord/`), Heimdall's air part beside Midgard, its ground part:
+LoRa at 868 MHz for slow units alone; nothing that wants the timebase rides it (the owner, 19–20 Nov
+2026).
+
+## The modem out-only — not Njord's acknowledgement
+
+The head's modem stays out-only (*The modem out-only on every module*, above). Njord's acknowledgement
+may carry a value or two from the head, signed with the unit's key, a link value on trial — never the
+register set, never the firmware over a public band (`../njord/LINK.md` §6; the owner, 19 Nov 2026).

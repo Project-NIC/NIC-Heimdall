@@ -23,7 +23,8 @@
 > | 2 | Bifrost | 2 | Quark-Tubes | 5 | Pluvius |
 > | 3 | Argus | 3 | Pascal | 6 | Ceres |
 > | 4 | **Marconi** | | | 7 | Sakura |
-> | 5 | Quake | | | 8..61 | **free — one per quantity at a position** |
+> | 5 | Quake | | | 8 | **Iris** — the radio gateway (`njord/iris/`) |
+> | | | | | 9..61 | **free — one per quantity at a position** |
 > | 6 | Palatine | | | | |
 > | 7 | Tesla | | | | |
 > | 8 | Sputnik | | | | |
@@ -55,7 +56,7 @@ Two ways to hang a unit on the network:
 | Class | spells | what it is | its bus | examples |
 |---|---|---|---|---|
 | **NOD** | **Nod**e | a unit that speaks NodBus itself | **NodBus** — RS-485 data + distributed clock (NIC proto, TDMA) | Quake · Palatine · Sputnik · Tesla · Pip · Steinmetz · Marconi · Photon · Positron |
-| **MOD** | **Mod**bus | a Modbus slave module, slow — its read interval is a setting, not a fixed rate | **ModBus** — the RS-485 Modbus-RTU leaf bus off a NOD, polled, no clock. **Palatine** carries the arms | Pluvius · Sakura · Ceres · Babel |
+| **MOD** | **Mod**bus | a Modbus slave module, slow — its read interval is a setting, not a fixed rate | **ModBus** — the RS-485 Modbus-RTU leaf bus off a NOD, polled, no clock. **Palatine** carries the arms | Pluvius · Sakura · Ceres · Babel · Iris |
 | **mini-NOD** | | a unit whose measurement is 8 B and which needs the clock | **NodBus mini** — the same framing, TDMA and clock as NodBus, one payload wide, behind **Argus** | Gauss · Quark-Tubes · Pascal |
 
 **The class is the bus, not the MCU — and the MCU is the H523 either way.** A NOD, a MOD and a
@@ -91,6 +92,10 @@ Quark-Tubes' own H523 on the same assembly). It is not a separate bus class.
 | Leaf-wetness sensor | **Sakura** | `ceres/sakura/` | leaf surface wetness (capacitive) + the temperature at the plate | **MOD, ModBus type 7 `Sakura`** — **STM32H523** |
 | Soil-moisture sensor (WMO depths) | **Ceres** | `ceres/` | soil volumetric water (capacitive) + the soil temperature at its depth | **MOD, ModBus type 6 `Ceres`** — **STM32H523** each; seated in the ground stacked in a **patrona** (`palatine/CONSTRUCTION.md`) |
 | Magnetometer sonde | **Gauss** | `gauss/` — standalone remote unit (garden / well / borehole / sea) | geomagnetic field (RM3100) + ground temp (TMP117/STS35 on the wall, an NTC between the coils) — magnetometer-only, no tilt (SCL3300 dropped) | **mini-NOD, NodBus mini type 1 `Gauss`** behind an Argus — a sonde is 6 B of measurement, which is a mini payload, so it never needed a 32 B slot or a Bifrost port of its own; the segment carries the clock, which is why the sonde is on it and not on ModBus. **STM32H523** — one sensor board, the port board wired beside it is what changes |
+| Njord's receiver | **Iris** | `njord/iris/` | — the 868 MHz link's receiver at the station; every field unit a multi-sensor behind its address | **MOD, ModBus type 8, the radio gateway** — **STM32H523, LQFP48**; one slave carrying the field units' records as blocks, each keyed by the unit's number and read by that unit's profile — **the one exception to "one quantity and a pair"** (`core/blocks/modbus.md`) |
+| Njord's field arm | **Arke** | `njord/iris/arke/` | — Iris's board in its second role: a ModBus master in the field, its own pack, a GNSS | **no address of its own on the station** — a unit number under its receiver; its sensors keep their station-unique ModBus addresses |
+| Njord's small field unit | **Ratatoskr** | `njord/ratatoskr/` | air T/RH at 2 m and 5 cm, pressure, rain where Imber is fitted | **a unit number under its receiver** — **STM32U535, LQFP48** |
+| Njord's internet gateway | **Huginn** | `njord/huginn/` | — the field units' receiver where no station stands, LoRa in and Wi-Fi out | **not on the station's buses** — ESP32-S3, bought |
 | Universal Modbus bridge | **Babel** | `babel/` | — protocol converter: a sensor's native bus → Modbus RTU | **MOD, and it has NO type of its own** — **STM32H523**; each fitted position answers as its own slave on **the type of its quantity**, and `0xFF01 IDENT` says they are one board; a board with nothing fitted answers once on ModBus type 4, bare (`babel/MODBUS.md`) |
 | Carrier node | **Argus** | `bifrost/argus/` | — no sensor of its own: **four NodBus mini segments**, tiled **four 8 B mini payloads to a payload** and announced as **⌈minis/4⌉ NODs** (`bifrost/argus/README.md`). A mini segment costs a whole UART — that is what TDMA charges, and it is why a polled bus keeps the fan-out advantage | **NOD, NodBus type 3 `Argus`** — **the Bifrost board**, **STM32H523**, six USARTs of seven: one NodBus upstream with its echo receiver, and four mini segments. **No LPUART on a bus.** **Four is where the timer captures, the USARTs and the frame index meet** |
 | Pressure sonde | **Pascal** | `pascal/` | water column above it — MS5837-30BA + thermometer, in Gauss's oil-filled tube | **mini-NOD, NodBus mini type 3 `Pascal`** — **STM32H523**; the Tier 1 tsunami gauge where a site cannot keep a radar mast (`atlantis/README.md`) |
@@ -202,8 +207,11 @@ and one set of tooling (`core/WHY.md`, *A slave-class MCU*).
   - **Tesla — moved to the H7A3** (the DSP tier, below).
   - **Argus** — six serial ports in the job, which forces the bigger body whichever part is
     chosen; the H523 is that body and is the MCU every other node already runs (its row below).
-- **STM32H523 — the sensor modules too, in LQFP100, the house footprint on every H523 (`core/HARDWARE.md`);
-  two packages in the station and no more, LQFP100 for the H523 and LQFP176 for the H7A3.** One part covers the whole slave job, and the same one covers the nodes:
+- **STM32H523 — the sensor modules too, in LQFP100, the house footprint on every H523 in Midgard
+  (`core/HARDWARE.md`); LQFP100 for the H523 and LQFP176 for the H7A3.** **Njord is the exception, and
+  the one:** Iris and Arke carry the H523 in **LQFP48**, and Ratatoskr the **STM32U535** in the same LQFP48 —
+  its pinout the H523's but for pin 46 — because a unit on one cell sleeps with its RAM at 2,2 µA where
+  the H523's Stop draws 150–270 µA (`njord/ratatoskr/WHY.md`). One part covers the whole slave job, and the same one covers the nodes:
   - **Pluvius** — ADS1235 over **SPI** + Modbus over **UART** + drain logic.
   - **Sakura** — leaf wetness: the synchronous-detector capacitive front on the timer, the FDA and
     the two ADCs (`ceres/HARDWARE.md`, the same electronics) + Modbus.
@@ -288,6 +296,8 @@ from the pool** — don't add a redundant sensor.
   rides `0x0001` beside the moisture, one unit, one address, the shape a bought T/RH pod has —
   always fitted, always reported; no bought soil thermometer in the base, and a thermometer at
   another depth or height is the site's own bought unit on an arm (`ceres/README.md`).
+- **Ratatoskr** (`njord/ratatoskr/`) — **an `SHT45` on each probe**: the air's temperature and humidity are
+  its product, as a bought T/RH pod's are, not a correction; no other thermometer on the unit.
 - **Gadolin** — **none**: Geiger-plateau counting is temperature-stable; classic dosimeters omit
   it, correctly.
 - **Photon's GM tubes and Helion** — **one NTC on each head's board**, K1 · K2 · K3 on the GM

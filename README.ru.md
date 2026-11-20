@@ -15,7 +15,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
 [![License: CERN-OHL-P v2](https://img.shields.io/badge/License-CERN--OHL--P%20v2-red.svg)](https://ohwr.org/cern_ohl_p_v2.txt)
-![Version: 0.4 — concept](https://img.shields.io/badge/version-0.4%20concept-blue.svg)
+![Version: 0.5 — concept](https://img.shields.io/badge/version-0.5%20concept-blue.svg)
 
 > ⚠️ **Концепция на стадии проектирования — НЕ проверена на железе.** Архитектура, протокол
 > передачи и архив проработаны глубоко, архив и переносимые библиотеки прошивки написаны и
@@ -93,13 +93,13 @@
 |---|---|---|---|
 | **NodBus** | кадр 40 B, полезная нагрузка 32 B, TDMA, тактируемая | карта **Bifrost**: одна магистраль вверх, четыре порта отводов вниз | полноразмерные блоки — Quake, Tesla, Marconi, Sputnik, Palatine, Photon, Positron, Pip, Steinmetz, Argus |
 | **NodBus mini** | кадр 16 B, полезная нагрузка 8 B, TDMA, тактируемая | карта **Argus**: одна связь вверх, четыре сегмента вниз | малые тактируемые блоки — Gauss, Quark-Tubes, Pascal |
-| **ModBus** | Modbus RTU, с опросом, 9 600 или 19 200 | **Palatine**, четыре изолированные ветви и `PWR EXT`, одна скорость на ветвь | все покупные датчики и собственные MOD — Pluvius, Ceres, Sakura, Babel |
+| **ModBus** | Modbus RTU, с опросом, 9 600 или 19 200 | **Palatine**, четыре изолированные ветви и `PWR EXT`, одна скорость на ветвь | все покупные датчики и собственные MOD — Pluvius, Ceres, Sakura, Babel, Iris |
 
 **Идентичность — это адрес**: `TYPE«4 | NUMBER` на NodBus и mini, `TYPE«2 | NUMBER` на ModBus,
 один байт, самоописывающий, никогда не транслируется. Типы NodBus: 1 Mayak · 2 Bifrost · 3 Argus ·
 4 Marconi · 5 Quake · 6 Palatine · 7 Tesla · 8 Sputnik · 9 Photon · 10 зарезервирован для
 `Neutron` · 11 Positron · 12 Pip · 13 Steinmetz. Mini: 1 Gauss · 2 Quark-Tubes · 3 Pascal.
-ModBus: 4 Babel, голый · 5 Pluvius · 6 Ceres · 7 Sakura, далее по одному типу на каждую покупную
+ModBus: 4 Babel, голый · 5 Pluvius · 6 Ceres · 7 Sakura · 8 Iris, далее по одному типу на каждую покупную
 величину в позиции (`core/PROTOCOL.md`).
 
 ## Центральный блок и то, что к нему подключено
@@ -155,7 +155,20 @@ ModBus: 4 Babel, голый · 5 Pluvius · 6 Ceres · 7 Sakura, далее по
 
 **Излучение в двух исполнениях:** **[Quark](quark/)** — радиационная часть, измеряющая одни и те же величины двумя способами: **[Quark-Tubes](quark/tubes/)**, высокое напряжение, все трубки считаются на одной плате (трубки ГМ Photon, **[Helion](quark/tubes/helion/)** и **[Gadolin](quark/tubes/gadolin/)** — головки с трубками на ней, а не самостоятельные блоки), и **[Quark-Scintillation](quark/scintillation/)**, низкое напряжение — Photon, Positron и его канал `Neutron`.
 
-**MCU, и их три.** `ESP32-S31` в центральном блоке · `STM32H523` (LQFP100, единственное посадочное место) на узлах, Kronos, карте и каждом ведомом модуле · `STM32H7A3IIT6` (LQFP176) на уровне DSP — Tesla/Pip, Marconi и две сцинтилляционные платы. **Четыре платы H7A3 разделяют одну цифровую половину**: тот же LQFP176, позиция `APS25608N-OBR-BD` на порту 2 OCTOSPI1 на тех же одиннадцати выводах (устанавливается там, где этого требует образ прошивки, — Marconi всегда, Tesla для классификатора, Photon для записей вспышек, у Positron вопрос открыт), тот же выход Galvani. Различаются аналоговый входной каскад и путь данных преобразователя — порт frame-sync у `ADS127L14` на SAI у Tesla/Pip, параллельный порт на PSSI у остальных трёх.
+**MCU, и в Midgard их три** — четвёртый, STM32U535 Ratatoskr, в Njord (`NAMING.md`). `ESP32-S31` в центральном блоке · `STM32H523` (LQFP100, единственное посадочное место в Midgard; в Njord LQFP48) на узлах, Kronos, карте и каждом ведомом модуле · `STM32H7A3IIT6` (LQFP176) на уровне DSP — Tesla/Pip, Marconi и две сцинтилляционные платы. **Четыре платы H7A3 разделяют одну цифровую половину**: тот же LQFP176, позиция `APS25608N-OBR-BD` на порту 2 OCTOSPI1 на тех же одиннадцати выводах (устанавливается там, где этого требует образ прошивки, — Marconi всегда, Tesla для классификатора, Photon для записей вспышек, у Positron вопрос открыт), тот же выход Galvani. Различаются аналоговый входной каскад и путь данных преобразователя — порт frame-sync у `ADS127L14` на SAI у Tesla/Pip, параллельный порт на PSSI у остальных трёх.
+
+## Njord — воздушная часть
+
+**Midgard — это станция на кабелях и стекле; Njord — её воздушная часть**: медленные блоки там, куда
+кабель не доходит, на собственной панели и аккумуляторе, по LoRa на 868 МГц, замер каждые десять минут — для Iris, для Huginn или через сеть LoRaWAN
+([`njord/`](njord/README.md)).
+
+| | что это | MCU |
+|---|---|---|
+| **[Iris](njord/iris/)** | приёмник на станции — MOD на ветви Palatine, ModBus тип 8, каждый полевой блок как мультидатчик за её адресом | STM32H523 (LQFP48) |
+| **[Arke](njord/iris/arke/)** | плата Iris во второй роли — ветвь ModBus в поле: покупные датчики, Ceres, Sakura; свой пакет 12 В и GNSS | STM32H523 (LQFP48) |
+| **[Ratatoskr](njord/ratatoskr/)** | малый полевой блок — температура и влажность на 2 м и 5 см, давление, осадки там, где стоит Imber; один элемент, маленькая стеклянная панель | STM32U535 (LQFP48) |
+| **[Huginn](njord/huginn/)** | шлюз в интернет там, где нет станции — LoRa на входе, Wi-Fi на выходе, время по NTP | ESP32-S3, покупной |
 
 ## Что покупается
 
@@ -196,6 +209,8 @@ Modbus RTU, 9 600 или 19 200 8N1, питание от 12 V ветви (вхо
 | оптические модули | `G-O-10-10` · `G-O-2-100` | класс 10 Mb/s со связью по постоянному току до 10 km; `OPT2-55A03STR` (1550 nm, от 1 m до 100 km) на плате 2 Mb/s |
 | трансформаторы | ячейки питания Galvani | шесть каталожных намоточных изделий — `750310988` · `750311607` · `750310349` · `11328-T078` · `11338-T195` · `750311592` |
 | шкаф, мачта, заземление | Daedalus | `daedalus/CONSTRUCTION.md` |
+| шлюз в интернет | Huginn | ESP32-S3 с SX1262 на 868 МГц и Wi-Fi, питание 5 В USB (`njord/huginn/`) |
+| элементы, пакеты и панели Njord | Ratatoskr, Arke | открыто — что они должны выполнять, описано в `njord/` |
 
 ## Питание одним абзацем
 
@@ -287,7 +302,7 @@ Modbus RTU, 9 600 или 19 200 8N1, питание от 12 V ветви (вхо
 | ядро протокола | [`core/proto/`](core/proto/) — кадры, адреса, CONTROL и реестр; `LOAD`, поток и пробная загрузка; тракт данных карты; приём, выгрузка на сервер, живой пакет, две карты, зеркало конфигурации, туннель ModBus, кадр значений для модема, сторона GATT для телефона, питание и консоль на головном блоке — C99, `make check`, `make cross` |
 | эталонная библиотека архива | [`core/archive/ref/`](core/archive/ref/) — MLF и NRC, правила записи и отправки, сеанс выгрузки, на Python и на C с одинаковыми байтами (`core/archive/ref/tests/test_c.py`), NRC измерен на открытых записях |
 | экспортёры | [`core/archive/export/`](core/archive/export/) — miniSEED + StationXML, IAGA-2002, CSV и SQL, читаемые из архива задним числом |
-| расчёты, на которых стоят документы | [`gaia/tools/`](gaia/tools/) карты размещения · [`gauss/models/`](gauss/models/) модель размещения на мелководье · [`marconi/models/`](marconi/models/) наведение рамки · [`tesla/design/`](tesla/design/) расчётный лист стержня, расчёт его поля, а также ограничение и шумовой порог тракта |
+| расчёты, на которых стоят документы | [`gaia/tools/`](gaia/tools/) карты размещения · [`gauss/models/`](gauss/models/) модель размещения на мелководье · [`marconi/models/`](marconi/models/) наведение рамки · [`tesla/design/`](tesla/design/) расчётный лист стержня, расчёт его поля, а также ограничение и шумовой порог тракта · [`njord/calc/`](njord/calc/) питание и дальность Njord |
 
 ## Дерево
 
@@ -328,6 +343,11 @@ NIC-Heimdall/
 ├── ceres/              Ceres — soil moisture                             ModBus 6
 │   └── sakura/         Sakura — leaf wetness                             ModBus 7
 ├── babel/              Babel — any sensor → Modbus                       ModBus 4 bare
+├── njord/              Njord — the air part, LoRa at 868 MHz
+│   ├── iris/           Iris — the receiver at the station                ModBus 8
+│   │   └── arke/       Arke — the same board, a ModBus arm in the field
+│   ├── ratatoskr/      Ratatoskr — the small field unit
+│   └── huginn/         Huginn — the gateway to the internet
 ├── atlantis/           Atlantis — the water build
 ├── daedalus/           Daedalus — the station as a structure
 ├── gaia/               Gaia — the siting atlas

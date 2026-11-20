@@ -2,6 +2,8 @@
 
 # The protocol's core
 
+**English** · [Čeština](README.cs.md) · [Русский](README.ru.md)
+
 The bytes every board of the station speaks, as [`../PROTOCOL.md`](../PROTOCOL.md) §1, §2 and §9
 fix them — the first of the portable libraries §8 names: C99, no allocation, no hardware, reaching
 nothing but the bytes it is given, compiled into the head's, the cards' and every unit's firmware
@@ -53,4 +55,4 @@ qemu-arm test/test_proto; qemu-arm test/test_load                               
 make cross                     # the Cortex-M33 and the head's RV32 — arm-none-eabi, riscv64-unknown-elf
 ```
 
-**The head's portable layers are whole**; what is left on the head is the hardware's — the drivers, the BLE stack, the radios, FatFs. **Owed here**: the card's per-spur masters, its trunk side and `FLOOR`'s sequence on the pins, an Argus's four mini masters; Kronos's receiver dialogue and its label; the mini units' rung on a timer capture, the `FRACN` loop and edge loss as clock loss — each beside this one, on it.
+**The head's portable layers are whole**; what is left on the head is the hardware's — the drivers, the BLE stack, the radios, FatFs. **Owed here**: the card's per-spur masters, its trunk side and `FLOOR`'s sequence on the pins, an Argus's four mini masters; Kronos's receiver dialogue and its label; the mini units' rung on a timer capture, the `FRACN` loop and edge loss as clock loss; the handset's `fieldkey`, a Njord unit's key unwrapped and written into Iris (`../PROTOCOL.md` §6) — each beside this one, on it.

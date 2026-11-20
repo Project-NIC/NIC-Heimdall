@@ -107,6 +107,7 @@ reader comparing stations needs them as much as the values.
 | global radiation and UV | the mast top, equatorward arm, nothing above them | rule 5; the Modbus arm |
 | snow radar | **an arm ≥ 1 m from the mast**, looking down on a level white target the size of its footprint: snow around a pole drifts and scours, and a reading under the pipe is the pipe's | the Modbus arm (`../palatine/CONSTRUCTION.md`, *The snow radar's shroud*) |
 | the modem position's antenna | the mast or a post, at the height the link wants — a buried vault cannot radiate | coax + DC-short arrester at the entry; the whip is sacrificial |
+| Iris's antenna, Njord's 868 MHz | the mast top, ~8 m — its height is the field units' reach (`../njord/LINK.md`); omni, ~3 dBi | coax + DC-short arrester at the entry, on an insulating bracket, as the modem's |
 | the Wi-Fi antenna, directional | the mast or its own post, aimed at the partner access point, line of sight | coax + DC-short arrester at the entry, on an insulating bracket like every antenna (`../core/UPLINK_TRANSPORT.md`) |
 | solar panel | its own low frame, ≥ 10 m from the shield (rule 1), its top below 2 m (rule 2) | the string travels at string voltage to the vault, arresters ahead of the MPPT (`../core/POWER.md`); the 12 V never leaves the vault |
 | rain gauge | on the ground, rule 3 | a ModBus arm: its four-wire cable, and the head's 24 V on a 2-core of its own from `G-24-S`, both buried (`../pluvius/HARDWARE.md`) |

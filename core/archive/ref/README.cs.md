@@ -17,6 +17,7 @@ nebo tam, kam ukazuje `NIC_SDK`; samotná jádra testuje `tests/test_mlf.py` v N
 | `hnrc.py` | kodér a dekodér NRC: bitový proud, pět režimů, Riceovy oddíly, referenční kanál, rozvržení složené z polí a z bajtů, které žádné pole nepokrývá, rozvržení NUMBER Argusu z jeho pozic |
 | `hmlf.py` | MLF v paměti: hlavička a její sekce, z `LAYOUT` a `UNIT` rozvržení, kterým NRC kóduje, segmenty zakódované surově i přes NRC a zapsaný ten kratší, konfigurace, rámování COBS, záznamy popisu a binární hledání v nich, deník událostí, cesta, pravidla záznamu a odesílání nad rámci a ModBus bloky; čtečka, která při ztrátě popisu najde objekty souboru podle nul |
 | `session.py` | zprávy odesílacího sezení podle `../../PROTOCOL.md` §6 — HELLO, CURSOR, ARCHIVE se zřetězeným tagem, ACK, LIVE, WINDOW — výřez souboru od kurzoru a pro okno a soubor sestavený serverem z paketů |
+| `sdk.py` | kde se najdou jádra NIC-SDK — vedle tohoto repozitáře nebo v `NIC_SDK`; `hnrc.py` a `hmlf.py` ho importují první |
 | `steim2.py` | packer a unpacker Steim-2 — kodek miniSEED, proti kterému se NRC měří, ověřený proti počtu rámců z libmseed |
 | `measure.py` | bity na vzorek pro Steim-2 a pro každý režim NRC na zaznamenaných stopách, podle délky segmentu; `--ref` kóduje párové kanály proti sobě navzájem |
 | `tests/test_hnrc.py` | případy, které uvádí `NRC.md`, na syntetických záznamech; každý projde tam a zpět bajt po bajtu |
