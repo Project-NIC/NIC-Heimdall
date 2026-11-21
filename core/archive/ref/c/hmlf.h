@@ -13,6 +13,7 @@
 #include "mlf.h"
 #include "hnrc.h"
 
+#define HMLF_LETTER      'H'      /* the profile's letter, the mark's fourth byte (MLF.md) */
 #define HMLF_MAX_BLOCK   253u     /* a record's length is one byte: module · length · data */
 
 enum {

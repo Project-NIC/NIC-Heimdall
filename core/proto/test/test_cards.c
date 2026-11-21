@@ -156,6 +156,8 @@ static void open_file(uint8_t addr, uint16_t seq)
         if (c.in[k]) {
             CHECK(!io_create(0, k, &nf));
             CHECK(!io_write(0, k, addr, seq, 0, (uint32_t)x->end, x->w.image));
+            CHECK(!io_write(0, k, addr, seq, (uint32_t)(x->w.size - x->w.pad), (uint32_t)x->w.pad,
+                            x->w.image + x->w.size - x->w.pad));            /* the header's mirror */
         }
     live_of[addr] = seq;
     CHECK(!nic_cards_files(&c, addr, first_of[addr], seq));
@@ -179,7 +181,7 @@ static void segment(uint8_t addr, size_t n)
     for (int k = 0; k < 2; k++)
         if (c.in[k]) {
             CHECK(!io_write(0, k, addr, x->seq, (uint32_t)x->end, (uint32_t)(x->w.end - x->end), x->w.image + x->end));
-            size_t at = x->w.size - 16 * x->w.entries;
+            size_t at = x->w.size - x->w.pad - 16 * x->w.entries;
             CHECK(!io_write(0, k, addr, x->seq, (uint32_t)at, (uint32_t)(16 * (x->w.entries - x->entries)), x->w.image + at));
         }
     x->end = x->w.end;
@@ -294,7 +296,7 @@ int main(void)
         master *x = mfind(0x52, q->live);
         cfile *f = cfind(0, 0x52, q->live);
         CHECK(x->w.entries > 0);
-        memset(f->img + f->size - 16 * x->w.entries, 0, 16);
+        memset(f->img + f->size - x->w.pad - 16 * x->w.entries, 0, 16);
     }
     record(10);
     bring_level(0);

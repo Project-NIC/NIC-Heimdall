@@ -95,6 +95,7 @@ void hmlf_to_core(const hmlf_header *h, mlf_header *c)
     c->length = h->length;
     c->sections = h->sections;
     c->sections_len = h->sections_len;
+    c->letter = HMLF_LETTER;
 }
 
 void hmlf_from_core(const mlf_header *c, hmlf_header *h)

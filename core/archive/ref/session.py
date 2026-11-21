@@ -222,11 +222,12 @@ def parse_set_k1(k0: bytes, station: int, stored_counter: int, body: bytes) -> d
 def file_objects(image: bytes) -> Tuple[hmlf.Header, List[Tuple[int, bytes, bytes, Tuple]]]:
     """A file's objects as an ARCHIVE packet carries them: (index, entry, COBS bytes, entry)."""
     r = hmlf.Reader(image)
+    pad = hmlf.padded(r.header.length)          # the description ends where the header's mirror begins
     out = []
     for i, e in enumerate(r.entries):
         if e is None:
             continue
-        at = len(image) - 16 * (i + 1)
+        at = len(image) - pad - 16 * (i + 1)
         out.append((i, bytes(image[at:at + 16]), bytes(image[e[1]:e[1] + e[2]]), e))
     return r.header, out
 
@@ -268,23 +269,29 @@ def window_cut(image: bytes, second: int, span: int) -> List[Tuple[int, bytes, b
 
 
 class Server:
-    """The server's file, rebuilt from ARCHIVE packets: the header first, then each object at its
-    entry's offset and the entry in its place."""
+    """The server's file, rebuilt from ARCHIVE packets: the header first and its mirror at the
+    file's end, then each object at its entry's offset and the entry in its place."""
 
     def __init__(self):
         self.image: Optional[bytearray] = None
         self.held = NONE_ENTRY
+        self.pad = 0
 
     def take(self, p: dict) -> None:
         if p["header"]:
             h = hmlf.parse_header(p["header"])
             if self.image is None:
                 self.image = bytearray(hmlf.MB << h.size)
+            self.pad = hmlf.padded(len(p["header"]))
             self.image[:len(p["header"])] = p["header"]
+            end = len(self.image) - self.pad
+            self.image[end:end + len(p["header"])] = p["header"]
+        if not self.pad and self.image is not None:     # a file the server held before: its header says
+            self.pad = hmlf.padded(hmlf.parse_header(self.image).length)
         for index, entry, cobs in p["objects"]:
             e = hmlf.parse_entry(entry)
             self.image[e[1]:e[1] + e[2]] = cobs
             self.image[e[1] + e[2]] = 0
-            at = len(self.image) - 16 * (index + 1)
+            at = len(self.image) - self.pad - 16 * (index + 1)
             self.image[at:at + 16] = entry
             self.held = index if self.held == NONE_ENTRY else max(self.held, index)

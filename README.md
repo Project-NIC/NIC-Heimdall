@@ -14,7 +14,7 @@ power and cabling that carry them. Commodity parts, light enough to process on a
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
 [![License: CERN-OHL-P v2](https://img.shields.io/badge/License-CERN--OHL--P%20v2-red.svg)](https://ohwr.org/cern_ohl_p_v2.txt)
-![Version: 0.5 — concept](https://img.shields.io/badge/version-0.5%20concept-blue.svg)
+![Version: 0.5.1 — concept](https://img.shields.io/badge/version-0.5.1%20concept-blue.svg)
 
 > ⚠️ **Design-stage concept — NOT hardware-validated.** The architecture, the wire protocol and the
 > archive are worked in depth, and the archive and the firmware's portable libraries are written
@@ -293,7 +293,7 @@ board first, that layer second.
 |---|---|
 | the protocol's core | [`core/proto/`](core/proto/) — the frames, the addresses, CONTROL and the roster; `LOAD`, the stream and the trial boot; a card's data path; the head's ingest, uplink, live packet, its two cards, the mirror, the ModBus tunnel, the modem's values frame, the handset's GATT side, the power and the console — C99, `make check`, `make cross` |
 | the archive's reference library | [`core/archive/ref/`](core/archive/ref/) — MLF and NRC, the recording and send rules, the uplink session, in Python and in C writing the same bytes (`core/archive/ref/tests/test_c.py`), NRC measured on open recordings |
-| the exporters | [`core/archive/export/`](core/archive/export/) — miniSEED + StationXML, IAGA-2002, CSV and SQL, read from the archive after the fact |
+| the exporters | [`core/archive/export/`](core/archive/export/) — Heimdall's glue to NIC-SDK's miniSEED + StationXML and IAGA-2002; CSV and SQL; read from the archive after the fact |
 | the calculations behind the documents | [`gaia/tools/`](gaia/tools/) the siting maps · [`gauss/models/`](gauss/models/) the shallow-water siting model · [`marconi/models/`](marconi/models/) the loop's pointing · [`tesla/design/`](tesla/design/) the rod worksheet, its field solve and the chain's clip and floor · [`njord/calc/`](njord/calc/) Njord's power and reach |
 
 ## The tree

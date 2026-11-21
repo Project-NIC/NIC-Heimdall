@@ -17,14 +17,15 @@ from typing import Dict, Iterator, List, Optional, Sequence, Tuple
 
 import sdk  # noqa: F401
 import mlf
-from mlf import (CFG, CODEC, MB, NRC, RAW, SEG, Section, cobs_decode, cobs_encode,  # noqa: F401
+from mlf import (CFG, CODEC, MB, NRC, RAW, SEG, Section, cobs_decode, cobs_encode, padded,  # noqa: F401
                  config_bytes, crc16, crc32, entry_bytes, framed, in_force, parse_entry,
                  parse_object, parse_sections, scan, sections_bytes)
 import hnrc
 from hnrc import Field
 
 STATION, UNIT, LAYOUT, PROFILE, SETTINGS, RULES, RESPONSE = range(1, 8)
-TIME = 9                             # 8 not used: a codec's table is the core's CODEC, 128
+TIME = 9                             # 8 not used; a codec's table is the core's CODEC, 255
+LETTER = "H"                         # the profile's letter, the mark's fourth byte
 MAX_BLOCK = 255 - 2                  # a record's length is one byte: module · length · data
 
 
@@ -131,7 +132,7 @@ class Header:
 def to_core(h: Header) -> mlf.Header:
     """The source: the station in its three low bytes, the address in its high one."""
     return mlf.Header(h.sequence, h.first_second, (h.station & 0xFFFFFF) | (h.address << 24),
-                      h.size, list(h.sections), h.length)
+                      h.size, list(h.sections), h.length, LETTER)
 
 
 def from_core(c: mlf.Header) -> Header:

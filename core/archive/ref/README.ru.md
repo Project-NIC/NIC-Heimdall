@@ -19,8 +19,6 @@
 | `hmlf.py` | MLF в памяти: заголовок и его секции, из `LAYOUT` и `UNIT` — раскладка, которой кодирует NRC, сегменты, закодированные сырыми и через NRC, с записью более короткого, конфигурации, кадрирование COBS, записи описания и двоичный поиск по ним, журнал событий, путь, правила записи и отправки по кадрам и блокам ModBus; читатель, который при потере описания находит объекты файла по нулям |
 | `session.py` | сообщения сеанса выгрузки по `../../PROTOCOL.md` §6 — HELLO, CURSOR, ARCHIVE с цепным тегом, ACK, LIVE, WINDOW — вырезка файла от курсора и для окна и файл, собранный сервером из пакетов |
 | `sdk.py` | где найти ядра NIC-SDK — рядом с этим репозиторием или в `NIC_SDK`; `hnrc.py` и `hmlf.py` импортируют его первым |
-| `steim2.py` | упаковщик и распаковщик Steim-2 — кодек miniSEED, с которым сравнивается NRC, проверенный по числу кадров libmseed |
-| `measure.py` | бит на отсчёт для Steim-2 и для каждого режима NRC на записанных трассах, по длине сегмента; `--ref` кодирует парные каналы друг относительно друга |
 | `tests/test_hnrc.py` | случаи, перечисленные в `NRC.md`, на синтетических записях; каждый проходит туда и обратно байт в байт |
 | `tests/test_damaged.py` | потоки обрезанные, удлинённые, с инвертированными битами, перезаписанные и выдуманные: каждый либо отклоняется с `ValueError`, либо декодируется, но никогда не падает и не зависает; обрезанный или удлинённый всегда читается как повреждённый. `NRC_FUZZ_SEED` и `NRC_FUZZ_ROUNDS` расширяют проверку |
 | `tests/test_hmlf.py` | MLF на синтетических файлах: Quake, у которого посреди файла меняется раскладка, блоки Palatine, NUMBER Argus, журнал событий, файл, заполненный до конца, — каждый прочитан обратно запись за записью; повреждённый объект пропущен, потерянное описание восстановлено; что оставляет каждое правило |
@@ -40,19 +38,7 @@ python3 tests/test_hmlf.py
 python3 tests/test_session.py
 python3 tests/test_c.py                 # builds c/ with $CC, which may carry flags
 NRC_RUN=qemu-arm CC="arm-linux-gnueabihf-gcc -static" python3 tests/test_c.py   # on a 32-bit ARM
-python3 measure.py recording.mseed --seconds 1,2,4,8,16,32
-python3 measure.py obs.min --seconds 60,300,900,3600      # IAGA-2002, nT × 100
 ```
 
-**Записанные ряды, на которых измерялся `NRC.md`,** — открытые данные, загруженные как есть:
-
-```
-curl -o morc_quiet.mseed "https://geofon.gfz.de/fdsnws/dataselect/1/query?net=GE&sta=MORC&cha=HH?&starttime=2024-01-10T00:00:00&endtime=2024-01-10T00:20:00"
-curl -o morc_noto.mseed "https://geofon.gfz.de/fdsnws/dataselect/1/query?net=GE&sta=MORC&cha=HH?&starttime=2024-01-01T07:20:00&endtime=2024-01-01T07:40:00"
-curl -o bdv_20240110.sec "https://imag-data.bgs.ac.uk/GIN_V1/GINServices?Request=GetData&format=IAGA2002&testObsys=0&observatoryIagaCode=BDV&samplesPerDay=second&dataStartDate=2024-01-10&dataDuration=1&publicationState=adj-or-rep&orientation=native"
-python3 measure.py morc_quiet.mseed morc_noto.mseed --seconds 1,2,4,8,16,32
-python3 measure.py bdv_20240110.sec --seconds 8,64,512,4096
-```
-
-`measure.py` читает miniSEED через obspy, а IAGA-2002 — сам; трасса — это один целочисленный ряд,
-а ширина поля — наименьшая ширина в целых байтах, в которую помещаются её значения.
+**NRC измеряется на открытых записях** инструментом `tools/nrcmeasure.py` из NIC-SDK, рядом Steim-2;
+как скачать ряды, говорит README NIC-SDK.

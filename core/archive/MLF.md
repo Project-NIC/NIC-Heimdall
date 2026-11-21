@@ -8,7 +8,9 @@
 The station's archive is written as **MLF, the Matroshka Log File** — its core in NIC-SDK's
 [`MLF.md`](https://github.com/Project-NIC/NIC-SDK/blob/main/MLF.md): the file taken whole, the data growing up and the description down,
 segments and configs, COBS, the codecs, the checks. **This page is Heimdall's profile**: what the
-core leaves to the project (MLF §10). The segments are coded by **NRC**, the NIC Rice Codec, its
+core leaves to the project (MLF §10). **Every segment carries its records' times** (MLF §4, the time
+byte 0): a unit's frame its second and its frame number, as the records below lay them out; the
+even run is not used, because a rule keeps frames unevenly and a late repair lands between them. The segments are coded by **NRC**, the NIC Rice Codec, its
 core in NIC-SDK's [`NRC.md`](https://github.com/Project-NIC/NIC-SDK/blob/main/NRC.md) and Heimdall's reading of the records in
 [`NRC.md`](NRC.md) here.
 
@@ -99,8 +101,8 @@ entries alike. UTC is derived at export, from the `TIME` section in force.
 
 A section is framed as the core frames it (MLF §3); a reader skips an id it does not know.
 
-**Heimdall's sections**, ids 1–10 of the profile's 1–127 (MLF §3); id 8 is not used — a codec's
-table rides in the core's `CODEC`, 128:
+**Heimdall's letter is `H`**, the mark's fourth byte: `MLFH`. **Heimdall's sections**, ids 1–10 of the
+profile's 1–254 (MLF §3); id 8 is not used — a codec's table rides in the core's `CODEC`, 255:
 
 | id | section | |
 |---|---|---|

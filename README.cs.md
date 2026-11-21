@@ -14,7 +14,7 @@ nesou. Běžně dostupné součástky a data dost lehká na zpracování na dom�
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
 [![License: CERN-OHL-P v2](https://img.shields.io/badge/License-CERN--OHL--P%20v2-red.svg)](https://ohwr.org/cern_ohl_p_v2.txt)
-![Version: 0.5 — concept](https://img.shields.io/badge/version-0.5%20concept-blue.svg)
+![Version: 0.5.1 — concept](https://img.shields.io/badge/version-0.5.1%20concept-blue.svg)
 
 > ⚠️ **Koncept ve fázi návrhu — NEOVĚŘENO na hardwaru.** Architektura, přenosový protokol a archiv
 > jsou propracované do hloubky, archiv a přenositelné knihovny firmwaru jsou napsané a **otestované
@@ -291,7 +291,7 @@ se `HARDWARE.md` desky ustálí: nejdřív deska, potom tato vrstva.
 |---|---|
 | jádro protokolu | [`core/proto/`](core/proto/) — rámce, adresy, CONTROL a roster; `LOAD`, proud a zkušební boot; datová cesta karty; příjem na hlavě, uplink, živý paket, obě karty, zrcadlo, tunel ModBus, rámec hodnot pro modem, strana GATT pro telefon, napájení a konzole — C99, `make check`, `make cross` |
 | referenční knihovna archivu | [`core/archive/ref/`](core/archive/ref/) — MLF a NRC, pravidla záznamu a odesílání, odesílací sezení, v Pythonu a v C se stejnými bajty (`core/archive/ref/tests/test_c.py`), NRC změřený na otevřených nahrávkách |
-| exportéry | [`core/archive/export/`](core/archive/export/) — miniSEED + StationXML, IAGA-2002, CSV a SQL, čtené z archivu dodatečně |
+| exportéry | [`core/archive/export/`](core/archive/export/) — lepidlo Heimdallu k miniSEED + StationXML a IAGA-2002 z NIC-SDK; CSV a SQL; čtené z archivu dodatečně |
 | výpočty za dokumenty | [`gaia/tools/`](gaia/tools/) mapy umístění · [`gauss/models/`](gauss/models/) model umístění v mělké vodě · [`marconi/models/`](marconi/models/) směrování smyčky · [`tesla/design/`](tesla/design/) pracovní list tyče, výpočet jejího pole a limitace a šumové dno řetězce · [`njord/calc/`](njord/calc/) spotřeba a dosah Njordu |
 
 ## Strom

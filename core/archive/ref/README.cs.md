@@ -18,8 +18,6 @@ nebo tam, kam ukazuje `NIC_SDK`; samotná jádra testuje `tests/test_mlf.py` v N
 | `hmlf.py` | MLF v paměti: hlavička a její sekce, z `LAYOUT` a `UNIT` rozvržení, kterým NRC kóduje, segmenty zakódované surově i přes NRC a zapsaný ten kratší, konfigurace, rámování COBS, záznamy popisu a binární hledání v nich, deník událostí, cesta, pravidla záznamu a odesílání nad rámci a ModBus bloky; čtečka, která při ztrátě popisu najde objekty souboru podle nul |
 | `session.py` | zprávy odesílacího sezení podle `../../PROTOCOL.md` §6 — HELLO, CURSOR, ARCHIVE se zřetězeným tagem, ACK, LIVE, WINDOW — výřez souboru od kurzoru a pro okno a soubor sestavený serverem z paketů |
 | `sdk.py` | kde se najdou jádra NIC-SDK — vedle tohoto repozitáře nebo v `NIC_SDK`; `hnrc.py` a `hmlf.py` ho importují první |
-| `steim2.py` | packer a unpacker Steim-2 — kodek miniSEED, proti kterému se NRC měří, ověřený proti počtu rámců z libmseed |
-| `measure.py` | bity na vzorek pro Steim-2 a pro každý režim NRC na zaznamenaných stopách, podle délky segmentu; `--ref` kóduje párové kanály proti sobě navzájem |
 | `tests/test_hnrc.py` | případy, které uvádí `NRC.md`, na syntetických záznamech; každý projde tam a zpět bajt po bajtu |
 | `tests/test_damaged.py` | proudy zkrácené, prodloužené, s převrácenými bity, přepsané a vymyšlené: každý je buď odmítnut s `ValueError`, nebo se dekóduje, nikdy nespadne ani se nezasekne; zkrácený nebo prodloužený se vždy čte jako poškozený. `NRC_FUZZ_SEED` a `NRC_FUZZ_ROUNDS` test rozšiřují |
 | `tests/test_hmlf.py` | MLF na syntetických souborech: Quake, kterému se uprostřed souboru změní rozvržení, bloky Palatine, NUMBER Argusu, deník událostí, soubor zaplněný do konce — každý přečtený zpět záznam po záznamu; poškozený objekt přeskočen, ztracený popis obnoven; co které pravidlo ponechá |
@@ -39,19 +37,7 @@ python3 tests/test_hmlf.py
 python3 tests/test_session.py
 python3 tests/test_c.py                 # builds c/ with $CC, which may carry flags
 NRC_RUN=qemu-arm CC="arm-linux-gnueabihf-gcc -static" python3 tests/test_c.py   # on a 32-bit ARM
-python3 measure.py recording.mseed --seconds 1,2,4,8,16,32
-python3 measure.py obs.min --seconds 60,300,900,3600      # IAGA-2002, nT × 100
 ```
 
-**Zaznamenané řady, na kterých se `NRC.md` měřil,** jsou otevřená data, stažená tak, jak jsou:
-
-```
-curl -o morc_quiet.mseed "https://geofon.gfz.de/fdsnws/dataselect/1/query?net=GE&sta=MORC&cha=HH?&starttime=2024-01-10T00:00:00&endtime=2024-01-10T00:20:00"
-curl -o morc_noto.mseed "https://geofon.gfz.de/fdsnws/dataselect/1/query?net=GE&sta=MORC&cha=HH?&starttime=2024-01-01T07:20:00&endtime=2024-01-01T07:40:00"
-curl -o bdv_20240110.sec "https://imag-data.bgs.ac.uk/GIN_V1/GINServices?Request=GetData&format=IAGA2002&testObsys=0&observatoryIagaCode=BDV&samplesPerDay=second&dataStartDate=2024-01-10&dataDuration=1&publicationState=adj-or-rep&orientation=native"
-python3 measure.py morc_quiet.mseed morc_noto.mseed --seconds 1,2,4,8,16,32
-python3 measure.py bdv_20240110.sec --seconds 8,64,512,4096
-```
-
-`measure.py` čte miniSEED přes obspy a IAGA-2002 sám; stopa je jedna celočíselná řada a šířka pole
-je nejmenší šířka v celých bajtech, do které se její hodnoty vejdou.
+**NRC se měří na otevřených záznamech** nástrojem `tools/nrcmeasure.py` z NIC-SDK, vedle něj Steim-2;
+jak se řady stahují, říká README NIC-SDK.

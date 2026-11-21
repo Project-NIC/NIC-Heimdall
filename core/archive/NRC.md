@@ -73,8 +73,8 @@ segment over it.
 
 ## Measured
 
-The table of NRC's core (§8 there) was measured here, by `ref/measure.py` on the series
-`ref/README.md` says how to fetch — GE.MORC's seismometer and Budkov's magnetometer.
+The table of NRC's core (§8 there) is measured by NIC-SDK's `tools/nrcmeasure.py` on the series its
+README says how to fetch — GE.MORC's seismometer and Budkov's magnetometer.
 
 ## What it is tested against
 

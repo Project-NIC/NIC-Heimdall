@@ -76,7 +76,7 @@ values, the metadata, the gaps and flags, and what it is checked with.
 | **values** | the counts as recorded; the codes from the layout — the SEED band by the rate (F ≥ 1000 Hz, C ≥ 250, H ≥ 80, B ≥ 10, M above 1, L, V, U, R), the instrument by the field's unit (`m/s2` N, `m/s` H, `nT` F, a pressure D, a temperature K, any other Y), the orientation by the last letter of its name (Z, N, E; X 1, Y 2), else the channel's number |
 | **metadata** | StationXML from `STATION`, `UNIT` and `LAYOUT`: a flat `InstrumentSensitivity` from the layout's scale, poles and zeros only from a `RESPONSE` section |
 | **gaps and flags** | a gap ends a record and the next begins after it; a record holding a CLIPPED frame carries the *digitizer clipping* quality bit, one holding a DISTURBED frame the *glitches* bit |
-| **checked with** | libmseed and ObsPy read the series back sample for sample; the Steim-2 frames against `ref/steim2.py`; StationXML against the FDSN schema |
+| **checked with** | libmseed and ObsPy read the series back sample for sample; StationXML against the FDSN schema; the Steim-2 frames against ObsPy in NIC-SDK's own tests |
 
 ### IAGA-2002
 
@@ -84,11 +84,11 @@ values, the metadata, the gaps and flags, and what it is checked with.
 |---|---|
 | **takes** | Gauss's components, and any series a layout gives in nT |
 | **writes** | IAGA-2002 text, `Data Type: variation`, one file a station a day; minute values, or second values on request |
-| **time** | a minute value is centred on the minute, by the Gaussian filter INTERMAGNET specifies for minute data — 91 weights on 1 Hz values, σ 15,8734 s, symmetric about the minute, as USGS's geomag-algorithms define it — named in a comment line; it gives Budkov's own minutes from its own seconds to 0,01 nT, their rounding, where USGS's periodic window does not. **A faster series comes to 1 Hz first** through USGS's 10 Hz → 1 Hz low-pass scaled to the rate: a windowed sinc at 0,25 Hz, Blackman window, the odd number of taps nearest 123 · rate / 10 — 393 at Gauss's 32 Hz — centred on the second |
+| **time** | a minute value is centred on the minute, by the Gaussian filter INTERMAGNET specifies for minute data — 91 weights on 1 Hz values, σ 15,8734 s, symmetric about the minute, as USGS's geomag-algorithms define it — named in a comment line; it gives Budkov's own minutes from its own seconds to 0,01 nT, their rounding, where USGS's periodic window does not. **A faster series comes to 1 Hz first** through USGS's 10 Hz → 1 Hz low-pass scaled to the rate: a windowed sinc at 0,25 Hz, Blackman window, 2 · ⌊123 · rate / 20⌋ + 1 taps, the odd number nearest 123 · rate / 10 and the larger at a tie (NIC-SDK's `iaga`) — 393 at Gauss's 32 Hz — centred on the second |
 | **values** | nT from the layout's scale, to the format's 0,01 nT; the components as the layout's names give them |
 | **metadata** | the header from `STATION` — name, latitude, longitude, elevation — and the IAGA code from the server's registration |
 | **gaps and flags** | flagged samples are left out of the filter, the weights over the rest renormalised; a value whose window holds less than 90 % of its samples is `99999.00`; a column no component fills is `88888.00`, not recorded, and named F |
-| **checked with** | an independent IAGA-2002 parser reads the file back; the minute values against the same filter run in the reference library on the raw series |
+| **checked with** | an independent IAGA-2002 parser reads the file back, the gap's minute missing and a minute where the filters say; the filters against SciPy's and Budkov's own minutes from its seconds in NIC-SDK's tests |
 
 ### RINEX
 
@@ -214,8 +214,10 @@ a flagged one drawn as flagged. It writes nothing.
 
 ## Owed
 
-**Written** (`export/`, Python, on the reference library): miniSEED + StationXML, IAGA-2002,
-CSV and SQL — checked as their entries say, on synthetic files and on open recordings. **Owed**:
+**Written:** miniSEED + StationXML and IAGA-2002 in **NIC-SDK** (`tools/mlf2mseed.*`, `tools/mlf2iaga.*`,
+C and Python), for any profile, read through Heimdall's glue (`export/glue.py`); CSV and SQL here
+(`export/tables.py`, on the reference library) — checked as their entries say, on synthetic files
+and on open recordings. **Owed**:
 RINEX, BUFR, CWOP, IOC sea level, air quality and Blitzortung, each on its unit's own decoding —
 Sputnik's records, Palatine's profiles — and the viewer. None is registered anywhere before the
 hardware is validated (`../INTEROP.md`, the gate).

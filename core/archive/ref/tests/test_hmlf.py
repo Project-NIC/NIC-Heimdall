@@ -4,6 +4,7 @@ file filled to its end; a damaged object read past, and a lost description recov
 import os, random, struct, sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 import hnrc, hmlf
+import mlf                      # NIC-SDK's core, on the path hmlf set
 from hmlf import Header, LayoutField, Section
 
 T0 = 1_790_856_000          # 2026-10-01 12:00:00 on the station's scale
@@ -175,9 +176,10 @@ def main():
                    (got[1][0] == hmlf.CFG and k > 1)), name
         # the description lost: the zeros give every object back
         img = bytearray(w.image)
-        img[len(img) - 16 * len(r.entries):] = bytes(16 * len(r.entries))
+        pad = mlf.padded(r.header.length)          # the description ends where the mirror begins
+        img[len(img) - pad - 16 * len(r.entries):len(img) - pad] = bytes(16 * len(r.entries))
         assert hmlf.Reader(img).entries == []
-        found = list(hmlf.scan(img, r.header.length))
+        found = list(hmlf.scan(img[:len(img) - pad], pad))
         assert [t for t, _ in found] == [t for t, _, _ in got], name
     print("every file reads back")
 

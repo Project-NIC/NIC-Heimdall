@@ -80,7 +80,7 @@ static int st_entry(void *ctx, uint8_t addr, uint16_t seq, uint32_t i, uint8_t o
 {
     (void)ctx;
     card_file *f = card_find(addr, seq);
-    memcpy(out, f->w.image + f->w.size - 16 * ((size_t)i + 1), 16);
+    memcpy(out, f->w.image + f->w.size - f->w.pad - 16 * ((size_t)i + 1), 16);
     return 0;
 }
 
@@ -98,7 +98,7 @@ static const nic_store STORE = {st_header, st_entries, st_entry, st_read, 0};
 
 /* ------------------------------------------------------------------ the server */
 
-typedef struct { uint8_t addr; uint16_t seq; uint8_t *image; size_t size; uint32_t held; } srv_file;
+typedef struct { uint8_t addr; uint16_t seq; uint8_t *image; size_t size, pad; uint32_t held; } srv_file;
 static srv_file srv[16];
 static int nsrv;
 static ses_chain chain;
@@ -148,6 +148,8 @@ static void srv_take(const uint8_t *msg, size_t n)
             f->held = SES_NONE_ENTRY;
         }
         memcpy(f->image, a.header, a.header_len);
+        f->pad = mlf_padded(a.header_len);                     /* the header's mirror at the end */
+        memcpy(f->image + f->size - f->pad, a.header, a.header_len);
     }
     CHECK(f != 0);
     size_t bytes = 0;
@@ -156,7 +158,7 @@ static void srv_take(const uint8_t *msg, size_t n)
         CHECK(!mlf_entry_parse(a.objects[i].entry, &e));
         memcpy(f->image + e.offset, a.objects[i].cobs, a.objects[i].cobs_len);
         f->image[e.offset + e.length] = 0;
-        memcpy(f->image + f->size - 16 * ((size_t)a.objects[i].index + 1), a.objects[i].entry, 16);
+        memcpy(f->image + f->size - f->pad - 16 * ((size_t)a.objects[i].index + 1), a.objects[i].entry, 16);
         if (f->held == SES_NONE_ENTRY || a.objects[i].index > f->held)
             f->held = a.objects[i].index;
         bytes += 20 + a.objects[i].cobs_len;
@@ -326,7 +328,7 @@ int main(void)
     /* a damaged entry: passed over, counted, the rest of the file sent */
     card_open(0x61, 0);
     for (int k = 0; k < 4; k++) card_segment(0x61, 0, 200);
-    card_find(0x61, 0)->w.image[card_find(0x61, 0)->w.size - 16 * 2 + 3] ^= 0x40;   /* entry 1 */
+    card_find(0x61, 0)->w.image[card_find(0x61, 0)->w.size - card_find(0x61, 0)->w.pad - 16 * 2 + 3] ^= 0x40;   /* entry 1 */
     CHECK(!nic_up_files(&up, 0x61, 0, 0));
     uint32_t skipped = up.skipped;
     from = nlog;

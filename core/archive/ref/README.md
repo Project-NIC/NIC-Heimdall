@@ -18,8 +18,6 @@ repository or where `NIC_SDK` points; NIC-SDK's own `tests/test_mlf.py` holds th
 | `hmlf.py` | MLF in memory: the header and its sections, `LAYOUT` and `UNIT` read into the layout NRC codes with, segments coded raw and by NRC and the shorter kept, configs, the COBS framing, the description's entries and their binary search, the event log, the path, the recording and send rules over frames and ModBus blocks; a reader that recovers a file's objects from the zeros when its description is lost |
 | `session.py` | the uplink session's messages as `../../PROTOCOL.md` §6 fixes them — HELLO, CURSOR, ARCHIVE with its chained tag, ACK, LIVE, WINDOW — the head's cut of a file forward from a cursor and for a window, and the server's file rebuilt from the packets |
 | `sdk.py` | where NIC-SDK's cores are found — beside this repository or at `NIC_SDK`; imported first by `hnrc.py` and `hmlf.py` |
-| `steim2.py` | a Steim-2 packer and unpacker — the miniSEED codec NRC is measured against, checked against libmseed's frame count |
-| `measure.py` | bits per sample of Steim-2 and of every NRC mode on recorded traces, per segment length; `--ref` codes paired channels against each other |
 | `tests/test_hnrc.py` | the cases `NRC.md` lists, on synthetic records; every one round-trips byte for byte |
 | `tests/test_damaged.py` | streams cut, extended, bit-flipped, overwritten and invented: every one is refused with `ValueError` or decodes, never crashes or hangs; a cut or extended one always reads as damaged. `NRC_FUZZ_SEED` and `NRC_FUZZ_ROUNDS` widen it |
 | `tests/test_hmlf.py` | MLF on synthetic files: a Quake whose layout changes mid-file, a Palatine's blocks, an Argus NUMBER, the event log, a file filled to its end — each read back record for record; a damaged object read past; a lost description recovered; what each rule keeps |
@@ -39,19 +37,7 @@ python3 tests/test_hmlf.py
 python3 tests/test_session.py
 python3 tests/test_c.py                 # builds c/ with $CC, which may carry flags
 NRC_RUN=qemu-arm CC="arm-linux-gnueabihf-gcc -static" python3 tests/test_c.py   # on a 32-bit ARM
-python3 measure.py recording.mseed --seconds 1,2,4,8,16,32
-python3 measure.py obs.min --seconds 60,300,900,3600      # IAGA-2002, nT × 100
 ```
 
-**The recorded series `NRC.md` was measured on** are open data, fetched as they are:
-
-```
-curl -o morc_quiet.mseed "https://geofon.gfz.de/fdsnws/dataselect/1/query?net=GE&sta=MORC&cha=HH?&starttime=2024-01-10T00:00:00&endtime=2024-01-10T00:20:00"
-curl -o morc_noto.mseed "https://geofon.gfz.de/fdsnws/dataselect/1/query?net=GE&sta=MORC&cha=HH?&starttime=2024-01-01T07:20:00&endtime=2024-01-01T07:40:00"
-curl -o bdv_20240110.sec "https://imag-data.bgs.ac.uk/GIN_V1/GINServices?Request=GetData&format=IAGA2002&testObsys=0&observatoryIagaCode=BDV&samplesPerDay=second&dataStartDate=2024-01-10&dataDuration=1&publicationState=adj-or-rep&orientation=native"
-python3 measure.py morc_quiet.mseed morc_noto.mseed --seconds 1,2,4,8,16,32
-python3 measure.py bdv_20240110.sec --seconds 8,64,512,4096
-```
-
-`measure.py` reads miniSEED through obspy and IAGA-2002 itself; a trace is one integer series
-and the field width is the smallest whole-byte width its values fit.
+**NRC is measured on open recordings** by NIC-SDK's `tools/nrcmeasure.py`, Steim-2 beside it;
+NIC-SDK's README says how the series are fetched.

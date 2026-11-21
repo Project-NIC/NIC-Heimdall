@@ -50,7 +50,7 @@ def main():
         part = Server()
         part.image = bytearray(image)
         for i in range(mid + 1, srv.held + 1):          # what the server lost after the cursor
-            at = len(image) - 16 * (i + 1)
+            at = len(image) - hmlf.padded(hmlf.parse_header(image).length) - 16 * (i + 1)
             part.image[at:at + 16] = bytes(16)
         resumed = send(image, mid, nonce2, htag2)
         chain2 = Chain(KEY, nonce2, htag2)

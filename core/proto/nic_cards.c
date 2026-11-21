@@ -34,7 +34,8 @@ static int primary(const nic_cards *c)
 static int header(nic_cards *c, int card, uint8_t addr, uint16_t seq, uint32_t *len, nic_card_file *f)
 {
     uint8_t h[24];
-    if (card < 0 || c->io.read(c->io.ctx, card, addr, seq, 0, sizeof h, h) || memcmp(h, "MLF", 4))
+    if (card < 0 || c->io.read(c->io.ctx, card, addr, seq, 0, sizeof h, h) || memcmp(h, "MLF", 3)
+        || h[3] != HMLF_LETTER)
         return -1;
     *len = get32(h + 8);
     f->addr = addr;
@@ -44,22 +45,30 @@ static int header(nic_cards *c, int card, uint8_t addr, uint16_t seq, uint32_t *
     return f->size > 7 ? -1 : 0;
 }
 
-static int entry(nic_cards *c, int card, uint8_t addr, uint16_t seq, uint8_t size, uint32_t i, mlf_entry *e)
+/* Entry i: down from the header's mirror, which fills the file's last whole sectors (MLF.md). */
+static int entry(nic_cards *c, int card, uint8_t addr, uint16_t seq, uint8_t size, uint32_t hlen,
+                 uint32_t i, mlf_entry *e)
 {
     uint8_t b[16];
-    uint32_t bytes = MLF_MB << size;
-    if ((uint64_t)16 * (i + 1) > bytes || c->io.read(c->io.ctx, card, addr, seq, bytes - 16 * (i + 1), 16, b))
+    uint32_t bytes = MLF_MB << size, pad = (uint32_t)mlf_padded(hlen);
+    if (2 * (uint64_t)pad + 16 * ((uint64_t)i + 1) > bytes
+        || c->io.read(c->io.ctx, card, addr, seq, bytes - pad - 16 * (i + 1), 16, b))
         return -1;
     return mlf_entry_parse(b, e) ? -1 : 0;
 }
 
 uint32_t nic_cards_good(nic_cards *c, int card, uint8_t addr, uint16_t seq, uint8_t size)
 {
-    uint32_t lo = 0, hi = (MLF_MB << size) / 16;
+    uint32_t hlen;
+    nic_card_file f;
+    if (header(c, card, addr, seq, &hlen, &f))
+        return 0;
+    uint32_t pad = (uint32_t)mlf_padded(hlen);
+    uint32_t lo = 0, hi = (MLF_MB << size) > 2 * pad ? ((MLF_MB << size) - 2 * pad) / 16 : 0;
     while (lo < hi) {
         uint32_t m = lo + (hi - lo) / 2;
         mlf_entry e;
-        if (!entry(c, card, addr, seq, size, m, &e))
+        if (!entry(c, card, addr, seq, size, hlen, m, &e))
             lo = m + 1;
         else
             hi = m;
@@ -194,17 +203,18 @@ static int start_copy(nic_cards *c, uint8_t addr, uint16_t seq, uint32_t from, u
     uint32_t bytes = MLF_MB << f.size;
     c->c_addr = addr;
     c->c_seq = seq;
-    c->c_off = from && !entry(c, p, addr, seq, f.size, from - 1, &e) ? e.offset + e.length + 1 : 0;
+    c->c_off = from && !entry(c, p, addr, seq, f.size, hlen, from - 1, &e) ? e.offset + e.length + 1 : 0;
     c->c_end = hlen;
     for (uint32_t i = to; i > from; i--)
-        if (!entry(c, p, addr, seq, f.size, i - 1, &e)) {
+        if (!entry(c, p, addr, seq, f.size, hlen, i - 1, &e)) {
             c->c_end = e.offset + e.length + 1;
             break;
         }
     if (c->c_end < c->c_off)
         c->c_end = c->c_off;
-    c->e_off = bytes - 16 * to;
-    c->e_end = bytes - 16 * from;
+    uint32_t pad = (uint32_t)mlf_padded(hlen);
+    c->e_off = bytes - pad - 16 * to;               /* the entries, and with the header the mirror after them */
+    c->e_end = from ? bytes - pad - 16 * from : bytes;
     c->copying = 1;
     return 0;
 }

@@ -849,8 +849,8 @@ signs and covers every byte before it, the type included.
 
 **`ARCHIVE`'s tag is chained**: the tag of packet *i* covers the session's `nonce`, then packet
 *i* − 1's tag — `HELLO`'s for the first — then the packet, so a packet forged, dropped, reordered or
-replayed into another session fails. The server writes each object at its entry's offset and the
-entry in its place, and holds the file the card holds. **`WINDOW` is a command**: its `counter`
+replayed into another session fails. The server writes the header and its mirror at the file's end (MLF §2),
+each object at its entry's offset and the entry in its place, and holds the file the card holds. **`WINDOW` is a command**: its `counter`
 above the stored one and its tag over the `station`, the counter and the message, as every command;
 the head answers with `ARCHIVE` packets carrying the file's header, its configs before the last
 segment sent, and the segments whose first to last second touches the window — **before anything

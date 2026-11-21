@@ -15,7 +15,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
 [![License: CERN-OHL-P v2](https://img.shields.io/badge/License-CERN--OHL--P%20v2-red.svg)](https://ohwr.org/cern_ohl_p_v2.txt)
-![Version: 0.5 — concept](https://img.shields.io/badge/version-0.5%20concept-blue.svg)
+![Version: 0.5.1 — concept](https://img.shields.io/badge/version-0.5.1%20concept-blue.svg)
 
 > ⚠️ **Концепция на стадии проектирования — НЕ проверена на железе.** Архитектура, протокол
 > передачи и архив проработаны глубоко, архив и переносимые библиотеки прошивки написаны и
@@ -301,7 +301,7 @@ Modbus RTU, 9 600 или 19 200 8N1, питание от 12 V ветви (вхо
 |---|---|
 | ядро протокола | [`core/proto/`](core/proto/) — кадры, адреса, CONTROL и реестр; `LOAD`, поток и пробная загрузка; тракт данных карты; приём, выгрузка на сервер, живой пакет, две карты, зеркало конфигурации, туннель ModBus, кадр значений для модема, сторона GATT для телефона, питание и консоль на головном блоке — C99, `make check`, `make cross` |
 | эталонная библиотека архива | [`core/archive/ref/`](core/archive/ref/) — MLF и NRC, правила записи и отправки, сеанс выгрузки, на Python и на C с одинаковыми байтами (`core/archive/ref/tests/test_c.py`), NRC измерен на открытых записях |
-| экспортёры | [`core/archive/export/`](core/archive/export/) — miniSEED + StationXML, IAGA-2002, CSV и SQL, читаемые из архива задним числом |
+| экспортёры | [`core/archive/export/`](core/archive/export/) — клей Heimdall к miniSEED + StationXML и IAGA-2002 из NIC-SDK; CSV и SQL; читаемые из архива задним числом |
 | расчёты, на которых стоят документы | [`gaia/tools/`](gaia/tools/) карты размещения · [`gauss/models/`](gauss/models/) модель размещения на мелководье · [`marconi/models/`](marconi/models/) наведение рамки · [`tesla/design/`](tesla/design/) расчётный лист стержня, расчёт его поля, а также ограничение и шумовой порог тракта · [`njord/calc/`](njord/calc/) питание и дальность Njord |
 
 ## Дерево

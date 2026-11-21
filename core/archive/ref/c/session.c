@@ -452,7 +452,7 @@ int ses_object_of(const mlf_reader *r, uint32_t index, ses_object *o)
     if (mlf_reader_entry(r, index, &e))
         return MLF_DAMAGED;
     o->index = index;
-    o->entry = r->image + r->size - 16 * ((size_t)index + 1);
+    o->entry = r->image + r->size - r->pad - 16 * ((size_t)index + 1);   /* down from the header's mirror */
     o->cobs = r->image + (e.offset < r->size ? e.offset : r->size);
     o->cobs_len = e.offset < r->size ? (e.length < r->size - e.offset ? e.length : r->size - e.offset) : 0;
     return MLF_OK;

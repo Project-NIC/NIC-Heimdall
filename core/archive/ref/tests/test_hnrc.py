@@ -1,7 +1,7 @@
 """The cases NRC.md names, on synthetic records: every one round-trips byte for byte."""
 import os, random, sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-import hnrc, steim2
+import hnrc
 from hnrc import Field, compose_layout, argus_layout
 
 def frames(payloads, second0=1_700_000_000, kind=0, status=0, fps=128):
@@ -113,8 +113,4 @@ def cases():
 if __name__ == "__main__":
     for name, layout, records in cases():
         check(records, layout, name)
-    # Steim-2 round trip and size on a series
-    xs = [int(5000*__import__("math").sin(i/30)) + random.randint(-20, 20) for i in range(4096)]
-    fr = steim2.encode(xs); assert steim2.decode(fr, len(xs)) == xs
-    print(f"Steim-2 on 4096 samples: {64*len(fr)} B = {64*len(fr)*8/len(xs):.2f} bits/sample")
     print("all round-trips ok")
