@@ -30,7 +30,8 @@ the box, a few bytes a second on the wire** (`BUS.md`).
 | reads the carriers | the transform | per burst, ≤ 8 carriers |
 | sweeps the background | the same transform | every burst; promotion after **1 h** of persistence |
 | catches a chirp | 65 536-sample bursts, 1 ms every **100 ms** while a sounder is due | per the sounder table |
-| ships records | USART1, one TIM2 compare a round | up to 8 records a frame; a carrier record per carrier per revisit, the floor once a second |
+| tracks the Doppler | the same bursts, every **100 ms** without pause, a Goertzel per Doppler carrier | one record per carrier a second |
+| ships records | USART1, one TIM2 compare a round | up to 8 records a frame; a carrier record per carrier per revisit, a Doppler record per Doppler carrier and the floor once a second |
 | watches the converter | `OR`, SPI3 | per burst |
 | sends the report frame | USART1, in its own block behind its data: `VBUS` · `CURRENT` raw from the `INA237` · the board's NTC, int16 in 0,01 °C · 0 | once a `REPORT_INTERVAL`, 60 s (`../core/PROTOCOL.md` §5) |
 
@@ -191,6 +192,20 @@ Each is one `IONOGRAM` record (type 1) with its parameter id; a sweep whose trac
 gives three numbers** — no O/X separation, no multi-hop, no true-height inversion; the trace
 itself, as (frequency, delay) pairs, answers `GET` for a reader that wants more. The sounder table for a site comes from the commissioning survey.
 
+**The Doppler.** Up to four carriers of the Doppler table (§8) — time stations whose carrier is
+atomic-referenced: WWV and WWVH, BPM, CHU, RWM — are tracked in phase for the shift a moving
+reflection puts on them, the travelling disturbance's signature in the F-region. The node runs
+**1 ms bursts every 100 ms without pause**, 65 536 words on the chirp's path; while a sounder is
+due the chirp's own bursts serve, read before the chirp's mix. In each burst a Goertzel at each
+table frequency, exact to the hertz, gives the carrier's phase against the burst's start — a TIM2
+compare on the grid — so an atomic carrier is read against Kronos's GNSS-held clock and moves only
+with its path. The ten phases of a second are unwrapped and fitted to a line; its slope is the
+shift, one `DOPPLER` record (type 2) per carrier per second in 1 mHz steps. Unwrapping at 10 Hz
+holds a shift to ±5 Hz, across the revisit's ~0,3 s gap to ±1,7 Hz, against the tenths of a hertz a
+moving F-region gives; a clipped burst is left out of the fit. **The scaler is the simplest one, as
+the ionogram's**: a carrier heard by several modes or hops gives their power-weighted mean, and the
+spectrum of the phase series is not computed on the node.
+
 **The long record — the `LONG` option, on a board with the second PSRAM** (`HARDWARE.md` §10).
 `SENSORS` bits 2 and 4 report the memories; with one, `LONG` is refused. With two, a `LONG` revisit
 replaces the burst by a raw capture of **2 097 152 samples at fs 2²⁶, 31,25 ms, 32 Hz bins,
@@ -234,15 +249,16 @@ bits of word B.
 |---|---|---|
 | 0 CARRIER | the frequency, 16-bit, 256 Hz steps | the 14-bit log level `<< 2 \| 0` |
 | 1 IONOGRAM | the value, uint16 — kHz for `foF2` and `MUF(3000)`, km for `h'F` | the parameter id `<< 2 \| 1`: 1 `foF2` · 2 `h'F` · 3 `MUF(3000)` |
+| 2 DOPPLER | the carrier's frequency, 16-bit, 256 Hz steps, rounded | the shift, signed 14-bit in 1 mHz steps `<< 2 \| 2` |
 
 **Filling the frame**, once per period, before the slot compare: records are taken from the
 record queue in order — the floor first when it is due, then the carriers of the last burst,
-then the ionogram's — eight to the payload, zeros in empty slots. A burst's eight carriers fill
+then the second's Doppler records, then the ionogram's — eight to the payload, zeros in empty slots. A burst's eight carriers fill
 one frame; the queue never holds more than a revisit's worth. **No count, no `Vin` byte**: an
 empty slot is zero and the supply rides the `REPORT` frame.
 
-**The cadence on the wire** is a revisit's records every 10–30 s, the floor once a second and
-three parameters per sounder sweep — under 40 B a second on a link that carries 5 kB.
+**The cadence on the wire** is a revisit's records every 10–30 s, the floor and up to four Doppler
+records once a second and three parameters per sounder sweep — under 60 B a second on a link that carries 5 kB.
 
 ## 8. The control plane
 
@@ -273,6 +289,7 @@ three parameters per sounder sweep — under 40 B a second on a link that carrie
 | `0x0015 TRACE` | r | the last sweep's (frequency, delay) pairs, up to 64 × (uint16, uint16), `kind` 5, paged |
 | `0x0016 EQ` | r/w | the equalisation curve, 64 × int16 in 2⁻⁶ dB, `kind` 5, paged; written at the bench |
 | `0x0017 LONG` | r/w | 1 runs the long record in place of the burst (§6); refused on a board without the second PSRAM |
+| `0x0018 DOPPLER` | r/w | the Doppler table, 4 × uint32 frequency in Hz, 0 = free, `kind` 5; an atomic-referenced carrier only |
 | `0x0021 RANGE` | w | arms the ranging turnaround for the next block, `arg1` the width in ticks |
 | `0x0023 SELFTEST` | w | 1 runs the converter's test pattern (§9) |
 | `0x0038 REPORT` | r | answers with the `REPORT` frame itself, `kind` 6 |
@@ -350,7 +367,7 @@ being worked and are gone at a reset.
 | SRAM | the burst 1 MB in AXI SRAM · the transform's twiddles and state in DTCM, 96 kB · the chirp's decimated record · the lists · the circular buffer 32 × 40 B | 1,4 MB |
 | PSRAM | the trace; with the `LONG` option the raw record 4 MB and its transposed copy 4 MB, across the two memories | 32 MB, 64 with the option |
 | flash | the image · the cells 16 KB | 2 MB |
-| CPU | the transform ~0,3 s per revisit — 1,5 % at 20 s, ~0,5 s where `LONG` runs; the sweep and the carriers ~10 ms; a chirp burst ~2 ms per 100 ms while a sounder is due; `WFI` otherwise | 2²⁸ |
+| CPU | the transform ~0,3 s per revisit — 1,5 % at 20 s, ~0,5 s where `LONG` runs; the sweep and the carriers ~10 ms; a chirp burst ~2 ms per 100 ms while a sounder is due; the Doppler's four Goertzels ~3 ms per 100 ms; `WFI` otherwise | 2²⁸ |
 
 **No interrupt sits in a timing path.** The burst starts on a compare and the MDMA reads
 whatever the converter encoded from that edge; a late handler moves nothing.

@@ -14,7 +14,7 @@ power and cabling that carry them. Commodity parts, light enough to process on a
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
 [![License: CERN-OHL-P v2](https://img.shields.io/badge/License-CERN--OHL--P%20v2-red.svg)](https://ohwr.org/cern_ohl_p_v2.txt)
-![Version: 0.5.1 — concept](https://img.shields.io/badge/version-0.5.1%20concept-blue.svg)
+![Version: 0.5.2 — concept](https://img.shields.io/badge/version-0.5.2%20concept-blue.svg)
 
 > ⚠️ **Design-stage concept — NOT hardware-validated.** The architecture, the wire protocol and the
 > archive are worked in depth, and the archive and the firmware's portable libraries are written

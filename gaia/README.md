@@ -49,7 +49,7 @@ in GitHub's viewer and in the combined map.
 
 | file | contents |
 |---|---|
-| [`SITING.md`](SITING.md) | the six siting rules, the two deployment roles, the two tiers, density and loadout, the computed first wave, the islet-first rule, why the network can be placed |
+| [`SITING.md`](SITING.md) | the six siting rules, the two deployment roles, the two tiers, density and loadout, the computed first wave, the islet-first rule, the storm network, why the network can be placed |
 | [`DATA.md`](DATA.md) | the public datasets the maps stand on |
 | [`WHY.md`](WHY.md) | the graveyard |
 | [`proposed-network.geojson`](proposed-network.geojson) | **the deployment** — the computed first wave, marker by marker, each with its loadout and unit count; coastal markers carry the threat bearing, the cable length to the slope toe and the toe depth, and snap to a named islet where one sits seaward on the slope |
@@ -58,9 +58,10 @@ in GitHub's viewer and in the combined map.
 | [`priority-earthquake.geojson`](priority-earthquake.geojson) | the continental seismic belts and the high-exposure, under-instrumented cities |
 | [`priority-tec.geojson`](priority-tec.geojson) | where GNSS-TEC earns most — the equatorial anomaly crests and the auroral ovals |
 | [`priority-radiation.geojson`](priority-radiation.geojson) | the best sites for the neutron heads as a cosmic-ray monitor — low geomagnetic cutoff, high altitude; the weakest priority geography |
+| [`storm-network.geojson`](storm-network.geojson) | the storm network — fifty-four stations off the tropical-cyclone belts, ~2 900 km apart, that watch lightning, the ionosphere and the water from afar; each marker with the reason for its place (`SITING.md`, *The storm network*) |
 | [`longwave-transmitters.geojson`](longwave-transmitters.geojson) | the 34–120 kHz services Pip can hear — blue the time-code stations (DCF77 · MSF · WWVB · RBU · BPC · JJY), a full date once a minute on a caesium-derived carrier; amber eLoran at 100 kHz, time to ~100 ns and no calendar. The circles are nominal free-field reach; the receiver's surroundings decide (`SITING.md`, rule 6). Most of the planet has no longwave time |
 | [`bathy-per-site.csv`](bathy-per-site.csv) | measured bathymetry for 121 of the 168 coastal sites (ETOPO); 47 are schematic trench lines too far from real land, and Slab2 is the fix (`DATA.md`) |
-| `tools/` | `gen_network.py` · `gen_priority.py` · `gen_bathy.py` · `gen_coverage_svg.py` — the scripts that compute the layers |
+| `tools/` | `gen_network.py` · `gen_priority.py` · `gen_bathy.py` · `gen_coverage_svg.py` · `gen_storm.py` — the scripts that compute the layers |
 | `index.html` · `vendor/` | the combined map |
 
 ## Licence

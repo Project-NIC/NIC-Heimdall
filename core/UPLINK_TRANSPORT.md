@@ -14,7 +14,8 @@ top. This is only possible because the volume rides where it is cheap: the stati
 **archive forward from its `CURSOR` over Wi-Fi** when a window opens, **markers and the hourly
 heartbeat on the modem**, and **windows on demand** on a thin link, so what must leave at any moment
 is **minuscule**. A tiny data rate is what lets the transport be a **low-power, bursty, even
-opportunistic** radio — no always-on broadband, no Starlink-class dish (the satellite note below).
+opportunistic** radio — no always-on broadband, no Starlink-class dish but where a sunny site pays
+for one, switched per session (the satellite note below).
 
 ## The layers — card always; radios by what the site can reach
 
@@ -174,6 +175,15 @@ Where neither a LoRa gateway nor a reachable AP exists:
   **dwarfs the whole station's own draw** (not a burst you can duty-cycle), **and** it is weather-fragile
   (drops from ~50–100 Mb/s to a trickle in heavy rain). A low-power station wants small-burst sat + LoRa,
   not a broadband dish.)*
+- **The exception — a sunny site with energy to spare** (the owner, 21 Nov 2026). The rule above is
+  for the many stations of a world network. A station whose site has the sun all year (the equator,
+  the dry middle latitudes) and room to bank it — sodium-ion cells in the vault, cheap enough to fit
+  at three times a lithium pack: a bigger pit, and a hilltop keeps the water out — may carry Starlink
+  for the volume. **The dish is switched by its own power and on only for a session**: the hourly
+  values ride the small-burst modem as everywhere, a session a day takes the day's products, more
+  when an event is on. What it costs is then the boot and the sky search, minutes at 25–60 W a
+  session, not the continuous load counted above. The source is built for the site's worst weather
+  (`POWER.md` §2): where storms reach, the sun and the pack, no wind, wave or tide.
 
 ### Clustered deployment — many nodes, one gateway (islands / remote fields)
 
@@ -218,7 +228,8 @@ sizing** (`POWER.md`): Wi-Fi and satellite are **duty-cycled** — on only for t
 off otherwise, so the *average* draw stays low. A satellite modem's burst
 current and a directional Wi-Fi session are line items in the power budget; size the source for the
 transport the site actually uses. (This is why Starlink is out per station — a continuous load,
-weather-fragile on top; the satellite note above has the figures.)
+weather-fragile on top — but at a sunny site that switches it per session; the satellite note above
+has the figures and the exception.)
 
 ## Where this connects
 

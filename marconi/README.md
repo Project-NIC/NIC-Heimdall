@@ -22,12 +22,15 @@ STM32H7A3 that transforms it on the board.
   markers' day/night pairs give absorption against frequency on one path, and the band's daily
   opening and closing is itself the measurement;
 - **the passive ionogram** — the chirp sounders caught as they sweep the band, scaled on the node
-  to `foF2`, `h'F` and `MUF(3000)`.
+  to `foF2`, `h'F` and `MUF(3000)`;
+- **the Doppler of the time stations** — up to four atomic-referenced carriers (WWV and WWVH, BPM,
+  CHU, RWM) tracked in phase against Kronos's clock, the shift once a second: the travelling
+  disturbances moving the reflection.
 
 | unit | layer | how |
 |---|---|---|
 | **Pip** | **D-region** | VLF/LF carrier levels — sudden ionospheric disturbances |
-| **Marconi** | **F-region** | HF carrier levels, 0,5–16 MHz — MUF / `foF2`, the passive ionogram |
+| **Marconi** | **F-region** | HF carrier levels, 0,5–16 MHz — MUF / `foF2`, the passive ionogram, the time stations' Doppler |
 | **Sputnik** | the integrated column | GNSS dual-frequency TEC |
 
 Named for the 1901 transatlantic transmission, which worked because of the layer this board

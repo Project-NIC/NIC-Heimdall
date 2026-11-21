@@ -14,7 +14,7 @@ nesou. Běžně dostupné součástky a data dost lehká na zpracování na dom�
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
 [![License: CERN-OHL-P v2](https://img.shields.io/badge/License-CERN--OHL--P%20v2-red.svg)](https://ohwr.org/cern_ohl_p_v2.txt)
-![Version: 0.5.1 — concept](https://img.shields.io/badge/version-0.5.1%20concept-blue.svg)
+![Version: 0.5.2 — concept](https://img.shields.io/badge/version-0.5.2%20concept-blue.svg)
 
 > ⚠️ **Koncept ve fázi návrhu — NEOVĚŘENO na hardwaru.** Architektura, přenosový protokol a archiv
 > jsou propracované do hloubky, archiv a přenositelné knihovny firmwaru jsou napsané a **otestované

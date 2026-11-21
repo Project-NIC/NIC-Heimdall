@@ -15,8 +15,8 @@
 signal path:
 
 - **the SID channel** — it tracks the VLF and LF carriers the site hears, the time-code stations,
-  the navigation transmitters and eLoran, up to eight, and ships each one's level once a second as
-  a carrier record: the D-region rung of the station's ionosphere ladder (Marconi carries the
+  the navigation transmitters and eLoran, up to eight, and ships each one's level and phase once a
+  second: the D-region rung of the station's ionosphere ladder (Marconi carries the
   F-region, Sputnik the TEC);
 - **time** — on the same carriers it decodes the date and the second and measures the station's
   grid against their caesium-derived phase, and on its second socket, where a Kronos is on the

@@ -139,8 +139,13 @@ which is the whole quantity.
 **Records.** One carrier record per carrier per second — word A the frequency in steps of
 **8 Hz** (the converter's band top / 2¹⁶, as on Tesla; a record is read in the context of its
 host type), word B the level, type 2 — and the floor record at frequency 0, the detector's
-rolling background, once a second. Up to eight records fill a frame; eight carriers and the floor are
-nine records a second, two frames, and the other 126 are zeros. Tesla's record shape, Tesla's
+rolling background, once a second. **And one phase record per carrier per second** — word A the
+frequency as in its level record, word B the tracker's phase against the grid at the second's edge
+in 2⁻¹⁴ of a turn (0,022°; 3 ns at 20 kHz), type 3, read in Pip's context, where no impulsive
+record is emitted. An atomic carrier read against the GNSS-held grid moves only with its path, so
+the phase is the reflection height and its waves where the level is the absorption; the server
+unwraps it. Up to eight records fill a frame; eight carriers, their phases and the floor are
+seventeen records a second, three frames, and the other 125 are zeros. Tesla's record shape, Tesla's
 dB domain, Marconi's decoder reads it (`../../marconi/BUS.md`).
 
 **The crosstalk matrix and the µ(T) curves are Tesla's**, measured and written the same way

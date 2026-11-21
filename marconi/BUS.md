@@ -35,7 +35,12 @@ Record (4 B), two little-endian 16-bit words; tag = low 2 bits of word B:
         3 = MUF(3000) value in 1 kHz steps
       the rest of the id space is spare
 
- types 2, 3 — spare.  An empty slot reads zero (the log scale reserves code 0
+ type = 2 DOPPLER (an atomic-referenced carrier's shift, once a second)
+   A: carrier frequency, 16-bit, 256 Hz steps, rounded — the exact frequency is
+      the Doppler table's
+   B: signed 14-bit shift, LSB 1 mHz → ±8,191 Hz
+
+ type 3 — spare.  An empty slot reads zero (the log scale reserves code 0
  below its floor).  FREQUENCY 0 IN A CARRIER RECORD IS RESERVED for the
  station's running wideband noise floor, shipped once a second — the reference
  every level is judged against, and the site's HF noise climate in one number.
@@ -53,5 +58,5 @@ node. The node ships what was measured, not what it looked like, as Tesla and Qu
 
 | frame | size | rate | load |
 |---|--:|---|--:|
-| DATA | 40 B | up to 8 records a frame; a carrier record per carrier per revisit, the floor once a second | a few bytes a second |
+| DATA | 40 B | up to 8 records a frame; a carrier record per carrier per revisit, the floor and up to four Doppler records once a second | under 60 B a second |
 | CONTROL | 12 B | on demand | negligible |

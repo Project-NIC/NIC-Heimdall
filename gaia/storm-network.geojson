@@ -1,0 +1,927 @@
+{
+ "type": "FeatureCollection",
+ "properties": {
+  "title": "NIC storm network",
+  "note": "a first draw by hand: off the cyclone belts, ~2 900 km apart (SITING.md)"
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     14.4,
+     50.1
+    ]
+   },
+   "properties": {
+    "name": "Czechia, central Bohemia",
+    "why": "the reference station",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -2.5,
+     37.0
+    ]
+   },
+   "properties": {
+    "name": "Spain, Almeria",
+    "why": "the sunniest corner of Europe; the western Mediterranean",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -21.9,
+     64.1
+    ]
+   },
+   "properties": {
+    "name": "Iceland, Reykjavik",
+    "why": "the North Atlantic paths",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -45.4,
+     61.2
+    ]
+   },
+   "properties": {
+    "name": "Greenland, Narsarsuaq",
+    "why": "the Labrador Sea; paths to North America",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -6.9,
+     30.9
+    ]
+   },
+   "properties": {
+    "name": "Morocco, Ouarzazate",
+    "why": "the Sahara's edge, sun all year",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     5.5,
+     22.8
+    ]
+   },
+   "properties": {
+    "name": "Algeria, Tamanrasset",
+    "why": "the central Sahara, 1 400 m",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -8.0,
+     12.6
+    ]
+   },
+   "properties": {
+    "name": "Mali, Bamako",
+    "why": "the Sahel, inland of the Atlantic's genesis region",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     15.0,
+     12.1
+    ]
+   },
+   "properties": {
+    "name": "Chad, N'Djamena",
+    "why": "the middle of the continent",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9,
+     24.1
+    ]
+   },
+   "properties": {
+    "name": "Egypt, Aswan",
+    "why": "the Nile, among the sunniest places on Earth",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     38.7,
+     9.0
+    ]
+   },
+   "properties": {
+    "name": "Ethiopia, Addis Ababa",
+    "why": "the highlands, 2 350 m; the Horn",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     46.7,
+     24.7
+    ]
+   },
+   "properties": {
+    "name": "Saudi Arabia, Riyadh",
+    "why": "inland of the Arabian Sea's cyclones",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     9.4,
+     0.4
+    ]
+   },
+   "properties": {
+    "name": "Gabon, Libreville",
+    "why": "the equator on the Gulf of Guinea",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     36.8,
+     -1.3
+    ]
+   },
+   "properties": {
+    "name": "Kenya, Nairobi",
+    "why": "the equator, 1 700 m",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     28.3,
+     -15.4
+    ]
+   },
+   "properties": {
+    "name": "Zambia, Lusaka",
+    "why": "inland, west of the Mozambique Channel's cyclones",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     17.1,
+     -22.6
+    ]
+   },
+   "properties": {
+    "name": "Namibia, Windhoek",
+    "why": "the desert plateau, sun all year",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     20.8,
+     -32.4
+    ]
+   },
+   "properties": {
+    "name": "South Africa, Sutherland",
+    "why": "the Karoo, beside the observatory",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -5.7,
+     -15.9
+    ]
+   },
+   "properties": {
+    "name": "St Helena",
+    "why": "mid-ocean, on the Equiano cable",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -12.3,
+     -37.1
+    ]
+   },
+   "properties": {
+    "name": "Tristan da Cunha",
+    "why": "the middle of the South Atlantic",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9,
+     39.9
+    ]
+   },
+   "properties": {
+    "name": "Turkey, Ankara",
+    "why": "Anatolia; the eastern Mediterranean",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     76.9,
+     43.2
+    ]
+   },
+   "properties": {
+    "name": "Kazakhstan, Almaty",
+    "why": "Central Asia",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.9,
+     47.9
+    ]
+   },
+   "properties": {
+    "name": "Mongolia, Ulaanbaatar",
+    "why": "north-east Asia",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     85.3,
+     27.7
+    ]
+   },
+   "properties": {
+    "name": "Nepal, Kathmandu",
+    "why": "the Himalaya's south side, inland of the Bay of Bengal",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     77.6,
+     13.0
+    ]
+   },
+   "properties": {
+    "name": "India, Bengaluru",
+    "why": "the Deccan, 900 m, inland of both coasts' cyclones",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.1,
+     -0.6
+    ]
+   },
+   "properties": {
+    "name": "Maldives, Addu",
+    "why": "the equator, on a cable",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     55.5,
+     -4.6
+    ]
+   },
+   "properties": {
+    "name": "Seychelles, Mahe",
+    "why": "north of the south-west Indian belt, on a cable",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     103.8,
+     1.3
+    ]
+   },
+   "properties": {
+    "name": "Singapore",
+    "why": "the equator, the cable hub of the region",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     124.8,
+     1.5
+    ]
+   },
+   "properties": {
+    "name": "Indonesia, Manado",
+    "why": "south of the typhoons' reach",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     141.4,
+     43.1
+    ]
+   },
+   "properties": {
+    "name": "Japan, Sapporo",
+    "why": "the north-west Pacific's northern side; built for typhoon remnants",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     77.6,
+     -37.8
+    ]
+   },
+   "properties": {
+    "name": "Amsterdam Island",
+    "why": "the southern Indian Ocean; the research base",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     133.9,
+     -23.7
+    ]
+   },
+   "properties": {
+    "name": "Australia, Alice Springs",
+    "why": "the continent's middle, sun all year",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     115.9,
+     -31.9
+    ]
+   },
+   "properties": {
+    "name": "Australia, Perth",
+    "why": "south of the north-west coast's cyclones",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     149.1,
+     -35.3
+    ]
+   },
+   "properties": {
+    "name": "Australia, Canberra",
+    "why": "the south-east, inland",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     147.3,
+     -2.0
+    ]
+   },
+   "properties": {
+    "name": "Papua New Guinea, Manus",
+    "why": "the equator, north of the Coral Sea",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     172.6,
+     -43.5
+    ]
+   },
+   "properties": {
+    "name": "New Zealand, Christchurch",
+    "why": "the South Island, south of the ex-tropical storms' usual track",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     173.0,
+     1.4
+    ]
+   },
+   "properties": {
+    "name": "Kiribati, Tarawa",
+    "why": "the western equatorial Pacific",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -157.4,
+     1.9
+    ]
+   },
+   "properties": {
+    "name": "Kiribati, Kiritimati",
+    "why": "the central equatorial Pacific",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -176.6,
+     51.9
+    ]
+   },
+   "properties": {
+    "name": "Alaska, Adak",
+    "why": "the North Pacific, the Aleutians",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -130.1,
+     -25.1
+    ]
+   },
+   "properties": {
+    "name": "Pitcairn",
+    "why": "the south-east Pacific",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -109.4,
+     -27.1
+    ]
+   },
+   "properties": {
+    "name": "Easter Island",
+    "why": "the south-east Pacific, no cyclones",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -90.3,
+     -0.7
+    ]
+   },
+   "properties": {
+    "name": "Galapagos, Santa Cruz",
+    "why": "the equator off South America",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -149.9,
+     61.2
+    ]
+   },
+   "properties": {
+    "name": "Alaska, Anchorage",
+    "why": "the Gulf of Alaska",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -123.4,
+     48.4
+    ]
+   },
+   "properties": {
+    "name": "Canada, Victoria",
+    "why": "the Pacific north-west",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -106.6,
+     52.1
+    ]
+   },
+   "properties": {
+    "name": "Canada, Saskatoon",
+    "why": "the prairies",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -105.3,
+     40.0
+    ]
+   },
+   "properties": {
+    "name": "USA, Boulder",
+    "why": "the Rockies, beside WWV",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.7,
+     45.4
+    ]
+   },
+   "properties": {
+    "name": "Canada, Ottawa",
+    "why": "the east, inland of the Atlantic coast; built for hurricane remnants",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -99.1,
+     19.4
+    ]
+   },
+   "properties": {
+    "name": "Mexico, Mexico City",
+    "why": "the plateau, 2 240 m, between both coasts' hurricanes; built for their remnants",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -74.1,
+     4.7
+    ]
+   },
+   "properties": {
+    "name": "Colombia, Bogota",
+    "why": "the Andes, south of the Caribbean",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -60.0,
+     -3.1
+    ]
+   },
+   "properties": {
+    "name": "Brazil, Manaus",
+    "why": "the Amazon, the equator",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -32.4,
+     -3.9
+    ]
+   },
+   "properties": {
+    "name": "Brazil, Fernando de Noronha",
+    "why": "the equatorial Atlantic",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -47.9,
+     -15.8
+    ]
+   },
+   "properties": {
+    "name": "Brazil, Brasilia",
+    "why": "the plateau; the South Atlantic has almost no cyclones",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -68.2,
+     -22.9
+    ]
+   },
+   "properties": {
+    "name": "Chile, San Pedro de Atacama",
+    "why": "the driest and sunniest place on Earth",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -64.2,
+     -31.4
+    ]
+   },
+   "properties": {
+    "name": "Argentina, Cordoba",
+    "why": "the pampas",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -57.9,
+     -51.7
+    ]
+   },
+   "properties": {
+    "name": "Falkland Islands, Stanley",
+    "why": "the south-west Atlantic",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -36.5,
+     -54.3
+    ]
+   },
+   "properties": {
+    "name": "South Georgia, King Edward Point",
+    "why": "the Southern Ocean's edge; the research base",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  }
+ ]
+}

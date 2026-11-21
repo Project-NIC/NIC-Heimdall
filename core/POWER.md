@@ -53,7 +53,18 @@ of them draws on the station's pack.
   and **the 12 V never leaves the vault** (`../daedalus/CONSTRUCTION.md`, *The structures*).
 - **Grid, where there is one.** A wide-input DC supply feeds the same charge path; the pack then
   only rides through outages and can be much smaller.
-- Wind and other harvesters are a site's add-on, not the base.
+- **Wind, wave and tide are a site's add-on, not the base — and only where the site's worst weather
+  leaves them standing.**
+
+**Everything on the surface is built for the site's worst weather, not its average** (the owner,
+21 Nov 2026; a recommendation to the builder). The source, its mounting and the structure are
+chosen against the extreme the site can see, a hurricane included where it can come. A station
+that loses its panels in every storm pays for a boat, a crew, the parts and the repair each time,
+and leaves square metres of wreck in the sea or the landscape. Where storms reach, a moving
+harvester in the open is the first thing taken, so there the source is the sun and the pack; a
+panel lies flat on its base with no gap under it for the wind to lift, glassless where debris
+flies, and the pack is made big enough to carry the station through the storm and the overcast
+days after it.
 
 **Low power is what makes the network affordable.** Solar and storage cost scales with the draw: a
 kilowatt station needs kilowatt-class solar and storage and is still short in winter, a

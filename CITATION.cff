@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "If you use NIC-Heimdall in your work, please cite it as below."
 type: software
 title: "NIC-Heimdall: an open multi-phenomenon geophysical station (concept)"
-version: "0.5.1"
+version: "0.5.2"
 date-released: 2026-11-21
 authors:
   - name: "NIC — Native Intellect Community"

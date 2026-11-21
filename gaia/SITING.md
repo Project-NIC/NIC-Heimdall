@@ -128,6 +128,51 @@ hundreds of kilometres out. The islet buys cable, not pressure: the toe off it i
 down. The measured per-site numbers are `../atlantis/README.md`'s; the raw run is
 `bathy-per-site.csv`.
 
+## The storm network — a few dozen stations off the cyclone belts
+
+**What it is for.** Lightning, the ionosphere and the water are watched from thousands of
+kilometres away: Tesla's strokes located by time of arrival across stations, Pip's D-region and
+Marconi's F-region paths crossing a storm, Sputnik's TEC and precipitable water. Such a network
+needs no station in a storm's path, so **its stations stand where tropical cyclones do not come**,
+and only the coast stations of the first wave stand near one. Layer: `storm-network.geojson`,
+written by `tools/gen_storm.py`.
+
+**The rules it adds:**
+
+- **Off the cyclone belts** — 5–30° of latitude in the North Atlantic and the Caribbean, the
+  north-east and north-west Pacific, the North Indian Ocean, the south-west Indian Ocean, around
+  Australia and in the south-west Pacific. Within ~5° of the equator no cyclone forms, and the South
+  Atlantic and the south-east Pacific have almost none.
+- **Inside the polar circles**, where the cold asks nothing beyond the vault.
+- **~2 900 km between neighbours.** Sixteen stations are the least that cover the ~465 million km²
+  between the polar circles (~5 000 km apart); fifty-four cover it well. A strong stroke is then
+  heard by 10–20 stations at night and 4–8 by day, located to ~5–10 km; the stations' 540–1 080
+  ionospheric paths place one storm's waves to ~500–1 000 km.
+- **The place is chosen for the geometry, people or none** (the owner, 21 Nov 2026). Rule 2 holds
+  for the first wave, where the community is the infrastructure; a storm station brings its own.
+  In the countries of rule 1 the network takes one hub.
+- **Built for the site's worst weather** (`../core/POWER.md` §2); a few sites see a storm's
+  remnants — Sapporo, Ottawa, Mexico City — and are built for them.
+- **The uplink follows what the place has.** Where the local network reaches — fibre, a mobile
+  network, Wi-Fi — it carries the station and the choice is nobody's concern. Where nothing reaches,
+  an empty hilltop or a bare island, **Starlink switched per session** carries it
+  (`../core/UPLINK_TRANSPORT.md`, *the exception*), with the sun and the pack sized for it; whether
+  Starlink is licensed in the country, and the access to the land, are settled per site.
+
+**What stays empty.** The belts, on purpose. China and Siberia, where Starlink is not licensed and
+no partner is assumed. The middle of the North Pacific and of the North Atlantic, whose islands —
+Hawaii, Midway, Bermuda, the Azores — hurricanes reach.
+
+**The fifty-four** are a first draw by hand, each with the reason for its place in the layer:
+Europe and the North Atlantic 4 (central Bohemia, Almería, Reykjavík, Narsarsuaq) · Africa and the
+Middle East 12 (Ouarzazate, Tamanrasset, Bamako, N'Djamena, Aswan, Addis Ababa, Riyadh, Libreville,
+Nairobi, Lusaka, Windhoek, Sutherland) · the South Atlantic islands 2 (St Helena, Tristan da Cunha)
+· Asia and the Indian Ocean 11 (Ankara, Almaty, Ulaanbaatar, Kathmandu, Bengaluru, Addu, Mahé,
+Singapore, Manado, Sapporo, Amsterdam Island) · Oceania and the Pacific 11 (Alice Springs, Perth,
+Canberra, Manus, Christchurch, Tarawa, Kiritimati, Adak, Pitcairn, Easter Island, Galápagos) · the
+Americas 14 (Anchorage, Victoria, Saskatoon, Boulder, Ottawa, Mexico City, Bogotá, Manaus,
+Fernando de Noronha, Brasília, San Pedro de Atacama, Córdoba, Stanley, King Edward Point).
+
 ## Why it can be placed at all
 
 A ground sensor can be placed on someone else's land only if it threatens no one. **Open, civilian,
