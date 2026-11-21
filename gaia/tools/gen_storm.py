@@ -3,33 +3,39 @@
 
 The basins: the seven areas where tropical cyclones form and run, outlined by hand, each
 with one typical track and an arrowhead — a sketch of where and which way, not a
-climatology.
+climatology. The storm network is COMPUTED against what each instrument sees of a storm,
+over the basins and a margin of MARGIN_KM round them, where storms are born and die —
+nothing elsewhere (SITING.md, *The storm network*):
 
-The storm network is COMPUTED from the transmitters the station hears (SITING.md, *The
-storm network*). Marconi and Pip see the ionosphere along the path between a transmitter
-and the station, and Tesla locates a stroke by the stations around it. So a candidate
-place scores by
-  - the paths from it to every transmitter in reach that cross a basin, counted per basin
-    and per orientation of the crossing (four bins of 45°), up to PATH_NEED a bin; and
-  - for Tesla, the side of each basin it stands on (eight bearings from the basin's
-    centre, within TESLA_REACH_KM), one station a side; and
-  - for Sputnik and the strongest sferics, the side of each basin it stands NEAR — within
-    NEAR_KM of the basin's edge, eight sides, one station a side — so every basin is
-    watched close by from the north and the south; and
-  - for the globe, the grid point it covers — a point every 20° of latitude from 50° S to
-    60° N and every 30° of longitude, covered by a station within COVER_KM, wherever a
-    candidate can reach it — so no quarter of the Earth is left without a station.
+  - GNSS (Sputnik): the ionosphere is pierced at ~350 km, 1 200 km from the station at 10°
+    of elevation and ~500 km at 30°; the precipitable water is the column over the station.
+    Every point of a basin and its margin is wanted within GNSS_NEAR_KM of a station, and at
+    worst within GNSS_FAR_KM. With all four systems tracked the sky is always full, so the
+    satellites' tracks do not enter.
+  - Pressure (Palatine, Pascal): a hurricane's fall reaches ~300–500 km, the surge only the
+    coast. Each basin wants a coastal station on each of its eight sides, within PRESS_KM of
+    its edge or inside it.
+  - Marconi (HF): the ionosphere is read where the path reflects — one hop to HOP_KM, the
+    reflections at the hops' midpoints; a reflection over a basin and its margin counts, per
+    basin and orientation (four bins of 45°), up to PATH_NEED a bin. The broadcasters' curtain
+    antennas are aimed; their azimuths (HFCC's schedules) are not in the model, so their
+    paths are counted as if they radiated all round.
+  - Pip (VLF, LF): the Earth–ionosphere waveguide carries the signal under the D-region the
+    whole way; a path through a basin and its margin counts, the same bins.
+  - Tesla: one station on each of a basin's eight sides within TESLA_REACH_KM.
+
 A greedy pass takes the candidate that adds most, keeping MIN_SPACING_KM between stations,
-until nothing is added. The candidates are places with people, a road and power — hills,
-observatories, towns, islands — none on a summit swept by hurricane-force wind, none in a
-basin but the inner stations at its edge, where a storm is still weak.
+until a station adds less than MIN_GAIN. Candidates are places with people, a road and power;
+those inside a basin are reached by storms and built for the worst (core/POWER.md §2).
 simplestyle-spec; coordinates [lon, lat], representative."""
 import json, math, os
 
 OUT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 R = 6371.0
-PATH_NEED, TESLA_REACH_KM, NEAR_KM, COVER_KM, MIN_SPACING_KM, MAX_STATIONS = 4, 5000, 1500, 2000, 700, 70
-GRID = [(la, lo) for la in range(-50, 61, 20) for lo in range(-180, 180, 30)]
+MARGIN_KM, GNSS_NEAR_KM, GNSS_FAR_KM, PRESS_KM = 500, 500, 1200, 300
+HOP_KM, PATH_NEED, TESLA_REACH_KM = 3500, 4, 5000
+MIN_SPACING_KM, MIN_GAIN, MAX_STATIONS = 500, 1.0, 80
+W_GNSS = 0.06          # weight of one sample point of a basin's area (a 2,5° grid)
 
 # HF time stations — Marconi's Doppler (reach: multi-hop sky wave)
 HF = [("WWV", 40.68, -105.04), ("WWVH", 21.99, -159.76), ("CHU", 45.30, -75.75),
@@ -51,7 +57,6 @@ VLF = [("NAA", 44.65, -67.28), ("NLK", 48.20, -121.92), ("NPM", 21.42, -158.15),
 VLF_REACH_KM = 10000
 LF_REACH_KM = {"time": 2500, "eLoran": 1500}   # the longwave layer's own transmitters
 
-# candidates: (name, lat, lon, ring) — ring as placed: equator, north, south, inner
 CANDIDATES = [
     ("Sao Tome", 0.34, 6.73, "equator"), ("Gabon, Libreville", 0.39, 9.45, "equator"),
     ("DR Congo, Kisangani", 0.52, 25.19, "equator"), ("Kenya, Nairobi", -1.29, 36.82, "equator"),
@@ -100,12 +105,50 @@ CANDIDATES = [
     ("Solomon Islands, Honiara", -9.43, 159.95, "inner"),
     ("Hawaii, Mauna Loa Observatory", 19.54, -155.58, "inner"),
 ]
+CANDIDATES += [   # islands and coasts inside the basins: reached by storms, built for the worst
+    ("Hawaii, Hilo", 19.72, -155.08, "inner"), ("Tahiti, Papeete", -17.53, -149.57, "inner"),
+    ("Cook Islands, Rarotonga", -21.23, -159.78, "inner"), ("Samoa, Apia", -13.83, -171.76, "inner"),
+    ("Tonga, Nuku'alofa", -21.14, -175.20, "inner"), ("Fiji, Nadi", -17.76, 177.44, "inner"),
+    ("Vanuatu, Port Vila", -17.73, 168.32, "inner"), ("New Caledonia, Noumea", -22.27, 166.44, "inner"),
+    ("Guam", 13.44, 144.79, "inner"), ("Japan, Naha", 26.21, 127.68, "inner"),
+    ("Taiwan, Taipei", 25.03, 121.56, "inner"), ("Hong Kong", 22.30, 114.17, "inner"),
+    ("China, Haikou", 20.04, 110.34, "inner"), ("Vietnam, Da Nang", 16.05, 108.20, "inner"),
+    ("Philippines, Manila", 14.60, 120.98, "inner"), ("Japan, Tokyo", 35.68, 139.69, "inner"),
+    ("China, Shanghai", 31.23, 121.47, "inner"), ("Korea, Busan", 35.18, 129.08, "inner"),
+    ("Bangladesh, Chittagong", 22.34, 91.83, "inner"), ("India, Chennai", 13.08, 80.27, "inner"),
+    ("India, Visakhapatnam", 17.69, 83.22, "inner"), ("India, Mumbai", 19.07, 72.88, "inner"),
+    ("Pakistan, Karachi", 24.86, 67.00, "inner"), ("Oman, Muscat", 23.59, 58.41, "inner"),
+    ("Mauritius, Port Louis", -20.16, 57.50, "inner"), ("Reunion, Saint-Denis", -20.88, 55.45, "inner"),
+    ("Madagascar, Toamasina", -18.15, 49.40, "inner"), ("Mozambique, Beira", -19.84, 34.84, "inner"),
+    ("Australia, Darwin", -12.46, 130.84, "inner"), ("Australia, Broome", -17.96, 122.24, "inner"),
+    ("Australia, Port Hedland", -20.31, 118.60, "inner"), ("Australia, Townsville", -19.26, 146.80, "inner"),
+    ("Australia, Brisbane", -27.47, 153.03, "inner"), ("Bermuda", 32.30, -64.78, "inner"),
+    ("Bahamas, Nassau", 25.05, -77.35, "inner"), ("USA, Miami", 25.76, -80.19, "inner"),
+    ("USA, Houston", 29.76, -95.37, "inner"), ("USA, Charleston", 32.78, -79.93, "inner"),
+    ("USA, Cape Hatteras", 35.25, -75.53, "inner"), ("Canada, Halifax", 44.65, -63.57, "inner"),
+    ("Puerto Rico, San Juan", 18.47, -66.10, "inner"), ("Barbados, Bridgetown", 13.10, -59.60, "inner"),
+    ("Jamaica, Kingston", 18.00, -76.80, "inner"), ("Mexico, Cancun", 21.16, -86.85, "inner"),
+    ("Mexico, Acapulco", 16.85, -99.88, "inner"), ("Mexico, Cabo San Lucas", 22.89, -109.91, "inner"),
+    ("Azores, Ponta Delgada", 37.74, -25.67, "inner"),
+]
+INLAND = {"DR Congo, Kisangani", "Kenya, Nairobi", "Ecuador, Quito", "Brazil, Manaus",
+          "Egypt, Kottamia Observatory", "Armenia, Byurakan Observatory", "Russia, Zelenchukskaya (SAO)",
+          "Iran, Iranian National Observatory", "Uzbekistan, Maidanak Observatory", "India, Mount Abu Observatory",
+          "India, Devasthal (Nainital)", "India, Hanle Observatory", "China, Lijiang Observatory (Gaomeigu)",
+          "China, Delingha Observatory", "China, Xinglong Observatory", "Japan, Nayoro Observatory",
+          "Alaska, Poker Flat", "Canada, DRAO Penticton", "Mexico, San Pedro Martir Observatory",
+          "USA, Kitt Peak", "USA, Apache Point Observatory", "USA, McDonald Observatory", "Mexico, Tonantzintla",
+          "USA, Green Bank Observatory", "Canada, Mont Megantic Observatory", "Spain, Calar Alto Observatory",
+          "Morocco, Oukaimeden Observatory", "Namibia, Gamsberg (H.E.S.S.)", "South Africa, Sutherland (SAAO)",
+          "Australia, Perth Observatory", "Australia, Siding Spring Observatory", "New Zealand, Mount John Observatory",
+          "Chile, Paranal", "Chile, Cerro Tololo", "Argentina, CASLEO", "Brazil, Pico dos Dias Observatory",
+          "Hawaii, Mauna Loa Observatory", "Mali, Bamako"}
 
 RINGS = {
     "equator": ("#2b6cb0", "the equatorial ring: no cyclone forms within ~5° of the equator"),
     "north":   ("#2f855a", "the high ring, north: storms arrive only as extratropical gales"),
     "south":   ("#805ad5", "the high ring, south: storms arrive only as extratropical gales"),
-    "inner":   ("#dd6b20", "an inner station: the basin's edge, where a storm is still weak; built for its worst"),
+    "inner":   ("#dd6b20", "inside or at the edge of a basin: reached by storms, built for its worst"),
 }
 
 # the seven basins: (name, outline [lon, lat], typical track [lon, lat])
@@ -163,7 +206,6 @@ def basins():
             "properties": {"title": "Tropical-cyclone basins",
                            "note": "outlined by hand, a typical track each — a sketch, not a climatology (SITING.md)"},
             "features": feats}
-
 
 def xyz(lat, lon):
     a, b = math.radians(lat), math.radians(lon)
@@ -227,34 +269,6 @@ def transmitters():
         tx.append((name, la, lo, reach, "LF"))
     return tx
 
-def contributions(cand, tx, centres):
-    """What one candidate adds: {(basin, 'path', bin): n} and {(basin, 'tesla', octant): 1}."""
-    _, la, lo, _ = cand
-    got = {}
-    for _, tla, tlo, reach, _ in tx:
-        if dist((la, lo), (tla, tlo)) > reach:
-            continue
-        pts = gc_points((la, lo), (tla, tlo))
-        seen = set()
-        for i in range(len(pts) - 1):
-            p = pts[i]
-            for name, outline, _ in BASINS:
-                k = basin_key(name)
-                if k in seen or not inside(p[0], p[1], outline):
-                    continue
-                seen.add(k)
-                b = int((bearing(p, pts[i + 1]) % 180) // 45)
-                got[(k, "path", b)] = got.get((k, "path", b), 0) + 1
-    for k, c in centres.items():
-        if dist((la, lo), c) <= TESLA_REACH_KM:
-            got[(k, "tesla", int(bearing(c, (la, lo)) // 45))] = 1
-        if edge_dist(la, lo, k) <= NEAR_KM:
-            got[(k, "near", int(bearing(c, (la, lo)) // 45))] = 1
-    for g in GRID:
-        if dist((la, lo), g) <= COVER_KM:
-            got[("globe", "cover", g)] = 1
-    return got
-
 _EDGES = {}
 def edge_dist(la, lo, key):
     """Great-circle distance to a basin's edge, 0 inside it."""
@@ -271,17 +285,85 @@ def edge_dist(la, lo, key):
             return 0.0
     return min(dist((la, lo), p) for p in _EDGES[key])
 
+def in_zone(la, lo, key, margin):
+    return edge_dist(la, lo, key) <= margin
+
+def zone_points():
+    """The basins and their margin on a 2,5° grid: {basin: [(lat, lon), ...]}."""
+    keys = sorted({basin_key(n) for n, _, _ in BASINS})
+    pts = {k: [] for k in keys}
+    la = -47.5
+    while la <= 52.5:
+        lo = -180.0
+        while lo < 180.0:
+            for k in keys:
+                if in_zone(la, lo, k, MARGIN_KM):
+                    pts[k].append((la, lo))
+            lo += 2.5
+        la += 2.5
+    return pts
+
+def path_hits(a, b, kind):
+    """{(basin, bin)} the path a–b reads: HF at its reflections, VLF and LF along it."""
+    d = dist(a, b)
+    hits = set()
+    if kind == "HF":
+        n = max(1, math.ceil(d / HOP_KM))
+        pts = gc_points(a, b, 50.0)
+        for h in range(n):
+            i = min(len(pts) - 2, int((2 * h + 1) / (2 * n) * (len(pts) - 1)))
+            p, q = pts[i], pts[i + 1]
+            for k in {basin_key(x) for x, _, _ in BASINS}:
+                if in_zone(p[0], p[1], k, MARGIN_KM):
+                    hits.add((k, int((bearing(p, q) % 180) // 45)))
+    else:
+        pts = gc_points(a, b, 150.0)
+        for i in range(len(pts) - 1):
+            p = pts[i]
+            for k in {basin_key(x) for x, _, _ in BASINS}:
+                if all(h[0] != k for h in hits) and in_zone(p[0], p[1], k, MARGIN_KM):
+                    hits.add((k, int((bearing(p, pts[i + 1]) % 180) // 45)))
+    return hits
+
+def contributions(cand, tx, centres, zones):
+    name, la, lo, ring = cand
+    got = {}
+    for _, tla, tlo, reach, kind in tx:
+        if dist((la, lo), (tla, tlo)) > reach:
+            continue
+        for k, b in path_hits((la, lo), (tla, tlo), kind):
+            got[(k, "path", b)] = got.get((k, "path", b), 0) + 1
+    for k, c in centres.items():
+        side = int(bearing(c, (la, lo)) // 45)
+        if dist((la, lo), c) <= TESLA_REACH_KM:
+            got[(k, "tesla", side)] = 1
+        if name not in INLAND and edge_dist(la, lo, k) <= PRESS_KM:
+            got[(k, "press", side)] = 1
+    for k, pts in zones.items():
+        for p in pts:
+            d = dist((la, lo), p)
+            if d <= GNSS_FAR_KM:
+                got[(k, "gnss_far", p)] = 1
+                if d <= GNSS_NEAR_KM:
+                    got[(k, "gnss_near", p)] = 1
+    return got
+
+def need(key):
+    return PATH_NEED if key[1] == "path" else 1
+
+def weight(key):
+    return W_GNSS if key[1].startswith("gnss") else 1.0
+
 def select():
-    tx, centres = transmitters(), basin_centres()
-    contrib = {c[0]: contributions(c, tx, centres) for c in CANDIDATES}
-    need = lambda key: PATH_NEED if key[1] == "path" else 1
+    tx, centres, zones = transmitters(), basin_centres(), zone_points()
+    contrib = {c[0]: contributions(c, tx, centres, zones) for c in CANDIDATES}
     have, chosen = {}, []
     while len(chosen) < MAX_STATIONS:
-        best, gain = None, 0
+        best, gain = None, MIN_GAIN
         for c in CANDIDATES:
             if c in chosen or any(dist(c[1:3], d[1:3]) < MIN_SPACING_KM for d in chosen):
                 continue
-            g = sum(min(need(k), have.get(k, 0) + n) - min(need(k), have.get(k, 0))
+            g = sum(weight(k) * (min(need(k), have.get(k, 0) + n) - min(need(k), have.get(k, 0)))
                     for k, n in contrib[c[0]].items())
             if g > gain:
                 best, gain = c, g
@@ -290,43 +372,48 @@ def select():
         chosen.append(best)
         for k, n in contrib[best[0]].items():
             have[k] = have.get(k, 0) + n
-    targets = ({(k, "path", b) for k in centres for b in range(4)}
-               | {(k, kind, o) for k in centres for o in range(8) for kind in ("tesla", "near")}
-               | {("globe", "cover", g) for g in GRID
-                  if any(dist(c[1:3], g) <= COVER_KM for c in CANDIDATES)})
-    met = sum(1 for t in targets if have.get(t, 0) >= need(t))
-    return chosen, contrib, have, targets, met, tx
+    return chosen, contrib, have, zones, centres, tx
+
+def report(chosen, have, zones, centres):
+    rows = []
+    for k in sorted(zones):
+        pts = zones[k]
+        near = sum(1 for p in pts if have.get((k, "gnss_near", p)))
+        far = sum(1 for p in pts if have.get((k, "gnss_far", p)))
+        paths = sum(1 for b in range(4) if have.get((k, "path", b), 0) >= PATH_NEED)
+        tesla = sum(1 for o in range(8) if have.get((k, "tesla", o)))
+        press = sum(1 for o in range(8) if have.get((k, "press", o)))
+        rows.append((k, round(100 * near / len(pts)), round(100 * far / len(pts)), paths, tesla, press))
+    return rows
 
 def main():
-    chosen, contrib, have, targets, met, tx = select()
+    chosen, contrib, have, zones, centres, tx = select()
     feats = []
     for name, lat, lon, ring in chosen:
         color, rule = RINGS[ring]
         c = contrib[name]
-        crossings = {}
-        for (k, kind, _), n in c.items():
-            if kind == "path":
-                crossings[k] = crossings.get(k, 0) + n
-        what = "; ".join(f"{k}: {n}" for k, n in sorted(crossings.items(), key=lambda x: -x[1]))
+        reads = sorted({k for (k, kind, _) in c if kind in ("path", "gnss_near", "press")})
         feats.append({"type": "Feature",
                       "geometry": {"type": "Point", "coordinates": [lon, lat]},
                       "properties": {"name": name, "ring": ring,
-                                     "why": f"{rule}. Paths across basins — {what or 'none; placed for Tesla'}",
+                                     "why": f"{rule}. Reads: {', '.join(reads) or 'Tesla only'}",
                                      "marker-color": color, "marker-symbol": "", "marker-size": "small"}})
+    rows = report(chosen, have, zones, centres)
     fc = {"type": "FeatureCollection",
           "properties": {"title": "NIC storm network",
                          "note": f"computed from {len(tx)} transmitters and {len(CANDIDATES)} candidates: "
-                                 f"{len(chosen)} stations, {met} of {len(targets)} targets met (SITING.md)"},
+                                 f"{len(chosen)} stations (SITING.md)",
+                         "coverage": [dict(zip(("basin", "gnss_500_pct", "gnss_1200_pct", "path_bins_of_4",
+                                                "tesla_sides_of_8", "pressure_sides_of_8"), r)) for r in rows]},
           "features": feats}
     with open(os.path.join(OUT, "storm-network.geojson"), "w") as f:
         json.dump(fc, f, indent=1, ensure_ascii=False)
     with open(os.path.join(OUT, "cyclone-basins.geojson"), "w") as f:
         json.dump(basins(), f, indent=1, ensure_ascii=False)
     print(fc["properties"]["note"])
-    for t in sorted(targets):
-        if have.get(t, 0) < (PATH_NEED if t[1] == "path" else 1):
-            print("  short:", t, have.get(t, 0))
-    return chosen
+    print(f"{'basin':42} GNSS≤500 GNSS≤1200 paths tesla press")
+    for r in rows:
+        print(f"{r[0]:42} {r[1]:6}% {r[2]:7}% {r[3]:4}/4 {r[4]:4}/8 {r[5]:4}/8")
 
 if __name__ == "__main__":
     main()
