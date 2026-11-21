@@ -1,0 +1,905 @@
+{
+ "type": "FeatureCollection",
+ "properties": {
+  "title": "Tropical-cyclone basins",
+  "note": "outlined by hand, a typical track each — a sketch, not a climatology (SITING.md)"
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -98,
+       16
+      ],
+      [
+       -97,
+       26
+      ],
+      [
+       -90,
+       30
+      ],
+      [
+       -81,
+       32
+      ],
+      [
+       -76,
+       38
+      ],
+      [
+       -66,
+       44
+      ],
+      [
+       -50,
+       44
+      ],
+      [
+       -35,
+       36
+      ],
+      [
+       -18,
+       20
+      ],
+      [
+       -18,
+       10
+      ],
+      [
+       -40,
+       9
+      ],
+      [
+       -60,
+       11
+      ],
+      [
+       -70,
+       13
+      ],
+      [
+       -82,
+       12
+      ],
+      [
+       -88,
+       15
+      ],
+      [
+       -98,
+       16
+      ]
+     ]
+    ]
+   },
+   "properties": {
+    "name": "North Atlantic and Caribbean",
+    "why": "tropical cyclones form and run here; the storm network stands round it",
+    "stroke": "#c53030",
+    "stroke-width": 1,
+    "stroke-opacity": 0.6,
+    "fill": "#e53e3e",
+    "fill-opacity": 0.15
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -25,
+       13
+      ],
+      [
+       -45,
+       15
+      ],
+      [
+       -62,
+       19
+      ],
+      [
+       -74,
+       25
+      ],
+      [
+       -75,
+       32
+      ],
+      [
+       -68,
+       39
+      ],
+      [
+       -55,
+       44
+      ]
+     ],
+     [
+      [
+       -57.082561829198454,
+       41.84061670202681
+      ],
+      [
+       -55,
+       44
+      ],
+      [
+       -57.992828516191196,
+       44.20731008820794
+      ]
+     ]
+    ]
+   },
+   "properties": {
+    "name": "North Atlantic and Caribbean — a typical track",
+    "why": "which way a storm runs",
+    "stroke": "#9b2c2c",
+    "stroke-width": 2,
+    "stroke-opacity": 0.9
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -88,
+       12
+      ],
+      [
+       -95,
+       16
+      ],
+      [
+       -105,
+       21
+      ],
+      [
+       -112,
+       26
+      ],
+      [
+       -118,
+       29
+      ],
+      [
+       -135,
+       24
+      ],
+      [
+       -150,
+       17
+      ],
+      [
+       -140,
+       10
+      ],
+      [
+       -110,
+       9
+      ],
+      [
+       -88,
+       12
+      ]
+     ]
+    ]
+   },
+   "properties": {
+    "name": "North-east Pacific",
+    "why": "tropical cyclones form and run here; the storm network stands round it",
+    "stroke": "#c53030",
+    "stroke-width": 1,
+    "stroke-opacity": 0.6,
+    "fill": "#e53e3e",
+    "fill-opacity": 0.15
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -95,
+       12
+      ],
+      [
+       -105,
+       15
+      ],
+      [
+       -118,
+       18
+      ],
+      [
+       -133,
+       20
+      ]
+     ],
+     [
+      [
+       -130.13736289969987,
+       20.89739001107947
+      ],
+      [
+       -133,
+       20
+      ],
+      [
+       -130.47249170960015,
+       18.383923936827202
+      ]
+     ]
+    ]
+   },
+   "properties": {
+    "name": "North-east Pacific — a typical track",
+    "why": "which way a storm runs",
+    "stroke": "#9b2c2c",
+    "stroke-width": 2,
+    "stroke-opacity": 0.9
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       105,
+       11
+      ],
+      [
+       110,
+       22
+      ],
+      [
+       118,
+       30
+      ],
+      [
+       128,
+       40
+      ],
+      [
+       145,
+       42
+      ],
+      [
+       162,
+       32
+      ],
+      [
+       178,
+       20
+      ],
+      [
+       178,
+       8
+      ],
+      [
+       150,
+       5
+      ],
+      [
+       128,
+       6
+      ],
+      [
+       105,
+       11
+      ]
+     ]
+    ]
+   },
+   "properties": {
+    "name": "North-west Pacific",
+    "why": "tropical cyclones form and run here; the storm network stands round it",
+    "stroke": "#c53030",
+    "stroke-width": 1,
+    "stroke-opacity": 0.6,
+    "fill": "#e53e3e",
+    "fill-opacity": 0.15
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       162,
+       11
+      ],
+      [
+       143,
+       13
+      ],
+      [
+       130,
+       18
+      ],
+      [
+       126,
+       25
+      ],
+      [
+       131,
+       33
+      ],
+      [
+       142,
+       40
+      ]
+     ],
+     [
+      [
+       140.38682923398196,
+       37.47063642793987
+      ],
+      [
+       142,
+       40
+      ],
+      [
+       139.02546891029084,
+       39.609916936597365
+      ]
+     ]
+    ]
+   },
+   "properties": {
+    "name": "North-west Pacific — a typical track",
+    "why": "which way a storm runs",
+    "stroke": "#9b2c2c",
+    "stroke-width": 2,
+    "stroke-opacity": 0.9
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       52,
+       12
+      ],
+      [
+       57,
+       23
+      ],
+      [
+       67,
+       25
+      ],
+      [
+       73,
+       19
+      ],
+      [
+       77,
+       10
+      ],
+      [
+       80,
+       8
+      ],
+      [
+       82,
+       16
+      ],
+      [
+       90,
+       23
+      ],
+      [
+       95,
+       19
+      ],
+      [
+       98,
+       10
+      ],
+      [
+       85,
+       6
+      ],
+      [
+       62,
+       7
+      ],
+      [
+       52,
+       12
+      ]
+     ]
+    ]
+   },
+   "properties": {
+    "name": "North Indian Ocean",
+    "why": "tropical cyclones form and run here; the storm network stands round it",
+    "stroke": "#c53030",
+    "stroke-width": 1,
+    "stroke-opacity": 0.6,
+    "fill": "#e53e3e",
+    "fill-opacity": 0.15
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       89,
+       11
+      ],
+      [
+       87,
+       16
+      ],
+      [
+       88,
+       21
+      ]
+     ],
+     [
+      [
+       88.71000916065324,
+       18.085229513016767
+      ],
+      [
+       88,
+       21
+      ],
+      [
+       86.22354135671114,
+       18.582523073805188
+      ]
+     ]
+    ]
+   },
+   "properties": {
+    "name": "North Indian Ocean — a typical track",
+    "why": "which way a storm runs",
+    "stroke": "#9b2c2c",
+    "stroke-width": 2,
+    "stroke-opacity": 0.9
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       35,
+       -11
+      ],
+      [
+       37,
+       -25
+      ],
+      [
+       45,
+       -32
+      ],
+      [
+       62,
+       -32
+      ],
+      [
+       82,
+       -26
+      ],
+      [
+       90,
+       -12
+      ],
+      [
+       75,
+       -7
+      ],
+      [
+       55,
+       -7
+      ],
+      [
+       40,
+       -8
+      ],
+      [
+       35,
+       -11
+      ]
+     ]
+    ]
+   },
+   "properties": {
+    "name": "South-west Indian Ocean",
+    "why": "tropical cyclones form and run here; the storm network stands round it",
+    "stroke": "#c53030",
+    "stroke-width": 1,
+    "stroke-opacity": 0.6,
+    "fill": "#e53e3e",
+    "fill-opacity": 0.15
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       82,
+       -10
+      ],
+      [
+       66,
+       -14
+      ],
+      [
+       55,
+       -18
+      ],
+      [
+       51,
+       -24
+      ],
+      [
+       57,
+       -30
+      ]
+     ],
+     [
+      [
+       54.18092213764228,
+       -28.973939570022992
+      ],
+      [
+       57,
+       -30
+      ],
+      [
+       55.97393957002299,
+       -27.180922137642277
+      ]
+     ]
+    ]
+   },
+   "properties": {
+    "name": "South-west Indian Ocean — a typical track",
+    "why": "which way a storm runs",
+    "stroke": "#9b2c2c",
+    "stroke-width": 2,
+    "stroke-opacity": 0.9
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       90,
+       -9
+      ],
+      [
+       96,
+       -21
+      ],
+      [
+       110,
+       -31
+      ],
+      [
+       118,
+       -25
+      ],
+      [
+       126,
+       -15
+      ],
+      [
+       136,
+       -12
+      ],
+      [
+       142,
+       -11
+      ],
+      [
+       146,
+       -20
+      ],
+      [
+       154,
+       -28
+      ],
+      [
+       160,
+       -20
+      ],
+      [
+       156,
+       -10
+      ],
+      [
+       142,
+       -8
+      ],
+      [
+       122,
+       -8
+      ],
+      [
+       105,
+       -7
+      ],
+      [
+       90,
+       -9
+      ]
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Australian region",
+    "why": "tropical cyclones form and run here; the storm network stands round it",
+    "stroke": "#c53030",
+    "stroke-width": 1,
+    "stroke-opacity": 0.6,
+    "fill": "#e53e3e",
+    "fill-opacity": 0.15
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       124,
+       -10
+      ],
+      [
+       117,
+       -15
+      ],
+      [
+       113,
+       -21
+      ],
+      [
+       115,
+       -28
+      ]
+     ],
+     [
+      [
+       113.03398156944729,
+       -25.73399657309901
+      ],
+      [
+       115,
+       -28
+      ],
+      [
+       115.47212704569141,
+       -25.037383579886402
+      ]
+     ]
+    ]
+   },
+   "properties": {
+    "name": "Australian region — a typical track",
+    "why": "which way a storm runs",
+    "stroke": "#9b2c2c",
+    "stroke-width": 2,
+    "stroke-opacity": 0.9
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       156,
+       -9
+      ],
+      [
+       160,
+       -25
+      ],
+      [
+       172,
+       -35
+      ],
+      [
+       180,
+       -35
+      ],
+      [
+       180,
+       -6
+      ],
+      [
+       166,
+       -6
+      ],
+      [
+       156,
+       -9
+      ]
+     ]
+    ]
+   },
+   "properties": {
+    "name": "South-west Pacific",
+    "why": "tropical cyclones form and run here; the storm network stands round it",
+    "stroke": "#c53030",
+    "stroke-width": 1,
+    "stroke-opacity": 0.6,
+    "fill": "#e53e3e",
+    "fill-opacity": 0.15
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       166,
+       -11
+      ],
+      [
+       171,
+       -17
+      ],
+      [
+       177,
+       -24
+      ]
+     ],
+     [
+      [
+       174.26792101498143,
+       -22.760748443769437
+      ],
+      [
+       177,
+       -24
+      ],
+      [
+       176.19317524802204,
+       -21.110530529734618
+      ]
+     ]
+    ]
+   },
+   "properties": {
+    "name": "South-west Pacific — a typical track",
+    "why": "which way a storm runs",
+    "stroke": "#9b2c2c",
+    "stroke-width": 2,
+    "stroke-opacity": 0.9
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -180,
+       -35
+      ],
+      [
+       -155,
+       -30
+      ],
+      [
+       -138,
+       -20
+      ],
+      [
+       -140,
+       -10
+      ],
+      [
+       -160,
+       -7
+      ],
+      [
+       -180,
+       -6
+      ],
+      [
+       -180,
+       -35
+      ]
+     ]
+    ]
+   },
+   "properties": {
+    "name": "South-west Pacific, east of the date line",
+    "why": "tropical cyclones form and run here; the storm network stands round it",
+    "stroke": "#c53030",
+    "stroke-width": 1,
+    "stroke-opacity": 0.6,
+    "fill": "#e53e3e",
+    "fill-opacity": 0.15
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "MultiLineString",
+    "coordinates": [
+     [
+      [
+       -172,
+       -12
+      ],
+      [
+       -166,
+       -18
+      ],
+      [
+       -158,
+       -25
+      ]
+     ],
+     [
+      [
+       -160.88108657444235,
+       -24.163734401898484
+      ],
+      [
+       -158,
+       -25
+      ],
+      [
+       -159.21131013808855,
+       -22.255418474636993
+      ]
+     ]
+    ]
+   },
+   "properties": {
+    "name": "South-west Pacific, east of the date line — a typical track",
+    "why": "which way a storm runs",
+    "stroke": "#9b2c2c",
+    "stroke-width": 2,
+    "stroke-opacity": 0.9
+   }
+  }
+ ]
+}

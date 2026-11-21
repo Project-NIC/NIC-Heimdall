@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""Generate storm-network.geojson: the storm network, three rings of stations around
+"""Generate storm-network.geojson and cyclone-basins.geojson: the storm network, three rings of stations around
 the seven tropical-cyclone basins (SITING.md, *The storm network*) — the equatorial
 islands, the high ring on both hemispheres, and the inner stations where a storm is
-still weak. A first draw by hand, placed for the geometry, people or none.
+still weak. A first draw by hand, placed for the geometry, people or none. The basins:
+the seven areas where tropical cyclones form and run, outlined by hand, each with
+one typical track and an arrowhead — a sketch of where and which way, not a climatology.
 simplestyle-spec; coordinates [lon, lat], representative."""
-import json, os
+import json, math, os
 
 OUT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -62,6 +64,62 @@ SITES = [
     ("inner", "Solomon Islands, Honiara", -9.43, 159.95, "the south-west Pacific's genesis region"),
 ]
 
+# the seven basins: (name, outline [lon, lat], typical track [lon, lat])
+BASINS = [
+    ("North Atlantic and Caribbean",
+     [[-98,16],[-97,26],[-90,30],[-81,32],[-76,38],[-66,44],[-50,44],[-35,36],[-18,20],
+      [-18,10],[-40,9],[-60,11],[-70,13],[-82,12],[-88,15],[-98,16]],
+     [[-25,13],[-45,15],[-62,19],[-74,25],[-75,32],[-68,39],[-55,44]]),
+    ("North-east Pacific",
+     [[-88,12],[-95,16],[-105,21],[-112,26],[-118,29],[-135,24],[-150,17],[-140,10],[-110,9],[-88,12]],
+     [[-95,12],[-105,15],[-118,18],[-133,20]]),
+    ("North-west Pacific",
+     [[105,11],[110,22],[118,30],[128,40],[145,42],[162,32],[178,20],[178,8],[150,5],[128,6],[105,11]],
+     [[162,11],[143,13],[130,18],[126,25],[131,33],[142,40]]),
+    ("North Indian Ocean",
+     [[52,12],[57,23],[67,25],[73,19],[77,10],[80,8],[82,16],[90,23],[95,19],[98,10],[85,6],[62,7],[52,12]],
+     [[89,11],[87,16],[88,21]]),
+    ("South-west Indian Ocean",
+     [[35,-11],[37,-25],[45,-32],[62,-32],[82,-26],[90,-12],[75,-7],[55,-7],[40,-8],[35,-11]],
+     [[82,-10],[66,-14],[55,-18],[51,-24],[57,-30]]),
+    ("Australian region",
+     [[90,-9],[96,-21],[110,-31],[118,-25],[126,-15],[136,-12],[142,-11],[146,-20],[154,-28],[160,-20],
+      [156,-10],[142,-8],[122,-8],[105,-7],[90,-9]],
+     [[124,-10],[117,-15],[113,-21],[115,-28]]),
+    ("South-west Pacific",
+     [[156,-9],[160,-25],[172,-35],[180,-35],[180,-6],[166,-6],[156,-9]],
+     [[166,-11],[171,-17],[177,-24]]),
+    ("South-west Pacific, east of the date line",
+     [[-180,-35],[-155,-30],[-138,-20],[-140,-10],[-160,-7],[-180,-6],[-180,-35]],
+     [[-172,-12],[-166,-18],[-158,-25]]),
+]
+
+def arrowhead(track, length=3.0, spread=25):
+    (x0, y0), (x1, y1) = track[-2], track[-1]
+    a = math.atan2(y1 - y0, x1 - x0)
+    wing = lambda d: [x1 - length * math.cos(a + math.radians(d)),
+                      y1 - length * math.sin(a + math.radians(d))]
+    return [wing(spread), [x1, y1], wing(-spread)]
+
+def basins():
+    feats = []
+    for name, outline, track in BASINS:
+        why = "tropical cyclones form and run here; the storm network stands round it"
+        feats.append({"type": "Feature",
+                      "geometry": {"type": "Polygon", "coordinates": [outline]},
+                      "properties": {"name": name, "why": why, "stroke": "#c53030",
+                                     "stroke-width": 1, "stroke-opacity": 0.6,
+                                     "fill": "#e53e3e", "fill-opacity": 0.15}})
+        feats.append({"type": "Feature",
+                      "geometry": {"type": "MultiLineString",
+                                   "coordinates": [track, arrowhead(track)]},
+                      "properties": {"name": name + " — a typical track", "why": "which way a storm runs",
+                                     "stroke": "#9b2c2c", "stroke-width": 2, "stroke-opacity": 0.9}})
+    return {"type": "FeatureCollection",
+            "properties": {"title": "Tropical-cyclone basins",
+                           "note": "outlined by hand, a typical track each — a sketch, not a climatology (SITING.md)"},
+            "features": feats}
+
 def main():
     feats = []
     for ring, n, lat, lon, w in SITES:
@@ -77,7 +135,9 @@ def main():
           "features": feats}
     with open(os.path.join(OUT, "storm-network.geojson"), "w") as f:
         json.dump(fc, f, indent=1, ensure_ascii=False)
-    print(len(feats), "sites")
+    with open(os.path.join(OUT, "cyclone-basins.geojson"), "w") as f:
+        json.dump(basins(), f, indent=1, ensure_ascii=False)
+    print(len(feats), "sites,", len(BASINS), "basin outlines")
 
 if __name__ == "__main__":
     main()

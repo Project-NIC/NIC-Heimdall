@@ -136,8 +136,9 @@ Marconi's F-region paths crossing a storm, Sputnik's TEC and precipitable water.
 need not stand in a storm's path: **they stand around the seven basins** — the North Atlantic and
 the Caribbean, the north-east and north-west Pacific, the North Indian Ocean, the south-west Indian
 Ocean, around Australia, the south-west Pacific — **where a storm is absent or still weak**, and
-close each basin from every side. Layer: `storm-network.geojson`, written by `tools/gen_storm.py`,
-the ring in each marker's colour.
+close each basin from every side. Layers: `storm-network.geojson`, the ring in each marker's
+colour, and `cyclone-basins.geojson`, the basins outlined with a typical track each; both written
+by `tools/gen_storm.py`.
 
 **Three rings:**
 
