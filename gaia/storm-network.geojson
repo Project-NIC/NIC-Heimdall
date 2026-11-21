@@ -2,7 +2,7 @@
  "type": "FeatureCollection",
  "properties": {
   "title": "NIC storm network",
-  "note": "computed from 31 transmitters and 75 candidates: 33 stations, 69 of 84 targets met (SITING.md)"
+  "note": "computed from 48 transmitters and 88 candidates: 47 stations, 182 of 206 targets met (SITING.md)"
  },
  "features": [
   {
@@ -10,14 +10,14 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     -68.93,
-     12.11
+     96.83,
+     -12.19
     ]
    },
    "properties": {
-    "name": "Curacao, Willemstad",
+    "name": "Cocos (Keeling) Islands",
     "ring": "inner",
-    "why": "an inner station: the basin's edge, where a storm is still weak; built for its worst. Paths across basins — North Atlantic and Caribbean: 15; North-east Pacific: 2",
+    "why": "an inner station: the basin's edge, where a storm is still weak; built for its worst. Paths across basins — Australian region: 20; North Indian Ocean: 10; North-west Pacific: 4; South-west Indian Ocean: 2",
     "marker-color": "#dd6b20",
     "marker-symbol": "",
     "marker-size": "small"
@@ -35,7 +35,7 @@
    "properties": {
     "name": "Solomon Islands, Honiara",
     "ring": "inner",
-    "why": "an inner station: the basin's edge, where a storm is still weak; built for its worst. Paths across basins — South-west Pacific: 8; North-west Pacific: 3; Australian region: 1; North Indian Ocean: 1",
+    "why": "an inner station: the basin's edge, where a storm is still weak; built for its worst. Paths across basins — South-west Pacific: 15; North-west Pacific: 7; Australian region: 3; South-west Indian Ocean: 1; North Indian Ocean: 1",
     "marker-color": "#dd6b20",
     "marker-symbol": "",
     "marker-size": "small"
@@ -46,68 +46,14 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     125.57,
-     -8.56
+     -23.51,
+     14.93
     ]
    },
    "properties": {
-    "name": "Timor-Leste, Dili",
+    "name": "Cape Verde, Praia",
     "ring": "inner",
-    "why": "an inner station: the basin's edge, where a storm is still weak; built for its worst. Paths across basins — Australian region: 7; North-west Pacific: 5; North Indian Ocean: 1",
-    "marker-color": "#dd6b20",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     73.16,
-     -0.63
-    ]
-   },
-   "properties": {
-    "name": "Maldives, Addu",
-    "ring": "equator",
-    "why": "the equatorial ring: no cyclone forms within ~5° of the equator. Paths across basins — North Indian Ocean: 9; Australian region: 1; North-west Pacific: 1",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     -157.43,
-     1.87
-    ]
-   },
-   "properties": {
-    "name": "Kiribati, Kiritimati",
-    "ring": "equator",
-    "why": "the equatorial ring: no cyclone forms within ~5° of the equator. Paths across basins — North-east Pacific: 6; North-west Pacific: 2; North Atlantic and Caribbean: 1; South-west Pacific: 1; Australian region: 1",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     96.83,
-     -12.19
-    ]
-   },
-   "properties": {
-    "name": "Cocos (Keeling) Islands",
-    "ring": "inner",
-    "why": "an inner station: the basin's edge, where a storm is still weak; built for its worst. Paths across basins — Australian region: 6; North-west Pacific: 2; North Indian Ocean: 2",
+    "why": "an inner station: the basin's edge, where a storm is still weak; built for its worst. Paths across basins — North Atlantic and Caribbean: 26; South-west Indian Ocean: 1",
     "marker-color": "#dd6b20",
     "marker-symbol": "",
     "marker-size": "small"
@@ -125,7 +71,43 @@
    "properties": {
     "name": "Seychelles, Mahe",
     "ring": "equator",
-    "why": "the equatorial ring: no cyclone forms within ~5° of the equator. Paths across basins — North Indian Ocean: 4; South-west Indian Ocean: 1; Australian region: 1; North-west Pacific: 1",
+    "why": "the equatorial ring: no cyclone forms within ~5° of the equator. Paths across basins — North Indian Ocean: 8; South-west Indian Ocean: 4; North-west Pacific: 3; Australian region: 1",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     77.57,
+     -37.83
+    ]
+   },
+   "properties": {
+    "name": "Amsterdam Island",
+    "ring": "south",
+    "why": "the high ring, south: storms arrive only as extratropical gales. Paths across basins — South-west Indian Ocean: 10; Australian region: 6; North Indian Ocean: 5; North-west Pacific: 3",
+    "marker-color": "#805ad5",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -140.1,
+     -8.91
+    ]
+   },
+   "properties": {
+    "name": "Marquesas, Nuku Hiva",
+    "ring": "equator",
+    "why": "the equatorial ring: no cyclone forms within ~5° of the equator. Paths across basins — North-east Pacific: 9; North Atlantic and Caribbean: 3; North-west Pacific: 2; South-west Pacific: 1",
     "marker-color": "#2b6cb0",
     "marker-symbol": "",
     "marker-size": "small"
@@ -143,44 +125,8 @@
    "properties": {
     "name": "Galapagos, Santa Cruz",
     "ring": "equator",
-    "why": "the equatorial ring: no cyclone forms within ~5° of the equator. Paths across basins — North Atlantic and Caribbean: 7; North-east Pacific: 5",
+    "why": "the equatorial ring: no cyclone forms within ~5° of the equator. Paths across basins — North Atlantic and Caribbean: 14; North-east Pacific: 5",
     "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     37.86,
-     -46.88
-    ]
-   },
-   "properties": {
-    "name": "Marion Island",
-    "ring": "south",
-    "why": "the high ring, south: storms arrive only as extratropical gales. Paths across basins — South-west Indian Ocean: 3; North Indian Ocean: 2; Australian region: 1",
-    "marker-color": "#805ad5",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     77.57,
-     -37.83
-    ]
-   },
-   "properties": {
-    "name": "Amsterdam Island",
-    "ring": "south",
-    "why": "the high ring, south: storms arrive only as extratropical gales. Paths across basins — South-west Indian Ocean: 3; Australian region: 3; North Indian Ocean: 2; North-west Pacific: 1",
-    "marker-color": "#805ad5",
     "marker-symbol": "",
     "marker-size": "small"
    }
@@ -197,223 +143,7 @@
    "properties": {
     "name": "Kiribati, Tarawa",
     "ring": "equator",
-    "why": "the equatorial ring: no cyclone forms within ~5° of the equator. Paths across basins — North-west Pacific: 2; Australian region: 1",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     147.33,
-     -42.88
-    ]
-   },
-   "properties": {
-    "name": "Australia, Hobart",
-    "ring": "south",
-    "why": "the high ring, south: storms arrive only as extratropical gales. Paths across basins — Australian region: 4; South-west Pacific: 2; North-west Pacific: 2; North Indian Ocean: 1",
-    "marker-color": "#805ad5",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     -109.35,
-     -27.11
-    ]
-   },
-   "properties": {
-    "name": "Easter Island",
-    "ring": "south",
-    "why": "the high ring, south: storms arrive only as extratropical gales. Paths across basins — North-east Pacific: 5; North Atlantic and Caribbean: 3",
-    "marker-color": "#805ad5",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     -32.42,
-     -3.85
-    ]
-   },
-   "properties": {
-    "name": "Brazil, Fernando de Noronha",
-    "ring": "equator",
-    "why": "the equatorial ring: no cyclone forms within ~5° of the equator. Paths across basins — North Atlantic and Caribbean: 12",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     16.5,
-     -23.27
-    ]
-   },
-   "properties": {
-    "name": "Namibia, Gamsberg (H.E.S.S.)",
-    "ring": "south",
-    "why": "the high ring, south: storms arrive only as extratropical gales. Paths across basins — North Indian Ocean: 2; South-west Indian Ocean: 2; North Atlantic and Caribbean: 1; Australian region: 1",
-    "marker-color": "#805ad5",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     149.07,
-     -31.27
-    ]
-   },
-   "properties": {
-    "name": "Australia, Siding Spring Observatory",
-    "ring": "south",
-    "why": "the high ring, south: storms arrive only as extratropical gales. Paths across basins — Australian region: 6; South-west Pacific: 2; North-west Pacific: 2; North Indian Ocean: 1",
-    "marker-color": "#805ad5",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     25.19,
-     0.52
-    ]
-   },
-   "properties": {
-    "name": "DR Congo, Kisangani",
-    "ring": "equator",
-    "why": "the equatorial ring: no cyclone forms within ~5° of the equator. Paths across basins — North Indian Ocean: 2; South-west Indian Ocean: 1; Australian region: 1",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     100.35,
-     -0.95
-    ]
-   },
-   "properties": {
-    "name": "Indonesia, Padang",
-    "ring": "equator",
-    "why": "the equatorial ring: no cyclone forms within ~5° of the equator. Paths across basins — North Indian Ocean: 3; North-west Pacific: 2; Australian region: 1",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     100.03,
-     26.69
-    ]
-   },
-   "properties": {
-    "name": "China, Lijiang Observatory (Gaomeigu)",
-    "ring": "north",
-    "why": "the high ring, north: storms arrive only as extratropical gales. Paths across basins — North-west Pacific: 2; Australian region: 1; North Indian Ocean: 1",
-    "marker-color": "#2f855a",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     -115.46,
-     31.04
-    ]
-   },
-   "properties": {
-    "name": "Mexico, San Pedro Martir Observatory",
-    "ring": "north",
-    "why": "the high ring, north: storms arrive only as extratropical gales. Paths across basins — North Atlantic and Caribbean: 1",
-    "marker-color": "#2f855a",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     -79.84,
-     38.43
-    ]
-   },
-   "properties": {
-    "name": "USA, Green Bank Observatory",
-    "ring": "north",
-    "why": "the high ring, north: storms arrive only as extratropical gales. Paths across basins — North Atlantic and Caribbean: 1",
-    "marker-color": "#2f855a",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     20.81,
-     -32.38
-    ]
-   },
-   "properties": {
-    "name": "South Africa, Sutherland (SAAO)",
-    "ring": "south",
-    "why": "the high ring, south: storms arrive only as extratropical gales. Paths across basins — South-west Indian Ocean: 2; North Indian Ocean: 2; Australian region: 1",
-    "marker-color": "#805ad5",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     36.82,
-     -1.29
-    ]
-   },
-   "properties": {
-    "name": "Kenya, Nairobi",
-    "ring": "equator",
-    "why": "the equatorial ring: no cyclone forms within ~5° of the equator. Paths across basins — North Indian Ocean: 2; South-west Indian Ocean: 1; Australian region: 1",
+    "why": "the equatorial ring: no cyclone forms within ~5° of the equator. Paths across basins — North-west Pacific: 6; Australian region: 2; South-west Pacific: 1; North-east Pacific: 1; North Atlantic and Caribbean: 1",
     "marker-color": "#2b6cb0",
     "marker-symbol": "",
     "marker-size": "small"
@@ -431,7 +161,7 @@
    "properties": {
     "name": "Indonesia, Ternate",
     "ring": "equator",
-    "why": "the equatorial ring: no cyclone forms within ~5° of the equator. Paths across basins — North-west Pacific: 5; Australian region: 1; North Indian Ocean: 1",
+    "why": "the equatorial ring: no cyclone forms within ~5° of the equator. Paths across basins — North-west Pacific: 11; Australian region: 4; North Indian Ocean: 3; South-west Indian Ocean: 2",
     "marker-color": "#2b6cb0",
     "marker-symbol": "",
     "marker-size": "small"
@@ -442,15 +172,15 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     -140.1,
-     -8.91
+     170.46,
+     -43.99
     ]
    },
    "properties": {
-    "name": "Marquesas, Nuku Hiva",
-    "ring": "equator",
-    "why": "the equatorial ring: no cyclone forms within ~5° of the equator. Paths across basins — North-east Pacific: 6; North Atlantic and Caribbean: 1",
-    "marker-color": "#2b6cb0",
+    "name": "New Zealand, Mount John Observatory",
+    "ring": "south",
+    "why": "the high ring, south: storms arrive only as extratropical gales. Paths across basins — Australian region: 6; North-west Pacific: 4; South-west Pacific: 3; South-west Indian Ocean: 1",
+    "marker-color": "#805ad5",
     "marker-symbol": "",
     "marker-size": "small"
    }
@@ -460,104 +190,14 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     -60.02,
-     -3.12
+     72.78,
+     24.65
     ]
    },
    "properties": {
-    "name": "Brazil, Manaus",
-    "ring": "equator",
-    "why": "the equatorial ring: no cyclone forms within ~5° of the equator. Paths across basins — North Atlantic and Caribbean: 13; North-east Pacific: 1",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     31.83,
-     29.93
-    ]
-   },
-   "properties": {
-    "name": "Egypt, Kottamia Observatory",
+    "name": "India, Mount Abu Observatory",
     "ring": "north",
-    "why": "the high ring, north: storms arrive only as extratropical gales. Paths across basins — North Atlantic and Caribbean: 1; North-west Pacific: 1; North Indian Ocean: 1",
-    "marker-color": "#2f855a",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     44.27,
-     40.33
-    ]
-   },
-   "properties": {
-    "name": "Armenia, Byurakan Observatory",
-    "ring": "north",
-    "why": "the high ring, north: storms arrive only as extratropical gales. Paths across basins — North Indian Ocean: 2; Australian region: 1; North-west Pacific: 1",
-    "marker-color": "#2f855a",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     79.68,
-     29.36
-    ]
-   },
-   "properties": {
-    "name": "India, Devasthal (Nainital)",
-    "ring": "north",
-    "why": "the high ring, north: storms arrive only as extratropical gales. Paths across basins — North Indian Ocean: 2; Australian region: 1; North-west Pacific: 1",
-    "marker-color": "#2f855a",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     117.58,
-     40.39
-    ]
-   },
-   "properties": {
-    "name": "China, Xinglong Observatory",
-    "ring": "north",
-    "why": "the high ring, north: storms arrive only as extratropical gales. Paths across basins — North-west Pacific: 7; Australian region: 1; North Indian Ocean: 1",
-    "marker-color": "#2f855a",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     142.48,
-     44.37
-    ]
-   },
-   "properties": {
-    "name": "Japan, Nayoro Observatory",
-    "ring": "north",
-    "why": "the high ring, north: storms arrive only as extratropical gales. Paths across basins — North-west Pacific: 5; Australian region: 1; North Indian Ocean: 1",
+    "why": "the high ring, north: storms arrive only as extratropical gales. Paths across basins — North Indian Ocean: 7; North-west Pacific: 3; Australian region: 2; South-west Indian Ocean: 2",
     "marker-color": "#2f855a",
     "marker-symbol": "",
     "marker-size": "small"
@@ -575,7 +215,7 @@
    "properties": {
     "name": "USA, Apache Point Observatory",
     "ring": "north",
-    "why": "the high ring, north: storms arrive only as extratropical gales. Paths across basins — North Atlantic and Caribbean: 1",
+    "why": "the high ring, north: storms arrive only as extratropical gales. Paths across basins — North Atlantic and Caribbean: 2; North-west Pacific: 1",
     "marker-color": "#2f855a",
     "marker-symbol": "",
     "marker-size": "small"
@@ -586,15 +226,627 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     116.14,
-     -32.01
+     100.35,
+     -0.95
     ]
    },
    "properties": {
-    "name": "Australia, Perth Observatory",
+    "name": "Indonesia, Padang",
+    "ring": "equator",
+    "why": "the equatorial ring: no cyclone forms within ~5° of the equator. Paths across basins — North Indian Ocean: 11; North-west Pacific: 4; Australian region: 2; South-west Indian Ocean: 2",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -51.07,
+     0.03
+    ]
+   },
+   "properties": {
+    "name": "Brazil, Macapa",
+    "ring": "equator",
+    "why": "the equatorial ring: no cyclone forms within ~5° of the equator. Paths across basins — North Atlantic and Caribbean: 23; North-east Pacific: 1; South-west Indian Ocean: 1",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     100.03,
+     26.69
+    ]
+   },
+   "properties": {
+    "name": "China, Lijiang Observatory (Gaomeigu)",
+    "ring": "north",
+    "why": "the high ring, north: storms arrive only as extratropical gales. Paths across basins — North-west Pacific: 5; North Indian Ocean: 3; Australian region: 2; South-west Indian Ocean: 2",
+    "marker-color": "#2f855a",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     142.48,
+     44.37
+    ]
+   },
+   "properties": {
+    "name": "Japan, Nayoro Observatory",
+    "ring": "north",
+    "why": "the high ring, north: storms arrive only as extratropical gales. Paths across basins — North-west Pacific: 9; Australian region: 2; North Indian Ocean: 2; South-west Indian Ocean: 1; North Atlantic and Caribbean: 1",
+    "marker-color": "#2f855a",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -71.15,
+     45.46
+    ]
+   },
+   "properties": {
+    "name": "Canada, Mont Megantic Observatory",
+    "ring": "north",
+    "why": "the high ring, north: storms arrive only as extratropical gales. Paths across basins — North Atlantic and Caribbean: 3; North-west Pacific: 1",
+    "marker-color": "#2f855a",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     149.07,
+     -31.27
+    ]
+   },
+   "properties": {
+    "name": "Australia, Siding Spring Observatory",
     "ring": "south",
-    "why": "the high ring, south: storms arrive only as extratropical gales. Paths across basins — Australian region: 5; North-west Pacific: 2; South-west Pacific: 1; North Indian Ocean: 1",
+    "why": "the high ring, south: storms arrive only as extratropical gales. Paths across basins — Australian region: 12; North-west Pacific: 6; South-west Pacific: 2; North Indian Ocean: 2; South-west Indian Ocean: 1",
     "marker-color": "#805ad5",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -72.94,
+     -41.47
+    ]
+   },
+   "properties": {
+    "name": "Chile, Puerto Montt",
+    "ring": "south",
+    "why": "the high ring, south: storms arrive only as extratropical gales. Paths across basins — North Atlantic and Caribbean: 8; North-east Pacific: 1; South-west Indian Ocean: 1",
+    "marker-color": "#805ad5",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -155.58,
+     19.54
+    ]
+   },
+   "properties": {
+    "name": "Hawaii, Mauna Loa Observatory",
+    "ring": "inner",
+    "why": "an inner station: the basin's edge, where a storm is still weak; built for its worst. Paths across basins — North-west Pacific: 5; North-east Pacific: 2; North Atlantic and Caribbean: 2; South-west Pacific: 1",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     36.82,
+     -1.29
+    ]
+   },
+   "properties": {
+    "name": "Kenya, Nairobi",
+    "ring": "equator",
+    "why": "the equatorial ring: no cyclone forms within ~5° of the equator. Paths across basins — North Indian Ocean: 4; South-west Indian Ocean: 3; North-west Pacific: 2; Australian region: 1",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -98.31,
+     19.03
+    ]
+   },
+   "properties": {
+    "name": "Mexico, Tonantzintla",
+    "ring": "north",
+    "why": "the high ring, north: storms arrive only as extratropical gales. Paths across basins — North Atlantic and Caribbean: 15; North-east Pacific: 2; North-west Pacific: 1",
+    "marker-color": "#2f855a",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     117.88,
+     -35.02
+    ]
+   },
+   "properties": {
+    "name": "Australia, Albany",
+    "ring": "south",
+    "why": "the high ring, south: storms arrive only as extratropical gales. Paths across basins — Australian region: 11; North Indian Ocean: 5; North-west Pacific: 4; South-west Indian Ocean: 3; South-west Pacific: 1",
+    "marker-color": "#805ad5",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     44.27,
+     40.33
+    ]
+   },
+   "properties": {
+    "name": "Armenia, Byurakan Observatory",
+    "ring": "north",
+    "why": "the high ring, north: storms arrive only as extratropical gales. Paths across basins — North Indian Ocean: 3; North-west Pacific: 3; North Atlantic and Caribbean: 2; South-west Indian Ocean: 1; Australian region: 1",
+    "marker-color": "#2f855a",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -12.31,
+     -37.07
+    ]
+   },
+   "properties": {
+    "name": "Tristan da Cunha",
+    "ring": "south",
+    "why": "the high ring, south: storms arrive only as extratropical gales. Paths across basins — North Atlantic and Caribbean: 5; South-west Indian Ocean: 1",
+    "marker-color": "#805ad5",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     37.86,
+     -46.88
+    ]
+   },
+   "properties": {
+    "name": "Marion Island",
+    "ring": "south",
+    "why": "the high ring, south: storms arrive only as extratropical gales. Paths across basins — South-west Indian Ocean: 9; North Indian Ocean: 4; Australian region: 3; North-west Pacific: 1",
+    "marker-color": "#805ad5",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     6.73,
+     0.34
+    ]
+   },
+   "properties": {
+    "name": "Sao Tome",
+    "ring": "equator",
+    "why": "the equatorial ring: no cyclone forms within ~5° of the equator. Paths across basins — North Atlantic and Caribbean: 7; South-west Indian Ocean: 1; North Indian Ocean: 1",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.16,
+     -0.63
+    ]
+   },
+   "properties": {
+    "name": "Maldives, Addu",
+    "ring": "equator",
+    "why": "the equatorial ring: no cyclone forms within ~5° of the equator. Paths across basins — North Indian Ocean: 18; North-west Pacific: 3; South-west Indian Ocean: 3; Australian region: 2",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     147.27,
+     -2.03
+    ]
+   },
+   "properties": {
+    "name": "Papua New Guinea, Manus",
+    "ring": "equator",
+    "why": "the equatorial ring: no cyclone forms within ~5° of the equator. Paths across basins — North-west Pacific: 11; Australian region: 3; North Indian Ocean: 2; South-west Indian Ocean: 1",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -78.47,
+     -0.18
+    ]
+   },
+   "properties": {
+    "name": "Ecuador, Quito",
+    "ring": "equator",
+    "why": "the equatorial ring: no cyclone forms within ~5° of the equator. Paths across basins — North Atlantic and Caribbean: 20; North-east Pacific: 2",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -8.94,
+     37.01
+    ]
+   },
+   "properties": {
+    "name": "Portugal, Sagres",
+    "ring": "north",
+    "why": "the high ring, north: storms arrive only as extratropical gales. Paths across basins — North Atlantic and Caribbean: 3; North Indian Ocean: 2; North-west Pacific: 1; South-west Indian Ocean: 1",
+    "marker-color": "#2f855a",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     79.68,
+     29.36
+    ]
+   },
+   "properties": {
+    "name": "India, Devasthal (Nainital)",
+    "ring": "north",
+    "why": "the high ring, north: storms arrive only as extratropical gales. Paths across basins — North Indian Ocean: 6; North-west Pacific: 3; Australian region: 2; South-west Indian Ocean: 2",
+    "marker-color": "#2f855a",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     117.58,
+     40.39
+    ]
+   },
+   "properties": {
+    "name": "China, Xinglong Observatory",
+    "ring": "north",
+    "why": "the high ring, north: storms arrive only as extratropical gales. Paths across basins — North-west Pacific: 11; North Indian Ocean: 3; Australian region: 2; South-west Indian Ocean: 2",
+    "marker-color": "#2f855a",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -176.66,
+     51.88
+    ]
+   },
+   "properties": {
+    "name": "Alaska, Adak",
+    "ring": "north",
+    "why": "the high ring, north: storms arrive only as extratropical gales. Paths across basins — North-west Pacific: 5; North Atlantic and Caribbean: 2; South-west Pacific: 1; Australian region: 1",
+    "marker-color": "#2f855a",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -119.62,
+     49.32
+    ]
+   },
+   "properties": {
+    "name": "Canada, DRAO Penticton",
+    "ring": "north",
+    "why": "the high ring, north: storms arrive only as extratropical gales. Paths across basins — North-west Pacific: 3; North Atlantic and Caribbean: 2",
+    "marker-color": "#2f855a",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -109.35,
+     -27.11
+    ]
+   },
+   "properties": {
+    "name": "Easter Island",
+    "ring": "south",
+    "why": "the high ring, south: storms arrive only as extratropical gales. Paths across basins — North-east Pacific: 8; North Atlantic and Caribbean: 6",
+    "marker-color": "#805ad5",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     125.57,
+     -8.56
+    ]
+   },
+   "properties": {
+    "name": "Timor-Leste, Dili",
+    "ring": "inner",
+    "why": "an inner station: the basin's edge, where a storm is still weak; built for its worst. Paths across basins — Australian region: 17; North-west Pacific: 9; North Indian Ocean: 3; South-west Indian Ocean: 2",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -32.42,
+     -3.85
+    ]
+   },
+   "properties": {
+    "name": "Brazil, Fernando de Noronha",
+    "ring": "equator",
+    "why": "the equatorial ring: no cyclone forms within ~5° of the equator. Paths across basins — North Atlantic and Caribbean: 19; South-west Indian Ocean: 1",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -9.6,
+     30.42
+    ]
+   },
+   "properties": {
+    "name": "Morocco, Agadir",
+    "ring": "north",
+    "why": "the high ring, north: storms arrive only as extratropical gales. Paths across basins — North Atlantic and Caribbean: 4; North-west Pacific: 1; South-west Indian Ocean: 1; North Indian Ocean: 1",
+    "marker-color": "#2f855a",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -21.94,
+     64.15
+    ]
+   },
+   "properties": {
+    "name": "Iceland, Reykjavik",
+    "ring": "north",
+    "why": "the high ring, north: storms arrive only as extratropical gales. Paths across basins — North-west Pacific: 3; North Atlantic and Caribbean: 3; South-west Indian Ocean: 1; North Indian Ocean: 1",
+    "marker-color": "#2f855a",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     31.83,
+     29.93
+    ]
+   },
+   "properties": {
+    "name": "Egypt, Kottamia Observatory",
+    "ring": "north",
+    "why": "the high ring, north: storms arrive only as extratropical gales. Paths across basins — North-west Pacific: 3; North Atlantic and Caribbean: 3; North Indian Ocean: 2; South-west Indian Ocean: 1",
+    "marker-color": "#2f855a",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     97.73,
+     37.38
+    ]
+   },
+   "properties": {
+    "name": "China, Delingha Observatory",
+    "ring": "north",
+    "why": "the high ring, north: storms arrive only as extratropical gales. Paths across basins — North-west Pacific: 5; North Indian Ocean: 3; Australian region: 2; South-west Indian Ocean: 2; North Atlantic and Caribbean: 1",
+    "marker-color": "#2f855a",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -115.46,
+     31.04
+    ]
+   },
+   "properties": {
+    "name": "Mexico, San Pedro Martir Observatory",
+    "ring": "north",
+    "why": "the high ring, north: storms arrive only as extratropical gales. Paths across basins — North Atlantic and Caribbean: 2; North-west Pacific: 1",
+    "marker-color": "#2f855a",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.5,
+     -23.27
+    ]
+   },
+   "properties": {
+    "name": "Namibia, Gamsberg (H.E.S.S.)",
+    "ring": "south",
+    "why": "the high ring, south: storms arrive only as extratropical gales. Paths across basins — North Atlantic and Caribbean: 4; South-west Indian Ocean: 4; North Indian Ocean: 2; Australian region: 1",
+    "marker-color": "#805ad5",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     147.33,
+     -42.88
+    ]
+   },
+   "properties": {
+    "name": "Australia, Hobart",
+    "ring": "south",
+    "why": "the high ring, south: storms arrive only as extratropical gales. Paths across basins — Australian region: 8; North-west Pacific: 4; South-west Pacific: 2; South-west Indian Ocean: 1; North Indian Ocean: 1",
+    "marker-color": "#805ad5",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -57.85,
+     -51.7
+    ]
+   },
+   "properties": {
+    "name": "Falkland Islands, Stanley",
+    "ring": "south",
+    "why": "the high ring, south: storms arrive only as extratropical gales. Paths across basins — North Atlantic and Caribbean: 7; North-east Pacific: 1; South-west Indian Ocean: 1",
+    "marker-color": "#805ad5",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     79.85,
+     6.93
+    ]
+   },
+   "properties": {
+    "name": "Sri Lanka, Colombo",
+    "ring": "inner",
+    "why": "an inner station: the basin's edge, where a storm is still weak; built for its worst. Paths across basins — North Indian Ocean: 25; North-west Pacific: 3; Australian region: 2; South-west Indian Ocean: 2",
+    "marker-color": "#dd6b20",
     "marker-symbol": "",
     "marker-size": "small"
    }

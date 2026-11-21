@@ -12,7 +12,13 @@ place scores by
   - the paths from it to every transmitter in reach that cross a basin, counted per basin
     and per orientation of the crossing (four bins of 45°), up to PATH_NEED a bin; and
   - for Tesla, the side of each basin it stands on (eight bearings from the basin's
-    centre, within TESLA_REACH_KM), one station a side.
+    centre, within TESLA_REACH_KM), one station a side; and
+  - for Sputnik and the strongest sferics, the side of each basin it stands NEAR — within
+    NEAR_KM of the basin's edge, eight sides, one station a side — so every basin is
+    watched close by from the north and the south; and
+  - for the globe, the grid point it covers — a point every 20° of latitude from 50° S to
+    60° N and every 30° of longitude, covered by a station within COVER_KM, wherever a
+    candidate can reach it — so no quarter of the Earth is left without a station.
 A greedy pass takes the candidate that adds most, keeping MIN_SPACING_KM between stations,
 until nothing is added. The candidates are places with people, a road and power — hills,
 observatories, towns, islands — none on a summit swept by hurricane-force wind, none in a
@@ -22,11 +28,19 @@ import json, math, os
 
 OUT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 R = 6371.0
-PATH_NEED, TESLA_REACH_KM, MIN_SPACING_KM, MAX_STATIONS = 4, 5000, 800, 60
+PATH_NEED, TESLA_REACH_KM, NEAR_KM, COVER_KM, MIN_SPACING_KM, MAX_STATIONS = 4, 5000, 1500, 2000, 700, 70
+GRID = [(la, lo) for la in range(-50, 61, 20) for lo in range(-180, 180, 30)]
 
 # HF time stations — Marconi's Doppler (reach: multi-hop sky wave)
 HF = [("WWV", 40.68, -105.04), ("WWVH", 21.99, -159.76), ("CHU", 45.30, -75.75),
       ("RWM", 56.73, 37.63), ("BPM", 34.95, 109.55)]
+# HF broadcast sites — Marconi's carrier levels: any fixed transmitter is a path
+HF += [("Noblejas", 39.95, -3.43), ("Nauen", 52.65, 12.91), ("Woofferton", 52.31, -2.72),
+       ("Issoudun", 46.95, 1.98), ("Abis", 31.13, 30.08), ("Dhabbaya", 24.18, 54.23),
+       ("Tashkent", 41.22, 69.15), ("Kashi", 39.36, 75.76), ("Kranji", 1.42, 103.73),
+       ("Tinang", 15.35, 120.62), ("Yamata", 36.17, 139.82), ("Shepparton", -36.33, 145.42),
+       ("Meyerton", -26.58, 28.17), ("Talata-Volonondry", -18.75, 47.61),
+       ("Okeechobee", 27.46, -80.93), ("Greenville", 35.47, -77.20), ("Sackville", 45.88, -64.35)]
 HF_REACH_KM = 12000
 # VLF transmitters — Pip's SID carriers (reach: the Earth–ionosphere waveguide)
 VLF = [("NAA", 44.65, -67.28), ("NLK", 48.20, -121.92), ("NPM", 21.42, -158.15),
@@ -49,6 +63,10 @@ CANDIDATES = [
     ("Galapagos, Santa Cruz", -0.74, -90.31, "equator"), ("Ecuador, Quito", -0.18, -78.47, "equator"),
     ("Brazil, Manaus", -3.12, -60.02, "equator"), ("Brazil, Macapa", 0.03, -51.07, "equator"),
     ("Brazil, Fernando de Noronha", -3.85, -32.42, "equator"), ("Ascension", -7.93, -14.41, "equator"),
+    ("Ghana, Accra", 5.60, -0.19, "equator"), ("Cote d'Ivoire, Abidjan", 5.32, -4.03, "equator"),
+    ("Liberia, Monrovia", 6.30, -10.80, "equator"), ("Guinea, Conakry", 9.64, -13.58, "equator"),
+    ("Portugal, Sagres", 37.01, -8.94, "north"), ("Portugal, Sintra", 38.78, -9.39, "north"),
+    ("Morocco, Agadir", 30.42, -9.60, "north"), ("Mauritania, Nouakchott", 18.09, -15.98, "north"),
     ("Spain, Calar Alto Observatory", 37.22, -2.55, "north"), ("Morocco, Oukaimeden Observatory", 31.21, -7.87, "north"),
     ("Iceland, Reykjavik", 64.15, -21.94, "north"), ("Egypt, Kottamia Observatory", 29.93, 31.83, "north"),
     ("Armenia, Byurakan Observatory", 40.33, 44.27, "north"), ("Russia, Zelenchukskaya (SAO)", 43.65, 41.44, "north"),
@@ -72,12 +90,15 @@ CANDIDATES = [
     ("Chile, Cerro Tololo", -30.17, -70.81, "south"), ("Argentina, CASLEO", -31.80, -69.30, "south"),
     ("Chile, Puerto Montt", -41.47, -72.94, "south"), ("Falkland Islands, Stanley", -51.70, -57.85, "south"),
     ("Brazil, Pico dos Dias Observatory", -22.53, -45.58, "south"),
+    ("Uruguay, Montevideo", -34.90, -56.16, "south"), ("Argentina, Bahia Blanca", -38.72, -62.27, "south"),
+    ("Argentina, Comodoro Rivadavia", -45.86, -67.48, "south"), ("Chile, Punta Arenas", -53.16, -70.91, "south"),
     ("Cape Verde, Praia", 14.93, -23.51, "inner"), ("Senegal, Dakar", 14.69, -17.44, "inner"),
     ("Trinidad, Port of Spain", 10.66, -61.51, "inner"), ("Curacao, Willemstad", 12.11, -68.93, "inner"),
     ("Panama, Panama City", 8.98, -79.52, "inner"), ("Palau, Koror", 7.34, 134.48, "inner"),
     ("Micronesia, Pohnpei", 6.96, 158.21, "inner"), ("Sri Lanka, Colombo", 6.93, 79.85, "inner"),
     ("Cocos (Keeling) Islands", -12.19, 96.83, "inner"), ("Timor-Leste, Dili", -8.56, 125.57, "inner"),
     ("Solomon Islands, Honiara", -9.43, 159.95, "inner"),
+    ("Hawaii, Mauna Loa Observatory", 19.54, -155.58, "inner"),
 ]
 
 RINGS = {
@@ -227,7 +248,28 @@ def contributions(cand, tx, centres):
     for k, c in centres.items():
         if dist((la, lo), c) <= TESLA_REACH_KM:
             got[(k, "tesla", int(bearing(c, (la, lo)) // 45))] = 1
+        if edge_dist(la, lo, k) <= NEAR_KM:
+            got[(k, "near", int(bearing(c, (la, lo)) // 45))] = 1
+    for g in GRID:
+        if dist((la, lo), g) <= COVER_KM:
+            got[("globe", "cover", g)] = 1
     return got
+
+_EDGES = {}
+def edge_dist(la, lo, key):
+    """Great-circle distance to a basin's edge, 0 inside it."""
+    if key not in _EDGES:
+        pts = []
+        for name, outline, _ in BASINS:
+            if basin_key(name) != key:
+                continue
+            for (x1, y1), (x2, y2) in zip(outline, outline[1:]):
+                pts += gc_points((y1, x1), (y2, x2), 150)
+        _EDGES[key] = pts
+    for name, outline, _ in BASINS:
+        if basin_key(name) == key and inside(la, lo, outline):
+            return 0.0
+    return min(dist((la, lo), p) for p in _EDGES[key])
 
 def select():
     tx, centres = transmitters(), basin_centres()
@@ -248,7 +290,10 @@ def select():
         chosen.append(best)
         for k, n in contrib[best[0]].items():
             have[k] = have.get(k, 0) + n
-    targets = {(k, "path", b) for k in centres for b in range(4)} | {(k, "tesla", o) for k in centres for o in range(8)}
+    targets = ({(k, "path", b) for k in centres for b in range(4)}
+               | {(k, kind, o) for k in centres for o in range(8) for kind in ("tesla", "near")}
+               | {("globe", "cover", g) for g in GRID
+                  if any(dist(c[1:3], g) <= COVER_KM for c in CANDIDATES)})
     met = sum(1 for t in targets if have.get(t, 0) >= need(t))
     return chosen, contrib, have, targets, met, tx
 
