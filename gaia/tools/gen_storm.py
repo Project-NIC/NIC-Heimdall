@@ -400,7 +400,7 @@ def main():
                                      "marker-color": color, "marker-symbol": "", "marker-size": "small"}})
     rows = report(chosen, have, zones, centres)
     fc = {"type": "FeatureCollection",
-          "properties": {"title": "NIC storm network",
+          "properties": {"title": "NIC storm network — variant 1",
                          "note": f"computed from {len(tx)} transmitters and {len(CANDIDATES)} candidates: "
                                  f"{len(chosen)} stations (SITING.md)",
                          "coverage": [dict(zip(("basin", "gnss_500_pct", "gnss_1200_pct", "path_bins_of_4",

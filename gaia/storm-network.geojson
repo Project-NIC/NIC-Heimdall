@@ -1,7 +1,7 @@
 {
  "type": "FeatureCollection",
  "properties": {
-  "title": "NIC storm network",
+  "title": "NIC storm network — variant 1",
   "note": "computed from 48 transmitters and 135 candidates: 51 stations (SITING.md)",
   "coverage": [
    {

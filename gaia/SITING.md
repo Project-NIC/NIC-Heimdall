@@ -128,56 +128,66 @@ hundreds of kilometres out. The islet buys cable, not pressure: the toe off it i
 down. The measured per-site numbers are `../atlantis/README.md`'s; the raw run is
 `bathy-per-site.csv`.
 
-## The storm network — three rings around the cyclone basins
+## The storm network — variant 1, computed against what each instrument sees
 
-**What it is for.** Lightning, the ionosphere and the water are watched from thousands of
-kilometres away: Tesla's strokes located by time of arrival across stations, Pip's D-region and
-Marconi's F-region paths crossing a storm, Sputnik's TEC and precipitable water. So the stations
-need not stand in a storm's path: **they stand around the seven basins** — the North Atlantic and
-the Caribbean, the north-east and north-west Pacific, the North Indian Ocean, the south-west Indian
-Ocean, around Australia, the south-west Pacific — **where a storm is absent or still weak**, and
-close each basin from every side. Layers: `storm-network.geojson`, the ring in each marker's
-colour, and `cyclone-basins.geojson`, the basins outlined with a typical track each; both written
-by `tools/gen_storm.py`.
+**What it is for.** A hurricane is seen by the station's existing units, each at its own range:
+Sputnik's GNSS (the ionosphere and the precipitable water), Palatine's and Pascal's pressure, Pip's
+VLF paths, Marconi's HF reflections and Tesla's strokes. **The network covers the seven basins**
+— the North Atlantic and the Caribbean, the north-east and north-west Pacific, the North Indian
+Ocean, the south-west Indian Ocean, around Australia, the south-west Pacific — **and a 500 km
+margin round them, where storms are born and die; nothing elsewhere.** Layers:
+`storm-network.geojson` and `cyclone-basins.geojson` (the basins outlined with a typical track
+each), both written by `tools/gen_storm.py`; the run takes about a minute.
 
-**Three rings:**
+**What each instrument asks of a station:**
 
-- **The equatorial ring, within ~5° of the equator, on islands where there are any.** The Coriolis
-  force vanishes at the equator and a cyclone cannot form there. It closes the basins of both
-  hemispheres from the equator's side. 14 stations, ~3 000 km apart around the Earth.
-- **The high ring, ~35–60° on both hemispheres, inside the polar circles.** A storm arrives there
-  only as an extratropical gale, of the kind a mid-latitude site is built for anyway. It closes the
-  basins from the poles' side. 9 in the north, 10 in the south.
-- **The inner stations, at a basin's edge where storms are born or pass still weak.** They close a
-  basin from close by. The worst weather there is a tropical storm or a weak hurricane, and the
-  station is built for it. 10 stations.
+| instrument | what it sees of a storm | the rule |
+|---|---|---|
+| **GNSS** | the ionosphere pierced at ~350 km — 1 200 km from the station at 10° of elevation, ~500 km at 30° — and the water in the column over it; with all four systems tracked the sky is always full | every point of a basin and its margin within **500 km** of a station, at worst within **1 200 km** |
+| **Pressure** | a hurricane's fall to ~300–500 km from its centre; the surge only on the coast | a **coastal** station on each of a basin's eight sides, within 300 km of its edge or inside it |
+| **Marconi** | the ionosphere where the path reflects — one hop to ~3 500 km, the reflection at its midpoint | per basin, **four paths** in each of four orientations whose reflection lies over the basin or its margin |
+| **Pip** | the D-region along the whole path, in the Earth–ionosphere waveguide | per basin, four paths in each orientation through it |
+| **Tesla** | a stroke, located by its arrival at stations round it | one station on each of a basin's eight sides within 5 000 km |
 
-A stroke in a basin is then heard from three sides, and the stations' 430–860 ionospheric paths
-cross every basin from the rings on either side of it. Sixteen stations are the least that cover
-the globe at all; the rings put **43** where the storms are.
+**The transmitters** are the five HF time stations (WWV, WWVH, CHU, RWM, BPM), seventeen HF
+broadcast sites, fourteen VLF transmitters and the longwave layer's own. The broadcasters' curtain
+antennas are aimed, and their azimuths are not in the model yet: their paths count as if they
+radiated all round.
 
-**The place is chosen for the geometry, people or none** (the owner, 21 Nov 2026). Rule 2 holds for
-the first wave, where the community is the infrastructure; a storm station brings its own. Every
-site is **built for its worst weather** (`../core/POWER.md` §2).
+**The selection.** From 135 candidates — places with people, a road and power — a greedy pass
+takes the one that adds most and keeps 500 km between stations, until a station adds less than
+one target. A candidate inside a basin is reached by storms and is built for the worst
+(`../core/POWER.md` §2). **The place is chosen for the geometry, people or none** (the owner,
+21 Nov 2026): rule 2 holds for the first wave; a storm station brings its own infrastructure.
 
 **The uplink follows what the place has.** Where the local network reaches — fibre, a mobile
-network, Wi-Fi — it carries the station and the choice is nobody's concern. Where nothing reaches,
-an empty hilltop or a bare island, **Starlink switched per session** carries it
-(`../core/UPLINK_TRANSPORT.md`, *the exception*), with the sun and the pack sized for it; whether
-Starlink is licensed in the country, and the access to the land or the base, are settled per site.
+network, Wi-Fi — it carries the station. Where nothing reaches, **Starlink switched per session**
+(`../core/UPLINK_TRANSPORT.md`, *the exception*), with the sun and the pack sized for it.
 
-**The forty-three**, a first draw by hand, each with the reason for its place in the layer:
+**The result — 51 stations.** 41 stand inside a basin or at its edge, on islands and coasts,
+because the GNSS and the pressure want them within a few hundred kilometres of the storms:
+Hilo · Papeete · Rarotonga · Apia · Nuku'alofa · Nouméa · Honiara · Pohnpei · Guam · Koror ·
+Naha · Tokyo · Busan · Hong Kong · Da Nang · Manila · Darwin · Broome · Townsville · Brisbane ·
+Dili · Cocos (Keeling) · Colombo · Chennai · Chittagong · Mumbai · Muscat · Port Louis ·
+Toamasina · Beira · Praia · Ponta Delgada · Bermuda · Halifax · Cape Hatteras · Houston ·
+Cancún · San Juan · Bridgetown · Willemstad · Cabo San Lucas. Ten stand outside: the equatorial
+Nairobi, Mahé, Addu, Tarawa and Nuku Hiva; Tonantzintla, San Pedro Mártir and Nouakchott to the
+north; Perth and Hobart to the south.
 
-| ring | stations |
-|---|---|
-| equator (14) | São Tomé · Nairobi · Mahé · Addu · Singapore · Ternate · Manus · Tarawa · Kiritimati · Nuku Hiva · Galápagos · Macapá · Fernando de Noronha · Ascension |
-| north (9) | Reykjavík · Kyiv · Yekaterinburg · Irkutsk · Petropavlovsk-Kamchatsky · Adak · Anchorage · Saskatoon · Goose Bay |
-| south (10) | Tristan da Cunha · Cape Town · Marion Island · Amsterdam Island · Albany · Hobart · Christchurch · Easter Island · Puerto Montt · Stanley |
-| inner (10) | Praia · Port of Spain · Willemstad · Panama City · Koror · Pohnpei · Colombo · Cocos (Keeling) · Dili · Honiara |
+| basin | GNSS within 500 km | within 1 200 km | path orientations | Tesla sides | pressure sides |
+|---|--:|--:|--:|--:|--:|
+| North Atlantic and Caribbean | 25 % | 75 % | 4/4 | 8/8 | 8/8 |
+| North-west Pacific | 23 % | 75 % | 4/4 | 7/8 | 6/8 |
+| North-east Pacific | 15 % | 50 % | 4/4 | 6/8 | 1/8 |
+| North Indian Ocean | 28 % | 83 % | 4/4 | 7/8 | 5/8 |
+| South-west Indian Ocean | 14 % | 63 % | 4/4 | 6/8 | 3/8 |
+| Australian region | 26 % | 85 % | 4/4 | 8/8 | 5/8 |
+| South-west Pacific | 21 % | 78 % | 4/4 | 7/8 | 4/8 |
 
-**Where the rings are thin.** The equatorial Pacific between Kiritimati and the Galápagos is
-~7 000 km of open ocean, Nuku Hiva its only island. Ascension, Marion and Amsterdam are bases,
-reached by agreement. Praia, Koror and Honiara see a weak hurricane at times.
+**What no fixed station can add.** Land and islands lie under 15–37 % of the basins' area, so
+GNSS within 500 km stops there with every candidate built (37 % at most, the North Atlantic and
+the North Indian Ocean; 14 % the south-west Indian Ocean); the rest is open ocean, a buoy's.
+The north-east Pacific has one coast, Mexico's, so its pressure is watched from one side.
 
 ## Why it can be placed at all
 
