@@ -2,7 +2,7 @@
  "type": "FeatureCollection",
  "properties": {
   "title": "NIC storm network",
-  "note": "a first draw by hand: off the cyclone belts, ~2 900 km apart (SITING.md)"
+  "note": "three rings around the cyclone basins, a first draw by hand (SITING.md)"
  },
  "features": [
   {
@@ -10,13 +10,14 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     14.4,
-     50.1
+     6.73,
+     0.34
     ]
    },
    "properties": {
-    "name": "Czechia, central Bohemia",
-    "why": "the reference station",
+    "name": "Sao Tome",
+    "why": "the Gulf of Guinea — the equatorial ring: no cyclone forms within ~5° of the equator",
+    "ring": "equator",
     "marker-color": "#2b6cb0",
     "marker-symbol": "",
     "marker-size": "small"
@@ -27,200 +28,14 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     -2.5,
-     37.0
-    ]
-   },
-   "properties": {
-    "name": "Spain, Almeria",
-    "why": "the sunniest corner of Europe; the western Mediterranean",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     -21.9,
-     64.1
-    ]
-   },
-   "properties": {
-    "name": "Iceland, Reykjavik",
-    "why": "the North Atlantic paths",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     -45.4,
-     61.2
-    ]
-   },
-   "properties": {
-    "name": "Greenland, Narsarsuaq",
-    "why": "the Labrador Sea; paths to North America",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     -6.9,
-     30.9
-    ]
-   },
-   "properties": {
-    "name": "Morocco, Ouarzazate",
-    "why": "the Sahara's edge, sun all year",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     5.5,
-     22.8
-    ]
-   },
-   "properties": {
-    "name": "Algeria, Tamanrasset",
-    "why": "the central Sahara, 1 400 m",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     -8.0,
-     12.6
-    ]
-   },
-   "properties": {
-    "name": "Mali, Bamako",
-    "why": "the Sahel, inland of the Atlantic's genesis region",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     15.0,
-     12.1
-    ]
-   },
-   "properties": {
-    "name": "Chad, N'Djamena",
-    "why": "the middle of the continent",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     32.9,
-     24.1
-    ]
-   },
-   "properties": {
-    "name": "Egypt, Aswan",
-    "why": "the Nile, among the sunniest places on Earth",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     38.7,
-     9.0
-    ]
-   },
-   "properties": {
-    "name": "Ethiopia, Addis Ababa",
-    "why": "the highlands, 2 350 m; the Horn",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     46.7,
-     24.7
-    ]
-   },
-   "properties": {
-    "name": "Saudi Arabia, Riyadh",
-    "why": "inland of the Arabian Sea's cyclones",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     9.4,
-     0.4
-    ]
-   },
-   "properties": {
-    "name": "Gabon, Libreville",
-    "why": "the equator on the Gulf of Guinea",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     36.8,
-     -1.3
+     36.82,
+     -1.29
     ]
    },
    "properties": {
     "name": "Kenya, Nairobi",
-    "why": "the equator, 1 700 m",
+    "why": "East Africa, 1 700 m — the equatorial ring: no cyclone forms within ~5° of the equator",
+    "ring": "equator",
     "marker-color": "#2b6cb0",
     "marker-symbol": "",
     "marker-size": "small"
@@ -231,200 +46,14 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     28.3,
-     -15.4
-    ]
-   },
-   "properties": {
-    "name": "Zambia, Lusaka",
-    "why": "inland, west of the Mozambique Channel's cyclones",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     17.1,
-     -22.6
-    ]
-   },
-   "properties": {
-    "name": "Namibia, Windhoek",
-    "why": "the desert plateau, sun all year",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     20.8,
-     -32.4
-    ]
-   },
-   "properties": {
-    "name": "South Africa, Sutherland",
-    "why": "the Karoo, beside the observatory",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     -5.7,
-     -15.9
-    ]
-   },
-   "properties": {
-    "name": "St Helena",
-    "why": "mid-ocean, on the Equiano cable",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     -12.3,
-     -37.1
-    ]
-   },
-   "properties": {
-    "name": "Tristan da Cunha",
-    "why": "the middle of the South Atlantic",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     32.9,
-     39.9
-    ]
-   },
-   "properties": {
-    "name": "Turkey, Ankara",
-    "why": "Anatolia; the eastern Mediterranean",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     76.9,
-     43.2
-    ]
-   },
-   "properties": {
-    "name": "Kazakhstan, Almaty",
-    "why": "Central Asia",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     106.9,
-     47.9
-    ]
-   },
-   "properties": {
-    "name": "Mongolia, Ulaanbaatar",
-    "why": "north-east Asia",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     85.3,
-     27.7
-    ]
-   },
-   "properties": {
-    "name": "Nepal, Kathmandu",
-    "why": "the Himalaya's south side, inland of the Bay of Bengal",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     77.6,
-     13.0
-    ]
-   },
-   "properties": {
-    "name": "India, Bengaluru",
-    "why": "the Deccan, 900 m, inland of both coasts' cyclones",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     73.1,
-     -0.6
-    ]
-   },
-   "properties": {
-    "name": "Maldives, Addu",
-    "why": "the equator, on a cable",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     55.5,
-     -4.6
+     55.45,
+     -4.62
     ]
    },
    "properties": {
     "name": "Seychelles, Mahe",
-    "why": "north of the south-west Indian belt, on a cable",
+    "why": "the western Indian Ocean, on a cable — the equatorial ring: no cyclone forms within ~5° of the equator",
+    "ring": "equator",
     "marker-color": "#2b6cb0",
     "marker-symbol": "",
     "marker-size": "small"
@@ -435,13 +64,32 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     103.8,
-     1.3
+     73.16,
+     -0.63
+    ]
+   },
+   "properties": {
+    "name": "Maldives, Addu",
+    "why": "the central Indian Ocean, on a cable — the equatorial ring: no cyclone forms within ~5° of the equator",
+    "ring": "equator",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     103.85,
+     1.29
     ]
    },
    "properties": {
     "name": "Singapore",
-    "why": "the equator, the cable hub of the region",
+    "why": "the cable hub between the Indian Ocean and the Pacific — the equatorial ring: no cyclone forms within ~5° of the equator",
+    "ring": "equator",
     "marker-color": "#2b6cb0",
     "marker-symbol": "",
     "marker-size": "small"
@@ -452,13 +100,14 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     124.8,
-     1.5
+     127.38,
+     0.79
     ]
    },
    "properties": {
-    "name": "Indonesia, Manado",
-    "why": "south of the typhoons' reach",
+    "name": "Indonesia, Ternate",
+    "why": "the Moluccas, south of the typhoons' genesis — the equatorial ring: no cyclone forms within ~5° of the equator",
+    "ring": "equator",
     "marker-color": "#2b6cb0",
     "marker-symbol": "",
     "marker-size": "small"
@@ -469,98 +118,14 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     141.4,
-     43.1
-    ]
-   },
-   "properties": {
-    "name": "Japan, Sapporo",
-    "why": "the north-west Pacific's northern side; built for typhoon remnants",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     77.6,
-     -37.8
-    ]
-   },
-   "properties": {
-    "name": "Amsterdam Island",
-    "why": "the southern Indian Ocean; the research base",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     133.9,
-     -23.7
-    ]
-   },
-   "properties": {
-    "name": "Australia, Alice Springs",
-    "why": "the continent's middle, sun all year",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     115.9,
-     -31.9
-    ]
-   },
-   "properties": {
-    "name": "Australia, Perth",
-    "why": "south of the north-west coast's cyclones",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     149.1,
-     -35.3
-    ]
-   },
-   "properties": {
-    "name": "Australia, Canberra",
-    "why": "the south-east, inland",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     147.3,
-     -2.0
+     147.27,
+     -2.03
     ]
    },
    "properties": {
     "name": "Papua New Guinea, Manus",
-    "why": "the equator, north of the Coral Sea",
+    "why": "the western Pacific — the equatorial ring: no cyclone forms within ~5° of the equator",
+    "ring": "equator",
     "marker-color": "#2b6cb0",
     "marker-symbol": "",
     "marker-size": "small"
@@ -571,30 +136,14 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     172.6,
-     -43.5
-    ]
-   },
-   "properties": {
-    "name": "New Zealand, Christchurch",
-    "why": "the South Island, south of the ex-tropical storms' usual track",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     173.0,
-     1.4
+     173.02,
+     1.42
     ]
    },
    "properties": {
     "name": "Kiribati, Tarawa",
-    "why": "the western equatorial Pacific",
+    "why": "the western equatorial Pacific — the equatorial ring: no cyclone forms within ~5° of the equator",
+    "ring": "equator",
     "marker-color": "#2b6cb0",
     "marker-symbol": "",
     "marker-size": "small"
@@ -605,13 +154,14 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     -157.4,
-     1.9
+     -157.43,
+     1.87
     ]
    },
    "properties": {
     "name": "Kiribati, Kiritimati",
-    "why": "the central equatorial Pacific",
+    "why": "the central equatorial Pacific — the equatorial ring: no cyclone forms within ~5° of the equator",
+    "ring": "equator",
     "marker-color": "#2b6cb0",
     "marker-symbol": "",
     "marker-size": "small"
@@ -622,13 +172,14 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     -176.6,
-     51.9
+     -140.1,
+     -8.91
     ]
    },
    "properties": {
-    "name": "Alaska, Adak",
-    "why": "the North Pacific, the Aleutians",
+    "name": "Marquesas, Nuku Hiva",
+    "why": "the eastern Pacific's gap; cyclones very rare — the equatorial ring: no cyclone forms within ~5° of the equator",
+    "ring": "equator",
     "marker-color": "#2b6cb0",
     "marker-symbol": "",
     "marker-size": "small"
@@ -639,48 +190,177 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     -130.1,
-     -25.1
-    ]
-   },
-   "properties": {
-    "name": "Pitcairn",
-    "why": "the south-east Pacific",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     -109.4,
-     -27.1
-    ]
-   },
-   "properties": {
-    "name": "Easter Island",
-    "why": "the south-east Pacific, no cyclones",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     -90.3,
-     -0.7
+     -90.31,
+     -0.74
     ]
    },
    "properties": {
     "name": "Galapagos, Santa Cruz",
-    "why": "the equator off South America",
+    "why": "the eastern equatorial Pacific — the equatorial ring: no cyclone forms within ~5° of the equator",
+    "ring": "equator",
     "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -51.07,
+     0.03
+    ]
+   },
+   "properties": {
+    "name": "Brazil, Macapa",
+    "why": "the Amazon's mouth — the equatorial ring: no cyclone forms within ~5° of the equator",
+    "ring": "equator",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -32.42,
+     -3.85
+    ]
+   },
+   "properties": {
+    "name": "Brazil, Fernando de Noronha",
+    "why": "the equatorial Atlantic, west — the equatorial ring: no cyclone forms within ~5° of the equator",
+    "ring": "equator",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -14.41,
+     -7.93
+    ]
+   },
+   "properties": {
+    "name": "Ascension",
+    "why": "the equatorial Atlantic, east; the South Atlantic has almost no cyclones — the equatorial ring: no cyclone forms within ~5° of the equator",
+    "ring": "equator",
+    "marker-color": "#2b6cb0",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -21.94,
+     64.15
+    ]
+   },
+   "properties": {
+    "name": "Iceland, Reykjavik",
+    "why": "north of the Atlantic basin — the high ring, north: storms arrive only as extratropical gales",
+    "ring": "north",
+    "marker-color": "#2f855a",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     30.52,
+     50.45
+    ]
+   },
+   "properties": {
+    "name": "Ukraine, Kyiv",
+    "why": "eastern Europe — the high ring, north: storms arrive only as extratropical gales",
+    "ring": "north",
+    "marker-color": "#2f855a",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     60.61,
+     56.84
+    ]
+   },
+   "properties": {
+    "name": "Russia, Yekaterinburg",
+    "why": "north of the North Indian basin — the high ring, north: storms arrive only as extratropical gales",
+    "ring": "north",
+    "marker-color": "#2f855a",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     104.3,
+     52.29
+    ]
+   },
+   "properties": {
+    "name": "Russia, Irkutsk",
+    "why": "inner Asia — the high ring, north: storms arrive only as extratropical gales",
+    "ring": "north",
+    "marker-color": "#2f855a",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     158.65,
+     53.02
+    ]
+   },
+   "properties": {
+    "name": "Russia, Petropavlovsk-Kamchatsky",
+    "why": "north of the north-west Pacific basin — the high ring, north: storms arrive only as extratropical gales",
+    "ring": "north",
+    "marker-color": "#2f855a",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -176.66,
+     51.88
+    ]
+   },
+   "properties": {
+    "name": "Alaska, Adak",
+    "why": "the Aleutians — the high ring, north: storms arrive only as extratropical gales",
+    "ring": "north",
+    "marker-color": "#2f855a",
     "marker-symbol": "",
     "marker-size": "small"
    }
@@ -691,13 +371,14 @@
     "type": "Point",
     "coordinates": [
      -149.9,
-     61.2
+     61.22
     ]
    },
    "properties": {
     "name": "Alaska, Anchorage",
-    "why": "the Gulf of Alaska",
-    "marker-color": "#2b6cb0",
+    "why": "north of the north-east Pacific basin — the high ring, north: storms arrive only as extratropical gales",
+    "ring": "north",
+    "marker-color": "#2f855a",
     "marker-symbol": "",
     "marker-size": "small"
    }
@@ -707,31 +388,15 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     -123.4,
-     48.4
-    ]
-   },
-   "properties": {
-    "name": "Canada, Victoria",
-    "why": "the Pacific north-west",
-    "marker-color": "#2b6cb0",
-    "marker-symbol": "",
-    "marker-size": "small"
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     -106.6,
-     52.1
+     -106.67,
+     52.13
     ]
    },
    "properties": {
     "name": "Canada, Saskatoon",
-    "why": "the prairies",
-    "marker-color": "#2b6cb0",
+    "why": "the prairies — the high ring, north: storms arrive only as extratropical gales",
+    "ring": "north",
+    "marker-color": "#2f855a",
     "marker-symbol": "",
     "marker-size": "small"
    }
@@ -741,14 +406,15 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     -105.3,
-     40.0
+     -60.33,
+     53.3
     ]
    },
    "properties": {
-    "name": "USA, Boulder",
-    "why": "the Rockies, beside WWV",
-    "marker-color": "#2b6cb0",
+    "name": "Canada, Goose Bay",
+    "why": "Labrador, north of the Atlantic's recurving storms — the high ring, north: storms arrive only as extratropical gales",
+    "ring": "north",
+    "marker-color": "#2f855a",
     "marker-symbol": "",
     "marker-size": "small"
    }
@@ -758,14 +424,15 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     -75.7,
-     45.4
+     -12.31,
+     -37.07
     ]
    },
    "properties": {
-    "name": "Canada, Ottawa",
-    "why": "the east, inland of the Atlantic coast; built for hurricane remnants",
-    "marker-color": "#2b6cb0",
+    "name": "Tristan da Cunha",
+    "why": "the middle of the South Atlantic — the high ring, south: storms arrive only as extratropical gales",
+    "ring": "south",
+    "marker-color": "#805ad5",
     "marker-symbol": "",
     "marker-size": "small"
    }
@@ -775,14 +442,15 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     -99.1,
-     19.4
+     18.42,
+     -33.92
     ]
    },
    "properties": {
-    "name": "Mexico, Mexico City",
-    "why": "the plateau, 2 240 m, between both coasts' hurricanes; built for their remnants",
-    "marker-color": "#2b6cb0",
+    "name": "South Africa, Cape Town",
+    "why": "south-west of the south-west Indian basin — the high ring, south: storms arrive only as extratropical gales",
+    "ring": "south",
+    "marker-color": "#805ad5",
     "marker-symbol": "",
     "marker-size": "small"
    }
@@ -792,14 +460,15 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     -74.1,
-     4.7
+     37.86,
+     -46.88
     ]
    },
    "properties": {
-    "name": "Colombia, Bogota",
-    "why": "the Andes, south of the Caribbean",
-    "marker-color": "#2b6cb0",
+    "name": "Marion Island",
+    "why": "south of the south-west Indian basin; the research base — the high ring, south: storms arrive only as extratropical gales",
+    "ring": "south",
+    "marker-color": "#805ad5",
     "marker-symbol": "",
     "marker-size": "small"
    }
@@ -809,14 +478,15 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     -60.0,
-     -3.1
+     77.57,
+     -37.83
     ]
    },
    "properties": {
-    "name": "Brazil, Manaus",
-    "why": "the Amazon, the equator",
-    "marker-color": "#2b6cb0",
+    "name": "Amsterdam Island",
+    "why": "the southern Indian Ocean; the research base — the high ring, south: storms arrive only as extratropical gales",
+    "ring": "south",
+    "marker-color": "#805ad5",
     "marker-symbol": "",
     "marker-size": "small"
    }
@@ -826,14 +496,15 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     -32.4,
-     -3.9
+     117.88,
+     -35.02
     ]
    },
    "properties": {
-    "name": "Brazil, Fernando de Noronha",
-    "why": "the equatorial Atlantic",
-    "marker-color": "#2b6cb0",
+    "name": "Australia, Albany",
+    "why": "south of the north-west Australian basin — the high ring, south: storms arrive only as extratropical gales",
+    "ring": "south",
+    "marker-color": "#805ad5",
     "marker-symbol": "",
     "marker-size": "small"
    }
@@ -843,14 +514,15 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     -47.9,
-     -15.8
+     147.33,
+     -42.88
     ]
    },
    "properties": {
-    "name": "Brazil, Brasilia",
-    "why": "the plateau; the South Atlantic has almost no cyclones",
-    "marker-color": "#2b6cb0",
+    "name": "Australia, Hobart",
+    "why": "south of the Coral Sea — the high ring, south: storms arrive only as extratropical gales",
+    "ring": "south",
+    "marker-color": "#805ad5",
     "marker-symbol": "",
     "marker-size": "small"
    }
@@ -860,14 +532,15 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     -68.2,
-     -22.9
+     172.64,
+     -43.53
     ]
    },
    "properties": {
-    "name": "Chile, San Pedro de Atacama",
-    "why": "the driest and sunniest place on Earth",
-    "marker-color": "#2b6cb0",
+    "name": "New Zealand, Christchurch",
+    "why": "south of the south-west Pacific basin — the high ring, south: storms arrive only as extratropical gales",
+    "ring": "south",
+    "marker-color": "#805ad5",
     "marker-symbol": "",
     "marker-size": "small"
    }
@@ -877,14 +550,15 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     -64.2,
-     -31.4
+     -109.35,
+     -27.11
     ]
    },
    "properties": {
-    "name": "Argentina, Cordoba",
-    "why": "the pampas",
-    "marker-color": "#2b6cb0",
+    "name": "Easter Island",
+    "why": "the south-east Pacific, no cyclones — the high ring, south: storms arrive only as extratropical gales",
+    "ring": "south",
+    "marker-color": "#805ad5",
     "marker-symbol": "",
     "marker-size": "small"
    }
@@ -894,14 +568,33 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     -57.9,
+     -72.94,
+     -41.47
+    ]
+   },
+   "properties": {
+    "name": "Chile, Puerto Montt",
+    "why": "the south-east Pacific's coast — the high ring, south: storms arrive only as extratropical gales",
+    "ring": "south",
+    "marker-color": "#805ad5",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -57.85,
      -51.7
     ]
    },
    "properties": {
     "name": "Falkland Islands, Stanley",
-    "why": "the south-west Atlantic",
-    "marker-color": "#2b6cb0",
+    "why": "the south-west Atlantic — the high ring, south: storms arrive only as extratropical gales",
+    "ring": "south",
+    "marker-color": "#805ad5",
     "marker-symbol": "",
     "marker-size": "small"
    }
@@ -911,14 +604,177 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     -36.5,
-     -54.3
+     -23.51,
+     14.93
     ]
    },
    "properties": {
-    "name": "South Georgia, King Edward Point",
-    "why": "the Southern Ocean's edge; the research base",
-    "marker-color": "#2b6cb0",
+    "name": "Cape Verde, Praia",
+    "why": "where the Atlantic's storms are born, still weak — an inner station: the basin's edge, where a storm is still weak; built for its worst",
+    "ring": "inner",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -61.51,
+     10.66
+    ]
+   },
+   "properties": {
+    "name": "Trinidad, Port of Spain",
+    "why": "the Caribbean's southern edge — an inner station: the basin's edge, where a storm is still weak; built for its worst",
+    "ring": "inner",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -68.93,
+     12.11
+    ]
+   },
+   "properties": {
+    "name": "Curacao, Willemstad",
+    "why": "south of the Caribbean's storm track — an inner station: the basin's edge, where a storm is still weak; built for its worst",
+    "ring": "inner",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.52,
+     8.98
+    ]
+   },
+   "properties": {
+    "name": "Panama, Panama City",
+    "why": "between the Caribbean and the north-east Pacific basin — an inner station: the basin's edge, where a storm is still weak; built for its worst",
+    "ring": "inner",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     134.48,
+     7.34
+    ]
+   },
+   "properties": {
+    "name": "Palau, Koror",
+    "why": "the north-west Pacific's genesis region — an inner station: the basin's edge, where a storm is still weak; built for its worst",
+    "ring": "inner",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     158.21,
+     6.96
+    ]
+   },
+   "properties": {
+    "name": "Micronesia, Pohnpei",
+    "why": "the north-west Pacific's genesis region, east — an inner station: the basin's edge, where a storm is still weak; built for its worst",
+    "ring": "inner",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     79.85,
+     6.93
+    ]
+   },
+   "properties": {
+    "name": "Sri Lanka, Colombo",
+    "why": "the North Indian basin's southern edge — an inner station: the basin's edge, where a storm is still weak; built for its worst",
+    "ring": "inner",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     96.83,
+     -12.19
+    ]
+   },
+   "properties": {
+    "name": "Cocos (Keeling) Islands",
+    "why": "the south-east Indian Ocean's genesis region — an inner station: the basin's edge, where a storm is still weak; built for its worst",
+    "ring": "inner",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     125.57,
+     -8.56
+    ]
+   },
+   "properties": {
+    "name": "Timor-Leste, Dili",
+    "why": "the Australian basin's northern edge — an inner station: the basin's edge, where a storm is still weak; built for its worst",
+    "ring": "inner",
+    "marker-color": "#dd6b20",
+    "marker-symbol": "",
+    "marker-size": "small"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     159.95,
+     -9.43
+    ]
+   },
+   "properties": {
+    "name": "Solomon Islands, Honiara",
+    "why": "the south-west Pacific's genesis region — an inner station: the basin's edge, where a storm is still weak; built for its worst",
+    "ring": "inner",
+    "marker-color": "#dd6b20",
     "marker-symbol": "",
     "marker-size": "small"
    }
