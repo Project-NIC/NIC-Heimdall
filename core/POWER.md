@@ -125,6 +125,11 @@ BMS holds 2,9–3,6 V a cell takes the station's inputs as they are. The polyani
 flatter, ~3,0–3,2 V a cell, near 11 V on 4S under load in the cold; the cell's own table of voltage
 against charge is what the BMS is set by.
 
+**4S and no other count.** A fifth cell to 3,8 V is 19 V, over the `TPS629206`'s 18 V absolute
+maximum on every board; held to 3,4 V a cell (17 V) it stays under, but a transil standing off 17 V
+clamps above 18 V, so a fifth cell would take a different buck and a different transil on every
+board — and it buys ~65 % of the cell from its bottom against 4S's ~72 % at 11,0–14,4 V.
+
 **The BMS derates rather than refuses.** Lithium plating is a rate effect: a cell charged at
 ≤ 0,1 C tolerates a few degrees of frost that 0,5 C would plate. The BMS **limits charge current to
 ≤ 0,1 C below 0 °C and cuts it only below about −10 °C**, so a cold snap charges slowly instead of

@@ -1460,6 +1460,15 @@ its SMD range stops at 80 V, so it serves 12 V only. **No hybrid on a pressure b
 - **`G-48-U`'s input needs no damping part.** The run is its own: `R_line` ~24 Ω/km against
   √(L/C) ~11 Ω, and stability asks `C > L/(R_line·|R_neg|)` = 0,27 µF a kilometre against the
   3,6 µF fitted, with `R_line` under the −92 Ω of the load to ~3 km, where the watts end anyway.
+- **The 300 V unit boards need none either, on two conductors or on the sea.** The load is −V²/P:
+  **−15 kΩ on `G-300-U-6`, −2,25 kΩ on `G-300-U-40`** at 300 V. Inductance and resistance both grow
+  with the run, so the criterion is the ratio, not the length: two cores give `L/R` ~0,6 mH ÷
+  22,9 Ω ≈ 26 µs a kilometre, and `C > (L/R)/|R_neg|` asks **2 nF and 12 nF**; one core with the
+  return through the sea — 11,5 Ω/km, ~2 mH/km with the return spread through the water — gives
+  ~170 µs and asks **12 nF on `G-300-U-6`**, against the ~2 µF its surge residue already fits. The
+  electrodes' resistance only adds damping; their polarisation and the sea's telluric field are
+  slow, and the converter regulates them out down to its 16 V. `R_line` stays under `|R_neg|` to
+  tens of kilometres, past where the watts end.
 - **Compensation and soft start are the sheet's worked example**, within its rule of `C_C` ≥ 1 nF
   and `R_C` ≤ 50 kΩ, the 100 pF across for noise; the sheet's own last step — a load step at both
   ends of the input range — sets the final pair on the bench. 0,1 µF of `C_SS` ramps `V_C` at
