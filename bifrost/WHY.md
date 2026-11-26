@@ -78,3 +78,7 @@ failsafe-high never read.
 No processor pin switches a Galvani board at a unit end: `LINE_EN` is held in the socket, freeing
 PD0. No board drove `FAULT`. A power board is known by its resistor, `INA238` or not, so its `ID`
 is read — ten channels.
+
+## A second path between the Mayak and a card — shelved
+
+The doubled trunk has no spare differential pair in the data body. One trunk a card stands.

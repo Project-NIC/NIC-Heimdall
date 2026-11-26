@@ -85,3 +85,7 @@ The shield hung on the mast under the wind sensor and antennas. It fails WMO sit
 passes behind it; and **at 2 m on the strike terminal it is inside side-flash range**. It stands on a 2 m non-conductive post 2–3 m
 poleward of the mast. The wind stays on the mast top as class 4S, which a 2–3 m anemometer is by
 WMO's definition.
+
+## The battery in a structure of its own — shelved
+
+The three boxes side by side stand (`CONSTRUCTION.md`, *Enclosure — classic IP68, three boxes*).

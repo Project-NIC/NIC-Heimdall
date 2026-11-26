@@ -593,3 +593,15 @@ LoRa at 868 MHz for slow units alone; nothing that wants the timebase rides it (
 The head's modem stays out-only (*The modem out-only on every module*, above). Njord's acknowledgement
 may carry a value or two from the head, signed with the unit's key, a link value on trial — never the
 register set, never the firmware over a public band (`../njord/LINK.md` §6; the owner, 19 Nov 2026).
+
+## The atmospheric field mill — shelved
+
+It would see a storm minutes before the first stroke. The electronics are easy; the accuracy is the
+site's — what the sensor reads depends on what stands around it — and an absolute field needs a
+chopper. If it wakes, the cheapest useful form is the fast channel alone: the field's change and its
+sign per stroke, no absolute field.
+
+## SeedLink streaming — shelved
+
+Live FDSN streaming wants a sizeable server. The station works fully without it, and the miniSEED
+exporter serves the archive (`archive/EXPORTERS.md`).
